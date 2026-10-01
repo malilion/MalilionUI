@@ -1,20 +1,97 @@
-# MalilionUI · 碼力獅元件庫
+<p align="center">
+  <img src="docs/images/hero.png" alt="MalilionUI — lion × tech × metal × paws" width="100%" />
+</p>
 
-> 以**獅子**為魂、**科技**為骨、**金屬**為甲，再踩上一串可愛的肉球腳印。
+<p align="center">
+  <b>English</b> · <a href="README.zh-TW.md">繁體中文</a>
+</p>
 
-📖 **文件站：<https://malilion.github.io/MalilionUI/>**
+<p align="center">
+  <a href="https://malilion.github.io/MalilionUI/"><b>📖 Docs &amp; live demos</b></a> ·
+  <a href="#install">Install</a> ·
+  <a href="#gallery">Gallery</a> ·
+  <a href="#components">Components</a>
+</p>
 
-碼力獅專屬的 Vue 3 元件庫：切角機甲板、拋光獅金、鈦合金與電路青光，
-加上散佈在各元件裡的獅子腳印（勾選、單選、通知、表格、載入器……按鈕還能「蓋章」）。
-預設是深色的 **Night Pride** 主題，另有淺色的 **Daylight Titanium** 主題。
+<p align="center">
+  <a href="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml"><img src="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml/badge.svg" alt="Docs" /></a>
+  <img src="https://img.shields.io/badge/Vue-3.5%2B-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3.5+" />
+  <img src="https://img.shields.io/badge/TypeScript-ready-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
+  <img src="https://img.shields.io/badge/runtime%20deps-0-f0ad2f" alt="0 runtime deps" />
+</p>
 
-- 26 個元件，Vue 3.5+ / TypeScript，完整型別
-- 文件站：左側選單、每個元件一頁、每個範例都能一鍵複製原始碼
-- 樣式與框架無關：所有視覺都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React / Next / 原生網頁也能直接用
-- 執行期零依賴（Vue 是 peer dependency）
-- 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
+# MalilionUI
 
-## 安裝
+> A lion for a soul, tech for bones, metal for armour — and a trail of cute toe-bean paw prints.
+
+MalilionUI is the component library of **Malilion (碼力獅)**, the "code lion". Chamfered armour plates,
+polished lion gold, titanium and circuit-cyan glow, plus paw prints tucked into the components
+(checkboxes, radios, toasts, tables, loaders… and buttons that leave a stamp).
+It ships with a dark **Night Pride** theme by default and a light **Daylight Titanium** theme.
+
+- 26 components for Vue 3.5+, written in TypeScript with full types
+- [Docs site](https://malilion.github.io/MalilionUI/): sidebar menu, one page per component, every example's source one click away
+- Framework-agnostic styling: everything visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React, Next or plain HTML can use it too
+- Zero runtime dependencies (Vue is a peer dependency)
+- Accessible: keyboard support, focus trapping, ARIA wiring, and `prefers-reduced-motion`
+
+## Gallery
+
+### Buttons & badges
+
+Machined metal plates with a polished sheen that sweeps across on hover. Add `stamp` and every press leaves a paw print.
+
+<img src="docs/images/buttons.png" alt="Buttons and badges" width="100%" />
+
+### HUD forms
+
+Focus turns the rim gold and fires an energy line along the bottom. Picking a radio presses a gold paw into it; radios can also be selectable cards.
+
+<img src="docs/images/forms.png" alt="Form controls" width="100%" />
+
+### Alerts, progress, loaders & toasts
+
+Alerts carry three claw marks in the corner, progress bars can have a paw running along the tip, and toasts are stamped with a faint paw watermark.
+
+<img src="docs/images/feedback.png" alt="Feedback components" width="100%" />
+
+### Tables, stats & avatars
+
+A sortable, selectable HUD data table where a little paw walks onto the hovered row, plus hexagonal badge avatars.
+
+<img src="docs/images/data.png" alt="Data display components" width="100%" />
+
+### Tabs, dropdowns & tooltips
+
+<img src="docs/images/navigation.png" alt="Navigation components" width="100%" />
+
+### Modal
+
+A command console that opens out from its centre line over a scanline, blurred backdrop.
+
+<img src="docs/images/modal.png" alt="Modal dialog" width="100%" />
+
+### Paw prints · the cute side
+
+`MlPaw` comes in gold, toe-bean pink, titanium and tech cyan, and shows up inside checkboxes, radios, progress bars, loaders, badges and toasts.
+
+<img src="docs/images/paw.png" alt="Paw prints" width="100%" />
+
+### Two themes
+
+The same components in dark Night Pride and light Daylight Titanium.
+
+<img src="docs/images/themes.png" alt="Dark and light themes" width="100%" />
+
+### Docs site
+
+Sidebar menu, live examples, copy-to-clipboard source and full API tables: <https://malilion.github.io/MalilionUI/>
+
+<img src="docs/images/docs-site.png" alt="Docs site" width="100%" />
+
+## Install
+
+> Not published to the npm registry yet.
 
 ```bash
 npm i @malilion/ui
@@ -30,25 +107,25 @@ import App from './App.vue'
 createApp(App).use(MalilionUI).mount('#app')
 ```
 
-要用通知的話，在 `App.vue` 放一個 `<MlToastHost />`，之後在任何地方呼叫 `toast()`：
+For toasts, put one `<MlToastHost />` in `App.vue`, then call `toast()` from anywhere:
 
 ```ts
 import { useToast } from '@malilion/ui'
 
 const toast = useToast()
-toast('嗷嗚～')                       // 預設是腳印通知
-toast.success({ title: '部署完成', message: 'v0.2 已上線' })
+toast('Roar!')                         // paw toast by default
+toast.success({ title: 'Deployed', message: 'v0.2 is live' })
 ```
 
-或者按需引入：
+Or import only what you need:
 
 ```ts
 import { MlButton, MlCard } from '@malilion/ui'
 ```
 
-### 字體（建議）
+### Fonts (recommended)
 
-元件會使用以下字體，找不到時會退回系統字體。在 `index.html` 加入：
+The components use these fonts and fall back to system fonts without them. Add to `index.html`:
 
 ```html
 <link
@@ -57,46 +134,48 @@ import { MlButton, MlCard } from '@malilion/ui'
 />
 ```
 
-## 主題
+## Themes
 
-預設為深色。在任何祖先元素（通常是 `<html>`）設定 `data-ml-theme` 即可切換，也可以只套用在局部區塊：
+Dark is the default. Set `data-ml-theme` on any ancestor (usually `<html>`) to switch, or on a single section to theme just that part:
 
 ```html
 <html data-ml-theme="light">
 ```
 
-在 `<body>` 加上 `ml-app` class，就會套用整頁的背景（獅金光暈 + 網格）、文字顏色與字體。這是選用的，元件庫不會動到任何原生元素的樣式。
+Add the `ml-app` class to `<body>` for the full-page backdrop (lion-gold glow and grid), text colour and fonts. It's opt-in: the library never styles bare elements.
 
-## 元件一覽
+## Components
 
-| 元件 | 說明 |
+| Component | Notes |
 | --- | --- |
-| `MlButton` | `primary` / `steel` / `outline` / `tech` / `ghost` / `danger`，`sm` / `md` / `lg`，`loading`、`square`、`href` |
-| `MlCard` | `plate` / `gold` / `steel` / `tech` 外殼，`rivets` 鉚釘、`interactive` 浮起發光；`#header`、`#actions`、`#footer` 插槽 |
-| `MlBadge` | `gold` / `steel` / `tech` / `success` / `danger`，`solid`、`dot`、`pulse` |
-| `MlInput` / `MlTextarea` / `MlSelect` | HUD 欄位，`label`、`index`、`hint`、`error`，`#prefix` / `#suffix` |
-| `MlField` | 給自訂控制項用的 label / hint / error 外框 |
-| `MlSwitch` | `v-model`，`tone="tech"`，`show-state` 顯示 ON/OFF |
-| `MlCheckbox` | `v-model`，`hint`，`paw` 腳印勾選，`indeterminate` 半選 |
-| `MlRadioGroup` / `MlRadio` | 選中時壓進金色腳印；`variant="card"` 卡片方塊；`options` 或子元件 |
-| `MlProgress` | 能量條；不給 `value` 即為不確定進度，`striped`、`smooth`、`paw` 腳印跑者、四種 `tone` |
-| `MlTabs` | `line` 金色墨線 / `plate` 滑動金屬板，用 `#<value>` 具名插槽放面板內容 |
-| `MlModal` | `v-model:open`，Esc / 點背景關閉、焦點鎖定、多層對話框共用捲動鎖 |
-| `toast()` / `MlToastHost` | 通知；五種色調、動作按鈕、常駐、滑鼠移上暫停倒數 |
-| `MlTooltip` | `top` / `bottom` / `left` / `right`，自動設定 `aria-describedby` |
-| `MlAvatar` | 六角徽章頭像，`ring`、`status`，圖片失敗時退回縮寫；`.ml-avatar-group` 可疊放 |
-| `MlAlert` | `info` / `success` / `warning` / `danger`，角落有三道獅爪痕，`closable` |
-| `MlLoader` | `reactor` 獅鬃反應爐 / `paws` 走路的腳印 |
-| `MlStat` | HUD 數據，`delta` 正負自動上色 |
-| `MlTable` | 排序、勾選（`v-model:selected`）、`#cell-欄位` 插槽、滑過列的小腳印、腳印空狀態與載入遮罩 |
-| `MlDropdown` | 指令選單；方向鍵 / Home / End / 首字跳轉 / Esc；`selectable` 單選模式用腳印標記 |
-| `MlDivider` | `label`、`claw` 獅爪痕或 `paw` 一串腳印 |
-| `MlLionMark` | 多面體金屬獅徽，`glow`、`animated` |
-| `MlPaw` | 獅子腳印；`gold` / `bean`（肉球粉）/ `steel` / `tech` / `current` |
-| `v-paw-stamp` | 按下時在游標位置蓋一個會飄走的腳印；`MlButton` 直接用 `stamp` 屬性 |
-| `MlIcon` | 內建的少量圖示 |
+| `MlButton` | `primary` / `steel` / `outline` / `tech` / `ghost` / `danger`, `sm` / `md` / `lg`, `loading`, `square`, `href`, `stamp` |
+| `MlCard` | `plate` / `gold` / `steel` / `tech` shells, `rivets`, `interactive` lift and glow; `#header`, `#actions`, `#footer` slots |
+| `MlBadge` | `gold` / `steel` / `tech` / `bean` / `success` / `danger`, `solid`, `dot`, `pulse`, `paw` |
+| `MlInput` / `MlTextarea` / `MlSelect` | HUD fields with `label`, `index`, `hint`, `error`, `#prefix` / `#suffix` |
+| `MlField` | Label / hint / error frame for your own controls |
+| `MlSwitch` | `v-model`, `tone="tech"`, `show-state` for an ON/OFF readout |
+| `MlCheckbox` | `v-model`, `hint`, `paw` instead of a check mark, `indeterminate` |
+| `MlRadioGroup` / `MlRadio` | Selection presses in a gold paw; `variant="card"` tiles; `options` or child radios |
+| `MlProgress` | Energy gauge; omit `value` for indeterminate; `striped`, `smooth`, `paw` runner, four tones |
+| `MlTabs` | `line` gold ink or `plate` sliding metal; panel content in `#<value>` named slots |
+| `MlModal` | `v-model:open`, Esc / backdrop to close, focus trap, shared scroll lock for nested dialogs |
+| `toast()` / `MlToastHost` | Five tones, action button, persistent toasts, countdown pauses on hover |
+| `MlTooltip` | `top` / `bottom` / `left` / `right`, wires `aria-describedby` for you |
+| `MlAvatar` | Hexagonal medallion, `ring`, `status`, falls back to initials; stack with `.ml-avatar-group` |
+| `MlAlert` | `info` / `success` / `warning` / `danger` with claw marks, `closable` |
+| `MlLoader` | `reactor` (spinning mane) or `paws` (a cub walking across) |
+| `MlStat` | HUD readout; `delta` colours itself by sign |
+| `MlTable` | Sorting, selection (`v-model:selected`), `#cell-<key>` slots, hover paw, paw-trail empty state, loading overlay |
+| `MlDropdown` | Command menu with arrows / Home / End / typeahead / Esc; `selectable` mode marks the choice with a paw |
+| `MlDivider` | `label`, `claw` marks or a `paw` trail |
+| `MlLionMark` | Faceted metal lion crest, `glow`, `animated` |
+| `MlPaw` | Paw print in `gold` / `bean` (toe-bean pink) / `steel` / `tech` / `current` |
+| `v-paw-stamp` | Pops a floating paw print where you press; `MlButton` takes a `stamp` prop |
+| `MlIcon` | A small set of built-in icons |
 
-### 範例
+Full props, events, slots and copyable examples for every component are on the [docs site](https://malilion.github.io/MalilionUI/).
+
+### Example
 
 ```vue
 <script setup lang="ts">
@@ -106,75 +185,80 @@ const email = ref('')
 </script>
 
 <template>
-  <MlCard eyebrow="Pride / 01" title="獅群儀表板" rivets>
+  <MlCard eyebrow="Pride / 01" title="Pride dashboard" rivets>
     <MlInput v-model="email" index="01" label="Email" type="email" />
     <template #footer>
-      <MlButton variant="ghost">取消</MlButton>
-      <MlButton @click="open = true">部署</MlButton>
+      <MlButton variant="ghost">Cancel</MlButton>
+      <MlButton stamp @click="open = true">Deploy</MlButton>
     </template>
   </MlCard>
 
-  <MlModal v-model:open="open" eyebrow="Command" title="部署到正式站？">
-    確定要把目前版本推上線嗎？
+  <MlModal v-model:open="open" eyebrow="Command" title="Deploy to production?">
+    Push the current version live?
     <template #footer="{ close }">
-      <MlButton variant="ghost" @click="close">取消</MlButton>
-      <MlButton @click="close">確認部署</MlButton>
+      <MlButton variant="ghost" @click="close">Cancel</MlButton>
+      <MlButton @click="close">Deploy</MlButton>
     </template>
   </MlModal>
 </template>
 ```
 
-## 在 React / 非 Vue 專案使用
+## Using it from React or plain HTML
 
-引入 CSS 後直接寫 class 即可，結構可以參考 `src/components/*.vue` 的 template：
+Import the CSS and write the classes; the templates in `src/components/*.vue` show the markup:
 
 ```tsx
 import '@malilion/ui/style.css'
 
 export function DeployButton() {
-  return <button className="ml-btn ml-btn--primary ml-btn--md">部署</button>
+  return <button className="ml-btn ml-btn--primary ml-btn--md">Deploy</button>
 }
 ```
 
-只想要設計代幣（顏色、金屬漸層、字體、動態曲線）的話，引入 `@malilion/ui/css/tokens.css` 就好。
+If you only want the design tokens (colours, metal gradients, fonts, easing), import `@malilion/ui/css/tokens.css`.
 
-## 設計語言
+## Design language
 
-| 元素 | 做法 |
+| Element | How |
 | --- | --- |
-| **切角（Malilion cut）** | 左上、右下兩角斜切，像機械加工過的金屬板。根元素不裁切，外框與面板放在 `::before` / `::after` 上，因此焦點框與光暈不會被切掉 |
-| **金屬** | `--ml-metal-*` 漸層：頂部高光帶、中段暗核、底部反光，模擬拋光金屬 |
-| **獅子** | 獅金色票、獅鬃載入器、獅爪痕、獅徽 |
-| **可愛** | 肉球腳印（`MlPaw`）、肉球粉 `--ml-bean-*`、按鈕蓋章、Q 彈的彈出動畫——點綴用，不搶金屬的主調 |
-| **科技** | 電路青作為焦點與資料色、HUD 標籤、掃描線、能量格 |
-| **焦點** | 青色矩形「鎖定框」，在深色與淺色主題都清楚可見 |
+| **The Malilion cut** | Top-left and bottom-right corners chamfered like a machined plate. The root is never clipped; the rim and face live on `::before` / `::after`, so focus rings and glows survive |
+| **Metal** | `--ml-metal-*` gradients: a specular band on top, a dark core, a reflected rim at the bottom |
+| **Lion** | Lion-gold palette, mane loader, claw marks, the lion crest |
+| **Cute** | Toe-bean paw prints (`MlPaw`), `--ml-bean-*` pink, button stamps, squishy pop animations — an accent that never overrides the metal |
+| **Tech** | Circuit cyan for focus and data, HUD labels, scanlines, energy cells |
+| **Focus** | A cyan rectangular "target lock" that stays clear in both themes |
 
-## 開發
+## Development
 
 ```bash
 npm install
-npm run dev          # 文件站（playground/），http://127.0.0.1:5287
-npm test             # Vitest 元件測試
-npm run typecheck    # vue-tsc 型別檢查
-npm run build        # 輸出 dist/：ESM + style.css + .d.ts
+npm run dev          # docs site (playground/) at http://127.0.0.1:5287
+npm test             # Vitest component tests
+npm run typecheck    # vue-tsc
+npm run build        # dist/: ESM + style.css + .d.ts
+npm run screenshots  # regenerate the README images (needs Google Chrome installed)
 ```
 
-## 專案結構
+Every push to `main` runs the type check and tests in GitHub Actions, then deploys the docs site to GitHub Pages.
+
+## Project layout
 
 ```
 src/
-  index.ts              # 外掛 + 具名匯出 + GlobalComponents 型別
-  types.ts              # 公開型別
-  composables.ts        # attrs 分流、捲動鎖
-  toast.ts              # 通知佇列與 toast() API
-  pawStamp.ts           # v-paw-stamp 指令
+  index.ts              # plugin, named exports, GlobalComponents types
+  types.ts              # public types
+  composables.ts        # attrs splitting, scroll lock
+  toast.ts              # toast queue and toast() API
+  pawStamp.ts           # v-paw-stamp directive
   components/           # Ml*.vue
   styles/
-    tokens.css          # 設計代幣（兩套主題）
-    base.css            # .ml-app 外殼、工具 class、keyframes
-    components/*.css    # 每個元件的樣式
-playground/             # 文件站
-  registry.ts           # 選單、頁面、範例與 API 表的資料
-  examples/**/*.vue     # 每個範例；同一個檔案既是即時預覽，也是可複製的原始碼
-tests/                  # 元件測試
+    tokens.css          # design tokens (both themes)
+    base.css            # .ml-app shell, utilities, keyframes
+    components/*.css    # per-component styles
+playground/             # docs site
+  registry.ts           # menu, pages, examples and API tables
+  examples/**/*.vue     # each example is both the live demo and the copyable source
+  shots.html            # composition page for README screenshots (not deployed)
+scripts/screenshots.mjs # writes docs/images/*.png
+tests/                  # component tests
 ```

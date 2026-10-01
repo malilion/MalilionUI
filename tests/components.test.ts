@@ -220,6 +220,8 @@ describe('MlAvatar', () => {
     ['Leo Nova', 'LN'],
     ['Simba', 'S'],
     ['+4', '+4'],
+    ['Leo', 'L'],
+    ['AI', 'AI'],
     ['', '?'],
   ])('initials for %j → %j', (name, expected) => {
     const wrapper = mount(MlAvatar, { props: { name } })
