@@ -243,7 +243,7 @@ npm version minor    # bumps package.json and creates the tag, e.g. v0.4.0
 git push --follow-tags
 ```
 
-The `Publish` workflow checks that the tag matches `package.json`, runs the checks and stages the package with a provenance attestation. A maintainer then approves it on [npmjs.com](https://www.npmjs.com/package/@malilion/ui) (Staged Packages) or with `npm stage approve`.
+The `Publish` workflow checks that the tag matches `package.json`, runs the checks and publishes with a provenance attestation.
 
 The build output is `dist/malilion-ui.js` (ESM), `dist/style.css` and `dist/types/` (type declarations). Vue is external and is not bundled.
 
