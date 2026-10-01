@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/images/hero.png" alt="MalilionUI — 獅子 × 科技 × 金屬 × 肉球" width="100%" />
+  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/hero.png" alt="MalilionUI — 獅子 × 科技 × 金屬 × 肉球" width="100%" />
 </p>
 
 <p align="center">
-  <a href="README.md">English</a> · <b>繁體中文</b>
+  <a href="https://github.com/malilion/MalilionUI/blob/main/README.md">English</a> · <b>繁體中文</b>
 </p>
 
 <p align="center">
@@ -15,6 +15,7 @@
 
 <p align="center">
   <a href="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml"><img src="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml/badge.svg" alt="Docs" /></a>
+  <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/v/@malilion/ui?color=f0ad2f&label=npm" alt="npm" /></a>
   <img src="https://img.shields.io/badge/Vue-3.5%2B-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3.5+" />
   <img src="https://img.shields.io/badge/TypeScript-ready-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/runtime%20deps-0-f0ad2f" alt="0 runtime deps" />
@@ -40,57 +41,55 @@
 
 切角金屬板，滑過時有一道拋光反光掃過；加上 `stamp` 會在按下的位置蓋一個腳印。
 
-<img src="docs/images/buttons.png" alt="按鈕與徽章" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/buttons.png" alt="按鈕與徽章" width="100%" />
 
 ### HUD 表單
 
 聚焦時外框轉金、底部射出能量線；單選選中時壓進金色腳印，也能做成卡片方塊。
 
-<img src="docs/images/forms.png" alt="表單元件" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/forms.png" alt="表單元件" width="100%" />
 
 ### 警示、進度、載入與通知
 
 警示角落有三道獅爪痕；進度條可以有一隻腳印跟著跑；通知蓋著淡淡的腳印浮水印。
 
-<img src="docs/images/feedback.png" alt="回饋元件" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/feedback.png" alt="回饋元件" width="100%" />
 
 ### 表格、數據與頭像
 
 可排序、可勾選的 HUD 資料表，滑過的那一列會有小腳印走進來；六角徽章頭像。
 
-<img src="docs/images/data.png" alt="資料展示元件" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/data.png" alt="資料展示元件" width="100%" />
 
 ### 分頁、下拉選單與提示
 
-<img src="docs/images/navigation.png" alt="導覽元件" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="導覽元件" width="100%" />
 
 ### 對話框
 
 指揮台式對話框，由中線向上下展開，背景是掃描線與模糊。
 
-<img src="docs/images/modal.png" alt="對話框" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="對話框" width="100%" />
 
 ### 獅掌腳印 · 可愛風格
 
 `MlPaw` 有金、肉球粉、鈦、科技青四種色調，並藏在勾選框、單選、進度條、載入器、徽章與通知裡。
 
-<img src="docs/images/paw.png" alt="獅掌腳印" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="獅掌腳印" width="100%" />
 
 ### 雙主題
 
 同一套元件，深色 Night Pride 與淺色 Daylight Titanium。
 
-<img src="docs/images/themes.png" alt="深色與淺色主題" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="深色與淺色主題" width="100%" />
 
 ### 文件站
 
 左側選單、即時範例、一鍵複製程式碼與完整 API 表：<https://malilion.github.io/MalilionUI/>
 
-<img src="docs/images/docs-site.png" alt="文件站" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="文件站" width="100%" />
 
 ## 安裝
-
-> 目前尚未發布到 npm registry。
 
 ```bash
 npm i @malilion/ui

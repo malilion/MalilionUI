@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="docs/images/hero.png" alt="MalilionUI — lion × tech × metal × paws" width="100%" />
+  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/hero.png" alt="MalilionUI — lion × tech × metal × paws" width="100%" />
 </p>
 
 <p align="center">
-  <b>English</b> · <a href="README.zh-TW.md">繁體中文</a>
+  <b>English</b> · <a href="https://github.com/malilion/MalilionUI/blob/main/README.zh-TW.md">繁體中文</a>
 </p>
 
 <p align="center">
@@ -15,6 +15,7 @@
 
 <p align="center">
   <a href="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml"><img src="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml/badge.svg" alt="Docs" /></a>
+  <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/v/@malilion/ui?color=f0ad2f&label=npm" alt="npm" /></a>
   <img src="https://img.shields.io/badge/Vue-3.5%2B-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3.5+" />
   <img src="https://img.shields.io/badge/TypeScript-ready-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
   <img src="https://img.shields.io/badge/runtime%20deps-0-f0ad2f" alt="0 runtime deps" />
@@ -41,57 +42,55 @@ It ships with a dark **Night Pride** theme by default and a light **Daylight Tit
 
 Machined metal plates with a polished sheen that sweeps across on hover. Add `stamp` and every press leaves a paw print.
 
-<img src="docs/images/buttons.png" alt="Buttons and badges" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/buttons.png" alt="Buttons and badges" width="100%" />
 
 ### HUD forms
 
 Focus turns the rim gold and fires an energy line along the bottom. Picking a radio presses a gold paw into it; radios can also be selectable cards.
 
-<img src="docs/images/forms.png" alt="Form controls" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/forms.png" alt="Form controls" width="100%" />
 
 ### Alerts, progress, loaders & toasts
 
 Alerts carry three claw marks in the corner, progress bars can have a paw running along the tip, and toasts are stamped with a faint paw watermark.
 
-<img src="docs/images/feedback.png" alt="Feedback components" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/feedback.png" alt="Feedback components" width="100%" />
 
 ### Tables, stats & avatars
 
 A sortable, selectable HUD data table where a little paw walks onto the hovered row, plus hexagonal badge avatars.
 
-<img src="docs/images/data.png" alt="Data display components" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/data.png" alt="Data display components" width="100%" />
 
 ### Tabs, dropdowns & tooltips
 
-<img src="docs/images/navigation.png" alt="Navigation components" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="Navigation components" width="100%" />
 
 ### Modal
 
 A command console that opens out from its centre line over a scanline, blurred backdrop.
 
-<img src="docs/images/modal.png" alt="Modal dialog" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="Modal dialog" width="100%" />
 
 ### Paw prints · the cute side
 
 `MlPaw` comes in gold, toe-bean pink, titanium and tech cyan, and shows up inside checkboxes, radios, progress bars, loaders, badges and toasts.
 
-<img src="docs/images/paw.png" alt="Paw prints" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints" width="100%" />
 
 ### Two themes
 
 The same components in dark Night Pride and light Daylight Titanium.
 
-<img src="docs/images/themes.png" alt="Dark and light themes" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Dark and light themes" width="100%" />
 
 ### Docs site
 
 Sidebar menu, live examples, copy-to-clipboard source and full API tables: <https://malilion.github.io/MalilionUI/>
 
-<img src="docs/images/docs-site.png" alt="Docs site" width="100%" />
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="Docs site" width="100%" />
 
 ## Install
-
-> Not published to the npm registry yet.
 
 ```bash
 npm i @malilion/ui
