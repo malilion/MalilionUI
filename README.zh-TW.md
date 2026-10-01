@@ -243,7 +243,7 @@ npm version minor    # 更新 package.json 版本並建立 tag，例如 v0.4.0
 git push --follow-tags
 ```
 
-`Publish` 工作流程會確認 tag 與 `package.json` 版本一致、跑完檢查，再附上來源證明（provenance）發布。
+`Publish` 工作流程會確認 tag 與 `package.json` 版本一致、跑完檢查，再附上來源證明（provenance）送到 npm 暫存區。維護者接著在 [npmjs.com](https://www.npmjs.com/package/@malilion/ui) 的 Staged Packages 核准，或本機執行 `npm stage approve`。
 
 建置產物是 `dist/malilion-ui.js`（ESM）、`dist/style.css` 與 `dist/types/`（型別宣告）。Vue 是外部依賴，不會被打包進去。
 
