@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/logo.svg" alt="Malilion UI" width="132" height="132">
+  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/logo.png" alt="Malilion UI" width="132" height="132">
 </p>
 
 <p align="center">獅子 × 科技 × 金屬，再踩上一串可愛肉球腳印的元件庫，為 Vue 3 與 TypeScript 打造</p>
@@ -34,10 +34,11 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 26 個元件，涵蓋基礎、表單、回饋、資料展示與導覽
+- 41 個元件，涵蓋基礎、表單、回饋、資料展示、圖表與導覽，另附現成的版型範例
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
+- 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
 - 處處都有腳印：`MlPaw`、`v-paw-stamp` 蓋章指令、腳印勾選框、單選、載入器與進度條跑者
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 - 執行期零依賴，只需要 Vue 作為 peer dependency
@@ -116,6 +117,8 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/feedback.png" alt="回饋元件"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/data.png" alt="資料展示"> |
 | **分頁、下拉選單與提示** | **對話框** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="導覽元件"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="對話框"> |
+| **圖表與儀表板** | **導覽、表單與空狀態** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/charts.png" alt="圖表"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/kit.png" alt="更多元件"> |
 | **獅掌腳印 · 可愛風格** | **雙主題** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="獅掌腳印"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="雙主題"> |
 
@@ -127,11 +130,12 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 
 | 分類 | 元件 |
 | --- | --- |
-| 基礎 | `MlButton` · `MlBadge` · `MlCard` · `MlDivider` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlField` |
-| 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` |
-| 資料展示 | `MlTable` · `MlAvatar` · `MlStat` |
-| 導覽 | `MlTabs` · `MlDropdown` |
+| 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
+| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
+| 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` · `MlEmpty` |
+| 資料展示 | `MlTable` · `MlAccordion` · `MlAvatar` · `MlStat` |
+| 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
+| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
 | 指令 | `v-paw-stamp` |
 
 ## 元件屬性
@@ -147,6 +151,8 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | MlProgress | value | `number \| null` | `null` | 不給就是不確定進度；加 `paw` 會有腳印跟著跑 |
 | MlTable | v-model:sort / v-model:selected | `MlTableSort \| null` / `Key[]` | `null` / `[]` | 排序與勾選 |
 | MlDropdown | selectable | boolean | `false` | 單選選單；v-model 存選中的值，並用腳印標記 |
+| MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | 碼力獅本獅，頭像或全身 |
+| MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | 自動取整數刻度，最高的一根會亮起 |
 | MlPaw | tone | `'gold' \| 'bean' \| 'steel' \| 'tech' \| 'current'` | `'gold'` | `current` 會跟隨文字顏色 |
 
 每個元件的完整屬性都在[文件站](https://malilion.github.io/MalilionUI/)。

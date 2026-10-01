@@ -76,3 +76,31 @@ export interface MlTableSort {
   key: string
   order: 'asc' | 'desc'
 }
+
+export interface MlBreadcrumbItem {
+  label: string
+  href?: string
+  icon?: IconName
+}
+
+export interface MlStepItem {
+  title: string
+  desc?: string
+}
+
+export interface MlAccordionItem {
+  value: string
+  title: string
+  /** Plain-text body; use the slot named after `value` for rich content. */
+  content?: string
+  disabled?: boolean
+}
+
+export type MlChartTone = 'gold' | 'tech' | 'bean' | 'success' | 'danger' | 'steel'
+
+export interface MlChartDatum {
+  label: string
+  value: number
+  /** Donut only: override the segment colour. */
+  color?: string
+}

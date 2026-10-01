@@ -3,7 +3,7 @@
 // Starts the playground dev server, opens playground/shots.html in the local
 // Google Chrome (via playwright-core, no browser download) and captures each
 // [data-shot] panel, plus a full-page shot of the docs site.
-import { mkdir, writeFile } from 'node:fs/promises'
+import { mkdir } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
 import { createServer } from 'vite'
 import { chromium } from 'playwright-core'
@@ -48,6 +48,14 @@ try {
 
   const shots = await page.locator('[data-shot]').evaluateAll((els) => els.map((el) => el.dataset.shot))
   for (const name of shots) {
+    if (name === 'logo') {
+      // Round mascot badge for the README header, on a transparent background.
+      await page.evaluate(() => (document.body.style.background = 'transparent'))
+      await page.locator('[data-shot="logo"]').screenshot({ path: `${outDir}logo.png`, omitBackground: true })
+      await page.evaluate(() => (document.body.style.background = ''))
+      console.log('docs/images/logo.png')
+      continue
+    }
     if (setup[name]) {
       await setup[name]()
       await page.waitForTimeout(700)
@@ -55,20 +63,6 @@ try {
     await page.locator(`[data-shot="${name}"]`).screenshot({ path: `${outDir}${name}.png` })
     console.log(`docs/images/${name}.png`)
   }
-
-  /* Standalone logo: the hero's lion crest as a self-contained SVG file */
-  const logo = await page.locator('[data-shot="hero"] svg.ml-lion-mark').evaluate((svg) => {
-    const copy = svg.cloneNode(true)
-    copy.removeAttribute('class')
-    copy.removeAttribute('style')
-    copy.removeAttribute('aria-hidden')
-    copy.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-    copy.setAttribute('width', '132')
-    copy.setAttribute('height', '132')
-    return copy.outerHTML.replace(/<!--.*?-->/g, '')
-  })
-  await writeFile(`${outDir}logo.svg`, `${logo}\n`)
-  console.log('docs/images/logo.svg')
 
   /* Docs site */
   const docs = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
