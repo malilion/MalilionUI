@@ -1,0 +1,124 @@
+/* Switch — a power toggle: a steel slider in a slot of energy cells */
+.ml-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-switch__control {
+  display: inline-flex;
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ml-switch__control:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-switch__control:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.ml-switch__track {
+  --_cut: 6px;
+  position: relative;
+  width: 54px;
+  height: 28px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong), var(--ml-inset-shadow);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  transition: background var(--ml-dur) var(--ml-ease), box-shadow var(--ml-dur) var(--ml-ease);
+}
+
+/* Energy cells along the slot */
+.ml-switch__track::before {
+  content: '';
+  position: absolute;
+  inset: 9px 8px;
+  background: repeating-linear-gradient(90deg, var(--ml-text-dim) 0 2px, transparent 2px 6px);
+  opacity: 0.35;
+  transition: opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-switch__thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 22px;
+  height: 22px;
+  background:
+    linear-gradient(90deg, transparent 44%, rgb(0 0 0 / 0.35) 44% 48%, transparent 48% 52%,
+      rgb(0 0 0 / 0.35) 52% 56%, transparent 56%),
+    var(--ml-metal-steel);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring), background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-switch--on .ml-switch__track {
+  background:
+    linear-gradient(90deg, rgb(240 173 47 / 0.28), rgb(240 173 47 / 0.08)),
+    var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-accent), inset 0 0 14px rgb(240 173 47 / 0.25);
+}
+
+.ml-switch--on .ml-switch__track::before {
+  background: repeating-linear-gradient(90deg, var(--ml-accent) 0 2px, transparent 2px 6px);
+  opacity: 0.8;
+}
+
+.ml-switch--on .ml-switch__thumb {
+  transform: translateX(26px);
+  background:
+    linear-gradient(90deg, transparent 44%, rgb(60 30 0 / 0.4) 44% 48%, transparent 48% 52%,
+      rgb(60 30 0 / 0.4) 52% 56%, transparent 56%),
+    var(--ml-metal-gold);
+}
+
+.ml-switch--tech.ml-switch--on .ml-switch__track {
+  background:
+    linear-gradient(90deg, rgb(62 238 208 / 0.24), rgb(62 238 208 / 0.06)),
+    var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-tech), inset 0 0 14px rgb(62 238 208 / 0.22);
+}
+
+.ml-switch--tech.ml-switch--on .ml-switch__track::before {
+  background: repeating-linear-gradient(90deg, var(--ml-tech) 0 2px, transparent 2px 6px);
+}
+
+.ml-switch--tech.ml-switch--on .ml-switch__thumb {
+  background:
+    linear-gradient(90deg, transparent 44%, rgb(0 40 34 / 0.4) 44% 48%, transparent 48% 52%,
+      rgb(0 40 34 / 0.4) 52% 56%, transparent 56%),
+    var(--ml-metal-cyan);
+}
+
+.ml-switch__label {
+  cursor: pointer;
+  user-select: none;
+}
+
+.ml-switch__state {
+  font-family: var(--ml-font-mono);
+  font-size: 0.625rem;
+  letter-spacing: var(--ml-tracking-hud);
+  color: var(--ml-text-dim);
+  min-width: 2.6em;
+}
+
+.ml-switch--on .ml-switch__state {
+  color: var(--ml-accent-text);
+}
+
+.ml-switch--tech.ml-switch--on .ml-switch__state {
+  color: var(--ml-tech-text);
+}
