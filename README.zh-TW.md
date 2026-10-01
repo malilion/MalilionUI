@@ -236,6 +236,15 @@ npm run screenshots  # 重新產生 README 圖片（需要本機 Google Chrome�
 
 發布時 `prepublishOnly` 會自動跑型別檢查、測試與建置，不用手動 build。
 
+新版本由 GitHub Actions 透過 npm Trusted Publishing 發布，不需要任何 token 或一次性密碼：
+
+```bash
+npm version minor    # 更新 package.json 版本並建立 tag，例如 v0.4.0
+git push --follow-tags
+```
+
+`Publish` 工作流程會確認 tag 與 `package.json` 版本一致、跑完檢查，再附上來源證明（provenance）發布。
+
 建置產物是 `dist/malilion-ui.js`（ESM）、`dist/style.css` 與 `dist/types/`（型別宣告）。Vue 是外部依賴，不會被打包進去。
 
 文件站在 `playground/`。每個範例都是 `playground/examples/` 裡真正的 `.vue` 檔，同一個檔案既是即時預覽，也是可複製的原始碼，兩者永遠一致。每次推到 `main`，GitHub Actions 會跑檢查並把文件站部署到 GitHub Pages。

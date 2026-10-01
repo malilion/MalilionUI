@@ -236,6 +236,15 @@ npm run screenshots  # Regenerate the README images (needs Google Chrome)
 
 `prepublishOnly` runs the type check, the tests and the build on publish, so there is no need to build manually.
 
+Releases are published by GitHub Actions through npm Trusted Publishing — no tokens or one-time passwords:
+
+```bash
+npm version minor    # bumps package.json and creates the tag, e.g. v0.4.0
+git push --follow-tags
+```
+
+The `Publish` workflow checks that the tag matches `package.json`, runs the checks and publishes with a provenance attestation.
+
 The build output is `dist/malilion-ui.js` (ESM), `dist/style.css` and `dist/types/` (type declarations). Vue is external and is not bundled.
 
 The docs site lives in `playground/`. Every example is a real `.vue` file in `playground/examples/` that is both rendered live and shown as copyable source, so the two can never drift apart. Every push to `main` runs the checks in GitHub Actions and deploys the site to GitHub Pages.

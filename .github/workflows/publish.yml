@@ -1,0 +1,40 @@
+name: Publish
+
+# Publish @malilion/ui to npm when a version tag (v1.2.3) is pushed.
+# Uses npm Trusted Publishing (OIDC): no npm token or OTP is stored anywhere,
+# and the package gets a provenance attestation linking it to this repo.
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: npm
+    permissions:
+      contents: read
+      id-token: write # lets npm verify this run via OIDC
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+          cache: npm
+      # Trusted Publishing needs npm 11.5.1 or newer.
+      - run: npm install -g npm@^11.5.1
+      - name: Tag must match package.json version
+        if: github.ref_type == 'tag'
+        run: |
+          version="v$(node -p "require('./package.json').version")"
+          if [ "$version" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json $version" >&2
+            exit 1
+          fi
+      - run: npm ci
+      # prepublishOnly runs typecheck, tests and the build.
+      - run: npm publish
