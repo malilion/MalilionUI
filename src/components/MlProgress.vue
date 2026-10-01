@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, useId } from 'vue'
+import MlPaw from './MlPaw.vue'
 import type { MlProgressTone, MlSize } from '../types'
 
 const props = withDefaults(
@@ -14,6 +15,8 @@ const props = withDefaults(
     /** Continuous bar instead of energy cells. */
     smooth?: boolean
     showValue?: boolean
+    /** A paw print runs along the tip of the bar. */
+    paw?: boolean
   }>(),
   { value: null, max: 100, tone: 'gold', size: 'md', showValue: true },
 )
@@ -36,6 +39,7 @@ const percent = computed(() => {
         'ml-progress--striped': striped,
         'ml-progress--smooth': smooth,
         'ml-progress--indeterminate': indeterminate,
+        'ml-progress--paw': paw && !indeterminate,
       },
     ]"
   >
@@ -45,18 +49,18 @@ const percent = computed(() => {
         {{ indeterminate ? 'SYNC' : `${Math.round(percent)}%` }}
       </span>
     </div>
-    <div
-      class="ml-progress__track"
-      role="progressbar"
-      aria-valuemin="0"
-      aria-valuemax="100"
-      :aria-valuenow="indeterminate ? undefined : Math.round(percent)"
-      :aria-labelledby="label ? labelId : undefined"
-    >
+    <div class="ml-progress__rail" :style="{ '--_value': `${percent}%` }">
       <div
-        :class="['ml-progress__bar', { 'ml-progress__bar--empty': !indeterminate && percent === 0 }]"
-        :style="{ '--_value': `${percent}%` }"
-      />
+        class="ml-progress__track"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        :aria-valuenow="indeterminate ? undefined : Math.round(percent)"
+        :aria-labelledby="label ? labelId : undefined"
+      >
+        <div :class="['ml-progress__bar', { 'ml-progress__bar--empty': !indeterminate && percent === 0 }]" />
+      </div>
+      <MlPaw v-if="paw && !indeterminate" tone="current" class="ml-progress__runner" />
     </div>
   </div>
 </template>

@@ -12,6 +12,10 @@ export default defineConfig({
       '@malilion/ui': fileURLToPath(new URL('../src/index.ts', import.meta.url)),
     },
   },
+  server: {
+    host: '127.0.0.1',
+    port: 5287,
+  },
   build: {
     outDir: fileURLToPath(new URL('../dist-playground', import.meta.url)),
     emptyOutDir: true,

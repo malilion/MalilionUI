@@ -1,14 +1,18 @@
 <script setup lang="ts">
+import MlPaw from './MlPaw.vue'
+
 withDefaults(
   defineProps<{
     size?: number
-    tone?: 'gold' | 'tech'
+    /** "reactor": the spinning mane. "paws": a cub walking across. */
+    variant?: 'reactor' | 'paws'
+    tone?: 'gold' | 'tech' | 'bean'
     /** Visible caption under the reactor. */
     label?: string
     /** Screen-reader text when there is no visible label. */
     srLabel?: string
   }>(),
-  { size: 48, tone: 'gold', srLabel: '載入中' },
+  { size: 48, variant: 'reactor', tone: 'gold', srLabel: '載入中' },
 )
 
 // Twelve mane spikes; opacity ramps so the ticking rotation reads as a sweep.
@@ -19,8 +23,11 @@ const spikes = Array.from({ length: 12 }, (_, i) => ({
 </script>
 
 <template>
-  <span :class="['ml-loader', `ml-loader--${tone}`]" role="status" :style="{ '--_size': `${size}px` }">
-    <svg class="ml-loader__svg" viewBox="0 0 64 64" aria-hidden="true">
+  <span :class="['ml-loader', `ml-loader--${tone}`, `ml-loader--${variant}`]" role="status" :style="{ '--_size': `${size}px` }">
+    <span v-if="variant === 'paws'" class="ml-loader__trail" aria-hidden="true">
+      <MlPaw v-for="i in 4" :key="i" tone="current" class="ml-loader__step" :style="{ '--i': i - 1 }" />
+    </span>
+    <svg v-else class="ml-loader__svg" viewBox="0 0 64 64" aria-hidden="true">
       <g class="ml-loader__mane">
         <polygon
           v-for="spike in spikes"

@@ -44,3 +44,22 @@
 .ml-divider__claw i:nth-child(2) {
   transform: translateY(3px);
 }
+
+.ml-divider__paws {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ml-accent);
+}
+
+.ml-divider__paws .ml-paw {
+  width: 13px;
+  height: 13px;
+  rotate: 90deg;
+  filter: drop-shadow(0 0 4px rgb(240 173 47 / 0.4));
+}
+
+.ml-divider__paws .ml-paw:nth-child(odd) { translate: 0 -4px; }
+.ml-divider__paws .ml-paw:nth-child(even) { translate: 0 4px; }
+.ml-divider__paws .ml-paw:nth-child(1) { opacity: 0.45; }
+.ml-divider__paws .ml-paw:nth-child(2) { opacity: 0.7; }

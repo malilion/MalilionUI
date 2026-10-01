@@ -1,13 +1,17 @@
 # MalilionUI · 碼力獅元件庫
 
-> 以**獅子**為魂、**科技**為骨、**金屬**為甲。
+> 以**獅子**為魂、**科技**為骨、**金屬**為甲，再踩上一串可愛的肉球腳印。
 
-碼力獅專屬的 Vue 3 元件庫：切角機甲板、拋光獅金、鈦合金與電路青光。
+📖 **文件站：<https://malilion.github.io/MalilionUI/>**
+
+碼力獅專屬的 Vue 3 元件庫：切角機甲板、拋光獅金、鈦合金與電路青光，
+加上散佈在各元件裡的獅子腳印（勾選、單選、通知、表格、載入器……按鈕還能「蓋章」）。
 預設是深色的 **Night Pride** 主題，另有淺色的 **Daylight Titanium** 主題。
 
-- 20 個元件，Vue 3.5+ / TypeScript，完整型別
+- 26 個元件，Vue 3.5+ / TypeScript，完整型別
+- 文件站：左側選單、每個元件一頁、每個範例都能一鍵複製原始碼
 - 樣式與框架無關：所有視覺都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React / Next / 原生網頁也能直接用
-- 執行期零依賴（Vue 是 peer dependency），JS ≈ 10 KB gzip、CSS ≈ 9 KB gzip
+- 執行期零依賴（Vue 是 peer dependency）
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 
 ## 安裝
@@ -24,6 +28,16 @@ import '@malilion/ui/style.css'
 import App from './App.vue'
 
 createApp(App).use(MalilionUI).mount('#app')
+```
+
+要用通知的話，在 `App.vue` 放一個 `<MlToastHost />`，之後在任何地方呼叫 `toast()`：
+
+```ts
+import { useToast } from '@malilion/ui'
+
+const toast = useToast()
+toast('嗷嗚～')                       // 預設是腳印通知
+toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 ```
 
 或者按需引入：
@@ -63,17 +77,23 @@ import { MlButton, MlCard } from '@malilion/ui'
 | `MlInput` / `MlTextarea` / `MlSelect` | HUD 欄位，`label`、`index`、`hint`、`error`，`#prefix` / `#suffix` |
 | `MlField` | 給自訂控制項用的 label / hint / error 外框 |
 | `MlSwitch` | `v-model`，`tone="tech"`，`show-state` 顯示 ON/OFF |
-| `MlCheckbox` | `v-model`，`hint` |
-| `MlProgress` | 能量條；不給 `value` 即為不確定進度，`striped`、`smooth`、四種 `tone` |
+| `MlCheckbox` | `v-model`，`hint`，`paw` 腳印勾選，`indeterminate` 半選 |
+| `MlRadioGroup` / `MlRadio` | 選中時壓進金色腳印；`variant="card"` 卡片方塊；`options` 或子元件 |
+| `MlProgress` | 能量條；不給 `value` 即為不確定進度，`striped`、`smooth`、`paw` 腳印跑者、四種 `tone` |
 | `MlTabs` | `line` 金色墨線 / `plate` 滑動金屬板，用 `#<value>` 具名插槽放面板內容 |
 | `MlModal` | `v-model:open`，Esc / 點背景關閉、焦點鎖定、多層對話框共用捲動鎖 |
+| `toast()` / `MlToastHost` | 通知；五種色調、動作按鈕、常駐、滑鼠移上暫停倒數 |
 | `MlTooltip` | `top` / `bottom` / `left` / `right`，自動設定 `aria-describedby` |
 | `MlAvatar` | 六角徽章頭像，`ring`、`status`，圖片失敗時退回縮寫；`.ml-avatar-group` 可疊放 |
 | `MlAlert` | `info` / `success` / `warning` / `danger`，角落有三道獅爪痕，`closable` |
-| `MlLoader` | Mane Reactor 載入器 |
+| `MlLoader` | `reactor` 獅鬃反應爐 / `paws` 走路的腳印 |
 | `MlStat` | HUD 數據，`delta` 正負自動上色 |
-| `MlDivider` | `label` 或 `claw` 獅爪分隔線 |
+| `MlTable` | 排序、勾選（`v-model:selected`）、`#cell-欄位` 插槽、滑過列的小腳印、腳印空狀態與載入遮罩 |
+| `MlDropdown` | 指令選單；方向鍵 / Home / End / 首字跳轉 / Esc；`selectable` 單選模式用腳印標記 |
+| `MlDivider` | `label`、`claw` 獅爪痕或 `paw` 一串腳印 |
 | `MlLionMark` | 多面體金屬獅徽，`glow`、`animated` |
+| `MlPaw` | 獅子腳印；`gold` / `bean`（肉球粉）/ `steel` / `tech` / `current` |
+| `v-paw-stamp` | 按下時在游標位置蓋一個會飄走的腳印；`MlButton` 直接用 `stamp` 屬性 |
 | `MlIcon` | 內建的少量圖示 |
 
 ### 範例
@@ -125,6 +145,7 @@ export function DeployButton() {
 | **切角（Malilion cut）** | 左上、右下兩角斜切，像機械加工過的金屬板。根元素不裁切，外框與面板放在 `::before` / `::after` 上，因此焦點框與光暈不會被切掉 |
 | **金屬** | `--ml-metal-*` 漸層：頂部高光帶、中段暗核、底部反光，模擬拋光金屬 |
 | **獅子** | 獅金色票、獅鬃載入器、獅爪痕、獅徽 |
+| **可愛** | 肉球腳印（`MlPaw`）、肉球粉 `--ml-bean-*`、按鈕蓋章、Q 彈的彈出動畫——點綴用，不搶金屬的主調 |
 | **科技** | 電路青作為焦點與資料色、HUD 標籤、掃描線、能量格 |
 | **焦點** | 青色矩形「鎖定框」，在深色與淺色主題都清楚可見 |
 
@@ -132,7 +153,7 @@ export function DeployButton() {
 
 ```bash
 npm install
-npm run dev          # 元件展示頁（playground/）
+npm run dev          # 文件站（playground/），http://127.0.0.1:5287
 npm test             # Vitest 元件測試
 npm run typecheck    # vue-tsc 型別檢查
 npm run build        # 輸出 dist/：ESM + style.css + .d.ts
@@ -145,11 +166,15 @@ src/
   index.ts              # 外掛 + 具名匯出 + GlobalComponents 型別
   types.ts              # 公開型別
   composables.ts        # attrs 分流、捲動鎖
+  toast.ts              # 通知佇列與 toast() API
+  pawStamp.ts           # v-paw-stamp 指令
   components/           # Ml*.vue
   styles/
     tokens.css          # 設計代幣（兩套主題）
     base.css            # .ml-app 外殼、工具 class、keyframes
     components/*.css    # 每個元件的樣式
-playground/             # 展示頁
+playground/             # 文件站
+  registry.ts           # 選單、頁面、範例與 API 表的資料
+  examples/**/*.vue     # 每個範例；同一個檔案既是即時預覽，也是可複製的原始碼
 tests/                  # 元件測試
 ```

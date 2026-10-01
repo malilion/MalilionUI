@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import MlPaw from './MlPaw.vue'
 import type { MlTone } from '../types'
 
 withDefaults(
@@ -9,6 +10,8 @@ withDefaults(
     /** Leading status light. */
     dot?: boolean
     pulse?: boolean
+    /** Leading paw print. */
+    paw?: boolean
   }>(),
   { tone: 'gold', size: 'md' },
 )
@@ -22,7 +25,8 @@ withDefaults(
       { 'ml-badge--solid': solid, 'ml-badge--lg': size === 'lg' },
     ]"
   >
-    <span v-if="dot || pulse" :class="['ml-badge__dot', { 'ml-badge__dot--pulse': pulse }]" aria-hidden="true" />
+    <MlPaw v-if="paw" tone="current" class="ml-badge__paw" />
+    <span v-else-if="dot || pulse" :class="['ml-badge__dot', { 'ml-badge__dot--pulse': pulse }]" aria-hidden="true" />
     <slot />
   </span>
 </template>

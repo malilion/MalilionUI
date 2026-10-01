@@ -52,6 +52,10 @@
   background: var(--ml-surface-inset);
 }
 
+.ml-check__box > * {
+  grid-area: 1 / 1;
+}
+
 .ml-check__box svg {
   width: 14px;
   height: 14px;
@@ -74,6 +78,41 @@
 
 .ml-check__input:checked + .ml-check__box svg {
   stroke-dashoffset: 0;
+}
+
+.ml-check__paw {
+  width: 14px;
+  height: 14px;
+  scale: 0;
+}
+
+.ml-check__input:checked + .ml-check__box .ml-check__paw {
+  animation: ml-paw-pop 380ms var(--ml-ease-spring) forwards;
+}
+
+/* Indeterminate: a half-charged socket */
+.ml-check__dash {
+  width: 10px;
+  height: 2.5px;
+  background: currentColor;
+  scale: 0 1;
+  transition: scale var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-check__input:indeterminate + .ml-check__box::before {
+  background: var(--ml-metal-gold);
+}
+
+.ml-check__input:indeterminate + .ml-check__box::after {
+  background: var(--ml-metal-gold-soft);
+}
+
+.ml-check__input:indeterminate + .ml-check__box .ml-check__dash {
+  scale: 1 1;
+}
+
+.ml-check__input:indeterminate + .ml-check__box svg {
+  display: none;
 }
 
 .ml-check__input:focus-visible + .ml-check__box {

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import type { MlButtonVariant, MlSize } from '../types'
+import { vPawStamp } from '../pawStamp'
+import type { MlButtonVariant, MlPawTone, MlSize } from '../types'
 
 const props = withDefaults(
   defineProps<{
@@ -14,6 +15,8 @@ const props = withDefaults(
     block?: boolean
     /** Equal width and height, for icon-only buttons. Give it an aria-label. */
     square?: boolean
+    /** Leave a paw print where it's pressed. true = gold, or pick a tone. */
+    stamp?: boolean | MlPawTone
   }>(),
   { variant: 'primary', size: 'md', type: 'button' },
 )
@@ -24,6 +27,7 @@ const inactive = computed(() => props.disabled || props.loading)
 <template>
   <a
     v-if="href"
+    v-paw-stamp="stamp ?? false"
     :href="inactive ? undefined : href"
     :aria-disabled="inactive || undefined"
     :aria-busy="loading || undefined"
@@ -41,6 +45,7 @@ const inactive = computed(() => props.disabled || props.loading)
   </a>
   <button
     v-else
+    v-paw-stamp="stamp ?? false"
     :type="type"
     :disabled="inactive"
     :aria-busy="loading || undefined"
