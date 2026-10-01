@@ -1,0 +1,189 @@
+/* Radio — a round socket; picking it presses a paw print into it */
+.ml-radio-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ml-radio-group__label {
+  display: block;
+  margin: 0 0 10px;
+  padding: 0;
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+  color: var(--ml-text-muted);
+}
+
+.ml-radio-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+}
+
+.ml-radio-group--column .ml-radio-group__items {
+  flex-direction: column;
+}
+
+.ml-radio-group--card .ml-radio-group__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  gap: 12px;
+}
+
+.ml-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  line-height: 22px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ml-radio__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.ml-radio__socket {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong), var(--ml-inset-shadow);
+  color: var(--ml-accent);
+  transition: box-shadow var(--ml-dur) var(--ml-ease), background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-radio__paw {
+  width: 14px;
+  height: 14px;
+  scale: 0;
+  filter: drop-shadow(0 0 4px rgb(240 173 47 / 0.55));
+}
+
+.ml-radio:hover .ml-radio__socket {
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-inset-shadow);
+}
+
+.ml-radio__input:checked + .ml-radio__socket {
+  background:
+    radial-gradient(circle at 50% 40%, rgb(240 173 47 / 0.22), transparent 70%),
+    var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1.5px var(--ml-accent), 0 0 10px rgb(240 173 47 / 0.25);
+}
+
+.ml-radio__input:checked + .ml-radio__socket .ml-radio__paw {
+  animation: ml-paw-pop 420ms var(--ml-ease-spring) forwards;
+}
+
+.ml-radio__input:focus-visible + .ml-radio__socket {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-radio__text {
+  display: grid;
+}
+
+.ml-radio__hint {
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+  line-height: 1.5;
+}
+
+.ml-radio--disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Card tiles: a plate per option, the socket rides in the corner */
+.ml-radio--card {
+  --_cut: var(--ml-cut);
+  isolation: isolate;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  padding: 16px 16px 16px 18px;
+  transition: filter var(--ml-dur) var(--ml-ease), transform var(--ml-dur) var(--ml-ease);
+}
+
+.ml-radio--card::before,
+.ml-radio--card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  transition: background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-radio--card::before {
+  inset: 0;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-radio--card::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-plate-fill);
+}
+
+.ml-radio--card .ml-radio__input {
+  top: 16px;
+  left: auto;
+  right: 16px;
+}
+
+.ml-radio--card .ml-radio__label {
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ml-radio--card:hover:not(.ml-radio--disabled) {
+  transform: translateY(-2px);
+}
+
+.ml-radio--card:hover:not(.ml-radio--disabled)::before {
+  background: var(--ml-line-strong);
+}
+
+.ml-radio--card:has(.ml-radio__input:checked) {
+  filter: var(--ml-glow-gold);
+}
+
+.ml-radio--card:has(.ml-radio__input:checked)::before {
+  background: var(--ml-metal-gold);
+}
+
+.ml-radio--card:has(.ml-radio__input:checked)::after {
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(240 173 47 / 0.14), transparent 60%),
+    var(--ml-brushed),
+    var(--ml-plate-fill);
+}
+
+.ml-radio--card .ml-radio__input:focus-visible + .ml-radio__socket {
+  outline: none;
+}
+
+.ml-radio--card:has(.ml-radio__input:focus-visible) {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}

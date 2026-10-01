@@ -47,6 +47,37 @@
   animation: ml-dots 1.2s steps(4) infinite;
 }
 
+/* Paws: a lion cub walking across, one print at a time */
+.ml-loader__trail {
+  position: relative;
+  width: calc(var(--_size, 48px) * 1.7);
+  height: var(--_size, 48px);
+}
+
+.ml-loader__step {
+  position: absolute;
+  top: calc(50% - var(--_size, 48px) * 0.17);
+  left: calc(var(--i) * 25%);
+  width: calc(var(--_size, 48px) * 0.36);
+  height: calc(var(--_size, 48px) * 0.36);
+  rotate: 90deg;
+  opacity: 0;
+  animation: ml-paw-step 1.6s var(--ml-ease) infinite;
+  animation-delay: calc(var(--i) * 0.28s);
+}
+
+.ml-loader__step:nth-child(odd) {
+  translate: 0 calc(var(--_size, 48px) * -0.2);
+}
+
+.ml-loader__step:nth-child(even) {
+  translate: 0 calc(var(--_size, 48px) * 0.2);
+}
+
+.ml-loader--bean {
+  color: var(--ml-bean-400);
+}
+
 @keyframes ml-dots {
   0% { content: ''; }
   25% { content: '.'; }

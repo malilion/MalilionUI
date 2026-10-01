@@ -103,3 +103,25 @@
   background: var(--_dot);
   animation: ml-ping 1.6s var(--ml-ease) infinite;
 }
+
+.ml-badge__paw {
+  width: 11px;
+  height: 11px;
+  margin-left: -1px;
+}
+
+.ml-badge--bean {
+  --_fg: var(--ml-bean-300);
+  --_bg: rgb(255 143 168 / 0.12);
+  --_line: rgb(255 143 168 / 0.42);
+  --_dot: var(--ml-bean-400);
+}
+
+[data-ml-theme='light'] .ml-badge--bean {
+  --_fg: var(--ml-bean-600);
+}
+
+.ml-badge--solid.ml-badge--bean {
+  background: var(--ml-metal-bean);
+  --_fg: #4a0f20;
+}

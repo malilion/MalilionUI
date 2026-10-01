@@ -1,0 +1,56 @@
+/* Paw — the cute side of the lion */
+.ml-paw {
+  display: inline-block;
+  flex: none;
+  vertical-align: -0.125em;
+  overflow: visible;
+}
+
+/* v-paw-stamp: a print that pops where you pressed, then floats away */
+.ml-paw-stamp {
+  position: fixed;
+  z-index: calc(var(--ml-z-tooltip) + 10);
+  width: 22px;
+  height: 22px;
+  margin: -11px 0 0 -11px;
+  pointer-events: none;
+  rotate: var(--_tilt, 0deg);
+  animation: ml-paw-stamp 720ms var(--ml-ease) forwards;
+}
+
+.ml-paw-stamp svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: var(--_c, var(--ml-gold-400));
+  filter: drop-shadow(0 0 6px var(--_glow, rgb(240 173 47 / 0.7)));
+}
+
+.ml-paw-stamp--bean { --_c: var(--ml-bean-400); --_glow: rgb(255 143 168 / 0.7); }
+.ml-paw-stamp--steel { --_c: var(--ml-steel-200); --_glow: rgb(198 205 215 / 0.6); }
+.ml-paw-stamp--tech { --_c: var(--ml-cyan-400); --_glow: rgb(62 238 208 / 0.7); }
+
+@keyframes ml-paw-stamp {
+  0% { opacity: 0; scale: 0.3; translate: 0 0; }
+  18% { opacity: 1; scale: 1.25; }
+  32% { scale: 0.95; }
+  45% { scale: 1.05; translate: 0 -2px; }
+  100% { opacity: 0; scale: 1; translate: 0 -26px; }
+}
+
+/* Squishy pop used when a paw appears inside a control */
+@keyframes ml-paw-pop {
+  0% { scale: 0; }
+  55% { scale: 1.25; }
+  75% { scale: 0.9; }
+  100% { scale: 1; }
+}
+
+/* One step of a walking trail */
+@keyframes ml-paw-step {
+  0% { opacity: 0; scale: 0.5; }
+  12% { opacity: 1; scale: 1.15; }
+  22% { scale: 1; }
+  60% { opacity: 1; }
+  85%, 100% { opacity: 0; }
+}

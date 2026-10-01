@@ -47,6 +47,13 @@
   --ml-cyan-600: #0a9f89;
   --ml-cyan-700: #0b6f61;
 
+  /* Toe Bean Pink (肉球粉) — the soft side of the lion, used sparingly */
+  --ml-bean-200: #ffd6df;
+  --ml-bean-300: #ffb3c3;
+  --ml-bean-400: #ff8fa8;
+  --ml-bean-500: #f06d8c;
+  --ml-bean-600: #c94d6c;
+
   /* Roar Red / Savanna Green */
   --ml-red-300: #ff8f80;
   --ml-red-400: #ff5c48;
@@ -74,6 +81,7 @@
   --ml-metal-green: linear-gradient(180deg,
       #d8ffe5 0%, #7ff0a8 22%, #29c769 50%, #13803f 62%, #5ee391 84%, #0b5129 100%);
   --ml-metal-gunmetal: linear-gradient(180deg, #232935 0%, #151a23 45%, #0f131a 100%);
+  --ml-metal-bean: linear-gradient(180deg, #ffe3ea 0%, #ffb3c3 30%, #f27f9b 70%, #d65d7d 100%);
 
   /* HUD scanlines */
   --ml-scanlines: repeating-linear-gradient(0deg,
