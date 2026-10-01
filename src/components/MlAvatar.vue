@@ -25,8 +25,11 @@ const initials = computed(() => {
   // Chinese / Japanese names: the first character reads best in a small badge.
   if (CJK.test(name)) return name.slice(0, 1)
   const words = name.split(/\s+/)
-  // Short tokens like "+4" or "AI" are already initials.
-  if (words.length === 1 && name.length <= 3) return name
+  if (words.length === 1) {
+    // Counters ("+4") and acronyms ("AI") are already initials; names ("Leo") are not.
+    const isToken = /^[^\p{L}]/u.test(name) || (name.length <= 3 && name === name.toUpperCase())
+    return isToken ? name.slice(0, 3) : name[0]
+  }
   return words
     .slice(0, 2)
     .map((word) => word[0])

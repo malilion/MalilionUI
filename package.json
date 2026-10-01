@@ -33,7 +33,8 @@
     "build": "vite build && vue-tsc -p tsconfig.build.json",
     "build:playground": "vite build --config playground/vite.config.ts",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
-    "test": "vitest run"
+    "test": "vitest run",
+    "screenshots": "node scripts/screenshots.mjs"
   },
   "peerDependencies": {
     "vue": "^3.5.0"
@@ -43,6 +44,7 @@
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/test-utils": "^2.5.1",
     "happy-dom": "^20.14.5",
+    "playwright-core": "^1.63.0",
     "typescript": "~5.9.3",
     "vite": "^8.3.2",
     "vitest": "^5.0.3",
