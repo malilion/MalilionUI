@@ -1,0 +1,55 @@
+/* Loader — the "Mane Reactor": a ring of mane spikes ticking around a glowing core */
+.ml-loader {
+  display: inline-grid;
+  justify-items: center;
+  gap: 10px;
+  color: var(--ml-accent);
+}
+
+.ml-loader__svg {
+  width: var(--_size, 48px);
+  height: var(--_size, 48px);
+  overflow: visible;
+}
+
+.ml-loader__mane {
+  transform-origin: 32px 32px;
+  animation: ml-spin 1.2s steps(12) infinite;
+}
+
+.ml-loader__ring {
+  transform-origin: 32px 32px;
+  animation: ml-spin 3.6s linear infinite reverse;
+}
+
+.ml-loader__core {
+  transform-origin: 32px 32px;
+  animation: ml-pulse 1.2s var(--ml-ease) infinite;
+}
+
+.ml-loader--tech {
+  color: var(--ml-tech);
+}
+
+.ml-loader__label {
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+  color: var(--ml-text-muted);
+}
+
+.ml-loader__label::after {
+  content: '';
+  display: inline-block;
+  width: 1.5em;
+  text-align: left;
+  animation: ml-dots 1.2s steps(4) infinite;
+}
+
+@keyframes ml-dots {
+  0% { content: ''; }
+  25% { content: '.'; }
+  50% { content: '..'; }
+  75% { content: '...'; }
+}

@@ -1,0 +1,253 @@
+/*
+ * MalilionUI design tokens
+ * 獅子 × 科技 × 金屬 — dark-first ("Night Pride"), with a light "Daylight Titanium" theme.
+ *
+ * Raw palette lives in --ml-<hue>-<step>. Components only read the semantic
+ * tokens further down, so a theme is just a different set of semantic values.
+ */
+
+:root {
+  /* ── Raw palette ─────────────────────────────────────────── */
+  /* Lion Gold — the mane in sunlight */
+  --ml-gold-50: #fff8e3;
+  --ml-gold-100: #ffeebc;
+  --ml-gold-200: #ffdb7d;
+  --ml-gold-300: #f9c757;
+  --ml-gold-400: #f0ad2f;
+  --ml-gold-500: #d48f17;
+  --ml-gold-600: #a96c0e;
+  --ml-gold-700: #7c4e0b;
+  --ml-gold-800: #4f320a;
+  --ml-gold-900: #2b1b06;
+
+  /* Mane Bronze */
+  --ml-bronze-300: #e9a066;
+  --ml-bronze-400: #cd7631;
+  --ml-bronze-500: #a85a1e;
+  --ml-bronze-600: #7a3f12;
+
+  /* Titanium Steel */
+  --ml-steel-50: #f4f6f9;
+  --ml-steel-100: #e3e7ed;
+  --ml-steel-200: #c6cdd7;
+  --ml-steel-300: #9ea7b5;
+  --ml-steel-400: #77818f;
+  --ml-steel-500: #5a6372;
+  --ml-steel-600: #414956;
+  --ml-steel-700: #2c323d;
+  --ml-steel-800: #1c2029;
+  --ml-steel-900: #12151c;
+  --ml-steel-950: #0a0c11;
+
+  /* Circuit Cyan — the tech glow in the lion's eyes */
+  --ml-cyan-200: #b4fbef;
+  --ml-cyan-300: #7af6e2;
+  --ml-cyan-400: #3eeed0;
+  --ml-cyan-500: #14cfb2;
+  --ml-cyan-600: #0a9f89;
+  --ml-cyan-700: #0b6f61;
+
+  /* Roar Red / Savanna Green */
+  --ml-red-300: #ff8f80;
+  --ml-red-400: #ff5c48;
+  --ml-red-500: #e5402d;
+  --ml-red-600: #b42c1e;
+  --ml-green-300: #8af0ae;
+  --ml-green-400: #52e38a;
+  --ml-green-500: #22c264;
+  --ml-green-600: #168a47;
+
+  /* ── Metals (gradients) ─────────────────────────────────── */
+  /* A bright specular band near the top, a dark core, a reflected rim at the bottom. */
+  --ml-metal-gold: linear-gradient(180deg,
+      #fff4cc 0%, #ffd56a 18%, #e8a527 42%, #b7780f 58%, #f2bd4a 80%, #8d5a0c 100%);
+  --ml-metal-gold-soft: linear-gradient(180deg,
+      #ffe9a6 0%, #f3bf4c 40%, #c98b1a 70%, #a26a10 100%);
+  --ml-metal-steel: linear-gradient(180deg,
+      #fbfcfe 0%, #cfd5de 20%, #8d96a4 48%, #6a7383 58%, #c3cad4 82%, #4a525f 100%);
+  --ml-metal-bronze: linear-gradient(180deg,
+      #ffd2a8 0%, #e39556 22%, #b2611f 50%, #8a4614 62%, #d6884a 84%, #5e2f0d 100%);
+  --ml-metal-red: linear-gradient(180deg,
+      #ffc1b6 0%, #ff7a63 22%, #e5402d 52%, #a92617 64%, #f36450 86%, #7a1a10 100%);
+  --ml-metal-cyan: linear-gradient(180deg,
+      #d9fff8 0%, #78f6e1 20%, #1fd6b8 48%, #0b8e7a 62%, #4de8cd 84%, #06574b 100%);
+  --ml-metal-green: linear-gradient(180deg,
+      #d8ffe5 0%, #7ff0a8 22%, #29c769 50%, #13803f 62%, #5ee391 84%, #0b5129 100%);
+  --ml-metal-gunmetal: linear-gradient(180deg, #232935 0%, #151a23 45%, #0f131a 100%);
+
+  /* HUD scanlines */
+  --ml-scanlines: repeating-linear-gradient(0deg,
+      rgb(255 255 255 / 0.03) 0 1px, transparent 1px 3px);
+
+  /* ── Shape ──────────────────────────────────────────────── */
+  /* Chamfer cuts: the signature "machined plate" corner */
+  --ml-cut-xs: 4px;
+  --ml-cut-sm: 6px;
+  --ml-cut: 10px;
+  --ml-cut-lg: 16px;
+  --ml-radius-sm: 3px;
+  --ml-radius: 6px;
+  --ml-radius-full: 999px;
+
+  /* ── Type ───────────────────────────────────────────────── */
+  --ml-font-display: 'Chakra Petch', 'Rajdhani', 'Noto Sans TC', 'PingFang TC',
+    'Microsoft JhengHei', system-ui, sans-serif;
+  --ml-font-body: 'IBM Plex Sans', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei',
+    system-ui, sans-serif;
+  --ml-font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, monospace;
+
+  --ml-text-xs: 0.75rem;
+  --ml-text-sm: 0.875rem;
+  --ml-text-md: 1rem;
+  --ml-text-lg: 1.125rem;
+  --ml-text-xl: 1.375rem;
+  --ml-text-2xl: 1.75rem;
+  --ml-text-3xl: 2.5rem;
+  --ml-tracking-hud: 0.14em;
+
+  /* ── Motion ─────────────────────────────────────────────── */
+  --ml-ease: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ml-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --ml-ease-in: cubic-bezier(0.5, 0, 0.75, 0);
+  --ml-dur-fast: 120ms;
+  --ml-dur: 220ms;
+  --ml-dur-slow: 480ms;
+
+  /* ── Layers ─────────────────────────────────────────────── */
+  --ml-z-tooltip: 1100;
+  --ml-z-modal: 1000;
+}
+
+/* ── Semantic tokens: Night Pride (default, dark) ─────────── */
+:root,
+[data-ml-theme='dark'] {
+  color-scheme: dark;
+
+  --ml-bg: #06070b;
+  --ml-bg-elevated: #0b0e14;
+  --ml-surface: #0f131b;
+  --ml-surface-2: #151a24;
+  --ml-surface-3: #1d2430;
+  --ml-surface-inset: #080a0f;
+
+  --ml-line: rgb(240 173 47 / 0.16);
+  --ml-line-strong: rgb(240 173 47 / 0.42);
+  --ml-line-steel: rgb(198 205 215 / 0.12);
+  --ml-line-steel-strong: rgb(198 205 215 / 0.26);
+
+  --ml-text: #efe8d8;
+  --ml-text-muted: #a3acb9;
+  --ml-text-dim: #6e7785;
+  --ml-text-on-metal: #1a1104;
+
+  --ml-accent: var(--ml-gold-400);
+  --ml-accent-strong: var(--ml-gold-300);
+  --ml-accent-text: var(--ml-gold-300);
+  --ml-accent-soft: rgb(240 173 47 / 0.12);
+
+  --ml-tech: var(--ml-cyan-400);
+  --ml-tech-text: var(--ml-cyan-300);
+  --ml-tech-soft: rgb(62 238 208 / 0.12);
+
+  --ml-success: var(--ml-green-400);
+  --ml-success-text: var(--ml-green-300);
+  --ml-success-soft: rgb(82 227 138 / 0.12);
+  --ml-warning: var(--ml-gold-400);
+  --ml-warning-text: var(--ml-gold-300);
+  --ml-warning-soft: rgb(240 173 47 / 0.12);
+  --ml-danger: var(--ml-red-400);
+  --ml-danger-text: var(--ml-red-300);
+  --ml-danger-soft: rgb(255 92 72 / 0.12);
+  --ml-info: var(--ml-cyan-400);
+  --ml-info-text: var(--ml-cyan-300);
+  --ml-info-soft: rgb(62 238 208 / 0.1);
+
+  --ml-focus: var(--ml-cyan-400);
+
+  --ml-plate-border: linear-gradient(160deg,
+      rgb(255 214 125 / 0.55) 0%, rgb(240 173 47 / 0.14) 28%,
+      rgb(198 205 215 / 0.08) 62%, rgb(240 173 47 / 0.32) 100%);
+  --ml-plate-fill: linear-gradient(180deg, #141922 0%, #0e1219 100%);
+
+  --ml-shadow-1: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 6px 16px rgb(0 0 0 / 0.45);
+  --ml-shadow-2: 0 1px 0 rgb(255 255 255 / 0.05) inset, 0 18px 40px rgb(0 0 0 / 0.55);
+  --ml-drop-1: drop-shadow(0 6px 14px rgb(0 0 0 / 0.5));
+  --ml-drop-2: drop-shadow(0 18px 34px rgb(0 0 0 / 0.6));
+  --ml-glow-gold: drop-shadow(0 0 14px rgb(240 173 47 / 0.45));
+  --ml-glow-cyan: drop-shadow(0 0 12px rgb(62 238 208 / 0.45));
+  --ml-glow-red: drop-shadow(0 0 14px rgb(255 92 72 / 0.45));
+
+  --ml-inset-shadow: inset 0 2px 6px rgb(0 0 0 / 0.45);
+  /* Brushed-metal micro texture, laid over surfaces */
+  --ml-brushed: repeating-linear-gradient(90deg,
+      rgb(255 255 255 / 0.022) 0 1px, transparent 1px 3px,
+      rgb(0 0 0 / 0.05) 3px 4px, transparent 4px 7px);
+  --ml-rivet: radial-gradient(circle, #ffe6a3 0 1px, #c98b1a 1.6px 2.4px, #3a2606 2.8px 3.2px, transparent 3.6px);
+  --ml-backdrop: rgb(3 4 7 / 0.72);
+}
+
+/* ── Semantic tokens: Daylight Titanium (light) ───────────── */
+[data-ml-theme='light'] {
+  color-scheme: light;
+
+  --ml-bg: #e9edf2;
+  --ml-bg-elevated: #f2f4f7;
+  --ml-surface: #f8f9fb;
+  --ml-surface-2: #eef1f5;
+  --ml-surface-3: #e2e6ec;
+  --ml-surface-inset: #e6eaf0;
+
+  --ml-line: rgb(124 78 11 / 0.18);
+  --ml-line-strong: rgb(124 78 11 / 0.45);
+  --ml-line-steel: rgb(44 50 61 / 0.12);
+  --ml-line-steel-strong: rgb(44 50 61 / 0.26);
+
+  --ml-text: #141821;
+  --ml-text-muted: #4a5361;
+  --ml-text-dim: #6c7584;
+  --ml-text-on-metal: #1a1104;
+
+  --ml-accent: var(--ml-gold-500);
+  --ml-accent-strong: var(--ml-gold-600);
+  --ml-accent-text: #87560a;
+  --ml-accent-soft: rgb(212 143 23 / 0.14);
+
+  --ml-tech: var(--ml-cyan-600);
+  --ml-tech-text: var(--ml-cyan-700);
+  --ml-tech-soft: rgb(10 159 137 / 0.12);
+
+  --ml-success: var(--ml-green-500);
+  --ml-success-text: var(--ml-green-600);
+  --ml-success-soft: rgb(34 194 100 / 0.12);
+  --ml-warning: var(--ml-gold-500);
+  --ml-warning-text: #87560a;
+  --ml-warning-soft: rgb(212 143 23 / 0.14);
+  --ml-danger: var(--ml-red-500);
+  --ml-danger-text: var(--ml-red-600);
+  --ml-danger-soft: rgb(229 64 45 / 0.1);
+  --ml-info: var(--ml-cyan-600);
+  --ml-info-text: var(--ml-cyan-700);
+  --ml-info-soft: rgb(10 159 137 / 0.1);
+
+  --ml-focus: var(--ml-cyan-600);
+
+  --ml-plate-border: linear-gradient(160deg,
+      rgb(255 255 255 / 0.95) 0%, rgb(158 167 181 / 0.55) 30%,
+      rgb(119 129 143 / 0.4) 65%, rgb(212 143 23 / 0.55) 100%);
+  --ml-plate-fill: linear-gradient(180deg, #fbfcfd 0%, #eef1f5 100%);
+
+  --ml-shadow-1: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 6px 16px rgb(20 24 33 / 0.1);
+  --ml-shadow-2: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 18px 40px rgb(20 24 33 / 0.16);
+  --ml-drop-1: drop-shadow(0 6px 12px rgb(20 24 33 / 0.12));
+  --ml-drop-2: drop-shadow(0 16px 28px rgb(20 24 33 / 0.18));
+  --ml-glow-gold: drop-shadow(0 4px 14px rgb(212 143 23 / 0.35));
+  --ml-glow-cyan: drop-shadow(0 4px 12px rgb(10 159 137 / 0.3));
+  --ml-glow-red: drop-shadow(0 4px 14px rgb(229 64 45 / 0.3));
+
+  --ml-inset-shadow: inset 0 1px 3px rgb(20 24 33 / 0.1);
+  --ml-brushed: repeating-linear-gradient(90deg,
+      rgb(255 255 255 / 0.35) 0 1px, transparent 1px 3px,
+      rgb(20 24 33 / 0.014) 3px 4px, transparent 4px 7px);
+  --ml-rivet: radial-gradient(circle, #ffffff 0 1px, #9ea7b5 1.6px 2.4px, #414956 2.8px 3.2px, transparent 3.6px);
+  --ml-backdrop: rgb(20 24 33 / 0.45);
+}

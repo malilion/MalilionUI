@@ -1,0 +1,150 @@
+/*
+ * Card — a brushed armour plate with a light-catching bevel.
+ * Same layering trick as the button: rim on ::before, face on ::after.
+ */
+.ml-card {
+  --_cut: var(--ml-cut-lg);
+  --_rim: var(--ml-plate-border);
+  --_face: var(--ml-plate-fill);
+  --_pad: 22px;
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ml-text);
+  filter: var(--ml-drop-1);
+  transition:
+    transform var(--ml-dur) var(--ml-ease),
+    filter var(--ml-dur) var(--ml-ease);
+}
+
+.ml-card::before,
+.ml-card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-card::before {
+  inset: 0;
+  background: var(--_rim);
+}
+
+.ml-card::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--_face);
+}
+
+/* Rivets sit on the two corners that aren't cut away */
+.ml-card--rivets::after {
+  background:
+    var(--ml-rivet) right 6px top 6px / 9px 9px no-repeat,
+    var(--ml-rivet) left 6px bottom 6px / 9px 9px no-repeat,
+    var(--ml-brushed),
+    var(--_face);
+}
+
+.ml-card--gold {
+  --_rim: var(--ml-metal-gold);
+  --_face:
+    radial-gradient(120% 70% at 50% 0%, rgb(240 173 47 / 0.13), transparent 62%),
+    var(--ml-plate-fill);
+}
+
+.ml-card--steel {
+  --_rim: var(--ml-metal-steel);
+}
+
+.ml-card--tech {
+  --_rim: linear-gradient(160deg, var(--ml-cyan-400) 0%, rgb(62 238 208 / 0.12) 40%,
+      rgb(62 238 208 / 0.08) 70%, var(--ml-cyan-600) 100%);
+  --_face:
+    radial-gradient(120% 70% at 50% 0%, rgb(62 238 208 / 0.1), transparent 62%),
+    var(--ml-plate-fill);
+}
+
+.ml-card--interactive {
+  cursor: pointer;
+}
+
+.ml-card--interactive:hover {
+  transform: translateY(-3px);
+  filter: var(--ml-drop-2) var(--ml-glow-gold);
+}
+
+.ml-card--interactive:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 4px;
+}
+
+.ml-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: var(--_pad) var(--_pad) 0;
+}
+
+.ml-card__heading {
+  min-width: 0;
+}
+
+.ml-card__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+  color: var(--ml-accent-text);
+}
+
+.ml-card__eyebrow::before {
+  content: '';
+  width: 14px;
+  height: 2px;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.6);
+}
+
+.ml-card__title {
+  margin: 0;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-lg);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.02em;
+  color: var(--ml-text);
+}
+
+.ml-card__body {
+  flex: 1;
+  padding: 14px var(--_pad) var(--_pad);
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+  line-height: 1.7;
+}
+
+.ml-card__header + .ml-card__footer {
+  margin-top: var(--_pad);
+}
+
+.ml-card__body:only-child {
+  padding-top: var(--_pad);
+}
+
+.ml-card__footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  margin: 0 var(--_pad);
+  padding: 14px 0 var(--_pad);
+  border-top: 1px dashed var(--ml-line);
+}

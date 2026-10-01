@@ -1,0 +1,46 @@
+/* Divider — a hairline that fades out at both ends, with an optional centre mark */
+.ml-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 24px 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-divider::before,
+.ml-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ml-line-strong));
+}
+
+.ml-divider::after {
+  background: linear-gradient(90deg, var(--ml-line-strong), transparent);
+}
+
+.ml-divider--plain {
+  gap: 0;
+}
+
+.ml-divider__claw {
+  display: inline-flex;
+  gap: 4px;
+  transform: skewX(-24deg);
+}
+
+.ml-divider__claw i {
+  display: block;
+  width: 3px;
+  height: 14px;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 6px rgb(240 173 47 / 0.5);
+}
+
+.ml-divider__claw i:nth-child(2) {
+  transform: translateY(3px);
+}

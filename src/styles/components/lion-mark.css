@@ -1,0 +1,33 @@
+/* LionMark — the faceted metal lion crest */
+.ml-lion-mark {
+  display: inline-block;
+  width: var(--_size, 64px);
+  height: var(--_size, 64px);
+  flex: none;
+  overflow: visible;
+}
+
+.ml-lion-mark--glow {
+  filter: drop-shadow(0 0 calc(var(--_size, 64px) * 0.12) rgb(240 173 47 / 0.45));
+}
+
+.ml-lion-mark--animated .ml-lion-mark__eye {
+  animation: ml-lion-eye 4.2s var(--ml-ease) infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.ml-lion-mark--animated .ml-lion-mark__mane {
+  animation: ml-lion-breathe 4.2s var(--ml-ease) infinite;
+  transform-origin: 50% 52%;
+}
+
+@keyframes ml-lion-eye {
+  0%, 44%, 52%, 100% { transform: scaleY(1); opacity: 1; }
+  48% { transform: scaleY(0.12); opacity: 0.6; }
+}
+
+@keyframes ml-lion-breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.025); }
+}

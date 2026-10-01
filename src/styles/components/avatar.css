@@ -1,0 +1,80 @@
+/* Avatar — a hex medallion with a metal bezel */
+.ml-avatar {
+  --_size: 44px;
+  --_bezel: var(--ml-metal-gold);
+  --_hex: polygon(50% 0, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--_size);
+  height: var(--_size);
+  flex: none;
+}
+
+.ml-avatar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--_bezel);
+  clip-path: var(--_hex);
+}
+
+.ml-avatar__face {
+  position: absolute;
+  inset: max(2px, calc(var(--_size) * 0.06));
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--ml-metal-gunmetal);
+  clip-path: var(--_hex);
+}
+
+.ml-avatar__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.ml-avatar__initials {
+  font-family: var(--ml-font-display);
+  font-size: calc(var(--_size) * 0.34);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--ml-gold-300);
+  text-transform: uppercase;
+}
+
+.ml-avatar--steel { --_bezel: var(--ml-metal-steel); }
+.ml-avatar--tech { --_bezel: var(--ml-metal-cyan); }
+.ml-avatar--steel .ml-avatar__initials { color: var(--ml-steel-200); }
+.ml-avatar--tech .ml-avatar__initials { color: var(--ml-cyan-300); }
+
+.ml-avatar--sm { --_size: 32px; }
+.ml-avatar--lg { --_size: 64px; }
+.ml-avatar--xl { --_size: 92px; }
+
+.ml-avatar__status {
+  position: absolute;
+  right: 4%;
+  bottom: 8%;
+  width: max(8px, calc(var(--_size) * 0.2));
+  height: max(8px, calc(var(--_size) * 0.2));
+  border-radius: 50%;
+  background: var(--_status, var(--ml-steel-400));
+  box-shadow: 0 0 0 2px var(--ml-bg), 0 0 8px var(--_status, transparent);
+}
+
+.ml-avatar__status--online { --_status: var(--ml-green-400); }
+.ml-avatar__status--busy { --_status: var(--ml-red-400); }
+.ml-avatar__status--away { --_status: var(--ml-gold-400); }
+.ml-avatar__status--offline { --_status: var(--ml-steel-400); }
+
+/* Overlapping stack */
+.ml-avatar-group {
+  display: inline-flex;
+}
+
+.ml-avatar-group > .ml-avatar + .ml-avatar {
+  margin-left: calc(var(--_size) * -0.22);
+}

@@ -1,0 +1,197 @@
+/*
+ * Field — HUD-style input / select / textarea.
+ * Focus lights the rim gold and fires an energy line along the bottom edge.
+ */
+.ml-field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.ml-field__label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+  color: var(--ml-text-muted);
+}
+
+.ml-field__index {
+  color: var(--ml-accent-text);
+}
+
+.ml-field__index::after {
+  content: ' //';
+  color: var(--ml-text-dim);
+}
+
+.ml-field__required {
+  color: var(--ml-danger-text);
+}
+
+.ml-input {
+  --_cut: var(--ml-cut-sm);
+  --_line: var(--ml-line-steel-strong);
+  --_energy: var(--ml-accent);
+
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--_line), var(--ml-inset-shadow);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  transition: box-shadow var(--ml-dur) var(--ml-ease);
+}
+
+.ml-input::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--_energy) 30%, var(--_energy) 70%, transparent);
+  box-shadow: 0 0 10px var(--_energy);
+  transform: scaleX(0);
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-input:hover {
+  --_line: var(--ml-line-strong);
+}
+
+.ml-input:focus-within {
+  --_line: var(--ml-accent);
+}
+
+.ml-input:focus-within::after {
+  transform: scaleX(1);
+}
+
+.ml-input--error,
+.ml-input--error:hover,
+.ml-input--error:focus-within {
+  --_line: var(--ml-danger);
+  --_energy: var(--ml-danger);
+}
+
+.ml-input--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.ml-input--sm {
+  min-height: 36px;
+  padding: 0 12px;
+}
+
+.ml-input--lg {
+  --_cut: var(--ml-cut);
+  min-height: 52px;
+  padding: 0 18px;
+}
+
+.ml-input__control {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  min-height: inherit;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--ml-text);
+  font-family: var(--ml-font-body);
+  font-size: 0.9375rem;
+  caret-color: var(--ml-accent);
+}
+
+.ml-input__control::placeholder {
+  color: var(--ml-text-dim);
+  opacity: 1;
+}
+
+.ml-input__control:disabled {
+  cursor: not-allowed;
+}
+
+textarea.ml-input__control {
+  min-height: 96px;
+  padding: 12px 0;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+.ml-input--textarea {
+  align-items: stretch;
+}
+
+select.ml-input__control {
+  appearance: none;
+  padding-right: 28px;
+  cursor: pointer;
+}
+
+select.ml-input__control option {
+  background: var(--ml-surface-2);
+  color: var(--ml-text);
+}
+
+.ml-input__chevron {
+  position: absolute;
+  right: 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--ml-accent-text);
+  pointer-events: none;
+}
+
+.ml-input__affix {
+  display: inline-flex;
+  align-items: center;
+  flex: none;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-input__affix svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ml-input:focus-within .ml-input__affix {
+  color: var(--ml-accent-text);
+}
+
+.ml-field__hint,
+.ml-field__error {
+  margin: 0;
+  font-size: var(--ml-text-xs);
+  line-height: 1.5;
+}
+
+.ml-field__hint {
+  color: var(--ml-text-dim);
+}
+
+.ml-field__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ml-danger-text);
+}
+
+.ml-field__error svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}

@@ -1,0 +1,19 @@
+/* MalilionUI — full stylesheet. Import once: `import '@malilion/ui/style.css'` */
+@import './tokens.css';
+@import './base.css';
+@import './components/button.css';
+@import './components/card.css';
+@import './components/badge.css';
+@import './components/field.css';
+@import './components/switch.css';
+@import './components/checkbox.css';
+@import './components/progress.css';
+@import './components/tabs.css';
+@import './components/modal.css';
+@import './components/tooltip.css';
+@import './components/avatar.css';
+@import './components/alert.css';
+@import './components/loader.css';
+@import './components/stat.css';
+@import './components/divider.css';
+@import './components/lion-mark.css';

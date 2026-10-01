@@ -1,0 +1,194 @@
+/*
+ * Button — a machined plate with a polished rim.
+ * The root is never clipped (so focus outlines and glows survive); the rim
+ * (::before) and the face (::after) carry the chamfered clip-path instead.
+ */
+.ml-btn {
+  --_cut: var(--ml-cut-sm);
+  --_h: 40px;
+  --_px: 20px;
+  --_fs: 0.8125rem;
+  --_rim: var(--ml-metal-gold);
+  --_face: var(--ml-metal-gold-soft);
+  --_fg: var(--ml-text-on-metal);
+  --_glow: var(--ml-glow-gold);
+  --_sheen: rgb(255 255 255 / 0.6);
+  --_engrave: 0 1px 0 rgb(255 255 255 / 0.35);
+
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6em;
+  min-height: var(--_h);
+  margin: 0;
+  padding: 0 var(--_px);
+  border: 0;
+  background: none;
+  color: var(--_fg);
+  font-family: var(--ml-font-display);
+  font-size: var(--_fs);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  text-decoration: none;
+  text-shadow: var(--_engrave);
+  white-space: nowrap;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    filter var(--ml-dur) var(--ml-ease),
+    transform var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-btn::before,
+.ml-btn::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-btn::before {
+  inset: 0;
+  background: var(--_rim);
+}
+
+.ml-btn::after {
+  inset: 1.5px;
+  background:
+    linear-gradient(105deg, transparent 40%, var(--_sheen) 50%, transparent 60%)
+      160% 0 / 250% 100% no-repeat,
+    var(--_face);
+  transition: background-position var(--ml-dur-slow) var(--ml-ease);
+}
+
+.ml-btn:hover:not(:disabled, [aria-disabled='true']) {
+  filter: var(--_glow);
+}
+
+.ml-btn:hover:not(:disabled, [aria-disabled='true'])::after {
+  background-position: -60% 0, 0 0;
+}
+
+.ml-btn:active:not(:disabled, [aria-disabled='true']) {
+  transform: translateY(1px) scale(0.985);
+}
+
+.ml-btn:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-btn:disabled,
+.ml-btn[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.42;
+  filter: saturate(0.3);
+}
+
+.ml-btn--loading {
+  cursor: progress;
+}
+
+.ml-btn--loading:disabled {
+  opacity: 0.85;
+  filter: none;
+}
+
+/* ── Variants ─────────────────────────────────────────────── */
+.ml-btn--steel {
+  --_rim: var(--ml-metal-steel);
+  --_face: linear-gradient(180deg, #f4f6f9 0%, #c3cad4 48%, #939caa 100%);
+  --_fg: #12151c;
+  --_glow: drop-shadow(0 0 12px rgb(198 205 215 / 0.4));
+}
+
+.ml-btn--outline {
+  --_rim: var(--ml-metal-gold);
+  --_face: linear-gradient(180deg, var(--ml-surface-3) 0%, var(--ml-surface) 100%);
+  --_fg: var(--ml-accent-text);
+  --_sheen: rgb(240 173 47 / 0.22);
+  --_engrave: none;
+}
+
+.ml-btn--ghost {
+  --_rim: transparent;
+  --_face: transparent;
+  --_fg: var(--ml-accent-text);
+  --_sheen: rgb(240 173 47 / 0.18);
+  --_glow: none;
+  --_engrave: none;
+}
+
+.ml-btn--ghost:hover:not(:disabled, [aria-disabled='true']) {
+  --_face: var(--ml-accent-soft);
+}
+
+.ml-btn--danger {
+  --_rim: var(--ml-metal-red);
+  --_face: linear-gradient(180deg, #f2604b 0%, #c8321f 52%, #9f2416 100%);
+  --_fg: #fff6f2;
+  --_glow: var(--ml-glow-red);
+  --_sheen: rgb(255 255 255 / 0.4);
+  --_engrave: 0 -1px 0 rgb(80 10 4 / 0.6);
+}
+
+.ml-btn--tech {
+  --_rim: var(--ml-metal-cyan);
+  --_face: linear-gradient(180deg, var(--ml-surface-3) 0%, var(--ml-surface) 100%);
+  --_fg: var(--ml-tech-text);
+  --_glow: var(--ml-glow-cyan);
+  --_sheen: rgb(62 238 208 / 0.24);
+  --_engrave: none;
+}
+
+/* ── Sizes ────────────────────────────────────────────────── */
+.ml-btn--sm {
+  --_h: 32px;
+  --_px: 14px;
+  --_fs: 0.6875rem;
+  --_cut: var(--ml-cut-xs);
+}
+
+.ml-btn--lg {
+  --_h: 50px;
+  --_px: 30px;
+  --_fs: 0.9375rem;
+  --_cut: var(--ml-cut);
+}
+
+.ml-btn--block {
+  display: flex;
+  width: 100%;
+}
+
+.ml-btn--square {
+  --_px: 0;
+  width: var(--_h);
+}
+
+.ml-btn__label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ml-btn svg {
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+}
+
+.ml-btn__spinner {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  border-radius: 50%;
+  animation: ml-spin 0.7s linear infinite;
+}

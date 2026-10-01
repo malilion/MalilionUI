@@ -1,0 +1,97 @@
+/* Checkbox — a chamfered socket that locks in with a gold plate */
+.ml-check {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 10px;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  line-height: 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.ml-check__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  opacity: 0;
+  cursor: inherit;
+}
+
+.ml-check__box {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--ml-text-on-metal);
+}
+
+.ml-check__box::before,
+.ml-check__box::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  transition: background var(--ml-dur) var(--ml-ease), opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-check__box::before {
+  inset: 0;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-check__box::after {
+  inset: 1px;
+  background: var(--ml-surface-inset);
+}
+
+.ml-check__box svg {
+  width: 14px;
+  height: 14px;
+  stroke-dasharray: 22;
+  stroke-dashoffset: 22;
+  transition: stroke-dashoffset var(--ml-dur) var(--ml-ease) 40ms;
+}
+
+.ml-check:hover .ml-check__box::before {
+  background: var(--ml-line-strong);
+}
+
+.ml-check__input:checked + .ml-check__box::before {
+  background: var(--ml-metal-gold);
+}
+
+.ml-check__input:checked + .ml-check__box::after {
+  background: var(--ml-metal-gold-soft);
+}
+
+.ml-check__input:checked + .ml-check__box svg {
+  stroke-dashoffset: 0;
+}
+
+.ml-check__input:focus-visible + .ml-check__box {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-check--disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.ml-check__text {
+  display: grid;
+}
+
+.ml-check__hint {
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+  line-height: 1.5;
+}

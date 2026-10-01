@@ -1,0 +1,134 @@
+/* Alert — a status panel marked with three claw slashes */
+.ml-alert {
+  --_tone: var(--ml-info);
+  --_text: var(--ml-info-text);
+  --_soft: var(--ml-info-soft);
+  --_cut: var(--ml-cut);
+
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px 16px 14px 18px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, var(--_soft), transparent 70%),
+    var(--ml-surface);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--_tone) 32%, transparent);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  line-height: 1.6;
+}
+
+/* Left power rail */
+.ml-alert::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: var(--_cut);
+  bottom: 0;
+  width: 3px;
+  background: var(--_tone);
+  box-shadow: 0 0 12px var(--_tone);
+}
+
+/* Claw marks in the corner */
+.ml-alert::after {
+  content: '';
+  position: absolute;
+  top: -6px;
+  right: 18px;
+  width: 34px;
+  height: 46px;
+  background:
+    linear-gradient(var(--_tone), var(--_tone)) 0 0 / 3px 100% no-repeat,
+    linear-gradient(var(--_tone), var(--_tone)) 12px 4px / 3px 100% no-repeat,
+    linear-gradient(var(--_tone), var(--_tone)) 24px 0 / 3px 100% no-repeat;
+  transform: skewX(-24deg);
+  opacity: 0.16;
+  pointer-events: none;
+}
+
+.ml-alert--success {
+  --_tone: var(--ml-success);
+  --_text: var(--ml-success-text);
+  --_soft: var(--ml-success-soft);
+}
+
+.ml-alert--warning {
+  --_tone: var(--ml-warning);
+  --_text: var(--ml-warning-text);
+  --_soft: var(--ml-warning-soft);
+}
+
+.ml-alert--danger {
+  --_tone: var(--ml-danger);
+  --_text: var(--ml-danger-text);
+  --_soft: var(--ml-danger-soft);
+}
+
+.ml-alert__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 22px;
+  color: var(--_text);
+}
+
+.ml-alert__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ml-alert__content {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+}
+
+.ml-alert__title {
+  margin: 0 0 2px;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-sm);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--_text);
+}
+
+.ml-alert__body {
+  color: var(--ml-text-muted);
+}
+
+.ml-alert__close {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  margin: -3px -6px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  cursor: pointer;
+  transition: color var(--ml-dur) var(--ml-ease);
+}
+
+.ml-alert__close:hover {
+  color: var(--_text);
+}
+
+.ml-alert__close:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+
+.ml-alert__close svg {
+  width: 14px;
+  height: 14px;
+}

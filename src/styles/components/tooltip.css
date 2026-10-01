@@ -1,0 +1,95 @@
+/* Tooltip — a small HUD readout */
+.ml-tooltip {
+  position: relative;
+  display: inline-flex;
+}
+
+.ml-tooltip__bubble {
+  --_gap: 10px;
+
+  position: absolute;
+  z-index: var(--ml-z-tooltip);
+  width: max-content;
+  max-width: 260px;
+  padding: 7px 11px;
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-brushed), var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-1);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  letter-spacing: 0.02em;
+  text-align: left;
+  white-space: normal;
+  pointer-events: none;
+  /* Hidden bubbles leave layout entirely, so one near the viewport edge can't
+     widen the page. aria-describedby still reads display:none content. */
+  display: none;
+  opacity: 0;
+  transition:
+    opacity var(--ml-dur-fast) var(--ml-ease),
+    transform var(--ml-dur) var(--ml-ease-spring),
+    display var(--ml-dur-fast) allow-discrete;
+}
+
+/* Gold edge on the side facing the trigger */
+.ml-tooltip__bubble::before {
+  content: '';
+  position: absolute;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.6);
+}
+
+.ml-tooltip__bubble--visible {
+  display: block;
+  opacity: 1;
+}
+
+.ml-tooltip__bubble--top {
+  bottom: calc(100% + var(--_gap));
+  left: 50%;
+  transform: translate(-50%, 4px);
+}
+
+.ml-tooltip__bubble--bottom {
+  top: calc(100% + var(--_gap));
+  left: 50%;
+  transform: translate(-50%, -4px);
+}
+
+.ml-tooltip__bubble--left {
+  right: calc(100% + var(--_gap));
+  top: 50%;
+  transform: translate(4px, -50%);
+}
+
+.ml-tooltip__bubble--right {
+  left: calc(100% + var(--_gap));
+  top: 50%;
+  transform: translate(-4px, -50%);
+}
+
+.ml-tooltip__bubble--top.ml-tooltip__bubble--visible,
+.ml-tooltip__bubble--bottom.ml-tooltip__bubble--visible {
+  transform: translate(-50%, 0);
+}
+
+.ml-tooltip__bubble--left.ml-tooltip__bubble--visible,
+.ml-tooltip__bubble--right.ml-tooltip__bubble--visible {
+  transform: translate(0, -50%);
+}
+
+/* Entry state for the fade/slide when the bubble goes from display:none */
+@starting-style {
+  .ml-tooltip__bubble--visible { opacity: 0; }
+  .ml-tooltip__bubble--top.ml-tooltip__bubble--visible { transform: translate(-50%, 4px); }
+  .ml-tooltip__bubble--bottom.ml-tooltip__bubble--visible { transform: translate(-50%, -4px); }
+  .ml-tooltip__bubble--left.ml-tooltip__bubble--visible { transform: translate(4px, -50%); }
+  .ml-tooltip__bubble--right.ml-tooltip__bubble--visible { transform: translate(-4px, -50%); }
+}
+
+.ml-tooltip__bubble--top::before { left: 10px; right: 10px; bottom: 0; height: 2px; }
+.ml-tooltip__bubble--bottom::before { left: 10px; right: 10px; top: 0; height: 2px; }
+.ml-tooltip__bubble--left::before { top: 6px; bottom: 6px; right: 0; width: 2px; }
+.ml-tooltip__bubble--right::before { top: 6px; bottom: 6px; left: 0; width: 2px; }
