@@ -1,100 +1,64 @@
-<p align="center">
-  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/hero.png" alt="MalilionUI — lion × tech × metal × paws" width="100%" />
+<h1>Malilion UI</h1>
+
+<p align="right">
+  English | <a href="https://github.com/malilion/MalilionUI/blob/main/README.zh-TW.md">繁體中文</a>
 </p>
 
 <p align="center">
-  <b>English</b> · <a href="https://github.com/malilion/MalilionUI/blob/main/README.zh-TW.md">繁體中文</a>
+  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/logo.svg" alt="Malilion UI" width="132" height="132">
+</p>
+
+<p align="center">Lion × tech × metal component library with cute paw prints, built for Vue 3 and TypeScript</p>
+
+<p align="center">
+  <a href="https://github.com/malilion/MalilionUI/stargazers"><img src="https://img.shields.io/github/stars/malilion/MalilionUI?style=flat-square&color=f0ad2f" alt="GitHub stars"></a>
+  <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/v/@malilion/ui?style=flat-square&color=cd7631" alt="npm version"></a>
+  <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/dm/@malilion/ui?style=flat-square&color=14cfb2" alt="npm downloads"></a>
+  <a href="https://github.com/malilion/MalilionUI/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ff8fa8?style=flat-square" alt="license: MIT"></a>
+  <a href="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/malilion/MalilionUI/docs.yml?style=flat-square&label=docs" alt="docs build"></a>
+  <br/>
+  <img src="https://img.shields.io/badge/Vue_3-42B883?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue 3">
+  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white" alt="TypeScript">
+  <img src="https://img.shields.io/badge/CSS_Variables-1572B6?style=flat-square&logo=css&logoColor=white" alt="CSS variables">
 </p>
 
 <p align="center">
-  <a href="https://malilion.github.io/MalilionUI/"><b>📖 Docs &amp; live demos</b></a> ·
-  <a href="#install">Install</a> ·
-  <a href="#gallery">Gallery</a> ·
-  <a href="#components">Components</a>
+  <a href="https://malilion.github.io/MalilionUI/"><b>📖 Docs & live demos</b></a>
 </p>
 
 <p align="center">
-  <a href="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml"><img src="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml/badge.svg" alt="Docs" /></a>
-  <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/v/@malilion/ui?color=f0ad2f&label=npm" alt="npm" /></a>
-  <img src="https://img.shields.io/badge/Vue-3.5%2B-42b883?logo=vuedotjs&logoColor=white" alt="Vue 3.5+" />
-  <img src="https://img.shields.io/badge/TypeScript-ready-3178c6?logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/runtime%20deps-0-f0ad2f" alt="0 runtime deps" />
+  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/hero.png" alt="Malilion UI" width="100%">
 </p>
 
-# MalilionUI
+Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion". Every component is a machined armour plate: chamfered corners, polished lion gold, titanium and circuit-cyan glow. Then a trail of toe-bean paw prints walks through it all — radios press in a paw, buttons leave a stamp, tables let a little paw walk onto the row you hover — keeping the cool metal from ever feeling cold.
 
-> A lion for a soul, tech for bones, metal for armour — and a trail of cute toe-bean paw prints.
+## Features
 
-MalilionUI is the component library of **Malilion (碼力獅)**, the "code lion". Chamfered armour plates,
-polished lion gold, titanium and circuit-cyan glow, plus paw prints tucked into the components
-(checkboxes, radios, toasts, tables, loaders… and buttons that leave a stamp).
-It ships with a dark **Night Pride** theme by default and a light **Daylight Titanium** theme.
+- 26 components across basic, form, feedback, data display and navigation
+- Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
+- Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
+- Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
+- Paw-print details everywhere: `MlPaw`, the `v-paw-stamp` directive, paw checkboxes, radios, loaders and progress runners
+- Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
+- Zero runtime dependencies — only Vue as a peer dependency
 
-- 26 components for Vue 3.5+, written in TypeScript with full types
-- [Docs site](https://malilion.github.io/MalilionUI/): sidebar menu, one page per component, every example's source one click away
-- Framework-agnostic styling: everything visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React, Next or plain HTML can use it too
-- Zero runtime dependencies (Vue is a peer dependency)
-- Accessible: keyboard support, focus trapping, ARIA wiring, and `prefers-reduced-motion`
-
-## Gallery
-
-### Buttons & badges
-
-Machined metal plates with a polished sheen that sweeps across on hover. Add `stamp` and every press leaves a paw print.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/buttons.png" alt="Buttons and badges" width="100%" />
-
-### HUD forms
-
-Focus turns the rim gold and fires an energy line along the bottom. Picking a radio presses a gold paw into it; radios can also be selectable cards.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/forms.png" alt="Form controls" width="100%" />
-
-### Alerts, progress, loaders & toasts
-
-Alerts carry three claw marks in the corner, progress bars can have a paw running along the tip, and toasts are stamped with a faint paw watermark.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/feedback.png" alt="Feedback components" width="100%" />
-
-### Tables, stats & avatars
-
-A sortable, selectable HUD data table where a little paw walks onto the hovered row, plus hexagonal badge avatars.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/data.png" alt="Data display components" width="100%" />
-
-### Tabs, dropdowns & tooltips
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="Navigation components" width="100%" />
-
-### Modal
-
-A command console that opens out from its centre line over a scanline, blurred backdrop.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="Modal dialog" width="100%" />
-
-### Paw prints · the cute side
-
-`MlPaw` comes in gold, toe-bean pink, titanium and tech cyan, and shows up inside checkboxes, radios, progress bars, loaders, badges and toasts.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints" width="100%" />
-
-### Two themes
-
-The same components in dark Night Pride and light Daylight Titanium.
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Dark and light themes" width="100%" />
-
-### Docs site
-
-Sidebar menu, live examples, copy-to-clipboard source and full API tables: <https://malilion.github.io/MalilionUI/>
-
-<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="Docs site" width="100%" />
-
-## Install
+## Installation
 
 ```bash
-npm i @malilion/ui
+npm install @malilion/ui
 ```
+
+```bash
+yarn add @malilion/ui
+```
+
+```bash
+pnpm add @malilion/ui
+```
+
+Malilion UI depends only on Vue and supports Vue 3.5 and above.
+
+## Quick Start
 
 ```ts
 // main.ts
@@ -106,83 +70,7 @@ import App from './App.vue'
 createApp(App).use(MalilionUI).mount('#app')
 ```
 
-For toasts, put one `<MlToastHost />` in `App.vue`, then call `toast()` from anywhere:
-
-```ts
-import { useToast } from '@malilion/ui'
-
-const toast = useToast()
-toast('Roar!')                         // paw toast by default
-toast.success({ title: 'Deployed', message: 'v0.2 is live' })
-```
-
-Or import only what you need:
-
-```ts
-import { MlButton, MlCard } from '@malilion/ui'
-```
-
-### Fonts (recommended)
-
-The components use these fonts and fall back to system fonts without them. Add to `index.html`:
-
-```html
-<link
-  href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
-  rel="stylesheet"
-/>
-```
-
-## Themes
-
-Dark is the default. Set `data-ml-theme` on any ancestor (usually `<html>`) to switch, or on a single section to theme just that part:
-
-```html
-<html data-ml-theme="light">
-```
-
-Add the `ml-app` class to `<body>` for the full-page backdrop (lion-gold glow and grid), text colour and fonts. It's opt-in: the library never styles bare elements.
-
-## Components
-
-| Component | Notes |
-| --- | --- |
-| `MlButton` | `primary` / `steel` / `outline` / `tech` / `ghost` / `danger`, `sm` / `md` / `lg`, `loading`, `square`, `href`, `stamp` |
-| `MlCard` | `plate` / `gold` / `steel` / `tech` shells, `rivets`, `interactive` lift and glow; `#header`, `#actions`, `#footer` slots |
-| `MlBadge` | `gold` / `steel` / `tech` / `bean` / `success` / `danger`, `solid`, `dot`, `pulse`, `paw` |
-| `MlInput` / `MlTextarea` / `MlSelect` | HUD fields with `label`, `index`, `hint`, `error`, `#prefix` / `#suffix` |
-| `MlField` | Label / hint / error frame for your own controls |
-| `MlSwitch` | `v-model`, `tone="tech"`, `show-state` for an ON/OFF readout |
-| `MlCheckbox` | `v-model`, `hint`, `paw` instead of a check mark, `indeterminate` |
-| `MlRadioGroup` / `MlRadio` | Selection presses in a gold paw; `variant="card"` tiles; `options` or child radios |
-| `MlProgress` | Energy gauge; omit `value` for indeterminate; `striped`, `smooth`, `paw` runner, four tones |
-| `MlTabs` | `line` gold ink or `plate` sliding metal; panel content in `#<value>` named slots |
-| `MlModal` | `v-model:open`, Esc / backdrop to close, focus trap, shared scroll lock for nested dialogs |
-| `toast()` / `MlToastHost` | Five tones, action button, persistent toasts, countdown pauses on hover |
-| `MlTooltip` | `top` / `bottom` / `left` / `right`, wires `aria-describedby` for you |
-| `MlAvatar` | Hexagonal medallion, `ring`, `status`, falls back to initials; stack with `.ml-avatar-group` |
-| `MlAlert` | `info` / `success` / `warning` / `danger` with claw marks, `closable` |
-| `MlLoader` | `reactor` (spinning mane) or `paws` (a cub walking across) |
-| `MlStat` | HUD readout; `delta` colours itself by sign |
-| `MlTable` | Sorting, selection (`v-model:selected`), `#cell-<key>` slots, hover paw, paw-trail empty state, loading overlay |
-| `MlDropdown` | Command menu with arrows / Home / End / typeahead / Esc; `selectable` mode marks the choice with a paw |
-| `MlDivider` | `label`, `claw` marks or a `paw` trail |
-| `MlLionMark` | Faceted metal lion crest, `glow`, `animated` |
-| `MlPaw` | Paw print in `gold` / `bean` (toe-bean pink) / `steel` / `tech` / `current` |
-| `v-paw-stamp` | Pops a floating paw print where you press; `MlButton` takes a `stamp` prop |
-| `MlIcon` | A small set of built-in icons |
-
-Full props, events, slots and copyable examples for every component are on the [docs site](https://malilion.github.io/MalilionUI/).
-
-### Example
-
 ```vue
-<script setup lang="ts">
-import { ref } from 'vue'
-const open = ref(false)
-const email = ref('')
-</script>
-
 <template>
   <MlCard eyebrow="Pride / 01" title="Pride dashboard" rivets>
     <MlInput v-model="email" index="01" label="Email" type="email" />
@@ -191,20 +79,85 @@ const email = ref('')
       <MlButton stamp @click="open = true">Deploy</MlButton>
     </template>
   </MlCard>
-
-  <MlModal v-model:open="open" eyebrow="Command" title="Deploy to production?">
-    Push the current version live?
-    <template #footer="{ close }">
-      <MlButton variant="ghost" @click="close">Cancel</MlButton>
-      <MlButton @click="close">Deploy</MlButton>
-    </template>
-  </MlModal>
 </template>
 ```
 
-## Using it from React or plain HTML
+Import components one by one instead of registering them all:
 
-Import the CSS and write the classes; the templates in `src/components/*.vue` show the markup:
+```ts
+import { MlButton, MlCard } from '@malilion/ui'
+```
+
+Show toasts from anywhere — put one `<MlToastHost />` in `App.vue`, then:
+
+```ts
+import { useToast } from '@malilion/ui'
+
+const toast = useToast()
+toast('Roar!') // a paw toast by default
+toast.success({ title: 'Deployed', message: 'v0.2 is live' })
+```
+
+Load the fonts for the full mech look (the components fall back to system fonts without them):
+
+```html
+<link
+  href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+  rel="stylesheet"
+/>
+```
+
+## Gallery
+
+| Buttons & badges | HUD forms |
+| --- | --- |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/buttons.png" alt="Buttons and badges"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/forms.png" alt="Forms"> |
+| **Alerts, progress, loaders & toasts** | **Tables, stats & avatars** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/feedback.png" alt="Feedback"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/data.png" alt="Data display"> |
+| **Tabs, dropdowns & tooltips** | **Modal** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="Navigation"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="Modal"> |
+| **Paw prints · the cute side** | **Two themes** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Themes"> |
+
+Every component has its own page on the [docs site](https://malilion.github.io/MalilionUI/) with live examples, copy-to-clipboard source and full API tables.
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="Docs site" width="100%">
+
+## Components
+
+| Category | Components |
+| --- | --- |
+| Basic | `MlButton` · `MlBadge` · `MlCard` · `MlDivider` · `MlLionMark` · `MlPaw` · `MlIcon` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlField` |
+| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` |
+| Data display | `MlTable` · `MlAvatar` · `MlStat` |
+| Navigation | `MlTabs` · `MlDropdown` |
+| Directive | `v-paw-stamp` |
+
+## Component Props
+
+Every component accepts the usual attributes (`class`, `style`, `aria-*`, listeners). Form controls put `class` / `style` on their wrapper and everything else on the native element, so `name`, `autocomplete` and friends just work. A few of the most used props:
+
+| Component | Prop | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| MlButton | variant | `'primary' \| 'steel' \| 'outline' \| 'tech' \| 'ghost' \| 'danger'` | `'primary'` | Plate style |
+| MlButton | stamp | `boolean \| 'gold' \| 'bean' \| 'steel' \| 'tech'` | `false` | Leave a paw print where it's pressed |
+| MlCard | variant | `'plate' \| 'gold' \| 'steel' \| 'tech'` | `'plate'` | Shell; add `rivets` or `interactive` |
+| MlInput | index / label / hint / error | string | — | HUD label number, label, help text, error (wired to `aria-describedby`) |
+| MlProgress | value | `number \| null` | `null` | Omit for an indeterminate scan; add `paw` for a running paw |
+| MlTable | v-model:sort / v-model:selected | `MlTableSort \| null` / `Key[]` | `null` / `[]` | Sorting and row selection |
+| MlDropdown | selectable | boolean | `false` | Single-choice menu; v-model holds the value, marked with a paw |
+| MlPaw | tone | `'gold' \| 'bean' \| 'steel' \| 'tech' \| 'current'` | `'gold'` | `current` follows the text colour |
+
+The full list for every component lives on the [docs site](https://malilion.github.io/MalilionUI/).
+
+```typescript
+import type { MlButtonVariant, MlTableColumn, MlToastOptions, MlPawTone } from '@malilion/ui'
+```
+
+## Using the CSS Directly
+
+Not on Vue? Import the stylesheet and write the classes — the templates in `src/components/*.vue` show the markup.
 
 ```tsx
 import '@malilion/ui/style.css'
@@ -214,50 +167,79 @@ export function DeployButton() {
 }
 ```
 
-If you only want the design tokens (colours, metal gradients, fonts, easing), import `@malilion/ui/css/tokens.css`.
+Only want the design tokens (colours, metal gradients, fonts, easing)?
 
-## Design language
+```ts
+import '@malilion/ui/css/tokens.css'
+```
 
-| Element | How |
-| --- | --- |
-| **The Malilion cut** | Top-left and bottom-right corners chamfered like a machined plate. The root is never clipped; the rim and face live on `::before` / `::after`, so focus rings and glows survive |
-| **Metal** | `--ml-metal-*` gradients: a specular band on top, a dark core, a reflected rim at the bottom |
-| **Lion** | Lion-gold palette, mane loader, claw marks, the lion crest |
-| **Cute** | Toe-bean paw prints (`MlPaw`), `--ml-bean-*` pink, button stamps, squishy pop animations — an accent that never overrides the metal |
-| **Tech** | Circuit cyan for focus and data, HUD labels, scanlines, energy cells |
-| **Focus** | A cyan rectangular "target lock" that stays clear in both themes |
+## Themes
 
-## Development
+Dark is the default. Set `data-ml-theme` on any ancestor (usually `<html>`), or on one section to theme just that part:
+
+```html
+<html data-ml-theme="light">
+  <body class="ml-app">…</body>
+</html>
+```
+
+`ml-app` is optional: it adds the full-page backdrop (lion-gold glow and grid), text colour and fonts. The library never styles bare elements.
+
+## Palette
+
+| Name | Token | Value | Usage |
+| --- | --- | --- | --- |
+| Lion Gold | `--ml-gold-400` | `#f0ad2f` | Primary accent, metal rims |
+| Mane Bronze | `--ml-bronze-400` | `#cd7631` | Mane, warm metal |
+| Titanium | `--ml-steel-300` | `#9ea7b5` | Secondary metal, muted UI |
+| Circuit Cyan | `--ml-cyan-400` | `#3eeed0` | Focus ring, tech accents, data |
+| Toe Bean | `--ml-bean-400` | `#ff8fa8` | Paw prints, the cute accent |
+| Roar Red | `--ml-red-400` | `#ff5c48` | Danger |
+| Savanna Green | `--ml-green-400` | `#52e38a` | Success |
+| Obsidian | `--ml-bg` | `#06070b` | Night Pride background |
+
+Each hue comes as a scale (for example `--ml-gold-50` … `--ml-gold-900`), and each metal has a gradient: `--ml-metal-gold`, `--ml-metal-steel`, `--ml-metal-bronze`, `--ml-metal-cyan`, `--ml-metal-bean`.
+
+## Design Principles
+
+Malilion UI follows five rules. Respect them when adding new components.
+
+1. **The Malilion cut**: top-left and bottom-right corners are chamfered like a machined plate. The root is never clipped — the rim and face live on `::before` / `::after` — so focus rings and glows survive.
+2. **Metal, not flat**: surfaces use `--ml-metal-*` gradients with a specular band on top, a dark core and a reflected rim at the bottom.
+3. **Tech for meaning**: circuit cyan is reserved for focus and data; HUD labels, scanlines and energy cells carry the tech feel.
+4. **Paws as an accent**: toe-bean prints and pink appear in small doses — a stamp, a marker, a pop — and never override the metal.
+5. **Accessible by default**: every interactive part is keyboard reachable, has a visible cyan "target lock" focus ring, and calms down under `prefers-reduced-motion`.
+
+## Local Development
 
 ```bash
+git clone https://github.com/malilion/MalilionUI.git
+cd MalilionUI
 npm install
-npm run dev          # docs site (playground/) at http://127.0.0.1:5287
+```
+
+Common scripts:
+
+```bash
+npm run dev          # Docs site (playground/) at http://127.0.0.1:5287
 npm test             # Vitest component tests
-npm run typecheck    # vue-tsc
-npm run build        # dist/: ESM + style.css + .d.ts
-npm run screenshots  # regenerate the README images (needs Google Chrome installed)
+npm run typecheck    # vue-tsc type check
+npm run build        # Library build: dist/ (ESM + style.css + .d.ts)
+npm run screenshots  # Regenerate the README images (needs Google Chrome)
 ```
 
-Every push to `main` runs the type check and tests in GitHub Actions, then deploys the docs site to GitHub Pages.
+`prepublishOnly` runs the type check, the tests and the build on publish, so there is no need to build manually.
 
-## Project layout
+The build output is `dist/malilion-ui.js` (ESM), `dist/style.css` and `dist/types/` (type declarations). Vue is external and is not bundled.
 
-```
-src/
-  index.ts              # plugin, named exports, GlobalComponents types
-  types.ts              # public types
-  composables.ts        # attrs splitting, scroll lock
-  toast.ts              # toast queue and toast() API
-  pawStamp.ts           # v-paw-stamp directive
-  components/           # Ml*.vue
-  styles/
-    tokens.css          # design tokens (both themes)
-    base.css            # .ml-app shell, utilities, keyframes
-    components/*.css    # per-component styles
-playground/             # docs site
-  registry.ts           # menu, pages, examples and API tables
-  examples/**/*.vue     # each example is both the live demo and the copyable source
-  shots.html            # composition page for README screenshots (not deployed)
-scripts/screenshots.mjs # writes docs/images/*.png
-tests/                  # component tests
-```
+The docs site lives in `playground/`. Every example is a real `.vue` file in `playground/examples/` that is both rendered live and shown as copyable source, so the two can never drift apart. Every push to `main` runs the checks in GitHub Actions and deploys the site to GitHub Pages.
+
+## Browser Support
+
+Malilion UI targets the last two major versions of Chrome, Edge, Firefox and Safari. It relies on modern CSS (`clip-path`, `color-mix()`, `:has()`, individual transform properties, `@starting-style`); older browsers still work but lose some animations. Components are SSR-safe: browser APIs are only touched after mount or in event handlers.
+
+## License
+
+MIT License. See [LICENSE](https://github.com/malilion/MalilionUI/blob/main/LICENSE).
+
+The lion crest and paw prints are original artwork by Malilion, free to use along with the library.
