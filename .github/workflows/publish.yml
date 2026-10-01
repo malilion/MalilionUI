@@ -1,10 +1,8 @@
 name: Publish
 
-# Stage @malilion/ui to npm when a version tag (v1.2.3) is pushed.
+# Publish @malilion/ui to npm when a version tag (v1.2.3) is pushed.
 # Uses npm Trusted Publishing (OIDC): no npm token is stored anywhere,
 # and the package gets a provenance attestation linking it to this repo.
-# The trusted publisher is stage-only, so a maintainer must approve
-# the staged version on npmjs.com (or `npm stage approve`) with 2FA.
 on:
   push:
     tags: ['v*']
@@ -27,7 +25,7 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
           cache: npm
-      # Trusted Publishing + staged publish need npm 11.15.0 or newer.
+      # Trusted Publishing needs a recent npm (11.5.1+).
       - run: npm install -g npm@^11.15.0
       - name: Tag must match package.json version
         if: github.ref_type == 'tag'
@@ -39,6 +37,6 @@ jobs:
           fi
       - run: npm ci
       # prepublishOnly runs typecheck, tests and the build.
-      # Trusted publisher is stage-only, so CI stages; a maintainer
-      # then approves on npmjs.com (or `npm stage approve`) with 2FA.
-      - run: npm stage publish
+      # The trusted publisher allows direct publishing, so no manual
+      # approval step is needed.
+      - run: npm publish
