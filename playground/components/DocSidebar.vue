@@ -29,9 +29,9 @@ const componentCount = pages.filter((page) => page.group !== 'start').length
   <aside :class="['sidebar', { 'sidebar--open': open }]" aria-label="文件選單">
     <div class="sidebar__head">
       <a :href="href('home')" class="sidebar__brand">
-        <MlLionMark :size="34" />
+        <MlMascot :size="38" frame="ring" title="" />
         <span class="sidebar__name">MALILION<b>UI</b></span>
-        <MlBadge tone="steel">v0.2</MlBadge>
+        <MlBadge tone="steel">v0.3</MlBadge>
       </a>
       <button type="button" class="sidebar__close" aria-label="關閉選單" @click="$emit('close')">
         <MlIcon name="close" />

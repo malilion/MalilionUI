@@ -38,12 +38,12 @@ const fresh = pages.filter((page) => page.isNew)
         <span class="hero__trail" aria-hidden="true">
           <MlPaw v-for="n in 5" :key="n" tone="current" />
         </span>
-        <MlLionMark :size="250" glow animated title="碼力獅徽章" />
+        <MlMascot pose="full" :size="290" glow title="碼力獅" class="hero__lion" />
       </div>
     </section>
 
     <div class="stats">
-      <MlStat label="Components" :value="26" caption="Vue 3 · TypeScript" />
+      <MlStat label="Components" :value="41" caption="Vue 3 · TypeScript" />
       <MlStat label="Themes" :value="2" caption="Night Pride / Daylight" />
       <MlStat label="Runtime deps" :value="0" caption="Peer：Vue 3.5+" />
       <MlStat label="Paw prints" value="∞" caption="可愛無上限" />
@@ -138,6 +138,17 @@ const fresh = pages.filter((page) => page.isNew)
   display: grid;
   place-items: center;
   min-height: 340px;
+}
+
+.hero__lion {
+  position: relative;
+  z-index: 1;
+  animation: hero-float 5s var(--ml-ease) infinite;
+}
+
+@keyframes hero-float {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -8px; }
 }
 
 .hero__halo {
@@ -285,8 +296,8 @@ const fresh = pages.filter((page) => page.isNew)
     min-height: 260px;
   }
 
-  .hero__emblem .ml-lion-mark {
-    --_size: 180px !important;
+  .hero__emblem .ml-mascot {
+    --_size: 210px !important;
   }
 
   .hero__halo {

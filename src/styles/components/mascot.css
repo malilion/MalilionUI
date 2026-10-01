@@ -1,0 +1,61 @@
+/* Mascot — the little lion in a black hoodie */
+.ml-mascot {
+  --_frame: var(--ml-metal-gold);
+
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  flex: none;
+  height: var(--_size, 96px);
+}
+
+.ml-mascot--avatar {
+  width: var(--_size, 96px);
+}
+
+.ml-mascot--full {
+  /* the full-body art is 400 × 421 */
+  width: calc(var(--_size, 96px) * 0.95);
+}
+
+.ml-mascot__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  user-select: none;
+}
+
+.ml-mascot--glow .ml-mascot__img {
+  filter: drop-shadow(0 0 calc(var(--_size, 96px) * 0.08) rgb(240 173 47 / 0.55));
+}
+
+/* Ring: a polished gold bezel around a dark porthole */
+.ml-mascot--frame-ring {
+  border-radius: 50%;
+  padding: max(2px, calc(var(--_size, 96px) * 0.04));
+  background: var(--_frame);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.4), 0 0 calc(var(--_size, 96px) * 0.18) rgb(240 173 47 / 0.35);
+}
+
+.ml-mascot--frame-ring .ml-mascot__img {
+  border-radius: 50%;
+  object-fit: cover;
+  background:
+    radial-gradient(circle at 50% 30%, rgb(240 173 47 / 0.25), transparent 65%),
+    var(--ml-metal-gunmetal);
+}
+
+/* Hex: same medallion shape as MlAvatar */
+.ml-mascot--frame-hex {
+  --_hex: polygon(50% 0, 93.3% 25%, 93.3% 75%, 50% 100%, 6.7% 75%, 6.7% 25%);
+  padding: max(2px, calc(var(--_size, 96px) * 0.05));
+  background: var(--_frame);
+  clip-path: var(--_hex);
+}
+
+.ml-mascot--frame-hex .ml-mascot__img {
+  object-fit: cover;
+  background: var(--ml-metal-gunmetal);
+  clip-path: var(--_hex);
+}

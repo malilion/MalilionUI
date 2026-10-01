@@ -82,6 +82,37 @@ const actions = [
   { value: 'delete', label: '刪除', icon: 'danger' as const, danger: true, divider: true },
 ]
 
+const sparkStats = [
+  { label: 'Total Users', value: '24,532', delta: '+12.6%', tone: 'gold' as const, data: [8, 9, 7, 11, 10, 14, 13, 17, 16, 21] },
+  { label: 'Revenue', value: 'NT$1.28M', delta: '+18.4%', tone: 'tech' as const, data: [3, 5, 4, 6, 8, 7, 9, 12, 11, 14] },
+  { label: 'Satisfaction', value: '96%', delta: '+2.1%', tone: 'bean' as const, data: [80, 82, 85, 84, 88, 90, 89, 93, 95, 96] },
+]
+const months = [
+  { label: 'Jan', value: 8200 },
+  { label: 'Feb', value: 14800 },
+  { label: 'Mar', value: 11600 },
+  { label: 'Apr', value: 22400 },
+  { label: 'May', value: 42560 },
+  { label: 'Jun', value: 31800 },
+]
+const traffic = [
+  { label: 'Direct', value: 38 },
+  { label: 'Search', value: 28 },
+  { label: 'Social', value: 18 },
+  { label: 'Referral', value: 10 },
+  { label: 'Others', value: 6 },
+]
+const chips = [
+  { label: 'UI', on: true },
+  { label: 'Vue', on: true },
+  { label: 'React', on: false },
+  { label: 'AI', on: false },
+]
+const faq = [
+  { value: 'what', title: 'What is Malilion UI?', content: '可愛又強大的元件庫：獅子 × 科技 × 金屬，再加上肉球腳印。' },
+  { value: 'install', title: 'Installation', content: 'npm install @malilion/ui' },
+]
+
 const themes = [
   { id: 'dark', name: 'Night Pride', zh: '深色' },
   { id: 'light', name: 'Daylight Titanium', zh: '淺色' },
@@ -97,7 +128,7 @@ const themes = [
         <span class="hero__trail">
           <MlPaw v-for="n in 5" :key="n" tone="bean" />
         </span>
-        <MlLionMark :size="250" glow />
+        <MlMascot pose="full" :size="300" glow title="碼力獅" class="hero__lion" />
       </div>
       <div class="hero__copy">
         <p class="ml-hud-label hero__kicker">碼力獅 Design System · Vue 3</p>
@@ -119,7 +150,7 @@ const themes = [
           </MlButton>
         </div>
         <div class="row hero__badges">
-          <MlBadge paw>26 Components</MlBadge>
+          <MlBadge paw>41 Components</MlBadge>
           <MlBadge tone="tech" dot>Vue 3 · TS</MlBadge>
           <MlBadge tone="steel">2 Themes</MlBadge>
           <MlBadge tone="bean" solid paw>Cute</MlBadge>
@@ -134,7 +165,7 @@ const themes = [
           <p class="shot__kicker">01 // Buttons &amp; Badges</p>
           <h2 class="shot__title">按鈕與徽章</h2>
         </div>
-        <span class="shot__brand"><MlLionMark :size="26" />MALILION<b>UI</b></span>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
       </header>
       <div class="stack">
         <p class="ml-hud-label">Variants</p>
@@ -185,7 +216,7 @@ const themes = [
           <p class="shot__kicker">02 // Form</p>
           <h2 class="shot__title">HUD 表單</h2>
         </div>
-        <span class="shot__brand"><MlLionMark :size="26" />MALILION<b>UI</b></span>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
       </header>
       <div class="grid-2">
         <MlCard eyebrow="Register" title="成員登錄" rivets>
@@ -227,7 +258,7 @@ const themes = [
           <p class="shot__kicker">03 // Feedback</p>
           <h2 class="shot__title">警示、進度、載入與通知</h2>
         </div>
-        <span class="shot__brand"><MlLionMark :size="26" />MALILION<b>UI</b></span>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
       </header>
       <div class="grid-2">
         <div class="stack">
@@ -263,7 +294,7 @@ const themes = [
           <p class="shot__kicker">04 // Data display</p>
           <h2 class="shot__title">表格、數據與頭像</h2>
         </div>
-        <span class="shot__brand"><MlLionMark :size="26" />MALILION<b>UI</b></span>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
       </header>
       <div class="stack stack--loose">
         <div class="stats">
@@ -274,7 +305,7 @@ const themes = [
         </div>
         <MlTable v-model:sort="sort" v-model:selected="selected" :columns="columns" :rows="rows" selectable>
           <template #cell-owner="{ row }">
-            <span class="who"><MlAvatar :name="row.owner" size="sm" :status="row.presence" />{{ row.owner }}</span>
+            <span class="who"><MlAvatar :name="row.owner" :lion="row.owner === '碼力獅'" size="sm" :status="row.presence" />{{ row.owner }}</span>
           </template>
           <template #cell-status="{ row }">
             <MlBadge :tone="statusTone[row.status as keyof typeof statusTone]" dot>{{ row.status }}</MlBadge>
@@ -290,7 +321,7 @@ const themes = [
           <p class="shot__kicker">05 // Navigation</p>
           <h2 class="shot__title">分頁、下拉選單與提示</h2>
         </div>
-        <span class="shot__brand"><MlLionMark :size="26" />MALILION<b>UI</b></span>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
       </header>
       <div class="grid-2">
         <MlCard>
@@ -302,7 +333,7 @@ const themes = [
 [21:05] test  ✓  49 passed
 [21:06] deploy → production 🐾</pre>
                 <div class="ml-avatar-group">
-                  <MlAvatar name="碼力獅" status="online" />
+                  <MlAvatar lion status="online" />
                   <MlAvatar name="Nala" ring="steel" />
                   <MlAvatar name="Leo" ring="tech" />
                   <MlAvatar name="+4" ring="steel" />
@@ -355,7 +386,7 @@ const themes = [
           <p class="shot__kicker">06 // Paw</p>
           <h2 class="shot__title">獅掌腳印 · 可愛風格</h2>
         </div>
-        <span class="shot__brand"><MlLionMark :size="26" />MALILION<b>UI</b></span>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
       </header>
       <div class="paw-row">
         <figure v-for="tone in (['gold', 'bean', 'steel', 'tech'] as const)" :key="tone">
@@ -398,6 +429,81 @@ const themes = [
         </div>
       </div>
     </section>
+
+    <!-- ───────────── Charts (v0.3) ───────────── -->
+    <section data-shot="charts" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">07 // Charts</p>
+          <h2 class="shot__title">圖表與儀表板</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="stack stack--loose">
+        <div class="grid-3">
+          <MlCard v-for="s in sparkStats" :key="s.label">
+            <span class="ml-hud-label">{{ s.label }}</span>
+            <div class="spark-row">
+              <strong class="big">{{ s.value }}</strong>
+              <MlSparkline :data="s.data" :tone="s.tone" :width="120" />
+            </div>
+            <span class="up">↗ {{ s.delta }}</span>
+          </MlCard>
+        </div>
+        <div class="charts-row">
+          <MlCard eyebrow="Monthly" title="Traffic">
+            <MlBarChart :data="months" :height="170" :format="(v) => `${Math.round(v / 1000)}K`" />
+          </MlCard>
+          <MlCard eyebrow="Sources" title="Total Visits">
+            <MlDonut :data="traffic" title="42,560" caption="Total Visits" :size="150" />
+          </MlCard>
+          <MlCard eyebrow="Goal" title="Completion">
+            <div class="ring-box"><MlRing :value="78" :size="150" label="Project Completion" /></div>
+          </MlCard>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Kit (v0.3) ───────────── -->
+    <section data-shot="kit" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">08 // More components</p>
+          <h2 class="shot__title">導覽、表單與空狀態</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="kit">
+        <div class="stack stack--loose">
+          <MlBreadcrumb :items="[{ label: 'Home', href: '#', icon: 'home' }, { label: 'Components', href: '#' }, { label: 'Buttons' }]" />
+          <MlSteps :items="[{ title: 'Setup' }, { title: 'Configure' }, { title: 'Review' }, { title: 'Complete' }]" :current="2" />
+          <MlPagination :page="5" :total="20" />
+          <div class="row">
+            <MlTag v-for="chip in chips" :key="chip.label" selectable :selected="chip.on">{{ chip.label }}</MlTag>
+            <MlTag tone="bean" closable>Cute</MlTag>
+          </div>
+          <div class="grid-2 grid-2--tight">
+            <MlSlider :model-value="60" label="Volume" unit="%" />
+            <MlNumberInput :model-value="3" label="Seats" :min="1" :max="9" />
+          </div>
+          <MlAccordion :items="faq" :model-value="['what']" />
+        </div>
+        <div class="stack stack--loose">
+          <MlCard>
+            <MlEmpty title="No Data Yet" description="讓這隻小獅子先睡一下…新東西很快就來了！">
+              <MlButton size="sm">Create New</MlButton>
+            </MlEmpty>
+          </MlCard>
+          <MlUpload hint="PNG, JPG, SVG, PDF (Max 10MB)" />
+          <span class="kbd-row">搜尋 <MlKbd>⌘</MlKbd><MlKbd>K</MlKbd></span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Logo (README header) ───────────── -->
+    <div data-shot="logo" class="logo-shot">
+      <MlMascot :size="132" frame="ring" title="碼力獅" />
+    </div>
 
     <!-- ───────────── Themes ───────────── -->
     <section data-shot="themes" class="shot shot--themes">
@@ -765,6 +871,60 @@ body {
 
 .paw-row__stamp {
   padding-bottom: 0;
+}
+
+/* ── Charts / kit ── */
+.spark-row {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 6px 0 2px;
+}
+
+.big {
+  font-family: var(--ml-font-display);
+  font-size: 30px;
+}
+
+.up {
+  color: var(--ml-success-text);
+  font-family: var(--ml-font-mono);
+  font-size: 12px;
+}
+
+.charts-row {
+  display: grid;
+  grid-template-columns: 1.3fr 1.2fr 0.8fr;
+  gap: 20px;
+}
+
+.ring-box {
+  display: grid;
+  place-items: center;
+  padding-top: 6px;
+}
+
+.kit {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 32px;
+}
+
+.kbd-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--ml-text-muted);
+}
+
+.logo-shot {
+  justify-self: start;
+  padding: 6px;
+}
+
+.hero__lion {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Themes: two halves, each its own theme ── */

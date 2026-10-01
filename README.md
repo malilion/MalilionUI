@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/logo.svg" alt="Malilion UI" width="132" height="132">
+  <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/logo.png" alt="Malilion UI" width="132" height="132">
 </p>
 
 <p align="center">Lion × tech × metal component library with cute paw prints, built for Vue 3 and TypeScript</p>
@@ -34,10 +34,11 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 26 components across basic, form, feedback, data display and navigation
+- 41 components across basic, form, feedback, data display, charts and navigation, plus ready-made templates
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
+- The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
 - Paw-print details everywhere: `MlPaw`, the `v-paw-stamp` directive, paw checkboxes, radios, loaders and progress runners
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - Zero runtime dependencies — only Vue as a peer dependency
@@ -116,6 +117,8 @@ Load the fonts for the full mech look (the components fall back to system fonts 
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/feedback.png" alt="Feedback"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/data.png" alt="Data display"> |
 | **Tabs, dropdowns & tooltips** | **Modal** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="Navigation"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="Modal"> |
+| **Charts & dashboards** | **Navigation, forms & empty states** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/charts.png" alt="Charts"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/kit.png" alt="More components"> |
 | **Paw prints · the cute side** | **Two themes** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Themes"> |
 
@@ -127,11 +130,12 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 
 | Category | Components |
 | --- | --- |
-| Basic | `MlButton` · `MlBadge` · `MlCard` · `MlDivider` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlField` |
-| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` |
-| Data display | `MlTable` · `MlAvatar` · `MlStat` |
-| Navigation | `MlTabs` · `MlDropdown` |
+| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
+| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` · `MlEmpty` |
+| Data display | `MlTable` · `MlAccordion` · `MlAvatar` · `MlStat` |
+| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
+| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
 | Directive | `v-paw-stamp` |
 
 ## Component Props
@@ -147,6 +151,8 @@ Every component accepts the usual attributes (`class`, `style`, `aria-*`, listen
 | MlProgress | value | `number \| null` | `null` | Omit for an indeterminate scan; add `paw` for a running paw |
 | MlTable | v-model:sort / v-model:selected | `MlTableSort \| null` / `Key[]` | `null` / `[]` | Sorting and row selection |
 | MlDropdown | selectable | boolean | `false` | Single-choice menu; v-model holds the value, marked with a paw |
+| MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | The Malilion lion, as a portrait or full body |
+| MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | Bars with round-number ticks; the peak lights up |
 | MlPaw | tone | `'gold' \| 'bean' \| 'steel' \| 'tech' \| 'current'` | `'gold'` | `current` follows the text colour |
 
 The full list for every component lives on the [docs site](https://malilion.github.io/MalilionUI/).

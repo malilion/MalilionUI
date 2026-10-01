@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { href } from '../router'
-import { pages } from '../registry'
+import { groups, pages } from '../registry'
 
 const props = defineProps<{ id: string }>()
 
-const index = computed(() => pages.findIndex((page) => page.id === props.id))
-const prev = computed(() => pages[index.value - 1])
-const next = computed(() => pages[index.value + 1])
+// Same order as the sidebar: group by group.
+const ordered = groups.flatMap((group) => pages.filter((page) => page.group === group.id))
+const index = computed(() => ordered.findIndex((page) => page.id === props.id))
+const prev = computed(() => ordered[index.value - 1])
+const next = computed(() => ordered[index.value + 1])
 </script>
 
 <template>

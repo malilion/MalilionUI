@@ -50,7 +50,7 @@ export interface PageDef {
   api?: ApiDoc[]
 }
 
-export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'nav'
+export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'template'
 
 export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'start', label: '開始', en: 'Getting started' },
@@ -58,7 +58,9 @@ export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'form', label: '表單', en: 'Form' },
   { id: 'feedback', label: '回饋', en: 'Feedback' },
   { id: 'data', label: '資料展示', en: 'Data display' },
+  { id: 'chart', label: '圖表', en: 'Charts' },
   { id: 'nav', label: '導覽', en: 'Navigation' },
+  { id: 'template', label: '範本', en: 'Templates' },
 ]
 
 const sizeType = `'sm' | 'md' | 'lg'`
@@ -73,7 +75,6 @@ export const pages: PageDef[] = [
     title: 'Paw',
     zh: '獅掌',
     group: 'start',
-    isNew: true,
     desc: '獅子腳印是碼力獅的可愛簽名：金屬感的肉球、按下去會「蓋章」的按鈕，以及散佈在各元件裡的小腳印。',
     usage: `import { MlPaw, vPawStamp, pawStamp } from '@malilion/ui'`,
     examples: [
@@ -338,7 +339,6 @@ export const pages: PageDef[] = [
     title: 'Radio',
     zh: '單選',
     group: 'form',
-    isNew: true,
     desc: '圓形插槽，選中時壓進一個金色腳印。也可以做成可選的卡片方塊。',
     usage: `import { MlRadioGroup, MlRadio } from '@malilion/ui'`,
     examples: [
@@ -430,7 +430,6 @@ export const pages: PageDef[] = [
     title: 'Toast',
     zh: '通知',
     group: 'feedback',
-    isNew: true,
     desc: '從角落滑入的通知，蓋著淡淡的腳印浮水印。滑鼠移上去會暫停倒數。',
     usage: `import { useToast, MlToastHost } from '@malilion/ui'`,
     setup: {
@@ -591,7 +590,6 @@ export const pages: PageDef[] = [
     title: 'Table',
     zh: '表格',
     group: 'data',
-    isNew: true,
     desc: 'HUD 資料表。可排序、可勾選，滑過的那一列會有小腳印走進來；沒資料時有一串腳印走過。',
     usage: `import { MlTable } from '@malilion/ui'`,
     examples: [
@@ -719,7 +717,6 @@ export const pages: PageDef[] = [
     title: 'Dropdown',
     zh: '下拉選單',
     group: 'nav',
-    isNew: true,
     desc: '從金屬槽掉出來的指令選單。方向鍵、Home / End、首字跳轉、Esc 都支援；單選模式會用腳印標記目前選項。',
     usage: `import { MlDropdown } from '@malilion/ui'`,
     examples: [
@@ -754,6 +751,364 @@ export const pages: PageDef[] = [
           { name: 'disabled', desc: '停用', type: 'boolean' },
         ],
       },
+    ],
+  },
+
+  /* ── v0.3 additions ───────────────────────────────────── */
+  {
+    id: 'mascot',
+    title: 'Mascot',
+    zh: '吉祥物',
+    group: 'basic',
+    isNew: true,
+    desc: '碼力獅本獅：穿黑色帽 T 的小獅子。可以當頭像、品牌標誌或空狀態插圖，圖片已經打包在套件裡。',
+    usage: `import { MlMascot, lionAvatarUrl, lionFullUrl } from '@malilion/ui'`,
+    examples: [
+      { file: 'mascot/basic', title: '姿勢與外框', desc: 'avatar 是頭像、full 是全身；頭像可以加 ring 或 hex 金屬外框。MlAvatar 加上 lion 也會用這張圖。' },
+      { file: 'mascot/urls', title: '直接使用圖片', desc: '匯出的網址與 @malilion/ui/assets/*.webp 檔案都能直接用。' },
+    ],
+    api: [
+      {
+        component: 'MlMascot',
+        props: [
+          { name: 'size', desc: '高度（px）', type: 'number', default: '96' },
+          { name: 'pose', desc: '頭像或全身', type: `'avatar' | 'full'`, default: `'avatar'` },
+          { name: 'frame', desc: '頭像的金屬外框', type: `'none' | 'ring' | 'hex'`, default: `'none'` },
+          { name: 'glow', desc: '金色光暈', type: 'boolean', default: 'false' },
+          { name: 'title', desc: '替代文字；裝飾用時傳空字串', type: 'string', default: `'碼力獅'` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'tag',
+    title: 'Tag',
+    zh: '標籤',
+    group: 'basic',
+    isNew: true,
+    desc: '圓角膠囊標籤。可以關閉，也可以當作能切換的篩選 chip。',
+    usage: `import { MlTag } from '@malilion/ui'`,
+    examples: [
+      { file: 'tag/basic', title: '色調、樣式與關閉' },
+      { file: 'tag/chips', title: '可選取的 Chip', desc: 'selectable 會變成按鈕，用 v-model:selected 記錄狀態。' },
+    ],
+    api: [
+      {
+        component: 'MlTag',
+        props: [
+          { name: 'tone', desc: '色調', type: `'gold' | 'steel' | 'tech' | 'bean' | 'success' | 'danger'`, default: `'gold'` },
+          { name: 'variant', desc: '樣式', type: `'soft' | 'outline' | 'solid'`, default: `'soft'` },
+          { name: 'closable', desc: '顯示移除按鈕', type: 'boolean', default: 'false' },
+          { name: 'selectable', desc: '可切換的 chip', type: 'boolean', default: 'false' },
+          { name: 'v-model:selected', desc: '是否選取', type: 'boolean', default: 'false' },
+        ],
+        events: [{ name: 'close', desc: '按下移除' }],
+        slots: [
+          { name: 'default', desc: '文字' },
+          { name: 'icon', desc: '前方圖示' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'kbd',
+    title: 'Kbd',
+    zh: '按鍵',
+    group: 'basic',
+    isNew: true,
+    desc: '顯示鍵盤快捷鍵的小鍵帽。',
+    usage: `import { MlKbd } from '@malilion/ui'`,
+    examples: [{ file: 'kbd/basic', title: '基本用法' }],
+    api: [{ component: 'MlKbd', slots: [{ name: 'default', desc: '按鍵文字' }] }],
+  },
+  {
+    id: 'slider',
+    title: 'Slider',
+    zh: '滑桿',
+    group: 'form',
+    isNew: true,
+    desc: '原生 range 換上金屬滑軌與發光滑塊，鍵盤方向鍵一樣能用。',
+    usage: `import { MlSlider } from '@malilion/ui'`,
+    examples: [{ file: 'slider/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlSlider',
+        props: [
+          { name: 'v-model', desc: '值', type: 'number', default: '0' },
+          { name: 'min / max / step', desc: '範圍與間隔', type: 'number', default: '0 / 100 / 1' },
+          { name: 'label', desc: '標籤', type: 'string' },
+          { name: 'unit', desc: '數值後的單位', type: 'string' },
+          { name: 'show-value', desc: '顯示目前數值', type: 'boolean', default: 'true' },
+          { name: 'tone', desc: '色調', type: `'gold' | 'tech'`, default: `'gold'` },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'number-input',
+    title: 'NumberInput',
+    zh: '數字輸入',
+    group: 'form',
+    isNew: true,
+    desc: '帶有 − / + 的數字欄位，會自動限制在 min / max 之間，小數間隔也不會出現浮點誤差。',
+    usage: `import { MlNumberInput } from '@malilion/ui'`,
+    examples: [{ file: 'number-input/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlNumberInput',
+        props: [
+          { name: 'v-model', desc: '值', type: 'number', default: '0' },
+          { name: 'min / max', desc: '範圍', type: 'number', default: '-∞ / ∞' },
+          { name: 'step', desc: '每次增減', type: 'number', default: '1' },
+          { name: 'label / hint / error / index', desc: '同 MlInput', type: 'string' },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'upload',
+    title: 'Upload',
+    zh: '上傳',
+    group: 'form',
+    isNew: true,
+    desc: '拖曳或點擊選擇檔案。會依 accept 與 max-size 過濾，被擋下的檔案透過 reject 事件告訴你原因。',
+    usage: `import { MlUpload } from '@malilion/ui'`,
+    examples: [{ file: 'upload/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlUpload',
+        props: [
+          { name: 'v-model', desc: '已選擇的檔案', type: 'File[]', default: '[]' },
+          { name: 'accept', desc: '同 <input accept>', type: 'string' },
+          { name: 'multiple', desc: '允許多個檔案', type: 'boolean', default: 'true' },
+          { name: 'max-size', desc: '單檔大小上限（bytes）', type: 'number' },
+          { name: 'title / hint', desc: '區塊文字', type: 'string' },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+        events: [{ name: 'reject', desc: '檔案被擋下', type: `(file: File, reason: 'type' | 'size') => void` }],
+      },
+    ],
+  },
+  {
+    id: 'empty',
+    title: 'Empty',
+    zh: '空狀態',
+    group: 'feedback',
+    isNew: true,
+    desc: '沒有資料時，讓小獅子先睡一下。也可以只放一串腳印。',
+    usage: `import { MlEmpty } from '@malilion/ui'`,
+    examples: [{ file: 'empty/basic', title: '基本用法' }],
+    api: [
+      {
+        component: 'MlEmpty',
+        props: [
+          { name: 'title', desc: '標題', type: 'string', default: `'這裡還沒有東西'` },
+          { name: 'description', desc: '說明', type: 'string' },
+          { name: 'art', desc: '插圖', type: `'lion' | 'paws' | 'none'`, default: `'lion'` },
+          { name: 'size', desc: '尺寸', type: `'sm' | 'md'`, default: `'md'` },
+        ],
+        slots: [
+          { name: 'default', desc: '動作按鈕' },
+          { name: 'art', desc: '自訂插圖' },
+          { name: 'description', desc: '自訂說明' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'accordion',
+    title: 'Accordion',
+    zh: '摺疊面板',
+    group: 'data',
+    isNew: true,
+    desc: '一疊可以滑開的面板，展開時腳印會轉向。收起的內容不會被 Tab 鍵走到。',
+    usage: `import { MlAccordion } from '@malilion/ui'`,
+    examples: [
+      { file: 'accordion/basic', title: '基本用法', desc: '內容用 content，或用和 value 同名的插槽。', block: true },
+      { file: 'accordion/multiple', title: '多個同時展開', block: true },
+    ],
+    api: [
+      {
+        component: 'MlAccordion',
+        props: [
+          { name: 'items', desc: '面板', type: '{ value, title, content?, disabled? }[]' },
+          { name: 'v-model', desc: '展開中的 value', type: 'string[]', default: '[]' },
+          { name: 'multiple', desc: '可同時展開多個', type: 'boolean', default: 'false' },
+        ],
+        slots: [{ name: '<value>', desc: '該面板的內容，提供 { item }' }],
+      },
+    ],
+  },
+  {
+    id: 'ring',
+    title: 'Ring',
+    zh: '環形進度',
+    group: 'chart',
+    isNew: true,
+    desc: '發光的環形進度，中間顯示百分比與標籤。',
+    usage: `import { MlRing } from '@malilion/ui'`,
+    examples: [{ file: 'ring/basic', title: '色調與尺寸' }],
+    api: [
+      {
+        component: 'MlRing',
+        props: [
+          { name: 'value', desc: '目前值', type: 'number' },
+          { name: 'max', desc: '最大值', type: 'number', default: '100' },
+          { name: 'size', desc: '尺寸（px）', type: 'number', default: '120' },
+          { name: 'thickness', desc: '線寬（以 100 為基準）', type: 'number', default: '9' },
+          { name: 'label', desc: '中間的小字與無障礙名稱', type: 'string' },
+          { name: 'tone', desc: '色調', type: `'gold' | 'tech' | 'bean' | 'success' | 'danger' | 'steel'`, default: `'gold'` },
+          { name: 'show-value', desc: '顯示百分比', type: 'boolean', default: 'true' },
+        ],
+        slots: [{ name: 'default', desc: '自訂中間內容' }],
+      },
+    ],
+  },
+  {
+    id: 'sparkline',
+    title: 'Sparkline',
+    zh: '迷你折線',
+    group: 'chart',
+    isNew: true,
+    desc: '放在數據卡片裡的小折線，末端有一顆發光的點。',
+    usage: `import { MlSparkline } from '@malilion/ui'`,
+    examples: [{ file: 'sparkline/basic', title: '數據卡片', block: true }],
+    api: [
+      {
+        component: 'MlSparkline',
+        props: [
+          { name: 'data', desc: '數值', type: 'number[]' },
+          { name: 'width / height', desc: '尺寸（px）', type: 'number', default: '120 / 36' },
+          { name: 'tone', desc: '色調', type: 'MlChartTone', default: `'gold'` },
+          { name: 'area', desc: '填滿線下區域', type: 'boolean', default: 'true' },
+          { name: 'title', desc: '無障礙描述；不給則視為裝飾', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'bar-chart',
+    title: 'BarChart',
+    zh: '長條圖',
+    group: 'chart',
+    isNew: true,
+    desc: 'HUD 長條圖。座標軸會自動取整數刻度，最高的一根會亮起並標出數值。',
+    usage: `import { MlBarChart } from '@malilion/ui'`,
+    examples: [
+      { file: 'bar-chart/basic', title: '基本用法', block: true },
+      { file: 'bar-chart/tones', title: '色調與指定高亮', block: true },
+    ],
+    api: [
+      {
+        component: 'MlBarChart',
+        props: [
+          { name: 'data', desc: '資料', type: '{ label, value }[]' },
+          { name: 'height', desc: '繪圖區高度（px）', type: 'number', default: '200' },
+          { name: 'tone', desc: '色調', type: 'MlChartTone', default: `'gold'` },
+          { name: 'highlight', desc: '高亮哪一根', type: `'max' | number | null`, default: `'max'` },
+          { name: 'ticks', desc: '水平格線數', type: 'number', default: '4' },
+          { name: 'format', desc: '數值格式化', type: '(value: number) => string' },
+          { name: 'label', desc: '無障礙摘要（預設自動產生）', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'donut',
+    title: 'Donut',
+    zh: '甜甜圈圖',
+    group: 'chart',
+    isNew: true,
+    desc: '多段的環形比例圖，附圖例與百分比。',
+    usage: `import { MlDonut } from '@malilion/ui'`,
+    examples: [{ file: 'donut/basic', title: '流量來源' }],
+    api: [
+      {
+        component: 'MlDonut',
+        props: [
+          { name: 'data', desc: '資料', type: '{ label, value, color? }[]' },
+          { name: 'size', desc: '尺寸（px）', type: 'number', default: '160' },
+          { name: 'thickness', desc: '線寬（以 100 為基準）', type: 'number', default: '12' },
+          { name: 'title / caption', desc: '中間的大字與小字', type: 'string' },
+          { name: 'legend', desc: '顯示圖例', type: 'boolean', default: 'true' },
+          { name: 'label', desc: '無障礙摘要（預設自動產生）', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'breadcrumb',
+    title: 'Breadcrumb',
+    zh: '麵包屑',
+    group: 'nav',
+    isNew: true,
+    desc: '顯示目前位置。最後一項自動標記為目前頁面。',
+    usage: `import { MlBreadcrumb } from '@malilion/ui'`,
+    examples: [{ file: 'breadcrumb/basic', title: '基本用法' }],
+    api: [
+      {
+        component: 'MlBreadcrumb',
+        props: [
+          { name: 'items', desc: '路徑', type: '{ label, href?, icon? }[]' },
+          { name: 'label', desc: '無障礙名稱', type: 'string', default: `'目前位置'` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'pagination',
+    title: 'Pagination',
+    zh: '分頁器',
+    group: 'nav',
+    isNew: true,
+    desc: '固定寬度的分頁器：頁數多時自動用 … 收合，切換頁面時按鈕不會跳動。',
+    usage: `import { MlPagination } from '@malilion/ui'`,
+    examples: [{ file: 'pagination/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlPagination',
+        props: [
+          { name: 'v-model:page', desc: '目前頁碼（從 1 開始）', type: 'number', default: '1' },
+          { name: 'total', desc: '總頁數', type: 'number' },
+          { name: 'siblings', desc: '目前頁左右各顯示幾頁', type: 'number', default: '1' },
+          { name: 'label', desc: '無障礙名稱', type: 'string', default: `'分頁'` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'steps',
+    title: 'Steps',
+    zh: '步驟條',
+    group: 'nav',
+    isNew: true,
+    desc: '多步驟流程。完成的步驟蓋上腳印，進行中的步驟會發光。',
+    usage: `import { MlSteps } from '@malilion/ui'`,
+    examples: [{ file: 'steps/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlSteps',
+        props: [
+          { name: 'items', desc: '步驟', type: '{ title, desc? }[]' },
+          { name: 'current', desc: '進行中步驟的索引；之前的算完成', type: 'number', default: '0' },
+          { name: 'label', desc: '無障礙名稱', type: 'string', default: `'進度步驟'` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'templates',
+    title: 'Templates',
+    zh: '版型範例',
+    group: 'template',
+    isNew: true,
+    desc: '把元件組起來的完整區塊：儀表板、個人檔案、價格方案、空狀態與頂部導覽列。直接複製改一改就能用。',
+    examples: [
+      { file: 'templates/dashboard', title: '儀表板', desc: '數據卡片 + 迷你折線、長條圖與甜甜圈圖。', block: true },
+      { file: 'templates/cards', title: '個人檔案、價格方案與空狀態', block: true },
+      { file: 'templates/header', title: '頂部導覽列', desc: '品牌、導覽、⌘K 搜尋、頭像與行動按鈕。', block: true },
     ],
   },
 ]

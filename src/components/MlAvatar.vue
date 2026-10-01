@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { mascotImages } from '../mascot'
 import type { MlAvatarSize, MlAvatarStatus } from '../types'
 
 const props = withDefaults(
@@ -10,12 +11,16 @@ const props = withDefaults(
     size?: MlAvatarSize
     ring?: 'gold' | 'steel' | 'tech'
     status?: MlAvatarStatus
+    /** Use the Malilion mascot as the picture. */
+    lion?: boolean
   }>(),
   { size: 'md', ring: 'gold' },
 )
 
 const failed = ref(false)
-watch(() => props.src, () => (failed.value = false))
+const picture = computed(() => props.src ?? (props.lion ? mascotImages.avatar : undefined))
+const altText = computed(() => props.name ?? (props.lion ? '碼力獅' : ''))
+watch(picture, () => (failed.value = false))
 
 const CJK = /[\u3400-\u9fff\uf900-\ufaff]/
 
@@ -47,11 +52,11 @@ const statusLabel: Record<MlAvatarStatus, string> = {
 <template>
   <span
     :class="['ml-avatar', `ml-avatar--${size}`, `ml-avatar--${ring}`]"
-    :role="src && !failed ? undefined : 'img'"
-    :aria-label="src && !failed ? undefined : name"
+    :role="picture && !failed ? undefined : 'img'"
+    :aria-label="picture && !failed ? undefined : name"
   >
     <span class="ml-avatar__face">
-      <img v-if="src && !failed" class="ml-avatar__img" :src="src" :alt="name ?? ''" @error="failed = true" />
+      <img v-if="picture && !failed" class="ml-avatar__img" :src="picture" :alt="altText" @error="failed = true" />
       <span v-else class="ml-avatar__initials" aria-hidden="true">{{ initials }}</span>
     </span>
     <span

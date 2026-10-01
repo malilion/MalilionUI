@@ -1,0 +1,250 @@
+/* Breadcrumb, Pagination, Steps */
+
+/* ── Breadcrumb ── */
+.ml-breadcrumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--ml-text-sm);
+}
+
+.ml-breadcrumb__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ml-breadcrumb__link,
+.ml-breadcrumb__text {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 6px;
+  color: var(--ml-text-muted);
+  text-decoration: none;
+}
+
+.ml-breadcrumb__link {
+  transition: color var(--ml-dur) var(--ml-ease);
+}
+
+.ml-breadcrumb__link:hover {
+  color: var(--ml-accent-text);
+}
+
+.ml-breadcrumb__link:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+
+.ml-breadcrumb__text--current {
+  color: var(--ml-accent-text);
+  font-weight: 600;
+}
+
+.ml-breadcrumb svg {
+  width: 15px;
+  height: 15px;
+}
+
+.ml-breadcrumb__sep {
+  color: var(--ml-text-dim);
+  width: 13px !important;
+  height: 13px !important;
+}
+
+/* ── Pagination ── */
+.ml-pagination {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+
+.ml-pagination__btn {
+  --_cut: 5px;
+
+  position: relative;
+  isolation: isolate;
+  display: inline-grid;
+  place-items: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border: 0;
+  background: none;
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: color var(--ml-dur) var(--ml-ease), filter var(--ml-dur) var(--ml-ease);
+}
+
+.ml-pagination__btn::before,
+.ml-pagination__btn::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-pagination__btn::before {
+  inset: 0;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-pagination__btn::after {
+  inset: 1px;
+  background: var(--ml-surface);
+}
+
+.ml-pagination__btn:hover:not(:disabled) {
+  color: var(--ml-text);
+}
+
+.ml-pagination__btn:hover:not(:disabled)::before {
+  background: var(--ml-line-strong);
+}
+
+.ml-pagination__btn[aria-current='page'] {
+  color: var(--ml-text-on-metal);
+  filter: var(--ml-glow-gold);
+}
+
+.ml-pagination__btn[aria-current='page']::before {
+  background: var(--ml-metal-gold);
+}
+
+.ml-pagination__btn[aria-current='page']::after {
+  background: var(--ml-metal-gold-soft);
+}
+
+.ml-pagination__btn:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-pagination__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.35;
+}
+
+.ml-pagination__btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-pagination__gap {
+  min-width: 20px;
+  color: var(--ml-text-dim);
+  text-align: center;
+}
+
+/* ── Steps ── */
+.ml-steps {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-steps__item {
+  --_c: var(--ml-steel-500);
+
+  position: relative;
+  display: grid;
+  justify-items: center;
+  flex: 1;
+  gap: 10px;
+  min-width: 0;
+  text-align: center;
+}
+
+/* Connector to the next step */
+.ml-steps__item:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 15px;
+  left: calc(50% + 22px);
+  right: calc(-50% + 22px);
+  height: 2px;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-steps__item--done:not(:last-child)::after {
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.5);
+}
+
+.ml-steps__marker {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1.5px var(--ml-line-steel-strong);
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+}
+
+.ml-steps__marker .ml-paw {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-steps__item--done .ml-steps__marker {
+  background: var(--ml-metal-gold-soft);
+  box-shadow: inset 0 0 0 1.5px var(--ml-gold-200);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-steps__item--current .ml-steps__marker {
+  box-shadow: inset 0 0 0 2px var(--ml-accent), 0 0 14px rgb(240 173 47 / 0.45);
+  color: var(--ml-accent-text);
+}
+
+.ml-steps__item--current .ml-steps__marker::after {
+  content: '';
+  position: absolute;
+  inset: -5px;
+  border-radius: 50%;
+  border: 1px solid var(--ml-accent);
+  opacity: 0;
+  animation: ml-ping 1.8s var(--ml-ease) infinite;
+}
+
+.ml-steps__text {
+  display: grid;
+  gap: 2px;
+  padding: 0 6px;
+}
+
+.ml-steps__title {
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+}
+
+.ml-steps__item--current .ml-steps__title {
+  color: var(--ml-accent-text);
+}
+
+.ml-steps__item--done .ml-steps__title {
+  color: var(--ml-text);
+}
+
+.ml-steps__desc {
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
