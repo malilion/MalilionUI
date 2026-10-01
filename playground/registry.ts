@@ -873,7 +873,7 @@ export const pages: PageDef[] = [
     zh: '上傳',
     group: 'form',
     isNew: true,
-    desc: '拖曳或點擊選擇檔案。會依 accept 與 max-size 過濾，被擋下的檔案透過 reject 事件告訴你原因。',
+    desc: '拖曳或點擊選擇檔案。會依 accept 與 max-size 過濾，被擋下的檔案透過 reject 事件告訴你原因。注意：這只是使用體驗上的過濾，檔案類型與大小仍必須在伺服器端再驗證一次。',
     usage: `import { MlUpload } from '@malilion/ui'`,
     examples: [{ file: 'upload/basic', title: '基本用法', block: true }],
     api: [
