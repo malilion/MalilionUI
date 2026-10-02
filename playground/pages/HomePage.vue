@@ -43,7 +43,7 @@ const fresh = pages.filter((page) => page.isNew)
     </section>
 
     <div class="stats">
-      <MlStat label="Components" :value="41" caption="Vue 3 · TypeScript" />
+      <MlStat label="Components" :value="48" caption="Vue 3 · TypeScript" />
       <MlStat label="Themes" :value="2" caption="Night Pride / Daylight" />
       <MlStat label="Runtime deps" :value="0" caption="Peer：Vue 3.5+" />
       <MlStat label="Paw prints" value="∞" caption="可愛無上限" />

@@ -7,8 +7,10 @@ import MlBadge from './components/MlBadge.vue'
 import MlBarChart from './components/MlBarChart.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
 import MlButton from './components/MlButton.vue'
+import MlCalendar from './components/MlCalendar.vue'
 import MlCard from './components/MlCard.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
+import MlDatePicker from './components/MlDatePicker.vue'
 import MlDivider from './components/MlDivider.vue'
 import MlDonut from './components/MlDonut.vue'
 import MlDropdown from './components/MlDropdown.vue'
@@ -18,12 +20,16 @@ import MlIcon from './components/MlIcon.vue'
 import MlInput from './components/MlInput.vue'
 import MlKbd from './components/MlKbd.vue'
 import MlLionMark from './components/MlLionMark.vue'
+import MlList from './components/MlList.vue'
+import MlListItem from './components/MlListItem.vue'
 import MlLoader from './components/MlLoader.vue'
 import MlMascot from './components/MlMascot.vue'
 import MlModal from './components/MlModal.vue'
+import MlNavBar from './components/MlNavBar.vue'
 import MlNumberInput from './components/MlNumberInput.vue'
 import MlPagination from './components/MlPagination.vue'
 import MlPaw from './components/MlPaw.vue'
+import MlPhone from './components/MlPhone.vue'
 import MlProgress from './components/MlProgress.vue'
 import MlRadio from './components/MlRadio.vue'
 import MlRadioGroup from './components/MlRadioGroup.vue'
@@ -34,6 +40,7 @@ import MlSparkline from './components/MlSparkline.vue'
 import MlStat from './components/MlStat.vue'
 import MlSteps from './components/MlSteps.vue'
 import MlSwitch from './components/MlSwitch.vue'
+import MlTabBar from './components/MlTabBar.vue'
 import MlTable from './components/MlTable.vue'
 import MlTabs from './components/MlTabs.vue'
 import MlTag from './components/MlTag.vue'
@@ -51,8 +58,10 @@ const components = {
   MlBarChart,
   MlBreadcrumb,
   MlButton,
+  MlCalendar,
   MlCard,
   MlCheckbox,
+  MlDatePicker,
   MlDivider,
   MlDonut,
   MlDropdown,
@@ -62,12 +71,16 @@ const components = {
   MlInput,
   MlKbd,
   MlLionMark,
+  MlList,
+  MlListItem,
   MlLoader,
   MlMascot,
   MlModal,
+  MlNavBar,
   MlNumberInput,
   MlPagination,
   MlPaw,
+  MlPhone,
   MlProgress,
   MlRadio,
   MlRadioGroup,
@@ -78,6 +91,7 @@ const components = {
   MlStat,
   MlSteps,
   MlSwitch,
+  MlTabBar,
   MlTable,
   MlTabs,
   MlTag,
@@ -107,8 +121,10 @@ export {
   MlBarChart,
   MlBreadcrumb,
   MlButton,
+  MlCalendar,
   MlCard,
   MlCheckbox,
+  MlDatePicker,
   MlDivider,
   MlDonut,
   MlDropdown,
@@ -118,12 +134,16 @@ export {
   MlInput,
   MlKbd,
   MlLionMark,
+  MlList,
+  MlListItem,
   MlLoader,
   MlMascot,
   MlModal,
+  MlNavBar,
   MlNumberInput,
   MlPagination,
   MlPaw,
+  MlPhone,
   MlProgress,
   MlRadio,
   MlRadioGroup,
@@ -134,6 +154,7 @@ export {
   MlStat,
   MlSteps,
   MlSwitch,
+  MlTabBar,
   MlTable,
   MlTabs,
   MlTag,
@@ -159,8 +180,10 @@ declare module 'vue' {
     MlBarChart: typeof MlBarChart
     MlBreadcrumb: typeof MlBreadcrumb
     MlButton: typeof MlButton
+    MlCalendar: typeof MlCalendar
     MlCard: typeof MlCard
     MlCheckbox: typeof MlCheckbox
+    MlDatePicker: typeof MlDatePicker
     MlDivider: typeof MlDivider
     MlDonut: typeof MlDonut
     MlDropdown: typeof MlDropdown
@@ -170,12 +193,16 @@ declare module 'vue' {
     MlInput: typeof MlInput
     MlKbd: typeof MlKbd
     MlLionMark: typeof MlLionMark
+    MlList: typeof MlList
+    MlListItem: typeof MlListItem
     MlLoader: typeof MlLoader
     MlMascot: typeof MlMascot
     MlModal: typeof MlModal
+    MlNavBar: typeof MlNavBar
     MlNumberInput: typeof MlNumberInput
     MlPagination: typeof MlPagination
     MlPaw: typeof MlPaw
+    MlPhone: typeof MlPhone
     MlProgress: typeof MlProgress
     MlRadio: typeof MlRadio
     MlRadioGroup: typeof MlRadioGroup
@@ -186,6 +213,7 @@ declare module 'vue' {
     MlStat: typeof MlStat
     MlSteps: typeof MlSteps
     MlSwitch: typeof MlSwitch
+    MlTabBar: typeof MlTabBar
     MlTable: typeof MlTable
     MlTabs: typeof MlTabs
     MlTag: typeof MlTag
