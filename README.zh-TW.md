@@ -34,7 +34,9 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 48 個元件，涵蓋基礎、表單、回饋、資料展示、圖表、導覽與行動版，另附現成的版型範例
+- 71 個元件，涵蓋基礎、表單、回饋、資料展示、圖表、導覽與行動版，另附現成的版型範例
+- 內建表單驗證：`MlForm` / `MlFormItem` 規則（必填、長度、格式、非同步檢查），錯誤會直接顯示在每個表單元件上
+- 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
@@ -42,6 +44,16 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 處處都有腳印：`MlPaw`、`v-paw-stamp` 蓋章指令、腳印勾選框、單選、載入器與進度條跑者
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 - 執行期零依賴，只需要 Vue 作為 peer dependency
+
+## 0.5 版新功能
+
+新增 25 個元件，全部支援鍵盤操作、ARIA 關聯，也都有文件頁：
+
+- **表單**：`MlCombobox`、`MlAutocomplete`、`MlTimePicker`、`MlDateTimePicker`、`MlColorPicker`、`MlSegmented`、`MlRate`、`MlTransfer`，以及 `MlForm` / `MlFormItem` 表單驗證
+- **回饋**：`MlDrawer`、`MlPopover`、`MlPopconfirm`、`MlSkeleton` / `MlSkeletonItem`
+- **資料展示**：`MlTree`、`MlTimeline`、`MlImage` / `MlImagePreview`、`MlCarousel`、`MlWatermark`
+- **導覽**：`MlAffix`、`MlBackTop`
+- 既有元件加上進場與退場動畫（警示、分頁、日曆、圖表、上傳等）
 
 ## 安裝
 
@@ -121,6 +133,10 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/charts.png" alt="圖表"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/kit.png" alt="更多元件"> |
 | **日曆與日期選擇** | **手機版畫面** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/calendar.png" alt="日曆"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/mobile.png" alt="手機版畫面"> |
+| **進階選擇與表單驗證** | **抽屜、彈出框與骨架屏** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/pickers.png" alt="進階選擇與表單驗證"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/overlays.png" alt="浮層元件"> |
+| **樹狀結構、時間軸與穿梭框** | **圖片、輪播與浮水印** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/structure.png" alt="樹狀結構、時間軸與穿梭框"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/media.png" alt="媒體與工具元件"> |
 | **獅掌腳印 · 可愛風格** | **雙主題** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="獅掌腳印"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="雙主題"> |
 
@@ -156,6 +172,9 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | MlCombobox | searchable / multiple / clearable | boolean | `false` | 自繪下拉選擇；multiple 時 v-model 為陣列 |
 | MlForm | model / rules | `object` / `MlFormRules` | — | 欄位包在 `MlFormItem prop="…"` 裡，錯誤自動顯示在元件上 |
 | MlDrawer | placement / size | `'right' \| 'left' \| 'top' \| 'bottom'` / `number \| string` | `'right'` / `420` | 邊緣滑出面板，含焦點鎖定與捲動鎖定 |
+| MlTimePicker | v-model / minute-step / min / max | `string \| null` / number / string | `null` / `1` / — | `"HH:mm"` 捲輪；加 `seconds` 多一欄秒 |
+| MlTree | v-model:expanded / selected / checked | `Key[]` / `Key \| null` / `Key[]` | `[]` / `null` / `[]` | 加 `checkable` 三態勾選，`filter` 篩選 |
+| MlCarousel | items / autoplay / v-model:index | `T[]` / 毫秒 / number | — / `0` / `0` | 投影片由預設插槽 `{ item, index }` 決定 |
 | MlDropdown | selectable | boolean | `false` | 單選選單；v-model 存選中的值，並用腳印標記 |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | 碼力獅本獅，頭像或全身 |
 | MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | 自動取整數刻度，最高的一根會亮起 |
@@ -245,7 +264,7 @@ npm run screenshots  # 重新產生 README 圖片（需要本機 Google Chrome�
 新版本由 GitHub Actions 透過 npm Trusted Publishing 發布，不需要任何 token 或一次性密碼：
 
 ```bash
-npm version minor    # 更新 package.json 版本並建立 tag，例如 v0.4.0
+npm version minor    # 更新 package.json 版本並建立 tag，例如 v0.5.0
 git push --follow-tags
 ```
 
