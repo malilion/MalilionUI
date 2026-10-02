@@ -31,7 +31,7 @@ const componentCount = pages.filter((page) => page.group !== 'start').length
       <a :href="href('home')" class="sidebar__brand">
         <MlMascot :size="38" frame="ring" title="" />
         <span class="sidebar__name">MALILION<b>UI</b></span>
-        <MlBadge tone="steel">v0.3</MlBadge>
+        <MlBadge tone="steel">v0.4</MlBadge>
       </a>
       <button type="button" class="sidebar__close" aria-label="關閉選單" @click="$emit('close')">
         <MlIcon name="close" />

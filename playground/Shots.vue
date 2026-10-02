@@ -113,6 +113,20 @@ const faq = [
   { value: 'install', title: 'Installation', content: 'npm install @malilion/ui' },
 ]
 
+const now = new Date()
+const calDay = new Date(now.getFullYear(), now.getMonth(), 16)
+const calMarkers = [3, 9, 18, 24].map((d) => new Date(now.getFullYear(), now.getMonth(), d))
+const calRange: [Date | null, Date | null] = [
+  new Date(now.getFullYear(), now.getMonth(), 8),
+  new Date(now.getFullYear(), now.getMonth(), 13),
+]
+const mTabs = [
+  { value: 'home', label: 'Home', icon: 'home' as const },
+  { value: 'explore', label: 'Explore', icon: 'compass' as const },
+  { value: 'inbox', label: 'Inbox', icon: 'message' as const, badge: 3 },
+  { value: 'me', label: 'Me', icon: 'user' as const },
+]
+
 const themes = [
   { id: 'dark', name: 'Night Pride', zh: '深色' },
   { id: 'light', name: 'Daylight Titanium', zh: '淺色' },
@@ -150,7 +164,7 @@ const themes = [
           </MlButton>
         </div>
         <div class="row hero__badges">
-          <MlBadge paw>41 Components</MlBadge>
+          <MlBadge paw>48 Components</MlBadge>
           <MlBadge tone="tech" dot>Vue 3 · TS</MlBadge>
           <MlBadge tone="steel">2 Themes</MlBadge>
           <MlBadge tone="bean" solid paw>Cute</MlBadge>
@@ -497,6 +511,77 @@ const themes = [
           <MlUpload hint="PNG, JPG, SVG, PDF (Max 10MB)" />
           <span class="kbd-row">搜尋 <MlKbd>⌘</MlKbd><MlKbd>K</MlKbd></span>
         </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Calendar (v0.4) ───────────── -->
+    <section data-shot="calendar" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">09 // Calendar</p>
+          <h2 class="shot__title">日曆與日期選擇</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="cal-row">
+        <MlCalendar :model-value="calDay" :markers="calMarkers" />
+        <MlCalendar mode="range" :range="calRange" :week-starts-on="1" />
+        <div class="stack">
+          <MlDatePicker label="開始日期" index="01" :model-value="calDay" />
+          <MlDatePicker label="截止日期" index="02" :model-value="null" clearable />
+          <MlSteps :items="[{ title: '選日期' }, { title: '確認' }, { title: '完成' }]" :current="1" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Mobile (v0.4) ───────────── -->
+    <section data-shot="mobile" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">10 // Mobile</p>
+          <h2 class="shot__title">手機版畫面</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="phone-row">
+        <MlPhone :width="252">
+          <div class="m-welcome">
+            <MlMascot pose="full" :size="200" glow />
+            <h3 class="ml-metal-text">Malilion UI</h3>
+            <p>Design. Develop. Roar.</p>
+            <MlButton block>Get Started</MlButton>
+            <MlButton block variant="outline">Continue with GitHub</MlButton>
+          </div>
+        </MlPhone>
+        <MlPhone :width="252">
+          <MlNavBar title="Explore" subtitle="UI Components" large />
+          <div class="m-pad">
+            <MlInput size="sm" placeholder="Search components..."><template #prefix><MlIcon name="search" /></template></MlInput>
+            <div class="row"><MlTag selectable :selected="true">All</MlTag><MlTag selectable>UI</MlTag><MlTag selectable>Data</MlTag></div>
+            <MlCard eyebrow="Basic" title="Buttons"><div class="row"><MlButton size="sm">Primary</MlButton><MlButton size="sm" variant="outline">Ghost</MlButton></div></MlCard>
+            <MlCard eyebrow="Data" title="Charts"><MlSparkline :data="[3, 5, 4, 7, 6, 9, 11]" :width="170" /></MlCard>
+          </div>
+          <template #bottom><MlTabBar model-value="home" :items="mTabs" action-label="新增" /></template>
+        </MlPhone>
+        <MlPhone :width="252">
+          <MlNavBar title="Messages" />
+          <MlList title="Today">
+            <MlListItem title="Malilion Bot" subtitle="Your design is amazing!" meta="10:24" :badge="2"><template #leading><MlAvatar lion size="sm" status="online" /></template></MlListItem>
+            <MlListItem title="Figma Team" subtitle="New comments on your file" meta="09:12"><template #leading><MlAvatar name="Figma" size="sm" ring="tech" /></template></MlListItem>
+            <MlListItem title="System" subtitle="Build completed" meta="08:41"><template #leading><MlAvatar name="SY" size="sm" ring="steel" /></template></MlListItem>
+          </MlList>
+          <MlList title="Yesterday">
+            <MlListItem title="Luna" subtitle="Let's ship it! ✨" meta="Mon"><template #leading><MlAvatar name="Luna" size="sm" /></template></MlListItem>
+          </MlList>
+          <template #bottom><MlTabBar model-value="inbox" :items="mTabs" action-label="新增" /></template>
+        </MlPhone>
+        <MlPhone :width="252">
+          <div class="m-cta">
+            <MlMascot pose="full" :size="215" glow />
+            <h3>Create<br />Amazing<br /><span class="ml-metal-text">Together.</span></h3>
+            <MlButton block>Explore Components →</MlButton>
+          </div>
+        </MlPhone>
       </div>
     </section>
 
@@ -925,6 +1010,62 @@ body {
 .hero__lion {
   position: relative;
   z-index: 1;
+}
+
+/* ── Calendar / mobile ── */
+.cal-row {
+  display: grid;
+  grid-template-columns: 300px 300px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.phone-row {
+  display: flex;
+  justify-content: space-between;
+}
+
+.m-welcome,
+.m-cta {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  padding: 16px 16px 28px;
+  text-align: center;
+}
+
+.m-welcome h3 {
+  margin: 2px 0 0;
+  font-family: var(--ml-font-display);
+  font-size: 24px;
+}
+
+.m-welcome p {
+  margin: 0 0 6px;
+  color: var(--ml-text-muted);
+  font-size: 13px;
+}
+
+.m-cta {
+  justify-items: start;
+  text-align: left;
+}
+
+.m-cta .ml-mascot {
+  justify-self: center;
+}
+
+.m-cta h3 {
+  margin: 0 0 6px;
+  font-family: var(--ml-font-display);
+  font-size: 28px;
+  line-height: 1.1;
+}
+
+.m-pad {
+  display: grid;
+  gap: 12px;
+  padding: 0 12px 12px;
 }
 
 /* ── Themes: two halves, each its own theme ── */

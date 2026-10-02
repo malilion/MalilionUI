@@ -104,3 +104,14 @@ export interface MlChartDatum {
   /** Donut only: override the segment colour. */
   color?: string
 }
+
+/** A [start, end] date range; either end may still be unset. */
+export type MlDateRange = [Date | null, Date | null]
+
+export interface MlTabBarItem {
+  value: string
+  label: string
+  icon: IconName
+  /** Small count bubble on the icon. */
+  badge?: number | string
+}

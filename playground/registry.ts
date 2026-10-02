@@ -50,7 +50,7 @@ export interface PageDef {
   api?: ApiDoc[]
 }
 
-export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'template'
+export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'mobile' | 'template'
 
 export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'start', label: '開始', en: 'Getting started' },
@@ -60,6 +60,7 @@ export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'data', label: '資料展示', en: 'Data display' },
   { id: 'chart', label: '圖表', en: 'Charts' },
   { id: 'nav', label: '導覽', en: 'Navigation' },
+  { id: 'mobile', label: '行動版', en: 'Mobile' },
   { id: 'template', label: '範本', en: 'Templates' },
 ]
 
@@ -760,7 +761,6 @@ export const pages: PageDef[] = [
     title: 'Mascot',
     zh: '吉祥物',
     group: 'basic',
-    isNew: true,
     desc: '碼力獅本獅：穿黑色帽 T 的小獅子。可以當頭像、品牌標誌或空狀態插圖，圖片已經打包在套件裡。',
     usage: `import { MlMascot, lionAvatarUrl, lionFullUrl } from '@malilion/ui'`,
     examples: [
@@ -785,7 +785,6 @@ export const pages: PageDef[] = [
     title: 'Tag',
     zh: '標籤',
     group: 'basic',
-    isNew: true,
     desc: '圓角膠囊標籤。可以關閉，也可以當作能切換的篩選 chip。',
     usage: `import { MlTag } from '@malilion/ui'`,
     examples: [
@@ -815,7 +814,6 @@ export const pages: PageDef[] = [
     title: 'Kbd',
     zh: '按鍵',
     group: 'basic',
-    isNew: true,
     desc: '顯示鍵盤快捷鍵的小鍵帽。',
     usage: `import { MlKbd } from '@malilion/ui'`,
     examples: [{ file: 'kbd/basic', title: '基本用法' }],
@@ -826,7 +824,6 @@ export const pages: PageDef[] = [
     title: 'Slider',
     zh: '滑桿',
     group: 'form',
-    isNew: true,
     desc: '原生 range 換上金屬滑軌與發光滑塊，鍵盤方向鍵一樣能用。',
     usage: `import { MlSlider } from '@malilion/ui'`,
     examples: [{ file: 'slider/basic', title: '基本用法', block: true }],
@@ -850,7 +847,6 @@ export const pages: PageDef[] = [
     title: 'NumberInput',
     zh: '數字輸入',
     group: 'form',
-    isNew: true,
     desc: '帶有 − / + 的數字欄位，會自動限制在 min / max 之間，小數間隔也不會出現浮點誤差。',
     usage: `import { MlNumberInput } from '@malilion/ui'`,
     examples: [{ file: 'number-input/basic', title: '基本用法', block: true }],
@@ -872,7 +868,6 @@ export const pages: PageDef[] = [
     title: 'Upload',
     zh: '上傳',
     group: 'form',
-    isNew: true,
     desc: '拖曳或點擊選擇檔案。會依 accept 與 max-size 過濾，被擋下的檔案透過 reject 事件告訴你原因。注意：這只是使用體驗上的過濾，檔案類型與大小仍必須在伺服器端再驗證一次。',
     usage: `import { MlUpload } from '@malilion/ui'`,
     examples: [{ file: 'upload/basic', title: '基本用法', block: true }],
@@ -896,7 +891,6 @@ export const pages: PageDef[] = [
     title: 'Empty',
     zh: '空狀態',
     group: 'feedback',
-    isNew: true,
     desc: '沒有資料時，讓小獅子先睡一下。也可以只放一串腳印。',
     usage: `import { MlEmpty } from '@malilion/ui'`,
     examples: [{ file: 'empty/basic', title: '基本用法' }],
@@ -922,7 +916,6 @@ export const pages: PageDef[] = [
     title: 'Accordion',
     zh: '摺疊面板',
     group: 'data',
-    isNew: true,
     desc: '一疊可以滑開的面板，展開時腳印會轉向。收起的內容不會被 Tab 鍵走到。',
     usage: `import { MlAccordion } from '@malilion/ui'`,
     examples: [
@@ -946,7 +939,6 @@ export const pages: PageDef[] = [
     title: 'Ring',
     zh: '環形進度',
     group: 'chart',
-    isNew: true,
     desc: '發光的環形進度，中間顯示百分比與標籤。',
     usage: `import { MlRing } from '@malilion/ui'`,
     examples: [{ file: 'ring/basic', title: '色調與尺寸' }],
@@ -971,7 +963,6 @@ export const pages: PageDef[] = [
     title: 'Sparkline',
     zh: '迷你折線',
     group: 'chart',
-    isNew: true,
     desc: '放在數據卡片裡的小折線，末端有一顆發光的點。',
     usage: `import { MlSparkline } from '@malilion/ui'`,
     examples: [{ file: 'sparkline/basic', title: '數據卡片', block: true }],
@@ -993,7 +984,6 @@ export const pages: PageDef[] = [
     title: 'BarChart',
     zh: '長條圖',
     group: 'chart',
-    isNew: true,
     desc: 'HUD 長條圖。座標軸會自動取整數刻度，最高的一根會亮起並標出數值。',
     usage: `import { MlBarChart } from '@malilion/ui'`,
     examples: [
@@ -1020,7 +1010,6 @@ export const pages: PageDef[] = [
     title: 'Donut',
     zh: '甜甜圈圖',
     group: 'chart',
-    isNew: true,
     desc: '多段的環形比例圖，附圖例與百分比。',
     usage: `import { MlDonut } from '@malilion/ui'`,
     examples: [{ file: 'donut/basic', title: '流量來源' }],
@@ -1043,7 +1032,6 @@ export const pages: PageDef[] = [
     title: 'Breadcrumb',
     zh: '麵包屑',
     group: 'nav',
-    isNew: true,
     desc: '顯示目前位置。最後一項自動標記為目前頁面。',
     usage: `import { MlBreadcrumb } from '@malilion/ui'`,
     examples: [{ file: 'breadcrumb/basic', title: '基本用法' }],
@@ -1062,7 +1050,6 @@ export const pages: PageDef[] = [
     title: 'Pagination',
     zh: '分頁器',
     group: 'nav',
-    isNew: true,
     desc: '固定寬度的分頁器：頁數多時自動用 … 收合，切換頁面時按鈕不會跳動。',
     usage: `import { MlPagination } from '@malilion/ui'`,
     examples: [{ file: 'pagination/basic', title: '基本用法', block: true }],
@@ -1083,7 +1070,6 @@ export const pages: PageDef[] = [
     title: 'Steps',
     zh: '步驟條',
     group: 'nav',
-    isNew: true,
     desc: '多步驟流程。完成的步驟蓋上腳印，進行中的步驟會發光。',
     usage: `import { MlSteps } from '@malilion/ui'`,
     examples: [{ file: 'steps/basic', title: '基本用法', block: true }],
@@ -1103,13 +1089,189 @@ export const pages: PageDef[] = [
     title: 'Templates',
     zh: '版型範例',
     group: 'template',
-    isNew: true,
     desc: '把元件組起來的完整區塊：儀表板、個人檔案、價格方案、空狀態與頂部導覽列。直接複製改一改就能用。',
     examples: [
       { file: 'templates/dashboard', title: '儀表板', desc: '數據卡片 + 迷你折線、長條圖與甜甜圈圖。', block: true },
       { file: 'templates/cards', title: '個人檔案、價格方案與空狀態', block: true },
       { file: 'templates/header', title: '頂部導覽列', desc: '品牌、導覽、⌘K 搜尋、頭像與行動按鈕。', block: true },
     ],
+  },
+
+  /* ── v0.4 additions ───────────────────────────────────── */
+  {
+    id: 'calendar',
+    title: 'Calendar',
+    zh: '日曆',
+    group: 'data',
+    isNew: true,
+    desc: '月曆，可選單日或區間。完整鍵盤操作（方向鍵、PageUp/PageDown 換月、Home/End），有事件的日子會蓋上小肉球。',
+    usage: `import { MlCalendar } from '@malilion/ui'`,
+    examples: [
+      { file: 'calendar/basic', title: '單日與標記', desc: 'markers 會在日期下方畫一個肉球。' },
+      { file: 'calendar/range', title: '區間選擇', desc: 'mode="range" 搭配 v-model:range；這裡從今天開始、週日不能選、週一為一週開始。' },
+      { file: 'calendar/locale', title: '語系', desc: '月份與星期名稱來自 Intl，換 locale 就好。' },
+    ],
+    api: [
+      {
+        component: 'MlCalendar',
+        props: [
+          { name: 'v-model', desc: '選中的日期（單日模式）', type: 'Date | null', default: 'null' },
+          { name: 'v-model:range', desc: '選中的區間（區間模式）', type: '[Date | null, Date | null]', default: '[null, null]' },
+          { name: 'mode', desc: '單日或區間', type: `'single' | 'range'`, default: `'single'` },
+          { name: 'min / max', desc: '可選範圍', type: 'Date' },
+          { name: 'disabled-date', desc: '停用特定日期', type: '(date: Date) => boolean' },
+          { name: 'markers', desc: '要蓋肉球的日期', type: 'Date[]' },
+          { name: 'locale', desc: '語系', type: 'string', default: `'zh-TW'` },
+          { name: 'week-starts-on', desc: '一週從星期幾開始', type: '0 | 1', default: '0' },
+        ],
+        events: [
+          { name: 'month-change', desc: '切換月份', type: '(year: number, month: number) => void' },
+          { name: 'focus()', desc: '把鍵盤焦點移進日曆（透過 ref 呼叫）', type: '() => void' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'date-picker',
+    title: 'DatePicker',
+    zh: '日期選擇',
+    group: 'form',
+    isNew: true,
+    desc: '點一下彈出日曆的日期欄位。開啟時焦點直接進入日曆，選好或按 Esc 會回到欄位。',
+    usage: `import { MlDatePicker } from '@malilion/ui'`,
+    examples: [{ file: 'date-picker/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlDatePicker',
+        props: [
+          { name: 'v-model', desc: '日期', type: 'Date | null', default: 'null' },
+          { name: 'label / hint / error / index', desc: '同 MlInput', type: 'string' },
+          { name: 'placeholder', desc: '未選擇時的文字', type: 'string', default: `'選擇日期'` },
+          { name: 'format', desc: '顯示格式（Intl 選項）', type: 'Intl.DateTimeFormatOptions', default: '年/月/日 星期' },
+          { name: 'clearable', desc: '顯示清除按鈕', type: 'boolean', default: 'false' },
+          { name: 'min / max / disabled-date / markers / locale / week-starts-on', desc: '同 MlCalendar', type: '—' },
+          { name: 'placement', desc: '日曆對齊', type: `'bottom-start' | 'bottom-end'`, default: `'bottom-start'` },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'phone',
+    title: 'Phone',
+    zh: '手機外框',
+    group: 'mobile',
+    isNew: true,
+    desc: '金屬邊框的手機外框，含狀態列、動態島與 Home 指示條。用來展示行動版畫面或做行銷頁。',
+    usage: `import { MlPhone } from '@malilion/ui'`,
+    examples: [{ file: 'phone/basic', title: '基本用法' }],
+    api: [
+      {
+        component: 'MlPhone',
+        props: [
+          { name: 'width', desc: '螢幕寬度（px），高度依比例', type: 'number', default: '300' },
+          { name: 'time', desc: '狀態列時間', type: 'string', default: `'9:41'` },
+          { name: 'label', desc: '無障礙名稱', type: 'string' },
+        ],
+        slots: [
+          { name: 'default', desc: '可捲動的畫面內容' },
+          { name: 'bottom', desc: '固定在底部（例如 MlTabBar）' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'nav-bar',
+    title: 'NavBar',
+    zh: '頂部導覽',
+    group: 'mobile',
+    isNew: true,
+    desc: '行動版頂部列：返回、置中標題與右側動作，或 iOS 風格的大標題。捲動時會黏在頂端。',
+    usage: `import { MlNavBar } from '@malilion/ui'`,
+    examples: [{ file: 'nav-bar/basic', title: '一般與大標題', block: true }],
+    api: [
+      {
+        component: 'MlNavBar',
+        props: [
+          { name: 'title / subtitle', desc: '標題與副標', type: 'string' },
+          { name: 'back', desc: '顯示返回按鈕', type: 'boolean', default: 'false' },
+          { name: 'large', desc: '大標題', type: 'boolean', default: 'false' },
+        ],
+        events: [{ name: 'back', desc: '按下返回' }],
+        slots: [
+          { name: 'left / right', desc: '兩側內容' },
+          { name: 'title', desc: '自訂標題' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'tab-bar',
+    title: 'TabBar',
+    zh: '底部導覽',
+    group: 'mobile',
+    isNew: true,
+    desc: '行動版底部導覽，可加數字徽章，中間還能放一顆凸起的金色肉球按鈕。',
+    usage: `import { MlTabBar } from '@malilion/ui'`,
+    examples: [{ file: 'tab-bar/basic', title: '含肉球動作鈕' }],
+    api: [
+      {
+        component: 'MlTabBar',
+        props: [
+          { name: 'v-model', desc: '目前分頁', type: 'string' },
+          { name: 'items', desc: '分頁', type: '{ value, label, icon, badge? }[]' },
+          { name: 'action-label', desc: '給了就顯示中間的肉球鈕（也是它的無障礙名稱）', type: 'string' },
+          { name: 'label', desc: '導覽的無障礙名稱', type: 'string', default: `'主要導覽'` },
+        ],
+        events: [{ name: 'action', desc: '按下肉球鈕' }],
+      },
+    ],
+  },
+  {
+    id: 'list',
+    title: 'List',
+    zh: '清單',
+    group: 'mobile',
+    isNew: true,
+    desc: '訊息、設定、選單用的清單列：前方頭像或圖示、標題副標、右側時間或數字。',
+    usage: `import { MlList, MlListItem } from '@malilion/ui'`,
+    examples: [{ file: 'list/basic', title: '訊息與設定' }],
+    api: [
+      {
+        component: 'MlList',
+        props: [
+          { name: 'variant', desc: '滿版或群組卡片', type: `'plain' | 'inset'`, default: `'plain'` },
+          { name: 'title', desc: '群組標題', type: 'string' },
+        ],
+        slots: [{ name: 'default', desc: '放 MlListItem' }],
+      },
+      {
+        component: 'MlListItem',
+        props: [
+          { name: 'title / subtitle', desc: '標題與副標', type: 'string' },
+          { name: 'meta', desc: '右側小字（時間等）', type: 'string' },
+          { name: 'badge', desc: '右側數字', type: 'number | string' },
+          { name: 'href', desc: '變成連結', type: 'string' },
+          { name: 'clickable', desc: '變成按鈕（觸發 select）', type: 'boolean', default: 'false' },
+          { name: 'active', desc: '目前項目', type: 'boolean', default: 'false' },
+          { name: 'chevron', desc: '右側箭頭', type: 'boolean', default: 'false' },
+        ],
+        events: [{ name: 'select', desc: '點擊（clickable 時）' }],
+        slots: [
+          { name: 'leading', desc: '前方頭像或圖示' },
+          { name: 'trailing', desc: '右側自訂內容' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'mobile-screens',
+    title: 'Mobile screens',
+    zh: '手機版畫面',
+    group: 'template',
+    isNew: true,
+    desc: '五個完整的手機畫面：歡迎、選單、探索、訊息與行動呼籲。全部用元件組成，可以直接複製。',
+    examples: [{ file: 'templates/mobile', title: '五個畫面', block: true }],
   },
 ]
 

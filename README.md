@@ -34,7 +34,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 41 components across basic, form, feedback, data display, charts and navigation, plus ready-made templates
+- 48 components across basic, form, feedback, data display, charts, navigation and mobile, plus ready-made templates
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
@@ -119,6 +119,8 @@ Load the fonts for the full mech look (the components fall back to system fonts 
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="Navigation"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="Modal"> |
 | **Charts & dashboards** | **Navigation, forms & empty states** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/charts.png" alt="Charts"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/kit.png" alt="More components"> |
+| **Calendar & date picker** | **Mobile screens** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/calendar.png" alt="Calendar"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/mobile.png" alt="Mobile screens"> |
 | **Paw prints · the cute side** | **Two themes** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Themes"> |
 
@@ -131,11 +133,12 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Category | Components |
 | --- | --- |
 | Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlDatePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
 | Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` · `MlEmpty` |
-| Data display | `MlTable` · `MlAccordion` · `MlAvatar` · `MlStat` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlAvatar` · `MlStat` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
+| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
 | Directive | `v-paw-stamp` |
 
 ## Component Props

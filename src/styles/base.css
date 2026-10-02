@@ -3,6 +3,17 @@
  * Nothing here styles bare elements, so the library never fights the host app.
  */
 
+/* Every library element sizes with border-box, so `width: 100%` plus padding
+   never overflows — whatever the host page's own box-sizing is. */
+[class^='ml-'],
+[class*=' ml-'],
+[class^='ml-']::before,
+[class*=' ml-']::before,
+[class^='ml-']::after,
+[class*=' ml-']::after {
+  box-sizing: border-box;
+}
+
 /* Opt-in shell: put `.ml-app` on <body> or a wrapper to get the full lair backdrop. */
 .ml-app {
   min-height: 100vh;

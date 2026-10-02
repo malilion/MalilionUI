@@ -34,7 +34,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 41 個元件，涵蓋基礎、表單、回饋、資料展示、圖表與導覽，另附現成的版型範例
+- 48 個元件，涵蓋基礎、表單、回饋、資料展示、圖表、導覽與行動版，另附現成的版型範例
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
@@ -119,6 +119,8 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/navigation.png" alt="導覽元件"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/modal.png" alt="對話框"> |
 | **圖表與儀表板** | **導覽、表單與空狀態** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/charts.png" alt="圖表"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/kit.png" alt="更多元件"> |
+| **日曆與日期選擇** | **手機版畫面** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/calendar.png" alt="日曆"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/mobile.png" alt="手機版畫面"> |
 | **獅掌腳印 · 可愛風格** | **雙主題** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="獅掌腳印"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="雙主題"> |
 
@@ -131,11 +133,12 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | 分類 | 元件 |
 | --- | --- |
 | 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
+| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlDatePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
 | 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` · `MlEmpty` |
-| 資料展示 | `MlTable` · `MlAccordion` · `MlAvatar` · `MlStat` |
+| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlAvatar` · `MlStat` |
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
 | 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
+| 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
 | 指令 | `v-paw-stamp` |
 
 ## 元件屬性
