@@ -56,8 +56,8 @@ const last = computed(() => points.value[points.value.length - 1])
         <stop offset="1" :stop-color="chartStops[tone][1]" stop-opacity="0" />
       </linearGradient>
     </defs>
-    <path v-if="area" :d="fill" :fill="`url(#${gradientId})`" />
-    <path :d="line" fill="none" :stroke="chartStops[tone][0]" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
+    <path v-if="area" :d="fill" :fill="`url(#${gradientId})`" class="ml-sparkline__area" />
+    <path :d="line" pathLength="1" class="ml-sparkline__line" fill="none" :stroke="chartStops[tone][0]" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" />
     <circle :cx="last.x" :cy="last.y" r="2.6" :fill="chartStops[tone][0]" class="ml-sparkline__dot" />
   </svg>
 </template>

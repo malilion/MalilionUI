@@ -59,6 +59,15 @@
   table-layout: fixed;
 }
 
+/* Month change: the new days slide in from the side we're travelling towards */
+.ml-calendar__body--next .ml-calendar__day,
+.ml-calendar__body--prev .ml-calendar__day {
+  animation: ml-slide-in-x var(--ml-dur) var(--ml-ease);
+}
+
+.ml-calendar__body--next .ml-calendar__day { --_from-x: 14px; }
+.ml-calendar__body--prev .ml-calendar__day { --_from-x: -14px; }
+
 .ml-calendar__weekday {
   padding: 2px 0 6px;
   color: var(--ml-text-dim);

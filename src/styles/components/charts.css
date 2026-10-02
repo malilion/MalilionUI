@@ -27,6 +27,12 @@
   stroke-linecap: round;
   filter: drop-shadow(0 0 4px rgb(240 173 47 / 0.5));
   transition: stroke-dashoffset 900ms var(--ml-ease-spring);
+  /* Sweeps in from empty on mount; --_c is the circumference */
+  animation: ml-ring-sweep 900ms var(--ml-ease-spring) backwards;
+}
+
+@keyframes ml-ring-sweep {
+  from { stroke-dashoffset: calc(var(--_c) * 1px); }
 }
 
 .ml-ring--tech .ml-ring__bar { filter: drop-shadow(0 0 4px rgb(62 238 208 / 0.5)); }
@@ -64,6 +70,23 @@
 
 .ml-sparkline__dot {
   filter: drop-shadow(0 0 3px currentColor);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-paw-pop 380ms var(--ml-ease-spring) 520ms backwards;
+}
+
+/* The line draws itself left to right (pathLength="1" on the path) */
+.ml-sparkline__line {
+  stroke-dasharray: 1;
+  animation: ml-sparkline-draw var(--ml-dur-chart) var(--ml-ease) backwards;
+}
+
+.ml-sparkline__area {
+  animation: ml-fade-in var(--ml-dur-chart) var(--ml-ease) 200ms backwards;
+}
+
+@keyframes ml-sparkline-draw {
+  from { stroke-dashoffset: 1; }
 }
 
 /* ── Bar chart ── */
@@ -151,7 +174,15 @@
   min-height: 2px;
   background: linear-gradient(180deg, var(--_c1), var(--_c2));
   clip-path: polygon(0 4px, 4px 0, 100% 0, 100% 100%, 0 100%);
-  transition: height 700ms var(--ml-ease-spring);
+  transform-origin: bottom;
+  transition: height var(--ml-dur-chart) var(--ml-ease-spring);
+  /* Bars rise one after another on mount; --_i is the column index */
+  animation: ml-bar-rise var(--ml-dur-chart) var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * var(--ml-stagger));
+}
+
+@keyframes ml-bar-rise {
+  from { scale: 1 0; }
 }
 
 .ml-bars--gold .ml-bars__bar { --_c1: rgb(240 173 47 / 0.55); --_c2: rgb(240 173 47 / 0.12); }
@@ -218,6 +249,11 @@
   width: 100%;
   height: 100%;
   rotate: -90deg;
+  animation: ml-donut-spin-in 900ms var(--ml-ease-spring) backwards;
+}
+
+@keyframes ml-donut-spin-in {
+  from { opacity: 0; rotate: -270deg; scale: 0.85; }
 }
 
 .ml-donut__track {

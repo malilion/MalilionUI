@@ -120,6 +120,10 @@
   --ml-dur-fast: 120ms;
   --ml-dur: 220ms;
   --ml-dur-slow: 480ms;
+  /* Charts and meters fill in a touch slower so the motion reads as "charging" */
+  --ml-dur-chart: 700ms;
+  /* Delay between siblings in a staggered entrance (bars, list rows…) */
+  --ml-stagger: 45ms;
 
   /* ── Layers ─────────────────────────────────────────────── */
   --ml-z-tooltip: 1100;

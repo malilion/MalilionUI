@@ -188,6 +188,7 @@ select.ml-input__control option {
   align-items: center;
   gap: 6px;
   color: var(--ml-danger-text);
+  animation: ml-shake-in 360ms var(--ml-ease);
 }
 
 .ml-field__error svg {

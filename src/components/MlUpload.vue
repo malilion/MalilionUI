@@ -80,6 +80,15 @@ function onDrop(event: DragEvent) {
   add(event.dataTransfer?.files ?? null)
 }
 
+// Stable per-file keys, so removing a row animates that row rather than the last one.
+const fileKeys = new WeakMap<File, number>()
+let nextKey = 0
+function fileKey(file: File) {
+  let key = fileKeys.get(file)
+  if (key === undefined) fileKeys.set(file, (key = nextKey++))
+  return key
+}
+
 function formatSize(bytes: number) {
   if (bytes < 1024) return `${bytes} B`
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
@@ -111,8 +120,8 @@ function formatSize(bytes: number) {
       :disabled="disabled"
       @change="onChange"
     />
-    <ul v-if="files.length" class="ml-upload__list">
-      <li v-for="(file, i) in files" :key="`${file.name}-${i}`" class="ml-upload__file">
+    <TransitionGroup v-if="files.length" tag="ul" name="ml-upload-file" class="ml-upload__list">
+      <li v-for="(file, i) in files" :key="fileKey(file)" class="ml-upload__file">
         <MlPaw tone="current" class="ml-upload__paw" />
         <span class="ml-upload__name">{{ file.name }}</span>
         <span class="ml-upload__size">{{ formatSize(file.size) }}</span>
@@ -120,6 +129,6 @@ function formatSize(bytes: number) {
           <MlIcon name="close" />
         </button>
       </li>
-    </ul>
+    </TransitionGroup>
   </div>
 </template>

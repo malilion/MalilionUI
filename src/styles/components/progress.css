@@ -42,7 +42,8 @@
   rotate: 90deg;
   color: var(--_text);
   filter: drop-shadow(0 0 6px var(--_glow)) drop-shadow(0 1px 1px rgb(0 0 0 / 0.6));
-  transition: left 700ms var(--ml-ease-spring);
+  transition: left var(--ml-dur-chart) var(--ml-ease-spring);
+  animation: ml-progress-runner var(--ml-dur-chart) var(--ml-ease-spring) backwards;
   pointer-events: none;
 }
 
@@ -64,7 +65,16 @@
   height: 100%;
   width: var(--_value, 0%);
   background: var(--_fill);
-  transition: width 700ms var(--ml-ease-spring);
+  transition: width var(--ml-dur-chart) var(--ml-ease-spring);
+  animation: ml-progress-fill var(--ml-dur-chart) var(--ml-ease-spring) backwards;
+}
+
+@keyframes ml-progress-fill {
+  from { width: 0; }
+}
+
+@keyframes ml-progress-runner {
+  from { left: 0; }
 }
 
 /* Cell dividers */
@@ -127,7 +137,9 @@
   background:
     repeating-linear-gradient(-45deg, rgb(255 255 255 / 0.22) 0 7px, transparent 7px 14px) 0 0 / 28px 100%,
     var(--_fill);
-  animation: ml-stripes 0.8s linear infinite;
+  animation:
+    ml-progress-fill var(--ml-dur-chart) var(--ml-ease-spring) backwards,
+    ml-stripes 0.8s linear infinite;
 }
 
 .ml-progress--indeterminate .ml-progress__bar {
