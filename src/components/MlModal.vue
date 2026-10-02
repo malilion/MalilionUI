@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import MlIcon from './MlIcon.vue'
-import { useScrollLock } from '../composables'
+import { trapFocus, useScrollLock } from '../composables'
 
 const props = withDefaults(
   defineProps<{
@@ -24,10 +24,6 @@ const open = defineModel<boolean>('open', { default: false })
 const titleId = `ml-modal-${useId()}`
 const panel = ref<HTMLElement>()
 let returnFocusTo: HTMLElement | null = null
-
-const FOCUSABLE =
-  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
-  'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
 const scrollLock = useScrollLock()
 
@@ -57,22 +53,7 @@ function onKeydown(event: KeyboardEvent) {
     close()
     return
   }
-  if (event.key !== 'Tab' || !panel.value) return
-  const focusable = [...panel.value.querySelectorAll<HTMLElement>(FOCUSABLE)]
-  if (focusable.length === 0) {
-    event.preventDefault()
-    return
-  }
-  const first = focusable[0]
-  const last = focusable[focusable.length - 1]
-  const active = document.activeElement
-  if (event.shiftKey && (active === first || active === panel.value)) {
-    event.preventDefault()
-    last.focus()
-  } else if (!event.shiftKey && active === last) {
-    event.preventDefault()
-    first.focus()
-  }
+  if (panel.value) trapFocus(event, panel.value)
 }
 
 watch(open, (value) => (value ? onOpen() : onClose()))

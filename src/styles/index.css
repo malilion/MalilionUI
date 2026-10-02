@@ -30,3 +30,8 @@
 @import './components/charts.css';
 @import './components/calendar.css';
 @import './components/mobile.css';
+@import './components/combobox.css';
+@import './components/popover.css';
+@import './components/drawer.css';
+@import './components/skeleton.css';
+@import './components/form.css';

@@ -310,6 +310,98 @@ export const pages: PageDef[] = [
     ],
   },
   {
+    id: 'combobox',
+    title: 'Combobox',
+    zh: '進階選擇',
+    group: 'form',
+    isNew: true,
+    desc: '完全自繪的下拉選擇：可搜尋、可多選、可清除，選單和金屬外殼一致。鍵盤操作遵循 WAI-ARIA combobox 模式（方向鍵、Home / End、首字跳轉、Esc 只關選單）。需要手機原生選單時改用 MlSelect。',
+    usage: `import { MlCombobox } from '@malilion/ui'`,
+    examples: [
+      { file: 'combobox/basic', title: '基本用法', desc: '加上 clearable 會出現清除按鈕。', block: true },
+      { file: 'combobox/searchable', title: '可搜尋', desc: 'searchable 讓輸入框即時篩選；符合的片段會標亮。', block: true },
+      { file: 'combobox/multiple', title: '多選', desc: 'multiple 時 v-model 是陣列，已選項目以標籤顯示，選單保持開啟方便連續挑選。', block: true },
+    ],
+    api: [
+      {
+        component: 'MlCombobox',
+        props: [
+          { name: 'v-model', desc: '單選為值，multiple 時為陣列', type: 'string | number | null | (string | number)[]', default: 'null' },
+          { name: 'options', desc: '選項', type: 'MlSelectOption[]' },
+          { name: 'searchable', desc: '輸入篩選', type: 'boolean', default: 'false' },
+          { name: 'multiple', desc: '多選', type: 'boolean', default: 'false' },
+          { name: 'clearable', desc: '顯示清除按鈕', type: 'boolean', default: 'false' },
+          { name: 'filter', desc: '自訂篩選函式', type: '(option, query) => boolean' },
+          { name: 'placeholder', desc: '尚未選擇時顯示', type: 'string', default: `'請選擇'` },
+          { name: 'no-match-text', desc: '沒有符合項目時的文字', type: 'string', default: `'找不到符合的選項'` },
+          { name: 'name', desc: '輸出 hidden input，讓原生表單也能送出', type: 'string' },
+          { name: 'label / index / hint / error / size / required / disabled', desc: '同 MlInput', type: '—' },
+        ],
+        events: [{ name: 'change', desc: '使用者改變選擇時', type: '(value) => void' }],
+        slots: [
+          { name: 'option', desc: '自訂選項內容，提供 { option, selected }' },
+          { name: 'tag', desc: '多選標籤內容，提供 { option }' },
+          { name: 'selected', desc: '單選、非搜尋模式下已選值的顯示，提供 { option }' },
+          { name: 'prefix', desc: '前綴（圖示等）' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'form',
+    title: 'Form',
+    zh: '表單驗證',
+    group: 'form',
+    isNew: true,
+    desc: 'MlForm 管理整份表單的規則；MlFormItem 用 prop 指向欄位，錯誤會自動顯示在裡面的 MlInput、MlCombobox 等元件上（含 aria-invalid）。欄位失焦後開始即時驗證；送出時全部檢查，並把焦點移到第一個錯誤。',
+    usage: `import { MlForm, MlFormItem, type MlFormRules } from '@malilion/ui'`,
+    examples: [
+      { file: 'form/basic', title: '完整表單', desc: '必填、長度、Email 格式、非同步檢查（試試輸入 Simba），以及沒有內建錯誤列的勾選框。', block: true },
+      { file: 'form/item-rules', title: '欄位上的規則', desc: '規則也能直接寫在 MlFormItem 上；validator 拿得到整個 model，適合「確認密碼」這類交叉檢查。', block: true },
+    ],
+    api: [
+      {
+        component: 'MlForm',
+        props: [
+          { name: 'model', desc: '表單資料（reactive 物件）', type: 'Record<string, unknown>' },
+          { name: 'rules', desc: '以欄位路徑為 key 的規則', type: 'MlFormRules' },
+        ],
+        events: [
+          { name: 'submit', desc: '全部通過時觸發', type: '(model) => void' },
+          { name: 'invalid', desc: '有欄位未通過；焦點已移到第一個錯誤', type: '(errors: Record<string, string>) => void' },
+        ],
+        slots: [{ name: 'default', desc: '表單內容' }],
+      },
+      {
+        component: 'MlForm (ref)',
+        events: [
+          { name: 'validate()', desc: '驗證全部欄位', type: '() => Promise<boolean>' },
+          { name: 'validateField(prop)', desc: '驗證單一欄位，回傳錯誤訊息', type: '(prop: string) => Promise<string | undefined>' },
+          { name: 'clearValidation(props?)', desc: '清除錯誤（全部或指定欄位）', type: '(props?: string[]) => void' },
+        ],
+      },
+      {
+        component: 'MlFormItem',
+        props: [
+          { name: 'prop', desc: '欄位在 model 中的路徑，支援 a.b', type: 'string' },
+          { name: 'rules', desc: '額外規則，接在表單規則之後', type: 'MlFormRule | MlFormRule[]' },
+        ],
+        slots: [{ name: 'default', desc: '一個表單元件，提供 { error, validate }' }],
+      },
+      {
+        component: 'MlFormRule',
+        props: [
+          { name: 'required', desc: "必填；''、null、undefined、[]、false 都算空", type: 'boolean' },
+          { name: 'min / max', desc: '字串長度、陣列項數或數值大小', type: 'number' },
+          { name: 'type', desc: '格式', type: `'email' | 'url' | 'number' | 'integer'` },
+          { name: 'pattern', desc: '正規表示式', type: 'RegExp' },
+          { name: 'validator', desc: '自訂檢查；回傳 true 通過、字串為錯誤訊息，可為 async', type: '(value, model) => boolean | string | Promise<…>' },
+          { name: 'message', desc: '覆寫這條規則的預設訊息', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'checkbox',
     title: 'Checkbox',
     zh: '勾選框',
@@ -586,6 +678,139 @@ export const pages: PageDef[] = [
   },
 
   /* ── 資料展示 ─────────────────────────────────────────── */
+  {
+    id: 'popover',
+    title: 'Popover',
+    zh: '彈出框',
+    group: 'feedback',
+    isNew: true,
+    desc: '可以放任何內容的浮動面板，金色邊朝向觸發元素。點擊或滑過開啟，Esc 與點擊外部關閉，關閉後焦點回到觸發元素。',
+    usage: `import { MlPopover } from '@malilion/ui'`,
+    examples: [
+      { file: 'popover/basic', title: '點擊與滑過' },
+      { file: 'popover/placement', title: '四個方向' },
+    ],
+    api: [
+      {
+        component: 'MlPopover',
+        props: [
+          { name: 'v-model:open', desc: '是否開啟', type: 'boolean', default: 'false' },
+          { name: 'trigger', desc: '開啟方式', type: `'click' | 'hover'`, default: `'click'` },
+          { name: 'placement', desc: '方向', type: `'top' | 'bottom' | 'left' | 'right'`, default: `'bottom'` },
+          { name: 'title', desc: '標題（同時作為對話框的無障礙名稱）', type: 'string' },
+          { name: 'width', desc: '面板寬度', type: 'number | string' },
+          { name: 'delay', desc: 'hover 延遲（ms）', type: 'number', default: '120' },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+        slots: [
+          { name: 'default', desc: '觸發元素，提供 { open, toggle }' },
+          { name: 'content', desc: '面板內容，提供 { close }' },
+          { name: 'title', desc: '自訂標題' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'popconfirm',
+    title: 'Popconfirm',
+    zh: '氣泡確認',
+    group: 'feedback',
+    isNew: true,
+    desc: '就地確認的小氣泡，比對話框輕巧。開啟時焦點落在「取消」，避免誤按 Enter 就執行危險動作。',
+    usage: `import { MlPopconfirm } from '@malilion/ui'`,
+    examples: [{ file: 'popconfirm/basic', title: '基本用法', desc: 'tone="danger" 會換成紅色的確認按鈕與邊條。' }],
+    api: [
+      {
+        component: 'MlPopconfirm',
+        props: [
+          { name: 'title', desc: '問題', type: 'string' },
+          { name: 'description', desc: '補充說明', type: 'string' },
+          { name: 'tone', desc: '語氣', type: `'warning' | 'danger' | 'info'`, default: `'warning'` },
+          { name: 'confirm-text / cancel-text', desc: '按鈕文字', type: 'string', default: `'確定' / '取消'` },
+          { name: 'placement', desc: '方向', type: `'top' | 'bottom' | 'left' | 'right'`, default: `'top'` },
+          { name: 'v-model:open / disabled', desc: '同 MlPopover', type: 'boolean' },
+        ],
+        events: [
+          { name: 'confirm', desc: '按下確認' },
+          { name: 'cancel', desc: '按下取消' },
+        ],
+        slots: [
+          { name: 'default', desc: '觸發元素' },
+          { name: 'description', desc: '自訂說明內容' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'drawer',
+    title: 'Drawer',
+    zh: '抽屜',
+    group: 'feedback',
+    isNew: true,
+    desc: '從畫面邊緣滑出的控制台面板，內側有金色能量條。行為和 MlModal 一樣：鎖定捲動、焦點鎖在面板內、Esc / 點背景關閉、關閉後焦點回到原處。',
+    usage: `import { MlDrawer } from '@malilion/ui'`,
+    examples: [
+      { file: 'drawer/basic', title: '基本用法' },
+      { file: 'drawer/placement', title: '四個方向' },
+    ],
+    api: [
+      {
+        component: 'MlDrawer',
+        props: [
+          { name: 'v-model:open', desc: '是否開啟', type: 'boolean', default: 'false' },
+          { name: 'placement', desc: '從哪一邊滑出', type: `'right' | 'left' | 'top' | 'bottom'`, default: `'right'` },
+          { name: 'size', desc: '寬度（左右）或高度（上下）', type: 'number | string', default: '420 / 360' },
+          { name: 'title / eyebrow', desc: '標題與小標', type: 'string' },
+          { name: 'close-on-backdrop / close-on-esc', desc: '點背景 / Esc 關閉', type: 'boolean', default: 'true' },
+          { name: 'hide-close', desc: '隱藏關閉鈕', type: 'boolean', default: 'false' },
+          { name: 'inline', desc: '不傳送到 <body>', type: 'boolean', default: 'false' },
+        ],
+        events: [{ name: 'close', desc: '使用者關閉時觸發' }],
+        slots: [
+          { name: 'default', desc: '內容，提供 { close }' },
+          { name: 'title', desc: '自訂標題' },
+          { name: 'footer', desc: '頁尾，提供 { close }' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'skeleton',
+    title: 'Skeleton',
+    zh: '骨架屏',
+    group: 'feedback',
+    isNew: true,
+    desc: '資料還在路上時的佔位金屬板，帶一道掃描光。螢幕閱讀器會讀到「載入中」；減少動態效果時掃描光會關閉。',
+    usage: `import { MlSkeleton, MlSkeletonItem } from '@malilion/ui'`,
+    examples: [
+      { file: 'skeleton/basic', title: '基本用法', desc: 'loading 變成 false 就換成真正的內容。', block: true },
+      { file: 'skeleton/custom', title: '自訂版型', desc: '用 #template 插槽和 MlSkeletonItem 拼出和真實內容一樣的形狀。', block: true },
+    ],
+    api: [
+      {
+        component: 'MlSkeleton',
+        props: [
+          { name: 'loading', desc: '是否顯示骨架', type: 'boolean', default: 'true' },
+          { name: 'rows', desc: '段落行數', type: 'number', default: '3' },
+          { name: 'title', desc: '顯示標題列', type: 'boolean', default: 'true' },
+          { name: 'avatar', desc: '顯示圓形頭像', type: 'boolean', default: 'false' },
+          { name: 'animated', desc: '掃描光', type: 'boolean', default: 'true' },
+          { name: 'label', desc: '給螢幕閱讀器的文字', type: 'string', default: `'載入中…'` },
+        ],
+        slots: [
+          { name: 'default', desc: '載入完成後的內容' },
+          { name: 'template', desc: '自訂骨架版型' },
+        ],
+      },
+      {
+        component: 'MlSkeletonItem',
+        props: [
+          { name: 'variant', desc: '形狀', type: `'text' | 'title' | 'circle' | 'rect' | 'button' | 'image'`, default: `'text'` },
+          { name: 'width / height', desc: '數字為 px，或任何 CSS 長度', type: 'number | string' },
+        ],
+      },
+    ],
+  },
   {
     id: 'table',
     title: 'Table',

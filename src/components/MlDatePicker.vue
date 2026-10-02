@@ -4,6 +4,7 @@ import MlCalendar from './MlCalendar.vue'
 import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import { describedBy } from '../composables'
+import { useFormField } from '../form'
 
 const props = withDefaults(
   defineProps<{
@@ -33,6 +34,7 @@ const props = withDefaults(
     placement: 'bottom-start',
   },
 )
+const { fieldError, fieldRequired } = useFormField(props)
 
 const model = defineModel<Date | null>({ default: null })
 const open = ref(false)
@@ -88,9 +90,9 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocumentPoin
 </script>
 
 <template>
-  <MlField :control-id="controlId" :label="label" :hint="hint" :error="error" :index="index">
+  <MlField :control-id="controlId" :label="label" :hint="hint" :error="fieldError" :index="index" :required="fieldRequired">
     <div ref="root" class="ml-datepicker">
-      <div :class="['ml-input', { 'ml-input--error': error, 'ml-input--disabled': disabled }]">
+      <div :class="['ml-input', { 'ml-input--error': fieldError, 'ml-input--disabled': disabled }]">
         <span class="ml-input__affix"><MlIcon name="calendar" /></span>
         <button
           :id="controlId"
@@ -100,8 +102,8 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocumentPoin
           aria-haspopup="dialog"
           :aria-expanded="open"
           :aria-controls="open ? panelId : undefined"
-          :aria-invalid="error ? true : undefined"
-          :aria-describedby="describedBy(controlId, hint, error)"
+          :aria-invalid="fieldError ? true : undefined"
+          :aria-describedby="describedBy(controlId, hint, fieldError)"
           :disabled="disabled"
           @click="open ? hide() : show()"
         >

@@ -1,4 +1,4 @@
-import { useAttrs } from 'vue'
+import { onBeforeUnmount, useAttrs, watch, type Ref } from 'vue'
 
 /**
  * Form controls render a wrapper around a native element. `class` and `style`
@@ -50,4 +50,54 @@ export function useScrollLock() {
       if (--lockCount === 0) document.documentElement.style.overflow = previousOverflow
     },
   }
+}
+
+export const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
+  'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+
+/**
+ * Keep Tab / Shift+Tab inside `container` (modal dialogs). Call from a keydown
+ * handler; it only acts on Tab.
+ */
+export function trapFocus(event: KeyboardEvent, container: HTMLElement) {
+  if (event.key !== 'Tab') return
+  const focusable = [...container.querySelectorAll<HTMLElement>(FOCUSABLE)]
+  if (focusable.length === 0) {
+    event.preventDefault()
+    return
+  }
+  const first = focusable[0]
+  const last = focusable[focusable.length - 1]
+  const active = document.activeElement
+  if (event.shiftKey && (active === first || active === container)) {
+    event.preventDefault()
+    last.focus()
+  } else if (!event.shiftKey && active === last) {
+    event.preventDefault()
+    first.focus()
+  }
+}
+
+/** Calls `handler` on a pointerdown outside `root`, while `active()` is true. */
+export function useOutsidePointer(
+  root: Ref<HTMLElement | undefined>,
+  active: () => boolean,
+  handler: () => void,
+) {
+  function onPointerDown(event: PointerEvent) {
+    if (root.value && !root.value.contains(event.target as Node)) handler()
+  }
+  watch(
+    active,
+    (on) => {
+      if (typeof document === 'undefined') return // SSR
+      if (on) document.addEventListener('pointerdown', onPointerDown)
+      else document.removeEventListener('pointerdown', onPointerDown)
+    },
+    { immediate: true },
+  )
+  onBeforeUnmount(() => {
+    if (typeof document !== 'undefined') document.removeEventListener('pointerdown', onPointerDown)
+  })
 }
