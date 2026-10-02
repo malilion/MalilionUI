@@ -34,7 +34,9 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 48 components across basic, form, feedback, data display, charts, navigation and mobile, plus ready-made templates
+- 71 components across basic, form, feedback, data display, charts, navigation and mobile, plus ready-made templates
+- Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
+- Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
@@ -42,6 +44,16 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Paw-print details everywhere: `MlPaw`, the `v-paw-stamp` directive, paw checkboxes, radios, loaders and progress runners
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - Zero runtime dependencies — only Vue as a peer dependency
+
+## What's New in 0.5
+
+25 new components, all with keyboard support, ARIA wiring and docs pages:
+
+- **Form**: `MlCombobox`, `MlAutocomplete`, `MlTimePicker`, `MlDateTimePicker`, `MlColorPicker`, `MlSegmented`, `MlRate`, `MlTransfer`, and `MlForm` / `MlFormItem` validation
+- **Feedback**: `MlDrawer`, `MlPopover`, `MlPopconfirm`, `MlSkeleton` / `MlSkeletonItem`
+- **Data display**: `MlTree`, `MlTimeline`, `MlImage` / `MlImagePreview`, `MlCarousel`, `MlWatermark`
+- **Navigation**: `MlAffix`, `MlBackTop`
+- Entrance and exit animations across existing components (alerts, tabs, calendar, charts, upload…)
 
 ## Installation
 
@@ -121,6 +133,10 @@ Load the fonts for the full mech look (the components fall back to system fonts 
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/charts.png" alt="Charts"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/kit.png" alt="More components"> |
 | **Calendar & date picker** | **Mobile screens** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/calendar.png" alt="Calendar"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/mobile.png" alt="Mobile screens"> |
+| **Pickers & form validation** | **Drawer, popover & skeleton** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/pickers.png" alt="Pickers and validation"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/overlays.png" alt="Overlays"> |
+| **Tree, timeline & transfer** | **Image, carousel & watermark** |
+| <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/structure.png" alt="Tree, timeline and transfer"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/media.png" alt="Media and utilities"> |
 | **Paw prints · the cute side** | **Two themes** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Themes"> |
 
@@ -156,6 +172,9 @@ Every component accepts the usual attributes (`class`, `style`, `aria-*`, listen
 | MlCombobox | searchable / multiple / clearable | boolean | `false` | Custom listbox select; `multiple` makes v-model an array |
 | MlForm | model / rules | `object` / `MlFormRules` | — | Wrap fields in `MlFormItem prop="…"`; errors flow into the controls |
 | MlDrawer | placement / size | `'right' \| 'left' \| 'top' \| 'bottom'` / `number \| string` | `'right'` / `420` | Edge panel with focus trap and scroll lock |
+| MlTimePicker | v-model / minute-step / min / max | `string \| null` / number / string | `null` / `1` / — | `"HH:mm"` wheels; `seconds` adds a column |
+| MlTree | v-model:expanded / selected / checked | `Key[]` / `Key \| null` / `Key[]` | `[]` / `null` / `[]` | Add `checkable` for tri-state checks, `filter` to search |
+| MlCarousel | items / autoplay / v-model:index | `T[]` / ms / number | — / `0` / `0` | Slides come from the default slot `{ item, index }` |
 | MlDropdown | selectable | boolean | `false` | Single-choice menu; v-model holds the value, marked with a paw |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | The Malilion lion, as a portrait or full body |
 | MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | Bars with round-number ticks; the peak lights up |
@@ -245,7 +264,7 @@ npm run screenshots  # Regenerate the README images (needs Google Chrome)
 Releases are published by GitHub Actions through npm Trusted Publishing — no tokens or one-time passwords:
 
 ```bash
-npm version minor    # bumps package.json and creates the tag, e.g. v0.4.0
+npm version minor    # bumps package.json and creates the tag, e.g. v0.5.0
 git push --follow-tags
 ```
 

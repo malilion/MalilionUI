@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { MlAvatarStatus, MlTableSort } from '@malilion/ui'
+import { lionAvatarUrl, lionFullUrl, type MlAvatarStatus, type MlTableSort } from '@malilion/ui'
 import MlToastCard from '../src/components/MlToastCard.vue'
 import type { MlToastItem } from '../src/toast'
 
@@ -125,6 +125,64 @@ const mTabs = [
   { value: 'explore', label: 'Explore', icon: 'compass' as const },
   { value: 'inbox', label: 'Inbox', icon: 'message' as const, badge: 3 },
   { value: 'me', label: 'Me', icon: 'user' as const },
+]
+
+/* v0.5 — pickers, overlays, structure, media */
+const comboRoles = [
+  { value: 'alpha', label: 'Alpha — 獅群領袖' },
+  { value: 'hunter', label: 'Hunter — 前線開發' },
+  { value: 'scout', label: 'Scout — 探索研究' },
+  { value: 'elder', label: 'Elder — 名譽顧問' },
+]
+const stackOptions = [
+  { value: 'vue', label: 'Vue' },
+  { value: 'ts', label: 'TypeScript' },
+  { value: 'vite', label: 'Vite' },
+  { value: 'pinia', label: 'Pinia' },
+]
+const rangeOptions = [
+  { value: 'day', label: '日' },
+  { value: 'week', label: '週' },
+  { value: 'month', label: '月' },
+]
+const treeData = [
+  {
+    key: 'src',
+    label: 'src',
+    icon: 'folder' as const,
+    children: [
+      {
+        key: 'components',
+        label: 'components',
+        icon: 'folder' as const,
+        children: [
+          { key: 'combobox', label: 'MlCombobox.vue', icon: 'file' as const },
+          { key: 'tree', label: 'MlTree.vue', icon: 'file' as const },
+          { key: 'drawer', label: 'MlDrawer.vue', icon: 'file' as const },
+        ],
+      },
+      { key: 'form', label: 'form.ts', icon: 'file' as const },
+    ],
+  },
+  { key: 'readme', label: 'README.md', icon: 'file' as const },
+]
+const timelineItems = [
+  { title: 'v0.5.0 發布', time: '10:02', tone: 'success' as const, icon: 'success' as const, desc: '新增 25 個元件。' },
+  { title: '合併 PR #3', time: '09:40', paw: true },
+  { title: 'CI 通過', time: '09:31', tone: 'tech' as const, icon: 'check' as const },
+  { title: '開始開發', time: '08:00' },
+]
+const transferData = [
+  { key: 'simba', label: 'Simba', hint: 'Alpha' },
+  { key: 'nala', label: 'Nala', hint: 'Hunter' },
+  { key: 'rafiki', label: 'Rafiki', hint: 'Elder' },
+  { key: 'timon', label: 'Timon', hint: 'Scout' },
+  { key: 'zazu', label: 'Zazu', hint: 'Messenger' },
+]
+const slides = [
+  { title: 'Night Pride', sub: '暗色主題，金屬與獅鬃的光澤' },
+  { title: 'Circuit Cyan', sub: '科技色，獅子眼裡的電光' },
+  { title: 'Toe Bean Pink', sub: '肉球粉，少量使用的可愛' },
 ]
 
 const themes = [
@@ -586,6 +644,147 @@ const themes = [
     </section>
 
     <!-- ───────────── Logo (README header) ───────────── -->
+    <!-- ───────────── Pickers & validation (v0.5) ───────────── -->
+    <section data-shot="pickers" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">11 // Pickers &amp; validation</p>
+          <h2 class="shot__title">進階選擇與表單驗證</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v5-grid">
+        <div class="stack stack--loose">
+          <MlInput index="01" label="Email" :model-value="'simba@pride'" error="請輸入有效的電子郵件" required />
+          <MlCombobox class="open-combo" index="02" label="角色" :options="comboRoles" :model-value="'hunter'" searchable />
+          <div class="v5-spacer" />
+        </div>
+        <div class="stack stack--loose">
+          <MlCombobox index="03" label="技術棧" :options="stackOptions" :model-value="['vue', 'ts', 'vite']" multiple clearable />
+          <MlAutocomplete index="04" label="搜尋專案" :model-value="'malilion/ui'" clearable>
+            <template #prefix><MlIcon name="search" /></template>
+          </MlAutocomplete>
+          <div class="grid-2 grid-2--tight">
+            <MlTimePicker label="開始時間" :model-value="'09:30'" />
+            <MlColorPicker class="open-color" label="品牌色" :model-value="'#f0ad2f'" />
+          </div>
+          <div class="v5-spacer v5-spacer--tall" />
+        </div>
+        <div class="stack stack--loose">
+          <MlDateTimePicker label="上線時間" :model-value="new Date(2026, 9, 2, 10, 0)" />
+          <MlSegmented :options="rangeOptions" :model-value="'week'" label="範圍" />
+          <MlRate :model-value="4.5" allow-half show-value size="lg" />
+          <MlRate :model-value="3" tone="bean" :texts="['很差', '普通', '不錯', '很好', '獅吼級']" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Overlays (v0.5) ───────────── -->
+    <section data-shot="overlays" class="shot shot--overlays">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">12 // Overlays</p>
+          <h2 class="shot__title">抽屜、彈出框與骨架屏</h2>
+        </div>
+      </header>
+      <div class="v5-overlays">
+        <div class="stack stack--loose">
+          <div class="row row--top v5-pops">
+            <MlPopover :open="true" title="獅群狀態" placement="bottom" :width="240">
+              <MlButton variant="outline">查看狀態</MlButton>
+              <template #content>
+                <p class="v5-line">在線成員 <strong>12</strong> · 巡邏中 <strong>3</strong></p>
+                <MlProgress :value="72" label="領地覆蓋率" size="sm" show-value />
+              </template>
+            </MlPopover>
+            <MlPopconfirm :open="true" title="刪除這個專案？" description="部署紀錄會一起刪除，無法復原。" tone="danger" confirm-text="刪除" placement="bottom">
+              <MlButton variant="danger">刪除專案</MlButton>
+            </MlPopconfirm>
+          </div>
+          <MlCard class="v5-skel">
+            <MlSkeleton avatar :rows="3" />
+          </MlCard>
+        </div>
+        <MlDrawer :open="true" inline eyebrow="Console · Settings" title="偏好設定" :size="380">
+          <div class="stack">
+            <MlSwitch :model-value="true">桌面通知</MlSwitch>
+            <MlSegmented :options="rangeOptions" :model-value="'day'" size="sm" label="報表週期" />
+            <MlSkeleton :rows="2" :title="false" />
+          </div>
+          <template #footer>
+            <MlButton variant="ghost">取消</MlButton>
+            <MlButton>儲存</MlButton>
+          </template>
+        </MlDrawer>
+      </div>
+    </section>
+
+    <!-- ───────────── Structure (v0.5) ───────────── -->
+    <section data-shot="structure" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">13 // Structure</p>
+          <h2 class="shot__title">樹狀結構、時間軸與穿梭框</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v5-structure">
+        <MlCard>
+          <MlTree
+            :data="treeData"
+            :expanded="['src', 'components']"
+            :checked="['combobox', 'tree']"
+            checkable
+            :selectable="false"
+            label="檔案"
+          />
+        </MlCard>
+        <MlCard>
+          <MlTimeline :items="timelineItems" pending="部署中…" />
+        </MlCard>
+        <MlTransfer class="v5-transfer" :data="transferData" :model-value="['nala', 'timon']" :titles="['獅群成員', '本次任務']" filterable />
+      </div>
+    </section>
+
+    <!-- ───────────── Media (v0.5) ───────────── -->
+    <section data-shot="media" class="shot shot--media">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">14 // Media &amp; utilities</p>
+          <h2 class="shot__title">圖片、輪播、浮水印與回到頂端</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v5-media">
+        <MlCarousel :items="slides" :height="260" label="主題展示">
+          <template #default="{ item }">
+            <div class="v5-slide">
+              <p class="shot__kicker">MALILION UI</p>
+              <h3>{{ item.title }}</h3>
+              <p>{{ item.sub }}</p>
+            </div>
+          </template>
+        </MlCarousel>
+        <MlWatermark :content="['碼力獅 · 內部文件', 'MALILION · 2026']">
+          <MlCard eyebrow="Confidential" title="Q4 獅群作戰計畫" class="v5-wm">
+            <p>1. 第三優先元件全部上線。</p>
+            <p>2. 發布 v0.5.0 到 npm。</p>
+            <p>3. 午睡。</p>
+          </MlCard>
+        </MlWatermark>
+        <div class="row">
+          <MlImage :src="lionFullUrl" alt="碼力獅全身" :width="140" :height="140" fit="contain" preview />
+          <MlImage :src="lionAvatarUrl" alt="碼力獅頭像" :width="140" :height="140" />
+          <MlImage :src="lionAvatarUrl" alt="圓形頭像" :width="96" :height="96" round />
+          <MlImage src="/missing.png" alt="壞掉的圖片" :width="140" :height="140" />
+        </div>
+        <div class="v5-backtop">
+          <MlBackTop :visibility-height="0" :right="0" :bottom="0" />
+          <span class="ml-hud-label">BackTop · 外圈是捲動進度</span>
+        </div>
+      </div>
+    </section>
+
     <div data-shot="logo" class="logo-shot">
       <MlMascot :size="132" frame="ring" title="碼力獅" />
     </div>
@@ -1082,5 +1281,106 @@ body {
 
 .theme-half .shot__kicker {
   margin-bottom: 18px;
+}
+/* v0.5 panels */
+.v5-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px;
+  align-items: start;
+}
+
+.v5-spacer {
+  height: 150px;
+}
+
+.v5-spacer--tall {
+  height: 300px;
+}
+
+.shot--overlays {
+  min-height: 560px;
+}
+
+.v5-overlays {
+  max-width: 620px;
+}
+
+.v5-pops {
+  gap: 200px;
+  min-height: 260px;
+  padding-left: 90px;
+}
+
+.v5-line {
+  margin: 0 0 10px;
+}
+
+.v5-skel {
+  max-width: 520px;
+}
+
+/* Keep the drawer inside the panel, docked right, without dimming the rest */
+.shot--overlays .ml-drawer {
+  position: absolute;
+  inset: 0 0 0 auto;
+}
+
+.shot--overlays .ml-drawer__backdrop {
+  display: none;
+}
+
+.v5-structure {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.v5-transfer {
+  grid-column: 1 / -1;
+}
+
+.v5-media {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.v5-slide {
+  display: grid;
+  align-content: center;
+  height: 100%;
+  padding: 0 56px;
+  background: radial-gradient(80% 120% at 20% 0%, rgb(240 173 47 / 0.32), transparent 60%), #0b0e14;
+  color: #efe8d8;
+}
+
+.v5-slide h3 {
+  margin: 4px 0;
+  font-family: var(--ml-font-display);
+  font-size: 30px;
+}
+
+.v5-slide p:last-child {
+  margin: 0;
+  opacity: 0.8;
+}
+
+.v5-wm p {
+  margin: 0 0 8px;
+}
+
+.v5-backtop {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  min-height: 60px;
+}
+
+.v5-backtop .ml-backtop {
+  position: relative;
 }
 </style>
