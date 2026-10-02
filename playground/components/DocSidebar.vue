@@ -2,11 +2,14 @@
 import { computed, ref } from 'vue'
 import { href, route } from '../router'
 import { groups, pages } from '../registry'
+import { version } from '../../package.json'
 
 defineProps<{ open: boolean }>()
 defineEmits<{ close: [] }>()
 
 const query = ref('')
+// "0.5.0" → "v0.5", straight from package.json so a release never leaves it stale.
+const shortVersion = `v${version.split('.').slice(0, 2).join('.')}`
 
 const filtered = computed(() => {
   const q = query.value.trim().toLowerCase()
@@ -31,7 +34,7 @@ const componentCount = pages.filter((page) => page.group !== 'start').length
       <a :href="href('home')" class="sidebar__brand">
         <MlMascot :size="38" frame="ring" title="" />
         <span class="sidebar__name">MALILION<b>UI</b></span>
-        <MlBadge tone="steel">v0.4</MlBadge>
+        <MlBadge tone="steel">{{ shortVersion }}</MlBadge>
       </a>
       <button type="button" class="sidebar__close" aria-label="關閉選單" @click="$emit('close')">
         <MlIcon name="close" />
