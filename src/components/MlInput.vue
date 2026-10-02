@@ -2,6 +2,7 @@
 import { computed, useId } from 'vue'
 import MlField from './MlField.vue'
 import { describedBy, useSplitAttrs } from '../composables'
+import { useFormField } from '../form'
 import type { MlSize } from '../types'
 
 defineOptions({ inheritAttrs: false })
@@ -22,6 +23,7 @@ const props = withDefaults(
   }>(),
   { type: 'text', size: 'md' },
 )
+const { fieldError, fieldRequired } = useFormField(props)
 
 const model = defineModel<string | number>()
 const { rootAttrs, controlAttrs } = useSplitAttrs()
@@ -35,16 +37,16 @@ const controlId = computed(() => props.id ?? `ml-input-${autoId}`)
     :control-id="controlId"
     :label="label"
     :hint="hint"
-    :error="error"
+    :error="fieldError"
     :index="index"
-    :required="required"
+    :required="fieldRequired"
   >
     <template v-if="$slots.label" #label><slot name="label" /></template>
     <div
       :class="[
         'ml-input',
         `ml-input--${size}`,
-        { 'ml-input--error': error, 'ml-input--disabled': disabled },
+        { 'ml-input--error': fieldError, 'ml-input--disabled': disabled },
       ]"
     >
       <span v-if="$slots.prefix" class="ml-input__affix"><slot name="prefix" /></span>
@@ -55,11 +57,11 @@ const controlId = computed(() => props.id ?? `ml-input-${autoId}`)
         class="ml-input__control"
         :type="type"
         :placeholder="placeholder"
-        :required="required"
+        :required="fieldRequired"
         :disabled="disabled"
         :readonly="readonly"
-        :aria-invalid="error ? true : undefined"
-        :aria-describedby="describedBy(controlId, hint, error)"
+        :aria-invalid="fieldError ? true : undefined"
+        :aria-describedby="describedBy(controlId, hint, fieldError)"
       />
       <span v-if="$slots.suffix" class="ml-input__affix"><slot name="suffix" /></span>
     </div>

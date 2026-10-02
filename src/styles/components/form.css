@@ -1,0 +1,18 @@
+/* Form — just layout; each control draws its own error state */
+.ml-form {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+}
+
+.ml-form-item {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+/* Controls without their own field frame (checkbox, switch…) get a red hint on the label text */
+.ml-form-item--error > .ml-check,
+.ml-form-item--error > .ml-switch {
+  color: var(--ml-danger-text);
+}

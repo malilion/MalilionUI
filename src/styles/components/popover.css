@@ -1,0 +1,150 @@
+/* Popover — a floating HUD plate pinned to its trigger by a gold edge */
+.ml-popover {
+  position: relative;
+  display: inline-flex;
+}
+
+.ml-popover__trigger {
+  display: inline-flex;
+}
+
+.ml-popover__panel {
+  --_gap: 10px;
+  --_cut: var(--ml-cut-sm);
+
+  position: absolute;
+  z-index: var(--ml-z-tooltip);
+  isolation: isolate;
+  width: max-content;
+  max-width: min(320px, calc(100vw - 32px));
+  padding: 14px 16px;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  line-height: 1.6;
+  text-align: left;
+  white-space: normal;
+  filter: var(--ml-drop-2);
+  outline: none;
+}
+
+.ml-popover__panel::before,
+.ml-popover__panel::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-popover__panel::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+
+.ml-popover__panel::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+}
+
+/* Gold edge on the side facing the trigger */
+.ml-popover__body::before {
+  content: '';
+  position: absolute;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.6);
+}
+
+.ml-popover__panel--top {
+  bottom: calc(100% + var(--_gap));
+  left: 50%;
+  translate: -50% 0;
+  transform-origin: bottom center;
+}
+
+.ml-popover__panel--bottom {
+  top: calc(100% + var(--_gap));
+  left: 50%;
+  translate: -50% 0;
+  transform-origin: top center;
+}
+
+.ml-popover__panel--left {
+  right: calc(100% + var(--_gap));
+  top: 50%;
+  translate: 0 -50%;
+  transform-origin: center right;
+}
+
+.ml-popover__panel--right {
+  left: calc(100% + var(--_gap));
+  top: 50%;
+  translate: 0 -50%;
+  transform-origin: center left;
+}
+
+.ml-popover__panel--top .ml-popover__body::before { left: 14px; right: 14px; bottom: 0; height: 2px; }
+.ml-popover__panel--bottom .ml-popover__body::before { left: 14px; right: 14px; top: 0; height: 2px; }
+.ml-popover__panel--left .ml-popover__body::before { top: 10px; bottom: 10px; right: 0; width: 2px; }
+.ml-popover__panel--right .ml-popover__body::before { top: 10px; bottom: 10px; left: 0; width: 2px; }
+
+.ml-popover__title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+  line-height: 1.35;
+}
+
+.ml-popover__body {
+  color: var(--ml-text-muted);
+}
+
+.ml-popover-enter-active {
+  transition:
+    opacity var(--ml-dur) var(--ml-ease),
+    transform var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-popover-leave-active {
+  transition: opacity var(--ml-dur-fast) var(--ml-ease), transform var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-popover-enter-from,
+.ml-popover-leave-to {
+  opacity: 0;
+  transform: scale(0.94);
+}
+
+/* Popconfirm */
+.ml-popconfirm .ml-popover__panel {
+  min-width: 240px;
+}
+
+.ml-popconfirm__icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+  color: var(--ml-warning-text);
+}
+
+.ml-popconfirm--danger .ml-popconfirm__icon { color: var(--ml-danger-text); }
+.ml-popconfirm--info .ml-popconfirm__icon { color: var(--ml-info-text); }
+
+.ml-popconfirm--danger .ml-popover__body::before {
+  background: var(--ml-metal-red);
+  box-shadow: 0 0 8px rgb(255 92 72 / 0.6);
+}
+
+.ml-popconfirm__desc {
+  margin: 0 0 0 26px;
+}
+
+.ml-popconfirm__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 14px;
+}

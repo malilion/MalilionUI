@@ -133,8 +133,8 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Category | Components |
 | --- | --- |
 | Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlDatePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
-| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` · `MlEmpty` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlDatePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
+| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` |
 | Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlAvatar` · `MlStat` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
@@ -153,6 +153,9 @@ Every component accepts the usual attributes (`class`, `style`, `aria-*`, listen
 | MlInput | index / label / hint / error | string | — | HUD label number, label, help text, error (wired to `aria-describedby`) |
 | MlProgress | value | `number \| null` | `null` | Omit for an indeterminate scan; add `paw` for a running paw |
 | MlTable | v-model:sort / v-model:selected | `MlTableSort \| null` / `Key[]` | `null` / `[]` | Sorting and row selection |
+| MlCombobox | searchable / multiple / clearable | boolean | `false` | Custom listbox select; `multiple` makes v-model an array |
+| MlForm | model / rules | `object` / `MlFormRules` | — | Wrap fields in `MlFormItem prop="…"`; errors flow into the controls |
+| MlDrawer | placement / size | `'right' \| 'left' \| 'top' \| 'bottom'` / `number \| string` | `'right'` / `420` | Edge panel with focus trap and scroll lock |
 | MlDropdown | selectable | boolean | `false` | Single-choice menu; v-model holds the value, marked with a paw |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | The Malilion lion, as a portrait or full body |
 | MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | Bars with round-number ticks; the peak lights up |

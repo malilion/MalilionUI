@@ -2,6 +2,7 @@
 import { computed, useId } from 'vue'
 import MlField from './MlField.vue'
 import { describedBy, useSplitAttrs } from '../composables'
+import { useFormField } from '../form'
 
 defineOptions({ inheritAttrs: false })
 
@@ -20,6 +21,7 @@ const props = withDefaults(
   }>(),
   { rows: 4 },
 )
+const { fieldError, fieldRequired } = useFormField(props)
 
 const model = defineModel<string>()
 const { rootAttrs, controlAttrs } = useSplitAttrs()
@@ -33,15 +35,15 @@ const controlId = computed(() => props.id ?? `ml-textarea-${autoId}`)
     :control-id="controlId"
     :label="label"
     :hint="hint"
-    :error="error"
+    :error="fieldError"
     :index="index"
-    :required="required"
+    :required="fieldRequired"
   >
     <div
       :class="[
         'ml-input',
         'ml-input--textarea',
-        { 'ml-input--error': error, 'ml-input--disabled': disabled },
+        { 'ml-input--error': fieldError, 'ml-input--disabled': disabled },
       ]"
     >
       <textarea
@@ -51,11 +53,11 @@ const controlId = computed(() => props.id ?? `ml-textarea-${autoId}`)
         class="ml-input__control"
         :rows="rows"
         :placeholder="placeholder"
-        :required="required"
+        :required="fieldRequired"
         :disabled="disabled"
         :readonly="readonly"
-        :aria-invalid="error ? true : undefined"
-        :aria-describedby="describedBy(controlId, hint, error)"
+        :aria-invalid="fieldError ? true : undefined"
+        :aria-describedby="describedBy(controlId, hint, fieldError)"
       />
     </div>
   </MlField>
