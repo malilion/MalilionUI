@@ -120,6 +120,7 @@
 .ml-tabs__panel {
   min-width: 0;
   color: var(--ml-text-muted);
+  animation: ml-rise-in var(--ml-dur) var(--ml-ease);
 }
 
 .ml-tabs__panel:focus-visible {
