@@ -50,6 +50,7 @@ const percent = computed(() => Math.min(100, Math.max(0, (props.value / props.ma
         :stroke="`url(#${gradientId})`"
         :stroke-dasharray="circumference"
         :stroke-dashoffset="circumference * (1 - percent / 100)"
+        :style="{ '--_c': circumference }"
       />
     </svg>
     <div class="ml-ring__center">

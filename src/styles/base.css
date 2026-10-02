@@ -111,6 +111,30 @@
   to { background-position: 28px 0; }
 }
 
+/* Entrances shared by several components. They only define the "from" frame,
+   so the element animates into whatever its resting styles are. */
+@keyframes ml-fade-in {
+  from { opacity: 0; }
+}
+
+@keyframes ml-rise-in {
+  from { opacity: 0; translate: 0 6px; }
+}
+
+/* Slides in from --_from-x (e.g. 16px or -16px) */
+@keyframes ml-slide-in-x {
+  from { opacity: 0; translate: var(--_from-x, 12px) 0; }
+}
+
+/* A short "denied" jolt for fresh validation errors */
+@keyframes ml-shake-in {
+  0% { opacity: 0; translate: -4px 0; }
+  25% { opacity: 1; translate: 4px 0; }
+  50% { translate: -3px 0; }
+  75% { translate: 2px 0; }
+  100% { translate: 0 0; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   [class^='ml-'],
   [class*=' ml-'],
@@ -121,5 +145,8 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    /* Staggered entrances would otherwise sit in their "from" frame */
+    animation-delay: 0s !important;
+    transition-delay: 0s !important;
   }
 }

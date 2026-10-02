@@ -168,11 +168,36 @@
 }
 
 .ml-upload__list {
+  position: relative;
   display: grid;
   gap: 6px;
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+/* Rows slide in, slide out, and the rest close ranks */
+.ml-upload-file-enter-active,
+.ml-upload-file-leave-active {
+  transition:
+    opacity var(--ml-dur) var(--ml-ease),
+    translate var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-upload-file-leave-active {
+  position: absolute;
+  left: 0;
+  right: 0;
+}
+
+.ml-upload-file-enter-from,
+.ml-upload-file-leave-to {
+  opacity: 0;
+  translate: -12px 0;
+}
+
+.ml-upload-file-move {
+  transition: translate var(--ml-dur-slow) var(--ml-ease-spring);
 }
 
 .ml-upload__file {

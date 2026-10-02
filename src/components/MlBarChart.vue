@@ -65,7 +65,7 @@ const highlighted = computed(() => {
         <div class="ml-bars__track">
           <div
             :class="['ml-bars__bar', { 'ml-bars__bar--hi': i === highlighted }]"
-            :style="{ height: `${(d.value / top) * 100}%` }"
+            :style="{ height: `${(d.value / top) * 100}%`, '--_i': i }"
           >
             <span v-if="i === highlighted" class="ml-bars__tip">{{ fmt(d.value) }}</span>
           </div>

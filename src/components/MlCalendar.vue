@@ -31,6 +31,8 @@ const view = ref({ year: initial.getFullYear(), month: initial.getMonth() })
 /** The day that owns the roving tabindex. */
 const focused = ref(startOfDay(initial))
 const hovered = ref<Date | null>(null)
+/** Direction of the last month change, so the new grid slides in from that side. */
+const slide = ref<'next' | 'prev' | null>(null)
 const gridRef = ref<HTMLElement>()
 const titleId = `ml-calendar-${useId()}`
 
@@ -85,6 +87,8 @@ function select(d: Date) {
 }
 
 function setView(d: Date) {
+  const delta = d.getFullYear() * 12 + d.getMonth() - (view.value.year * 12 + view.value.month)
+  if (delta) slide.value = delta > 0 ? 'next' : 'prev'
   view.value = { year: d.getFullYear(), month: d.getMonth() }
   emit('month-change', view.value.year, view.value.month)
 }
@@ -159,7 +163,10 @@ defineExpose({ focus })
           <th v-for="w in weekdays" :key="w" scope="col" class="ml-calendar__weekday">{{ w }}</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody
+        :key="`${view.year}-${view.month}`"
+        :class="['ml-calendar__body', slide && `ml-calendar__body--${slide}`]"
+      >
         <tr v-for="(week, w) in weeks" :key="w">
           <td
             v-for="d in week"
