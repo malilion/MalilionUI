@@ -20,6 +20,19 @@
   color: var(--ml-text);
   font-size: var(--ml-text-sm);
   line-height: 1.6;
+  animation: ml-rise-in var(--ml-dur-slow) var(--ml-ease-spring) backwards;
+}
+
+/* Power-down when dismissed: the panel slides off along its rail */
+.ml-alert-leave-active {
+  transition:
+    opacity var(--ml-dur) var(--ml-ease-in),
+    translate var(--ml-dur) var(--ml-ease-in);
+}
+
+.ml-alert-leave-to {
+  opacity: 0;
+  translate: -12px 0;
 }
 
 /* Left power rail */
