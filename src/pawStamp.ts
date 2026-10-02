@@ -50,3 +50,61 @@ export const vPawStamp: Directive<StampedElement, StampValue> = {
     delete el.__mlPawStamp
   },
 }
+
+export interface PawBurstOptions {
+  /** How many paws fly out. */
+  count?: number
+  /** Tones to pick from at random. */
+  tones?: Exclude<MlPawTone, 'current'>[]
+  /** Fan angle in degrees, centred straight up; 360 bursts in every direction. */
+  spread?: number
+  /** Launch speed in px — roughly how far they travel. */
+  power?: number
+  /** ms */
+  duration?: number
+}
+
+/**
+ * Celebrate! Fling a fan of paw prints from a viewport point; they arc under
+ * gravity, spin and fade. Does nothing under prefers-reduced-motion.
+ */
+export function pawBurst(x: number, y: number, options: PawBurstOptions = {}) {
+  if (typeof window === 'undefined') return
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+  const { count = 16, tones = ['gold', 'bean', 'tech'], spread = 140, power = 180, duration = 1100 } = options
+  for (let i = 0; i < count; i++) {
+    const tone = tones[Math.floor(Math.random() * tones.length)] ?? 'gold'
+    const paw = document.createElement('span')
+    paw.className = `ml-paw-burst ml-paw-stamp--${tone}`
+    paw.style.left = `${x}px`
+    paw.style.top = `${y}px`
+    const size = 12 + Math.random() * 14
+    paw.style.width = paw.style.height = `${size}px`
+    paw.style.margin = `${-size / 2}px 0 0 ${-size / 2}px`
+    paw.appendChild(createPawSvg())
+    document.body.appendChild(paw)
+
+    // Angle measured from straight up; -spread/2 … +spread/2.
+    const angle = ((Math.random() - 0.5) * spread * Math.PI) / 180
+    const v = power * (0.55 + Math.random() * 0.6)
+    const vx = Math.sin(angle) * v
+    const vy = -Math.cos(angle) * v
+    const gravity = power * 1.6
+    const spin = (Math.random() - 0.5) * 540
+    const steps = 8
+    const frames: Keyframe[] = []
+    for (let s = 0; s <= steps; s++) {
+      const t = s / steps
+      frames.push({
+        transform: `translate(${(vx * t).toFixed(1)}px, ${(vy * t + gravity * t * t * 0.5).toFixed(1)}px) rotate(${(spin * t).toFixed(0)}deg) scale(${s === 0 ? 0.3 : 1})`,
+        opacity: t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3,
+      })
+    }
+    const remove = () => paw.remove()
+    if (typeof paw.animate === 'function') {
+      const anim = paw.animate(frames, { duration: duration * (0.8 + Math.random() * 0.4), easing: 'linear', fill: 'forwards' })
+      anim.onfinish = remove
+    }
+    setTimeout(remove, duration * 1.4)
+  }
+}

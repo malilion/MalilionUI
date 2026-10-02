@@ -34,7 +34,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 71 components across basic, form, feedback, data display, charts, navigation and mobile, plus ready-made templates
+- 79 components across basic, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
@@ -42,6 +42,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
 - Paw-print details everywhere: `MlPaw`, the `v-paw-stamp` directive, paw checkboxes, radios, loaders and progress runners
+- Visual effects that stay on brand: count-up numbers, HUD text decryption, metal tilt with glare, border beams, spotlight grids, scroll reveals and paw-print bursts — all of them calm down under `prefers-reduced-motion`
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - Zero runtime dependencies — only Vue as a peer dependency
 
@@ -140,6 +141,10 @@ Load the fonts for the full mech look (the components fall back to system fonts 
 | **Paw prints · the cute side** | **Two themes** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="Paw prints"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="Themes"> |
 
+**Visual effects**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="Visual effects" width="100%">
+
 Every component has its own page on the [docs site](https://malilion.github.io/MalilionUI/) with live examples, copy-to-clipboard source and full API tables.
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="Docs site" width="100%">
@@ -155,6 +160,7 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
 | Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
+| Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` |
 | Directive | `v-paw-stamp` |
 
 ## Component Props
@@ -175,6 +181,7 @@ Every component accepts the usual attributes (`class`, `style`, `aria-*`, listen
 | MlTimePicker | v-model / minute-step / min / max | `string \| null` / number / string | `null` / `1` / — | `"HH:mm"` wheels; `seconds` adds a column |
 | MlTree | v-model:expanded / selected / checked | `Key[]` / `Key \| null` / `Key[]` | `[]` / `null` / `[]` | Add `checkable` for tri-state checks, `filter` to search |
 | MlCarousel | items / autoplay / v-model:index | `T[]` / ms / number | — / `0` / `0` | Slides come from the default slot `{ item, index }` |
+| MlReveal | effect / stagger | `'fade-up' \| 'zoom' \| 'blur' \| …` / ms | `'fade-up'` / `0` | Animate in when scrolled into view; `stagger` plays children one by one |
 | MlDropdown | selectable | boolean | `false` | Single-choice menu; v-model holds the value, marked with a paw |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | The Malilion lion, as a portrait or full body |
 | MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | Bars with round-number ticks; the peak lights up |
