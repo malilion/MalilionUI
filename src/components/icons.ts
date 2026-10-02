@@ -28,6 +28,12 @@ export const icons = {
   folder: 'M3 6h6l2 2h10v11H3z',
   settings: 'M12 15a3 3 0 100-6 3 3 0 000 6zM12 2.5v3M12 18.5v3M2.5 12h3M18.5 12h3M5.3 5.3l2.1 2.1M16.6 16.6l2.1 2.1M5.3 18.7l2.1-2.1M16.6 7.4l2.1-2.1',
   arrowRight: 'M5 12h14M13 6l6 6-6 6',
+  arrowLeft: 'M20 12H4M10 6l-6 6 6 6',
+  arrowUp: 'M12 20V5M6 11l6-6 6 6',
+  rotate: 'M20 12a8 8 0 11-2.6-5.9M20 4v5h-5',
+  expand: 'M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5',
+  play: 'M8 5l11 7-11 7z',
+  pause: 'M8 5v14M16 5v14',
   up: 'M12 4l8 14H4z',
   down: 'M12 20L4 6h16z',
 } as const

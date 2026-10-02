@@ -1,16 +1,20 @@
 import type { App, Plugin } from 'vue'
 
 import MlAccordion from './components/MlAccordion.vue'
+import MlAffix from './components/MlAffix.vue'
 import MlAlert from './components/MlAlert.vue'
 import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
+import MlBackTop from './components/MlBackTop.vue'
 import MlBadge from './components/MlBadge.vue'
 import MlBarChart from './components/MlBarChart.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
 import MlButton from './components/MlButton.vue'
 import MlCalendar from './components/MlCalendar.vue'
 import MlCard from './components/MlCard.vue'
+import MlCarousel from './components/MlCarousel.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
+import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
 import MlDatePicker from './components/MlDatePicker.vue'
 import MlDateTimePicker from './components/MlDateTimePicker.vue'
@@ -23,6 +27,8 @@ import MlField from './components/MlField.vue'
 import MlForm from './components/MlForm.vue'
 import MlFormItem from './components/MlFormItem.vue'
 import MlIcon from './components/MlIcon.vue'
+import MlImage from './components/MlImage.vue'
+import MlImagePreview from './components/MlImagePreview.vue'
 import MlInput from './components/MlInput.vue'
 import MlKbd from './components/MlKbd.vue'
 import MlLionMark from './components/MlLionMark.vue'
@@ -41,6 +47,7 @@ import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
 import MlRadio from './components/MlRadio.vue'
 import MlRadioGroup from './components/MlRadioGroup.vue'
+import MlRate from './components/MlRate.vue'
 import MlRing from './components/MlRing.vue'
 import MlSegmented from './components/MlSegmented.vue'
 import MlSelect from './components/MlSelect.vue'
@@ -60,22 +67,28 @@ import MlTimePicker from './components/MlTimePicker.vue'
 import MlTimeline from './components/MlTimeline.vue'
 import MlToastHost from './components/MlToastHost.vue'
 import MlTooltip from './components/MlTooltip.vue'
+import MlTransfer from './components/MlTransfer.vue'
 import MlTree from './components/MlTree.vue'
 import MlUpload from './components/MlUpload.vue'
+import MlWatermark from './components/MlWatermark.vue'
 import { vPawStamp } from './pawStamp'
 
 const components = {
   MlAccordion,
+  MlAffix,
   MlAlert,
   MlAutocomplete,
   MlAvatar,
+  MlBackTop,
   MlBadge,
   MlBarChart,
   MlBreadcrumb,
   MlButton,
   MlCalendar,
   MlCard,
+  MlCarousel,
   MlCheckbox,
+  MlColorPicker,
   MlCombobox,
   MlDatePicker,
   MlDateTimePicker,
@@ -88,6 +101,8 @@ const components = {
   MlForm,
   MlFormItem,
   MlIcon,
+  MlImage,
+  MlImagePreview,
   MlInput,
   MlKbd,
   MlLionMark,
@@ -106,6 +121,7 @@ const components = {
   MlProgress,
   MlRadio,
   MlRadioGroup,
+  MlRate,
   MlRing,
   MlSegmented,
   MlSelect,
@@ -125,8 +141,10 @@ const components = {
   MlTimeline,
   MlToastHost,
   MlTooltip,
+  MlTransfer,
   MlTree,
   MlUpload,
+  MlWatermark,
 }
 
 /** `app.use(MalilionUI)` registers every component and the v-paw-stamp directive. */
@@ -143,16 +161,20 @@ export default MalilionUI
 
 export {
   MlAccordion,
+  MlAffix,
   MlAlert,
   MlAutocomplete,
   MlAvatar,
+  MlBackTop,
   MlBadge,
   MlBarChart,
   MlBreadcrumb,
   MlButton,
   MlCalendar,
   MlCard,
+  MlCarousel,
   MlCheckbox,
+  MlColorPicker,
   MlCombobox,
   MlDatePicker,
   MlDateTimePicker,
@@ -165,6 +187,8 @@ export {
   MlForm,
   MlFormItem,
   MlIcon,
+  MlImage,
+  MlImagePreview,
   MlInput,
   MlKbd,
   MlLionMark,
@@ -183,6 +207,7 @@ export {
   MlProgress,
   MlRadio,
   MlRadioGroup,
+  MlRate,
   MlRing,
   MlSegmented,
   MlSelect,
@@ -202,8 +227,10 @@ export {
   MlTimeline,
   MlToastHost,
   MlTooltip,
+  MlTransfer,
   MlTree,
   MlUpload,
+  MlWatermark,
 }
 
 export { toast, useToast } from './toast'
@@ -218,16 +245,20 @@ export type { IconName } from './components/icons'
 declare module 'vue' {
   export interface GlobalComponents {
     MlAccordion: typeof MlAccordion
+    MlAffix: typeof MlAffix
     MlAlert: typeof MlAlert
     MlAutocomplete: typeof MlAutocomplete
     MlAvatar: typeof MlAvatar
+    MlBackTop: typeof MlBackTop
     MlBadge: typeof MlBadge
     MlBarChart: typeof MlBarChart
     MlBreadcrumb: typeof MlBreadcrumb
     MlButton: typeof MlButton
     MlCalendar: typeof MlCalendar
     MlCard: typeof MlCard
+    MlCarousel: typeof MlCarousel
     MlCheckbox: typeof MlCheckbox
+    MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
     MlDatePicker: typeof MlDatePicker
     MlDateTimePicker: typeof MlDateTimePicker
@@ -240,6 +271,8 @@ declare module 'vue' {
     MlForm: typeof MlForm
     MlFormItem: typeof MlFormItem
     MlIcon: typeof MlIcon
+    MlImage: typeof MlImage
+    MlImagePreview: typeof MlImagePreview
     MlInput: typeof MlInput
     MlKbd: typeof MlKbd
     MlLionMark: typeof MlLionMark
@@ -258,6 +291,7 @@ declare module 'vue' {
     MlProgress: typeof MlProgress
     MlRadio: typeof MlRadio
     MlRadioGroup: typeof MlRadioGroup
+    MlRate: typeof MlRate
     MlRing: typeof MlRing
     MlSegmented: typeof MlSegmented
     MlSelect: typeof MlSelect
@@ -277,8 +311,10 @@ declare module 'vue' {
     MlTimeline: typeof MlTimeline
     MlToastHost: typeof MlToastHost
     MlTooltip: typeof MlTooltip
+    MlTransfer: typeof MlTransfer
     MlTree: typeof MlTree
     MlUpload: typeof MlUpload
+    MlWatermark: typeof MlWatermark
   }
   export interface GlobalDirectives {
     vPawStamp: typeof vPawStamp

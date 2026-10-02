@@ -1,0 +1,185 @@
+/* Carousel — a display bay; slides glide on a rail, indicators fill like charge bars */
+.ml-carousel {
+  --_cut: var(--ml-cut-lg);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-carousel__viewport {
+  overflow: hidden;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.ml-carousel__track {
+  display: flex;
+  height: var(--_h);
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-carousel__slide {
+  position: relative;
+  flex: 0 0 100%;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.ml-carousel__slide > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.ml-carousel__arrow {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 52px;
+  padding: 0;
+  border: 0;
+  translate: 0 -50%;
+  background: rgb(10 12 17 / 0.62);
+  box-shadow: inset 0 0 0 1px rgb(240 173 47 / 0.3);
+  color: #efe8d8;
+  cursor: pointer;
+  opacity: 0;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: opacity var(--ml-dur) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-carousel:hover .ml-carousel__arrow,
+.ml-carousel__arrow:focus-visible {
+  opacity: 1;
+}
+
+.ml-carousel__arrow:hover:not(:disabled) {
+  color: var(--ml-gold-300);
+}
+
+.ml-carousel__arrow:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-carousel__arrow:disabled {
+  opacity: 0 !important;
+  pointer-events: none;
+}
+
+.ml-carousel__arrow svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ml-carousel__arrow--prev { left: 12px; }
+.ml-carousel__arrow--next { right: 12px; }
+
+@media (hover: none) {
+  .ml-carousel__arrow { opacity: 1; }
+}
+
+.ml-carousel__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12px;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.ml-carousel__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.ml-carousel__dot {
+  position: relative;
+  width: 22px;
+  height: 14px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.ml-carousel__dot::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 5px;
+  height: 4px;
+  background: rgb(239 232 216 / 0.35);
+  clip-path: polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%);
+  transition: background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-carousel__dot--active {
+  width: 36px;
+}
+
+.ml-carousel__dot-fill {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  height: 4px;
+  width: 0;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.8);
+  clip-path: polygon(2px 0, 100% 0, calc(100% - 2px) 100%, 0 100%);
+}
+
+.ml-carousel__dot--active .ml-carousel__dot-fill {
+  width: 100%;
+}
+
+/* While autoplaying, the active bar charges up over the interval */
+.ml-carousel__dot--active[style*='--_dur'] .ml-carousel__dot-fill {
+  animation: ml-carousel-charge var(--_dur) linear;
+}
+
+@keyframes ml-carousel-charge {
+  from { width: 0; }
+}
+
+.ml-carousel__dot:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-carousel__play {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  background: rgb(10 12 17 / 0.62);
+  color: #efe8d8;
+  cursor: pointer;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.ml-carousel__play svg {
+  width: 12px;
+  height: 12px;
+}
+
+.ml-carousel__play:focus-visible {
+  outline: 2px solid var(--ml-focus);
+}

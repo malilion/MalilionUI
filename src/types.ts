@@ -145,3 +145,11 @@ export interface MlTreeNode {
   icon?: IconName
   disabled?: boolean
 }
+
+export interface MlTransferItem {
+  key: string | number
+  label: string
+  /** Small second line under the label. */
+  hint?: string
+  disabled?: boolean
+}
