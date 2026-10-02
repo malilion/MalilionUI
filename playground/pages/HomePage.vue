@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import * as lib from '@malilion/ui'
 import CodeBlock from '../components/CodeBlock.vue'
 import { href } from '../router'
 import { groups, pages } from '../registry'
@@ -11,6 +12,9 @@ const catalog = computed(() =>
 )
 
 const fresh = pages.filter((page) => page.isNew)
+
+// Count what the library actually exports, so this never goes stale.
+const componentCount = Object.keys(lib).filter((name) => /^Ml[A-Z]/.test(name)).length
 </script>
 
 <template>
@@ -43,7 +47,7 @@ const fresh = pages.filter((page) => page.isNew)
     </section>
 
     <div class="stats">
-      <MlStat label="Components" :value="48" caption="Vue 3 · TypeScript" />
+      <MlStat label="Components" :value="componentCount" caption="Vue 3 · TypeScript" />
       <MlStat label="Themes" :value="2" caption="Night Pride / Daylight" />
       <MlStat label="Runtime deps" :value="0" caption="Peer：Vue 3.5+" />
       <MlStat label="Paw prints" value="∞" caption="可愛無上限" />

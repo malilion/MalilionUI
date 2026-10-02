@@ -119,9 +119,11 @@
 
 .ml-colorpicker__hex {
   flex: 1;
+  min-width: 0;
 }
 
 .ml-colorpicker__hex input {
+  box-sizing: border-box;
   width: 100%;
   height: 32px;
   padding: 0 10px;
