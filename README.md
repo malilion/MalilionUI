@@ -133,11 +133,11 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Category | Components |
 | --- | --- |
 | Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
 | Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlAvatar` · `MlStat` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
-| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
+| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
 | Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
 | Directive | `v-paw-stamp` |
 

@@ -133,11 +133,11 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | 分類 | 元件 |
 | --- | --- |
 | 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
+| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
 | 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` |
-| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlAvatar` · `MlStat` |
+| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` |
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
-| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
+| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
 | 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
 | 指令 | `v-paw-stamp` |
 

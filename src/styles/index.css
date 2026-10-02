@@ -39,3 +39,9 @@
 @import './components/timeline.css';
 @import './components/tree.css';
 @import './components/time.css';
+@import './components/image.css';
+@import './components/carousel.css';
+@import './components/rate.css';
+@import './components/colorpicker.css';
+@import './components/transfer.css';
+@import './components/utilities.css';
