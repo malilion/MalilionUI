@@ -785,6 +785,40 @@ const themes = [
       </div>
     </section>
 
+    <!-- ───────────── Effects (v0.6) ───────────── -->
+    <section data-shot="effects" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">15 // Effects</p>
+          <h2 class="shot__title">視覺特效</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="fx-grid">
+        <MlSpotlight class="fx-spot fx-panel">
+          <p class="ml-hud-label">Spotlight · CountUp</p>
+          <p class="fx-big"><MlCountUp :value="1284000" prefix="NT$ " :start-on-view="false" :duration="600" /></p>
+          <p class="fx-sub">本月營收 · 游標像手電筒照亮 HUD 格線</p>
+        </MlSpotlight>
+        <MlTilt class="fx-tilt">
+          <MlCard variant="gold" eyebrow="Tilt" title="Alpha Pass">金屬板跟著游標傾斜，反光一起移動。</MlCard>
+        </MlTilt>
+        <MlBorderBeam tone="tech" :size="3" paused class="fx-beam">
+          <MlCard eyebrow="BorderBeam" title="流光邊框">一道光沿著切角邊框繞行。</MlCard>
+        </MlBorderBeam>
+        <div class="fx-panel fx-decrypt">
+          <p class="ml-hud-label">DecryptText</p>
+          <p class="fx-code"><MlDecryptText text="ACCESS GRANTED · WELCOME ALPHA" trigger="mount" :duration="9000" /></p>
+          <div class="fx-burst">
+            <MlPawBurst :count="22" :power="150"><MlButton stamp>按讚 · PawBurst</MlButton></MlPawBurst>
+          </div>
+        </div>
+      </div>
+      <MlMarquee class="fx-marquee" :speed="0.0001" label="技術">
+        <MlTag v-for="t in ['Vue 3', 'TypeScript', 'Vite', 'Vitest', 'Pinia', 'Nuxt', 'Playwright', 'CSS Variables']" :key="t" tone="steel" variant="outline">{{ t }}</MlTag>
+      </MlMarquee>
+    </section>
+
     <div data-shot="logo" class="logo-shot">
       <MlMascot :size="132" frame="ring" title="碼力獅" />
     </div>
@@ -1382,5 +1416,47 @@ body {
 
 .v5-backtop .ml-backtop {
   position: relative;
+}
+/* v0.6 effects panel */
+.fx-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 24px;
+}
+
+.fx-panel {
+  padding: 24px 26px;
+  background: var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+}
+
+.fx-big {
+  margin: 8px 0 4px;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-display);
+  font-size: 40px;
+  font-weight: 700;
+}
+
+.fx-sub {
+  margin: 0;
+  color: var(--ml-text-muted);
+}
+
+.fx-beam {
+  display: block;
+  align-self: start;
+}
+
+.fx-code {
+  margin: 10px 0 22px;
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 22px;
+  letter-spacing: 0.06em;
+}
+
+.fx-marquee {
+  margin-top: 26px;
 }
 </style>
