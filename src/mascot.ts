@@ -5,9 +5,12 @@
 import avatar from './assets/lion-avatar.webp'
 import full from './assets/lion-full.webp'
 
-export const mascotImages: { readonly avatar: string; readonly full: string } = Object.freeze({ avatar, full })
+// Marked pure, and the URL exports below read the imports rather than this
+// object, so bundlers can drop the images when no mascot component is used.
+// Without that, importing any component inlined ~60 KB of base64 into the app.
+export const mascotImages: { readonly avatar: string; readonly full: string } = /* @__PURE__ */ Object.freeze({ avatar, full })
 
 /** Head-and-shoulders portrait, 256 × 256 webp. */
-export const lionAvatarUrl = mascotImages.avatar
+export const lionAvatarUrl: string = avatar
 /** Full-body art, 400 × 421 webp. */
-export const lionFullUrl = mascotImages.full
+export const lionFullUrl: string = full
