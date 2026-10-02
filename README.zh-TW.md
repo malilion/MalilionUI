@@ -133,11 +133,11 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | 分類 | 元件 |
 | --- | --- |
 | 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlDatePicker` · `MlNumberInput` · `MlSlider` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlUpload` · `MlField` |
-| 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlTooltip` · `MlEmpty` |
-| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlAvatar` · `MlStat` |
+| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
+| 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` |
+| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` |
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
-| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` |
+| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
 | 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
 | 指令 | `v-paw-stamp` |
 
@@ -153,6 +153,9 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | MlInput | index / label / hint / error | string | — | HUD 編號、標籤、說明、錯誤（自動連到 `aria-describedby`） |
 | MlProgress | value | `number \| null` | `null` | 不給就是不確定進度；加 `paw` 會有腳印跟著跑 |
 | MlTable | v-model:sort / v-model:selected | `MlTableSort \| null` / `Key[]` | `null` / `[]` | 排序與勾選 |
+| MlCombobox | searchable / multiple / clearable | boolean | `false` | 自繪下拉選擇；multiple 時 v-model 為陣列 |
+| MlForm | model / rules | `object` / `MlFormRules` | — | 欄位包在 `MlFormItem prop="…"` 裡，錯誤自動顯示在元件上 |
+| MlDrawer | placement / size | `'right' \| 'left' \| 'top' \| 'bottom'` / `number \| string` | `'right'` / `420` | 邊緣滑出面板，含焦點鎖定與捲動鎖定 |
 | MlDropdown | selectable | boolean | `false` | 單選選單；v-model 存選中的值，並用腳印標記 |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | 碼力獅本獅，頭像或全身 |
 | MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | 自動取整數刻度，最高的一根會亮起 |

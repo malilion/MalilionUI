@@ -15,7 +15,12 @@ defineProps<{
 
 <template>
   <div class="ml-field">
-    <label v-if="label || $slots.label" class="ml-field__label" :for="controlId">
+    <label
+      v-if="label || $slots.label"
+      :id="controlId ? `${controlId}-label` : undefined"
+      class="ml-field__label"
+      :for="controlId"
+    >
       <span v-if="index" class="ml-field__index">{{ index }}</span>
       <slot name="label">{{ label }}</slot>
       <span v-if="required" class="ml-field__required" aria-hidden="true">*</span>

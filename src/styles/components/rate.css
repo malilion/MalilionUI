@@ -1,0 +1,73 @@
+/* Rate — a row of paws that fill with metal */
+.ml-rate {
+  --_size: 24px;
+  --_on: var(--ml-accent);
+  --_glow: rgb(240 173 47 / 0.55);
+
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  outline: none;
+}
+
+.ml-rate--sm { --_size: 18px; gap: 2px; }
+.ml-rate--lg { --_size: 32px; gap: 6px; }
+
+.ml-rate--bean { --_on: var(--ml-bean-400); --_glow: rgb(255 143 168 / 0.55); }
+.ml-rate--tech { --_on: var(--ml-tech); --_glow: rgb(62 238 208 / 0.5); }
+
+.ml-rate:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 4px;
+}
+
+.ml-rate--disabled {
+  opacity: 0.5;
+}
+
+.ml-rate__item {
+  position: relative;
+  display: inline-block;
+  width: var(--_size);
+  height: var(--_size);
+  color: var(--ml-surface-3);
+  transition: scale var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-rate--interactive .ml-rate__item {
+  cursor: pointer;
+}
+
+.ml-rate--interactive .ml-rate__item:hover {
+  scale: 1.15;
+}
+
+.ml-rate__base,
+.ml-rate__paw {
+  display: block;
+  width: var(--_size);
+  height: var(--_size);
+}
+
+.ml-rate__fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  overflow: hidden;
+  color: var(--_on);
+  filter: drop-shadow(0 0 5px var(--_glow));
+  transition: width var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-rate__item--on .ml-rate__paw {
+  animation: ml-paw-pop 380ms var(--ml-ease-spring);
+}
+
+.ml-rate__text {
+  min-width: 2.5em;
+  margin-left: 8px;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+}

@@ -3,6 +3,7 @@ import { computed, useId } from 'vue'
 import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import { describedBy, useSplitAttrs } from '../composables'
+import { useFormField } from '../form'
 
 defineOptions({ inheritAttrs: false })
 
@@ -20,6 +21,7 @@ const props = withDefaults(
   }>(),
   { min: -Infinity, max: Infinity, step: 1 },
 )
+const { fieldError, fieldRequired } = useFormField(props)
 
 const model = defineModel<number>({ default: 0 })
 const { rootAttrs, controlAttrs } = useSplitAttrs()
@@ -48,10 +50,11 @@ function onChange(event: Event) {
     :control-id="controlId"
     :label="label"
     :hint="hint"
-    :error="error"
+    :error="fieldError"
     :index="index"
+    :required="fieldRequired"
   >
-    <div :class="['ml-input', 'ml-number', { 'ml-input--error': error, 'ml-input--disabled': disabled }]">
+    <div :class="['ml-input', 'ml-number', { 'ml-input--error': fieldError, 'ml-input--disabled': disabled }]">
       <button
         type="button"
         class="ml-number__btn"
@@ -73,8 +76,8 @@ function onChange(event: Event) {
         :max="Number.isFinite(max) ? max : undefined"
         :step="step"
         :disabled="disabled"
-        :aria-invalid="error ? true : undefined"
-        :aria-describedby="describedBy(controlId, hint, error)"
+        :aria-invalid="fieldError ? true : undefined"
+        :aria-describedby="describedBy(controlId, hint, fieldError)"
         @change="onChange"
       />
       <button

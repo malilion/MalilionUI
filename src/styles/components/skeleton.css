@@ -1,0 +1,77 @@
+/* Skeleton — placeholder plates with a scanning sheen */
+.ml-skeleton {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  width: 100%;
+}
+
+.ml-skeleton__lines {
+  display: grid;
+  gap: 12px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ml-skeleton__item {
+  --_cut: 3px;
+
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-skeleton__item--title { height: 20px; }
+.ml-skeleton__item--button { --_cut: var(--ml-cut-sm); width: 112px; height: 40px; }
+.ml-skeleton__item--rect { --_cut: var(--ml-cut); height: 120px; }
+.ml-skeleton__item--image { --_cut: var(--ml-cut); aspect-ratio: 16 / 9; height: auto; }
+
+.ml-skeleton__item--circle {
+  width: 48px;
+  height: 48px;
+  flex: none;
+  border-radius: 50%;
+  clip-path: none;
+}
+
+/* Images get a faint mountain/sun glyph so the shape reads as "picture" */
+.ml-skeleton__item--image::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 35%, var(--ml-line-steel-strong) 0 6%, transparent 6.5%),
+    linear-gradient(135deg, transparent 55%, var(--ml-line-steel) 55% 70%, transparent 70%);
+}
+
+/* The sheen: a gold-tinted scan line that sweeps across */
+.ml-skeleton--animated .ml-skeleton__item::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg,
+      transparent 0%, rgb(255 255 255 / 0.05) 35%, rgb(240 173 47 / 0.12) 50%,
+      rgb(255 255 255 / 0.05) 65%, transparent 100%);
+  translate: -100% 0;
+  animation: ml-skeleton-sheen 1.6s var(--ml-ease) infinite;
+}
+
+[data-ml-theme='light'] .ml-skeleton--animated .ml-skeleton__item::after {
+  background: linear-gradient(90deg,
+      transparent 0%, rgb(255 255 255 / 0.5) 40%, rgb(212 143 23 / 0.14) 50%,
+      rgb(255 255 255 / 0.5) 60%, transparent 100%);
+}
+
+@keyframes ml-skeleton-sheen {
+  to { translate: 100% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-skeleton--animated .ml-skeleton__item::after { animation: none; opacity: 0; }
+}

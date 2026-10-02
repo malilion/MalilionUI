@@ -3,6 +3,7 @@ import { computed, useId } from 'vue'
 import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import { describedBy, useSplitAttrs } from '../composables'
+import { useFormField } from '../form'
 import type { MlSelectOption, MlSize } from '../types'
 
 defineOptions({ inheritAttrs: false })
@@ -23,6 +24,7 @@ const props = withDefaults(
   }>(),
   { size: 'md' },
 )
+const { fieldError, fieldRequired } = useFormField(props)
 
 const model = defineModel<string | number>()
 // Map "nothing chosen" onto the placeholder option instead of a blank select.
@@ -43,15 +45,15 @@ const controlId = computed(() => props.id ?? `ml-select-${autoId}`)
     :control-id="controlId"
     :label="label"
     :hint="hint"
-    :error="error"
+    :error="fieldError"
     :index="index"
-    :required="required"
+    :required="fieldRequired"
   >
     <div
       :class="[
         'ml-input',
         `ml-input--${size}`,
-        { 'ml-input--error': error, 'ml-input--disabled': disabled },
+        { 'ml-input--error': fieldError, 'ml-input--disabled': disabled },
       ]"
     >
       <span v-if="$slots.prefix" class="ml-input__affix"><slot name="prefix" /></span>
@@ -60,10 +62,10 @@ const controlId = computed(() => props.id ?? `ml-select-${autoId}`)
         v-model="selected"
         v-bind="controlAttrs()"
         class="ml-input__control"
-        :required="required"
+        :required="fieldRequired"
         :disabled="disabled"
-        :aria-invalid="error ? true : undefined"
-        :aria-describedby="describedBy(controlId, hint, error)"
+        :aria-invalid="fieldError ? true : undefined"
+        :aria-describedby="describedBy(controlId, hint, fieldError)"
       >
         <option v-if="placeholder" value="" disabled>{{ placeholder }}</option>
         <option

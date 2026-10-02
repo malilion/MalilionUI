@@ -1,0 +1,162 @@
+/* Transfer — two metal bays with move buttons between them */
+.ml-transfer {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: 14px;
+}
+
+.ml-transfer__panel {
+  --_cut: var(--ml-cut);
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 320px;
+  background: var(--ml-brushed), var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-transfer__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-bottom: 1px dashed var(--ml-line);
+}
+
+.ml-transfer__title {
+  flex: 1;
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-weight: 700;
+}
+
+.ml-transfer__count {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-transfer__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 10px 12px 4px;
+  padding: 0 10px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong);
+  color: var(--ml-text-dim);
+}
+
+.ml-transfer__search:focus-within {
+  box-shadow: inset 0 0 0 1px var(--ml-accent);
+  color: var(--ml-accent-text);
+}
+
+.ml-transfer__search svg {
+  width: 14px;
+  height: 14px;
+  flex: none;
+}
+
+.ml-transfer__search input {
+  flex: 1;
+  min-width: 0;
+  height: 32px;
+  border: 0;
+  background: none;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  outline: none;
+}
+
+.ml-transfer__list {
+  position: relative;
+  flex: 1;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.ml-transfer__item {
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  transition: background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-transfer__item:hover {
+  background: var(--ml-surface-2);
+}
+
+/* The whole row is the checkbox's label, so clicking anywhere on it toggles */
+.ml-transfer__item > .ml-check {
+  display: flex;
+  width: 100%;
+  padding: 6px 8px;
+  cursor: pointer;
+}
+
+.ml-transfer__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex: 1;
+  margin: 0;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-transfer__empty .ml-paw {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-transfer__actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.ml-transfer-item-enter-active,
+.ml-transfer-item-leave-active {
+  transition: opacity var(--ml-dur) var(--ml-ease), translate var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-transfer-item-leave-active {
+  position: absolute;
+  left: 6px;
+  right: 6px;
+}
+
+.ml-transfer-item-enter-from,
+.ml-transfer-item-leave-to {
+  opacity: 0;
+  translate: 0 6px;
+}
+
+.ml-transfer-item-move {
+  transition: translate var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+@media (max-width: 640px) {
+  .ml-transfer {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ml-transfer__actions {
+    flex-direction: row;
+    justify-content: center;
+  }
+
+  .ml-transfer__actions .ml-btn svg {
+    rotate: 90deg;
+  }
+
+  .ml-transfer__panel {
+    height: 260px;
+  }
+}

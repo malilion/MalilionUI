@@ -1,0 +1,140 @@
+/* Timeline — a power rail with metal nodes; events light up one after another */
+.ml-timeline {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-timeline__item {
+  --_tone: var(--ml-accent);
+  --_glow: rgb(240 173 47 / 0.55);
+
+  position: relative;
+  display: grid;
+  grid-template-columns: 28px 1fr;
+  column-gap: 14px;
+  padding-bottom: 22px;
+  animation: ml-rise-in var(--ml-dur-slow) var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * 70ms);
+}
+
+.ml-timeline__item--tech { --_tone: var(--ml-tech); --_glow: rgb(62 238 208 / 0.5); }
+.ml-timeline__item--success { --_tone: var(--ml-success); --_glow: rgb(82 227 138 / 0.5); }
+.ml-timeline__item--danger { --_tone: var(--ml-danger); --_glow: rgb(255 92 72 / 0.5); }
+.ml-timeline__item--steel { --_tone: var(--ml-steel-400); --_glow: transparent; }
+
+/* The rail between nodes */
+.ml-timeline__item::before {
+  content: '';
+  position: absolute;
+  left: 13px;
+  top: 28px;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--_tone), var(--ml-line) 70%);
+  opacity: 0.6;
+}
+
+.ml-timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+.ml-timeline__item:last-child::before {
+  display: none;
+}
+
+.ml-timeline__node {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  color: var(--_tone);
+}
+
+.ml-timeline__dot {
+  width: 12px;
+  height: 12px;
+  background: var(--_tone);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  filter: drop-shadow(0 0 6px var(--_glow));
+}
+
+.ml-timeline__icon,
+.ml-timeline__paw {
+  width: 18px;
+  height: 18px;
+  filter: drop-shadow(0 0 6px var(--_glow));
+}
+
+.ml-timeline__content {
+  min-width: 0;
+  padding-top: 3px;
+}
+
+.ml-timeline__time {
+  display: block;
+  margin-bottom: 2px;
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.08em;
+  color: var(--ml-text-dim);
+}
+
+.ml-timeline__title {
+  margin: 0;
+  color: var(--ml-text);
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.ml-timeline__desc {
+  margin-top: 4px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+  line-height: 1.65;
+}
+
+/* Pending: a pulsing node at the end */
+.ml-timeline__item--pending .ml-timeline__dot {
+  position: relative;
+  background: none;
+  box-shadow: inset 0 0 0 2px var(--_tone);
+  clip-path: none;
+  border-radius: 50%;
+  animation: ml-pulse 1.4s var(--ml-ease) infinite;
+}
+
+.ml-timeline__item--pending .ml-timeline__title {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-weight: 500;
+}
+
+/* Alternate: events zig-zag either side of a centred rail on wide screens */
+@media (min-width: 720px) {
+  .ml-timeline--alternate .ml-timeline__item {
+    grid-template-columns: 1fr 28px 1fr;
+  }
+
+  .ml-timeline--alternate .ml-timeline__item::before {
+    left: calc(50% - 1px);
+  }
+
+  .ml-timeline--alternate .ml-timeline__node {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .ml-timeline--alternate .ml-timeline__item:nth-child(odd) .ml-timeline__content {
+    grid-column: 1;
+    grid-row: 1;
+    text-align: right;
+  }
+
+  .ml-timeline--alternate .ml-timeline__item:nth-child(even) .ml-timeline__content {
+    grid-column: 3;
+  }
+}
