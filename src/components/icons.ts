@@ -17,6 +17,7 @@ export const icons = {
   upload: 'M7 18H6a4 4 0 01-.6-7.95A6 6 0 0117.2 8.1 4.5 4.5 0 0117.5 18H17M12 11v10M8.5 14.5L12 11l3.5 3.5',
   file: 'M6 3h8l4 4v14H6zM14 3v4h4',
   calendar: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
+  clock: 'M12 3a9 9 0 110 18 9 9 0 010-18zM12 7v5l3.5 2.5',
   menu: 'M4 7h16M4 12h16M4 17h16',
   bell: 'M6 16v-5a6 6 0 0112 0v5l1.5 2h-15zM10 20.5a2 2 0 004 0',
   message: 'M4 5h16v11H9l-5 4z',
