@@ -1,0 +1,168 @@
+/* ColorPicker — a spectrum readout in a metal panel */
+.ml-colorpicker__chip,
+.ml-colorpicker__preview,
+.ml-colorpicker__preset {
+  /* Checkerboard behind translucent colours */
+  background:
+    linear-gradient(var(--_c), var(--_c)),
+    repeating-conic-gradient(#77818f 0 25%, #c6cdd7 0 50%) 0 0 / 8px 8px;
+}
+
+.ml-colorpicker__chip {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.ml-colorpicker__trigger {
+  font-family: var(--ml-font-mono);
+  text-transform: lowercase;
+}
+
+.ml-colorpicker__panel {
+  display: grid;
+  gap: 12px;
+  width: 260px;
+  padding: 12px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+}
+
+.ml-colorpicker__area {
+  position: relative;
+  height: 160px;
+  background:
+    linear-gradient(to top, #000, transparent),
+    linear-gradient(to right, #fff, var(--_hue));
+  cursor: crosshair;
+  touch-action: none;
+  outline: none;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+.ml-colorpicker__area:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-colorpicker__handle {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--_c);
+  box-shadow: 0 0 0 2px #fff, 0 0 0 3px rgb(0 0 0 / 0.4), 0 2px 6px rgb(0 0 0 / 0.5);
+  pointer-events: none;
+}
+
+.ml-colorpicker__slider {
+  display: block;
+  height: 14px;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.ml-colorpicker__slider--hue {
+  background: linear-gradient(90deg, #f00, #ff0, #0f0, #0ff, #00f, #f0f, #f00);
+}
+
+.ml-colorpicker__slider--alpha {
+  background:
+    linear-gradient(90deg, transparent, var(--_c)),
+    repeating-conic-gradient(#77818f 0 25%, #c6cdd7 0 50%) 0 0 / 8px 8px;
+}
+
+.ml-colorpicker__slider input {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  background: none;
+  cursor: pointer;
+  appearance: none;
+}
+
+.ml-colorpicker__slider input:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-colorpicker__slider input::-webkit-slider-thumb {
+  width: 8px;
+  height: 18px;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 1px 4px rgb(0 0 0 / 0.5);
+  appearance: none;
+}
+
+.ml-colorpicker__slider input::-moz-range-thumb {
+  width: 8px;
+  height: 18px;
+  border: 0;
+  border-radius: 0;
+  background: #fff;
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.5), 0 1px 4px rgb(0 0 0 / 0.5);
+}
+
+.ml-colorpicker__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.ml-colorpicker__preview {
+  width: 32px;
+  height: 32px;
+  flex: none;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+
+.ml-colorpicker__hex {
+  flex: 1;
+}
+
+.ml-colorpicker__hex input {
+  width: 100%;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  text-transform: lowercase;
+  outline: none;
+}
+
+.ml-colorpicker__hex input:focus {
+  box-shadow: inset 0 0 0 1px var(--ml-accent);
+}
+
+.ml-colorpicker__presets {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+}
+
+.ml-colorpicker__preset {
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+  transition: scale var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-colorpicker__preset:hover {
+  scale: 1.12;
+}
+
+.ml-colorpicker__preset:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-colorpicker__preset--on {
+  box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3px rgb(0 0 0 / 0.4);
+}

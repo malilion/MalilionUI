@@ -1,0 +1,200 @@
+/* Combobox — the HUD input with a listbox that drops out of a metal slot */
+.ml-combobox {
+  position: relative;
+  min-width: 0;
+}
+
+.ml-combobox__box {
+  cursor: pointer;
+  padding-right: 38px;
+}
+
+.ml-combobox--searchable .ml-combobox__box {
+  cursor: text;
+}
+
+.ml-combobox__box.ml-input--disabled {
+  cursor: not-allowed;
+}
+
+.ml-combobox__value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  min-height: inherit;
+  padding: 6px 0;
+}
+
+.ml-combobox__value > .ml-input__control {
+  min-height: 28px;
+}
+
+.ml-combobox--multiple .ml-combobox__search {
+  flex: 1 0 80px;
+}
+
+.ml-combobox__display {
+  display: flex;
+  align-items: center;
+  outline: none;
+  cursor: inherit;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.ml-combobox--multiple .ml-combobox__display {
+  flex: 0 1 auto;
+}
+
+.ml-combobox__single {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ml-combobox__placeholder {
+  color: var(--ml-text-dim);
+}
+
+/* Chosen values in multiple mode: small machined chips */
+.ml-combobox__tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  max-width: 100%;
+  min-height: 24px;
+  padding: 0 4px 0 9px;
+  background: var(--ml-accent-soft);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  color: var(--ml-accent-text);
+  font-size: var(--ml-text-xs);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  animation: ml-paw-pop 320ms var(--ml-ease-spring);
+}
+
+.ml-combobox__tag-remove,
+.ml-combobox__clear {
+  display: grid;
+  place-items: center;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-combobox__tag-remove {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-combobox__tag-remove svg {
+  width: 10px;
+  height: 10px;
+}
+
+.ml-combobox__tag-remove:hover,
+.ml-combobox__clear:hover {
+  opacity: 1;
+  color: var(--ml-danger-text);
+}
+
+.ml-combobox__clear {
+  position: absolute;
+  right: 34px;
+  width: 20px;
+  height: 20px;
+  color: var(--ml-text-dim);
+}
+
+.ml-combobox__clear svg {
+  width: 12px;
+  height: 12px;
+}
+
+.ml-combobox__chevron {
+  position: absolute;
+  right: 14px;
+  width: 14px;
+  height: 14px;
+  color: var(--ml-accent-text);
+  pointer-events: none;
+  transition: rotate var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-combobox--open .ml-combobox__chevron {
+  rotate: 180deg;
+}
+
+/* The list reuses the dropdown menu shell */
+.ml-combobox__menu {
+  left: 0;
+  right: 0;
+  min-width: 0;
+  transform-origin: top center;
+}
+
+.ml-combobox__option {
+  white-space: normal;
+}
+
+.ml-combobox__option--active:not([aria-disabled='true']) {
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent);
+  color: var(--ml-accent-text);
+  box-shadow: inset 2px 0 0 var(--ml-accent);
+}
+
+.ml-combobox__check {
+  display: grid;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong);
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-dropdown__item--checked .ml-combobox__check {
+  background: var(--ml-metal-gold);
+  box-shadow: none;
+}
+
+.ml-combobox__check svg {
+  width: 12px;
+  height: 12px;
+  animation: ml-paw-pop 300ms var(--ml-ease-spring);
+}
+
+.ml-combobox__hit {
+  background: none;
+  color: var(--ml-accent-text);
+  font-weight: 700;
+  text-decoration: underline;
+  text-decoration-color: var(--ml-line-strong);
+  text-underline-offset: 3px;
+}
+
+.ml-combobox__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 18px 12px;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-combobox__empty-paw {
+  width: 16px;
+  height: 16px;
+  animation: ml-paw-step 2.4s var(--ml-ease) infinite;
+}
