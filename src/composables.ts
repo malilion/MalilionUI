@@ -101,3 +101,36 @@ export function useOutsidePointer(
     if (typeof document !== 'undefined') document.removeEventListener('pointerdown', onPointerDown)
   })
 }
+
+/** True when the user asked the OS for less motion. Safe during SSR. */
+export function prefersReducedMotion() {
+  return typeof window !== 'undefined' && !!window.matchMedia?.('(prefers-reduced-motion: reduce)').matches
+}
+
+/**
+ * Calls `onEnter` when `el` scrolls into view (and `onLeave` when it leaves,
+ * unless `once`). Without IntersectionObserver it fires right away.
+ */
+export function observeInView(
+  el: Element,
+  onEnter: () => void,
+  { once = true, threshold = 0.15, onLeave }: { once?: boolean; threshold?: number; onLeave?: () => void } = {},
+) {
+  if (typeof IntersectionObserver === 'undefined') {
+    onEnter()
+    return () => {}
+  }
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const entry of entries) {
+        if (entry.isIntersecting) {
+          onEnter()
+          if (once) io.disconnect()
+        } else onLeave?.()
+      }
+    },
+    { threshold },
+  )
+  io.observe(el)
+  return () => io.disconnect()
+}

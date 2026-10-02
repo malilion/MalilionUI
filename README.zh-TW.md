@@ -34,7 +34,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 71 個元件，涵蓋基礎、表單、回饋、資料展示、圖表、導覽與行動版，另附現成的版型範例
+- 79 個元件，涵蓋基礎、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
 - 內建表單驗證：`MlForm` / `MlFormItem` 規則（必填、長度、格式、非同步檢查），錯誤會直接顯示在每個表單元件上
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
@@ -42,6 +42,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
 - 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
 - 處處都有腳印：`MlPaw`、`v-paw-stamp` 蓋章指令、腳印勾選框、單選、載入器與進度條跑者
+- 符合品牌風格的視覺特效：數字滾動、HUD 解碼文字、金屬傾斜反光、流光邊框、聚光燈格線、捲動出場與腳印煙火，在 `prefers-reduced-motion` 下全部會收斂
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 - 執行期零依賴，只需要 Vue 作為 peer dependency
 
@@ -140,6 +141,10 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | **獅掌腳印 · 可愛風格** | **雙主題** |
 | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/paw.png" alt="獅掌腳印"> | <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/themes.png" alt="雙主題"> |
 
+**視覺特效**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="視覺特效" width="100%">
+
 每個元件在[文件站](https://malilion.github.io/MalilionUI/)都有自己的頁面：即時範例、一鍵複製原始碼與完整 API 表。
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="文件站" width="100%">
@@ -155,6 +160,7 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
 | 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
 | 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
+| 視覺特效 | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` |
 | 指令 | `v-paw-stamp` |
 
 ## 元件屬性
@@ -175,6 +181,7 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | MlTimePicker | v-model / minute-step / min / max | `string \| null` / number / string | `null` / `1` / — | `"HH:mm"` 捲輪；加 `seconds` 多一欄秒 |
 | MlTree | v-model:expanded / selected / checked | `Key[]` / `Key \| null` / `Key[]` | `[]` / `null` / `[]` | 加 `checkable` 三態勾選，`filter` 篩選 |
 | MlCarousel | items / autoplay / v-model:index | `T[]` / 毫秒 / number | — / `0` / `0` | 投影片由預設插槽 `{ item, index }` 決定 |
+| MlReveal | effect / stagger | `'fade-up' \| 'zoom' \| 'blur' \| …` / 毫秒 | `'fade-up'` / `0` | 捲進畫面時出場；`stagger` 讓子元素依序出場 |
 | MlDropdown | selectable | boolean | `false` | 單選選單；v-model 存選中的值，並用腳印標記 |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | 碼力獅本獅，頭像或全身 |
 | MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | 自動取整數刻度，最高的一根會亮起 |

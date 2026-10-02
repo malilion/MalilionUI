@@ -1,0 +1,261 @@
+/*
+ * Visual effects — motion and light for hero sections, dashboards and moments
+ * worth celebrating. Everything degrades to a still, readable state under
+ * prefers-reduced-motion (the components also skip their JS animation then).
+ */
+
+/* ── CountUp ── */
+.ml-countup {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ── DecryptText ── */
+.ml-decrypt {
+  white-space: pre-wrap;
+}
+
+.ml-decrypt__char--scrambled {
+  color: var(--ml-tech-text);
+  text-shadow: 0 0 8px rgb(62 238 208 / 0.6);
+  font-family: var(--ml-font-mono);
+}
+
+/* ── Tilt: a metal plate that follows the pointer, with a moving specular glare ── */
+.ml-tilt {
+  perspective: var(--_perspective, 900px);
+}
+
+.ml-tilt__inner {
+  position: relative;
+  transform: rotateX(var(--_rx, 0deg)) rotateY(var(--_ry, 0deg)) scale(var(--_scale, 1));
+  transform-style: preserve-3d;
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring);
+  will-change: transform;
+}
+
+.ml-tilt--active .ml-tilt__inner {
+  transition-duration: 80ms;
+  transition-timing-function: linear;
+}
+
+.ml-tilt__glare {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: radial-gradient(
+    circle at var(--_gx, 50%) var(--_gy, 50%),
+    rgb(255 244 204 / 0.35), rgb(240 173 47 / 0.12) 25%, transparent 55%);
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-tilt--active .ml-tilt__glare {
+  opacity: 1;
+}
+
+/* ── BorderBeam: a spark that laps the border ── */
+@property --_beam-angle {
+  syntax: '<angle>';
+  inherits: false;
+  initial-value: 0deg;
+}
+
+.ml-beam {
+  --_c: var(--ml-gold-300);
+  --_cut: var(--ml-cut);
+
+  position: relative;
+  isolation: isolate;
+}
+
+.ml-beam--tech { --_c: var(--ml-cyan-300); }
+.ml-beam--bean { --_c: var(--ml-bean-300); }
+.ml-beam--danger { --_c: var(--ml-red-300); }
+
+.ml-beam__ring {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  padding: var(--_size, 2px);
+  background: conic-gradient(from var(--_beam-angle),
+      transparent 0 62%, color-mix(in srgb, var(--_c) 40%, transparent) 76%,
+      var(--_c) 86%, #fff 88%, transparent 90% 100%);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  /* Keep only the ring: full box minus the content box */
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  filter: drop-shadow(0 0 6px var(--_c));
+  pointer-events: none;
+  animation: ml-beam-lap var(--_dur, 4s) linear infinite;
+}
+
+.ml-beam--reverse .ml-beam__ring {
+  animation-direction: reverse;
+}
+
+.ml-beam--paused .ml-beam__ring {
+  animation-play-state: paused;
+}
+
+@keyframes ml-beam-lap {
+  to { --_beam-angle: 360deg; }
+}
+
+/* ── Marquee: an endless HUD ticker ── */
+.ml-marquee {
+  --_gap: 40px;
+
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+}
+
+.ml-marquee--fade {
+  mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
+}
+
+.ml-marquee__track {
+  display: flex;
+  flex: none;
+  gap: var(--_gap);
+  animation: ml-marquee var(--_dur, 20s) linear infinite;
+}
+
+.ml-marquee--right .ml-marquee__track {
+  animation-direction: reverse;
+}
+
+.ml-marquee__group {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--_gap);
+}
+
+.ml-marquee--paused .ml-marquee__track,
+.ml-marquee--hover-pause:hover .ml-marquee__track,
+.ml-marquee--hover-pause:focus-within .ml-marquee__track {
+  animation-play-state: paused;
+}
+
+/* Exactly one copy plus one gap → the loop is seamless */
+@keyframes ml-marquee {
+  to { translate: calc(-50% - var(--_gap) / 2) 0; }
+}
+
+/* ── Reveal ── */
+.ml-reveal--hidden,
+.ml-reveal--hidden.ml-reveal--stagger > * {
+  opacity: 0;
+}
+
+.ml-reveal--shown:not(.ml-reveal--stagger),
+.ml-reveal--shown.ml-reveal--stagger > * {
+  animation: var(--_anim) var(--_dur, 700ms) var(--ml-ease-spring) both;
+  animation-delay: calc(var(--_delay, 0ms) + var(--_i, 0) * var(--_stagger, 0ms));
+}
+
+.ml-reveal--fade-up { --_anim: ml-reveal-fade-up; }
+.ml-reveal--fade { --_anim: ml-fade-in; }
+.ml-reveal--zoom { --_anim: ml-reveal-zoom; }
+.ml-reveal--slide-left { --_anim: ml-reveal-slide-left; }
+.ml-reveal--slide-right { --_anim: ml-reveal-slide-right; }
+.ml-reveal--blur { --_anim: ml-reveal-blur; }
+.ml-reveal--flip { --_anim: ml-reveal-flip; }
+
+@keyframes ml-reveal-fade-up { from { opacity: 0; translate: 0 28px; } }
+@keyframes ml-reveal-zoom { from { opacity: 0; scale: 0.9; } }
+@keyframes ml-reveal-slide-left { from { opacity: 0; translate: 40px 0; } }
+@keyframes ml-reveal-slide-right { from { opacity: 0; translate: -40px 0; } }
+@keyframes ml-reveal-blur { from { opacity: 0; filter: blur(12px); } }
+@keyframes ml-reveal-flip { from { opacity: 0; transform: perspective(800px) rotateX(-45deg); transform-origin: top; } }
+
+/* ── Spotlight: a torch over a HUD grid ── */
+.ml-spotlight {
+  --_c: rgb(240 173 47 / 0.22);
+  --_edge: var(--ml-gold-400);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.ml-spotlight--tech { --_c: rgb(62 238 208 / 0.2); --_edge: var(--ml-cyan-400); }
+.ml-spotlight--bean { --_c: rgb(255 143 168 / 0.22); --_edge: var(--ml-bean-400); }
+
+.ml-spotlight__light {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(var(--_r, 320px) circle at var(--_x) var(--_y), var(--_c), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ml-dur-slow) var(--ml-ease);
+}
+
+.ml-spotlight--grid .ml-spotlight__light {
+  background:
+    radial-gradient(var(--_r, 320px) circle at var(--_x) var(--_y), var(--_c), transparent 70%),
+    linear-gradient(color-mix(in srgb, var(--_edge) 28%, transparent) 1px, transparent 1px) 0 0 / 24px 24px,
+    linear-gradient(90deg, color-mix(in srgb, var(--_edge) 28%, transparent) 1px, transparent 1px) 0 0 / 24px 24px;
+  /* Only show the grid inside the torch beam */
+  mask-image: radial-gradient(var(--_r, 320px) circle at var(--_x) var(--_y), #000, transparent 70%);
+  -webkit-mask-image: radial-gradient(var(--_r, 320px) circle at var(--_x) var(--_y), #000, transparent 70%);
+}
+
+.ml-spotlight--on .ml-spotlight__light {
+  opacity: 1;
+}
+
+/* A rim that glows where the pointer is closest */
+.ml-spotlight--border::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  padding: 1px;
+  background: radial-gradient(calc(var(--_r, 320px) * 0.6) circle at var(--_x) var(--_y), var(--_edge), transparent 70%);
+  mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--ml-dur-slow) var(--ml-ease);
+}
+
+.ml-spotlight--border.ml-spotlight--on::after {
+  opacity: 1;
+}
+
+/* ── PawBurst ── */
+.ml-pawburst {
+  display: inline-flex;
+}
+
+.ml-paw-burst {
+  position: fixed;
+  z-index: calc(var(--ml-z-tooltip) + 10);
+  pointer-events: none;
+}
+
+.ml-paw-burst svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: var(--_c, var(--ml-gold-400));
+  filter: drop-shadow(0 0 6px var(--_glow, rgb(240 173 47 / 0.7)));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-tilt__inner { transform: none; }
+  .ml-beam__ring { animation: none; }
+  .ml-marquee { overflow-x: auto; }
+  .ml-marquee__track { animation: none; }
+  .ml-reveal--hidden,
+  .ml-reveal--hidden.ml-reveal--stagger > * { opacity: 1; }
+}

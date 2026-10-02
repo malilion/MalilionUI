@@ -59,6 +59,19 @@ try {
       await page.locator('[data-shot="pickers"] .open-color .ml-colorpicker__trigger').focus()
       await page.keyboard.press('Enter')
     },
+    // Light the spotlight, lean the tilt card, and catch a paw burst mid-flight.
+    effects: async () => {
+      // Scroll first: the capture would otherwise scroll after the pointer is placed.
+      await page.locator('[data-shot="effects"]').scrollIntoViewIfNeeded()
+      const spot = await page.locator('[data-shot="effects"] .fx-spot').boundingBox()
+      await page.mouse.move(spot.x + spot.width * 0.3, spot.y + spot.height * 0.4)
+      await page.locator('[data-shot="effects"] .fx-tilt').evaluate((el) => {
+        const r = el.getBoundingClientRect()
+        el.dispatchEvent(new PointerEvent('pointermove', { clientX: r.right - 20, clientY: r.top + 20, bubbles: true }))
+      })
+      // A scripted click keeps the real mouse over the spotlight.
+      await page.locator('[data-shot="effects"] .fx-burst button').evaluate((el) => el.click())
+    },
   }
 
   const shots = await page.locator('[data-shot]').evaluateAll((els) => els.map((el) => el.dataset.shot))
@@ -74,7 +87,8 @@ try {
     }
     if (setup[name]) {
       await setup[name]()
-      await page.waitForTimeout(700)
+      // The paw burst is mid-flight for only a moment.
+      await page.waitForTimeout(name === 'effects' ? 280 : 700)
     }
     await page.locator(`[data-shot="${name}"]`).screenshot({ path: `${outDir}${name}.png` })
     console.log(`docs/images/${name}.png`)

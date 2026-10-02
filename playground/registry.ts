@@ -50,7 +50,7 @@ export interface PageDef {
   api?: ApiDoc[]
 }
 
-export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'mobile' | 'template'
+export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'mobile' | 'effects' | 'template'
 
 export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'start', label: '開始', en: 'Getting started' },
@@ -61,6 +61,7 @@ export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'chart', label: '圖表', en: 'Charts' },
   { id: 'nav', label: '導覽', en: 'Navigation' },
   { id: 'mobile', label: '行動版', en: 'Mobile' },
+  { id: 'effects', label: '視覺特效', en: 'Effects' },
   { id: 'template', label: '範本', en: 'Templates' },
 ]
 
@@ -314,7 +315,6 @@ export const pages: PageDef[] = [
     title: 'Combobox',
     zh: '進階選擇',
     group: 'form',
-    isNew: true,
     desc: '完全自繪的下拉選擇：可搜尋、可多選、可清除，選單和金屬外殼一致。鍵盤操作遵循 WAI-ARIA combobox 模式（方向鍵、Home / End、首字跳轉、Esc 只關選單）。需要手機原生選單時改用 MlSelect。',
     usage: `import { MlCombobox } from '@malilion/ui'`,
     examples: [
@@ -352,7 +352,6 @@ export const pages: PageDef[] = [
     title: 'Form',
     zh: '表單驗證',
     group: 'form',
-    isNew: true,
     desc: 'MlForm 管理整份表單的規則；MlFormItem 用 prop 指向欄位，錯誤會自動顯示在裡面的 MlInput、MlCombobox 等元件上（含 aria-invalid）。欄位失焦後開始即時驗證；送出時全部檢查，並把焦點移到第一個錯誤。',
     usage: `import { MlForm, MlFormItem, type MlFormRules } from '@malilion/ui'`,
     examples: [
@@ -683,7 +682,6 @@ export const pages: PageDef[] = [
     title: 'Popover',
     zh: '彈出框',
     group: 'feedback',
-    isNew: true,
     desc: '可以放任何內容的浮動面板，金色邊朝向觸發元素。點擊或滑過開啟，Esc 與點擊外部關閉，關閉後焦點回到觸發元素。',
     usage: `import { MlPopover } from '@malilion/ui'`,
     examples: [
@@ -715,7 +713,6 @@ export const pages: PageDef[] = [
     title: 'Popconfirm',
     zh: '氣泡確認',
     group: 'feedback',
-    isNew: true,
     desc: '就地確認的小氣泡，比對話框輕巧。開啟時焦點落在「取消」，避免誤按 Enter 就執行危險動作。',
     usage: `import { MlPopconfirm } from '@malilion/ui'`,
     examples: [{ file: 'popconfirm/basic', title: '基本用法', desc: 'tone="danger" 會換成紅色的確認按鈕與邊條。' }],
@@ -746,7 +743,6 @@ export const pages: PageDef[] = [
     title: 'Drawer',
     zh: '抽屜',
     group: 'feedback',
-    isNew: true,
     desc: '從畫面邊緣滑出的控制台面板，內側有金色能量條。行為和 MlModal 一樣：鎖定捲動、焦點鎖在面板內、Esc / 點背景關閉、關閉後焦點回到原處。',
     usage: `import { MlDrawer } from '@malilion/ui'`,
     examples: [
@@ -779,7 +775,6 @@ export const pages: PageDef[] = [
     title: 'Skeleton',
     zh: '骨架屏',
     group: 'feedback',
-    isNew: true,
     desc: '資料還在路上時的佔位金屬板，帶一道掃描光。螢幕閱讀器會讀到「載入中」；減少動態效果時掃描光會關閉。',
     usage: `import { MlSkeleton, MlSkeletonItem } from '@malilion/ui'`,
     examples: [
@@ -1164,7 +1159,6 @@ export const pages: PageDef[] = [
     title: 'Timeline',
     zh: '時間軸',
     group: 'data',
-    isNew: true,
     desc: '一條能量導軌串起事件，節點依序亮起。適合活動紀錄、部署流程、版本歷史。',
     usage: `import { MlTimeline } from '@malilion/ui'`,
     examples: [
@@ -1200,7 +1194,6 @@ export const pages: PageDef[] = [
     title: 'Tree',
     zh: '樹狀結構',
     group: 'data',
-    isNew: true,
     desc: '檔案、分類、權限這類多層資料。每一層有一道導引線；支援單選、三態勾選（勾父節點會帶動子節點，反之亦然）、篩選，以及完整的 WAI-ARIA 樹狀鍵盤操作。',
     usage: `import { MlTree, type MlTreeNode } from '@malilion/ui'`,
     examples: [
@@ -1245,7 +1238,6 @@ export const pages: PageDef[] = [
     title: 'Image',
     zh: '圖片',
     group: 'data',
-    isNew: true,
     desc: '切角相框，載入中有掃描光、失敗時顯示腳印。加上 preview 點擊就能全螢幕檢視：縮放（滾輪 / + -）、拖曳、旋轉（R）、左右切換，Esc 關閉。',
     usage: `import { MlImage, MlImagePreview } from '@malilion/ui'`,
     examples: [
@@ -1290,7 +1282,6 @@ export const pages: PageDef[] = [
     title: 'Carousel',
     zh: '輪播',
     group: 'data',
-    isNew: true,
     desc: '在導軌上滑動的展示區，指示條會隨自動播放「充能」。滑鼠移入或鍵盤聚焦時暫停，也有暫停按鈕；非目前的投影片不會被 Tab 到。支援滑動手勢與左右方向鍵。',
     usage: `import { MlCarousel } from '@malilion/ui'`,
     examples: [
@@ -1318,7 +1309,6 @@ export const pages: PageDef[] = [
     title: 'Watermark',
     zh: '浮水印',
     group: 'data',
-    isNew: true,
     desc: '在內容上鋪滿斜向的文字或圖片浮水印，不擋點擊。在開發者工具裡刪掉或改掉浮水印圖層，它會自己長回來。',
     usage: `import { MlWatermark } from '@malilion/ui'`,
     examples: [{ file: 'watermark/basic', title: '基本用法', desc: '可以多行；文字改變時會即時重畫。', block: true }],
@@ -1494,7 +1484,6 @@ export const pages: PageDef[] = [
     title: 'Affix',
     zh: '固定',
     group: 'nav',
-    isNew: true,
     desc: '捲動到指定位置時把內容釘住，例如工具列或目錄。可以對視窗或任何捲動容器生效，固定時原位置會保留高度，版面不會跳動。',
     usage: `import { MlAffix } from '@malilion/ui'`,
     examples: [{ file: 'affix/basic', title: '在捲動容器裡', desc: 'target 指定容器；@change 告訴你目前是否固定。', block: true }],
@@ -1517,7 +1506,6 @@ export const pages: PageDef[] = [
     title: 'BackTop',
     zh: '回到頂端',
     group: 'nav',
-    isNew: true,
     desc: '捲到一定距離後出現的圓形艙門按鈕，外圈即時顯示捲動進度。使用者偏好減少動態效果時會直接跳回頂端，而不是平滑捲動。',
     usage: `import { MlBackTop } from '@malilion/ui'`,
     examples: [{ file: 'back-top/basic', title: '基本用法', desc: '通常直接放在頁面上就好；這裡用 target 綁在示範區塊。', block: true }],
@@ -1532,6 +1520,210 @@ export const pages: PageDef[] = [
         ],
         events: [{ name: 'click', desc: '按下時' }],
         slots: [{ name: 'default', desc: '自訂按鈕內容' }],
+      },
+    ],
+  },
+  {
+    id: 'count-up',
+    title: 'CountUp',
+    zh: '數字滾動',
+    group: 'effects',
+    isNew: true,
+    desc: '捲到畫面上時，數字像儀表一樣快速衝上去再緩緩停住。值改變時會從目前的數字接著跑。螢幕閱讀器只會讀到最終數字；減少動態效果時直接顯示結果。',
+    usage: `import { MlCountUp } from '@malilion/ui'`,
+    examples: [{ file: 'count-up/basic', title: '基本用法', desc: '前後綴、小數、千分位，以及值變化時接著滾。', block: true }],
+    api: [
+      {
+        component: 'MlCountUp',
+        props: [
+          { name: 'value', desc: '目標數字', type: 'number' },
+          { name: 'from', desc: '第一次從多少開始', type: 'number', default: '0' },
+          { name: 'duration', desc: '毫秒', type: 'number', default: '1600' },
+          { name: 'decimals', desc: '小數位數', type: 'number', default: '0' },
+          { name: 'separator', desc: "千分位符號，'' 關閉", type: 'string', default: `','` },
+          { name: 'prefix / suffix', desc: '前後綴', type: 'string' },
+          { name: 'start-on-view', desc: '捲進畫面才開始', type: 'boolean', default: 'true' },
+        ],
+        events: [
+          { name: 'done', desc: '跑完時' },
+          { name: 'restart()', desc: '透過 ref 重新播放', type: '() => void' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'decrypt-text',
+    title: 'DecryptText',
+    zh: '解碼文字',
+    group: 'effects',
+    isNew: true,
+    desc: 'HUD 風格的解碼效果：先是一串亂碼，再由左到右鎖定成真正的文字。適合標題、系統訊息或載入畫面。整段文字會作為無障礙名稱，閱讀器不會念到亂碼。',
+    usage: `import { MlDecryptText } from '@malilion/ui'`,
+    examples: [{ file: 'decrypt-text/basic', title: '基本用法', desc: '換文字時會自動重新解碼；trigger="hover" 則是滑過才播放。' }],
+    api: [
+      {
+        component: 'MlDecryptText',
+        props: [
+          { name: 'text', desc: '最終文字', type: 'string' },
+          { name: 'trigger', desc: '何時播放', type: `'mount' | 'view' | 'hover'`, default: `'view'` },
+          { name: 'duration', desc: '毫秒', type: 'number', default: '900' },
+          { name: 'charset', desc: '亂碼使用的字元', type: 'string', default: 'A–Z 0–9 與符號' },
+          { name: 'tag', desc: '外層元素', type: 'string', default: `'span'` },
+        ],
+        events: [
+          { name: 'done', desc: '解碼完成' },
+          { name: 'play()', desc: '透過 ref 重新播放', type: '() => void' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'tilt',
+    title: 'Tilt',
+    zh: '立體傾斜',
+    group: 'effects',
+    isNew: true,
+    desc: '把任何卡片變成會跟著滑鼠傾斜的金屬板，加上一道追著游標走的鏡面反光。減少動態效果時只保留反光、不傾斜。',
+    usage: `import { MlTilt } from '@malilion/ui'`,
+    examples: [{ file: 'tilt/basic', title: '基本用法' }],
+    api: [
+      {
+        component: 'MlTilt',
+        props: [
+          { name: 'max', desc: '最大傾斜角度', type: 'number', default: '10' },
+          { name: 'scale', desc: '滑過時放大', type: 'number', default: '1.02' },
+          { name: 'glare', desc: '鏡面反光', type: 'boolean', default: 'true' },
+          { name: 'perspective', desc: '透視距離（px），越小越誇張', type: 'number', default: '900' },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+        slots: [{ name: 'default', desc: '內容，提供 { active }' }],
+      },
+    ],
+  },
+  {
+    id: 'border-beam',
+    title: 'BorderBeam',
+    zh: '流光邊框',
+    group: 'effects',
+    isNew: true,
+    desc: '一道光沿著切角邊框不停繞行，適合強調推薦方案、進行中的任務或主要行動區塊。純 CSS，不佔 JavaScript。',
+    usage: `import { MlBorderBeam } from '@malilion/ui'`,
+    examples: [{ file: 'border-beam/basic', title: '色調與速度', block: true }],
+    api: [
+      {
+        component: 'MlBorderBeam',
+        props: [
+          { name: 'tone', desc: '色調', type: `'gold' | 'tech' | 'bean' | 'danger'`, default: `'gold'` },
+          { name: 'duration', desc: '繞一圈的秒數', type: 'number', default: '4' },
+          { name: 'size', desc: '光束粗細（px）', type: 'number', default: '2' },
+          { name: 'reverse / paused', desc: '反方向 / 暫停', type: 'boolean', default: 'false' },
+          { name: 'tag', desc: '外層元素', type: 'string', default: `'div'` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'marquee',
+    title: 'Marquee',
+    zh: '跑馬燈',
+    group: 'effects',
+    isNew: true,
+    desc: '無縫循環的跑馬燈，適合合作夥伴 logo、技術標籤或報價。滑鼠移入或鍵盤聚焦時暫停；減少動態效果時改成可以手動捲動。',
+    usage: `import { MlMarquee } from '@malilion/ui'`,
+    examples: [{ file: 'marquee/basic', title: '基本用法', desc: '速度依內容寬度換算，不管放多少東西都是同樣的 px/秒。', block: true }],
+    api: [
+      {
+        component: 'MlMarquee',
+        props: [
+          { name: 'speed', desc: '每秒移動多少 px', type: 'number', default: '60' },
+          { name: 'direction', desc: '方向', type: `'left' | 'right'`, default: `'left'` },
+          { name: 'pause-on-hover', desc: '滑過 / 聚焦時暫停', type: 'boolean', default: 'true' },
+          { name: 'paused', desc: '暫停', type: 'boolean', default: 'false' },
+          { name: 'gap', desc: '項目間距（px）', type: 'number', default: '40' },
+          { name: 'fade', desc: '兩端淡出', type: 'boolean', default: 'true' },
+          { name: 'label', desc: '區塊的無障礙名稱', type: 'string' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'reveal',
+    title: 'Reveal',
+    zh: '捲動出場',
+    group: 'effects',
+    isNew: true,
+    desc: '內容捲進畫面時才出場：淡入上浮、縮放、左右滑入、模糊或翻轉。設定 stagger 會讓子元素一個接一個出場。沒有 JavaScript 或減少動態效果時，內容直接顯示。',
+    usage: `import { MlReveal } from '@malilion/ui'`,
+    examples: [
+      { file: 'reveal/basic', title: '七種效果', desc: '在示範區塊裡往下捲。', block: true },
+      { file: 'reveal/stagger', title: '依序出場', desc: 'stagger 設定每個子元素間隔的毫秒數。', block: true },
+    ],
+    api: [
+      {
+        component: 'MlReveal',
+        props: [
+          { name: 'effect', desc: '效果', type: `'fade-up' | 'fade' | 'zoom' | 'slide-left' | 'slide-right' | 'blur' | 'flip'`, default: `'fade-up'` },
+          { name: 'delay / duration', desc: '延遲與長度（毫秒）', type: 'number', default: '0 / 700' },
+          { name: 'stagger', desc: '子元素依序出場的間隔（毫秒）', type: 'number', default: '0' },
+          { name: 'once', desc: '只播一次', type: 'boolean', default: 'true' },
+          { name: 'threshold', desc: '露出多少比例才觸發', type: 'number', default: '0.15' },
+          { name: 'tag', desc: '外層元素', type: 'string', default: `'div'` },
+        ],
+        events: [{ name: 'reveal', desc: '出場時' }],
+      },
+    ],
+  },
+  {
+    id: 'spotlight',
+    title: 'Spotlight',
+    zh: '聚光燈',
+    group: 'effects',
+    isNew: true,
+    desc: '游標像手電筒一樣照亮區塊，光圈裡浮現 HUD 格線，最靠近游標的邊框也會亮起。適合功能介紹卡或價格方案。',
+    usage: `import { MlSpotlight } from '@malilion/ui'`,
+    examples: [{ file: 'spotlight/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlSpotlight',
+        props: [
+          { name: 'tone', desc: '色調', type: `'gold' | 'tech' | 'bean'`, default: `'gold'` },
+          { name: 'size', desc: '光圈半徑（px）', type: 'number', default: '320' },
+          { name: 'grid', desc: '光圈裡顯示格線', type: 'boolean', default: 'true' },
+          { name: 'border', desc: '邊框跟著亮', type: 'boolean', default: 'true' },
+          { name: 'tag', desc: '外層元素', type: 'string', default: `'div'` },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'paw-burst',
+    title: 'PawBurst',
+    zh: '腳印煙火',
+    group: 'effects',
+    isNew: true,
+    desc: '值得慶祝的時候（完成任務、按讚、付款成功），讓一把肉球腳印噴出來、畫出拋物線再淡出。可以包住任何按鈕，也能直接呼叫 pawBurst()。減少動態效果時不會播放。',
+    usage: `import { MlPawBurst, pawBurst } from '@malilion/ui'`,
+    examples: [{ file: 'paw-burst/basic', title: '基本用法' }],
+    api: [
+      {
+        component: 'MlPawBurst',
+        props: [
+          { name: 'count', desc: '腳印數量', type: 'number', default: '16' },
+          { name: 'tones', desc: '隨機挑選的色調', type: `('gold' | 'bean' | 'steel' | 'tech')[]`, default: `['gold', 'bean', 'tech']` },
+          { name: 'spread', desc: '噴射扇形角度，360 為四面八方', type: 'number', default: '140' },
+          { name: 'power', desc: '噴射力道（約略的距離 px）', type: 'number', default: '180' },
+          { name: 'origin', desc: '從觸發元素中心或游標位置噴出', type: `'center' | 'pointer'`, default: `'center'` },
+          { name: 'disabled', desc: '停用', type: 'boolean', default: 'false' },
+        ],
+        events: [
+          { name: 'burst', desc: '噴出時' },
+          { name: 'fire(x?, y?)', desc: '透過 ref 在指定位置噴出', type: '(x?: number, y?: number) => void' },
+        ],
+        slots: [{ name: 'default', desc: '觸發元素' }],
+      },
+      {
+        component: 'pawBurst()',
+        events: [{ name: 'pawBurst(x, y, options?)', desc: '在視窗座標噴出腳印；options 同上（count、tones、spread、power、duration）', type: '(x: number, y: number, options?: PawBurstOptions) => void' }],
       },
     ],
   },
@@ -1610,7 +1802,6 @@ export const pages: PageDef[] = [
     title: 'Autocomplete',
     zh: '自動完成',
     group: 'form',
-    isNew: true,
     desc: '可自由輸入的文字框，邊打邊給建議。和 Combobox 不同的是值不必來自選項；建議可以是靜態清單，或是有防抖的非同步搜尋。沒有選中建議時 Enter 會照常送出表單。',
     usage: `import { MlAutocomplete } from '@malilion/ui'`,
     examples: [
@@ -1648,7 +1839,6 @@ export const pages: PageDef[] = [
     title: 'TimePicker',
     zh: '時間選擇',
     group: 'form',
-    isNew: true,
     desc: '捲輪式的時、分、秒欄位，中間有金色準星標示目前值。v-model 是 "HH:mm" 字串，方便直接送給後端。每一欄都能用方向鍵、PageUp / PageDown、Home / End 操作。',
     usage: `import { MlTimePicker } from '@malilion/ui'`,
     examples: [
@@ -1675,7 +1865,6 @@ export const pages: PageDef[] = [
     title: 'DateTimePicker',
     zh: '日期時間',
     group: 'form',
-    isNew: true,
     desc: '日曆和時間捲輪放在同一個面板。換日期會保留時間、換時間會保留日期；min / max 精確到分鐘。',
     usage: `import { MlDateTimePicker } from '@malilion/ui'`,
     examples: [{ file: 'datetime-picker/basic', title: '基本用法', block: true }],
@@ -1699,7 +1888,6 @@ export const pages: PageDef[] = [
     title: 'Segmented',
     zh: '分段切換',
     group: 'form',
-    isNew: true,
     desc: '少數幾個選項的單選切換，金色面板會滑到選中的那一段。語意上是 radio group：只有一個 Tab 停點，方向鍵直接切換。',
     usage: `import { MlSegmented } from '@malilion/ui'`,
     examples: [
@@ -1727,7 +1915,6 @@ export const pages: PageDef[] = [
     title: 'Rate',
     zh: '評分',
     group: 'form',
-    isNew: true,
     desc: '用肉球評分，會亮起金屬光澤。支援半顆、清除、文字描述與唯讀；鍵盤上是一個滑桿（方向鍵、Home / End）。',
     usage: `import { MlRate } from '@malilion/ui'`,
     examples: [{ file: 'rate/basic', title: '基本用法', desc: '半顆、三種色調、文字描述、可清除（再點一次目前的值就歸零）與唯讀。' }],
@@ -1754,7 +1941,6 @@ export const pages: PageDef[] = [
     title: 'ColorPicker',
     zh: '取色器',
     group: 'form',
-    isNew: true,
     desc: '飽和度 / 亮度面板、色相條、可選的透明度條、色碼輸入與預設色票。v-model 是小寫 hex 字串。面板可以用方向鍵微調（Shift 一次 10%）。',
     usage: `import { MlColorPicker } from '@malilion/ui'`,
     examples: [{ file: 'color-picker/basic', title: '基本用法', block: true }],
@@ -1776,7 +1962,6 @@ export const pages: PageDef[] = [
     title: 'Transfer',
     zh: '穿梭框',
     group: 'form',
-    isNew: true,
     desc: '兩個清單之間搬移項目，例如挑選成員或欄位。每邊都有全選（只算目前篩選得到、未停用的項目）與搜尋；搬移時項目會滑入定位。',
     usage: `import { MlTransfer } from '@malilion/ui'`,
     examples: [{ file: 'transfer/basic', title: '基本用法', block: true }],
