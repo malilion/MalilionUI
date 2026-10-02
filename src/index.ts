@@ -2,6 +2,7 @@ import type { App, Plugin } from 'vue'
 
 import MlAccordion from './components/MlAccordion.vue'
 import MlAlert from './components/MlAlert.vue'
+import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
 import MlBadge from './components/MlBadge.vue'
 import MlBarChart from './components/MlBarChart.vue'
@@ -12,6 +13,7 @@ import MlCard from './components/MlCard.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
 import MlCombobox from './components/MlCombobox.vue'
 import MlDatePicker from './components/MlDatePicker.vue'
+import MlDateTimePicker from './components/MlDateTimePicker.vue'
 import MlDivider from './components/MlDivider.vue'
 import MlDonut from './components/MlDonut.vue'
 import MlDrawer from './components/MlDrawer.vue'
@@ -40,6 +42,7 @@ import MlProgress from './components/MlProgress.vue'
 import MlRadio from './components/MlRadio.vue'
 import MlRadioGroup from './components/MlRadioGroup.vue'
 import MlRing from './components/MlRing.vue'
+import MlSegmented from './components/MlSegmented.vue'
 import MlSelect from './components/MlSelect.vue'
 import MlSkeleton from './components/MlSkeleton.vue'
 import MlSkeletonItem from './components/MlSkeletonItem.vue'
@@ -53,14 +56,18 @@ import MlTable from './components/MlTable.vue'
 import MlTabs from './components/MlTabs.vue'
 import MlTag from './components/MlTag.vue'
 import MlTextarea from './components/MlTextarea.vue'
+import MlTimePicker from './components/MlTimePicker.vue'
+import MlTimeline from './components/MlTimeline.vue'
 import MlToastHost from './components/MlToastHost.vue'
 import MlTooltip from './components/MlTooltip.vue'
+import MlTree from './components/MlTree.vue'
 import MlUpload from './components/MlUpload.vue'
 import { vPawStamp } from './pawStamp'
 
 const components = {
   MlAccordion,
   MlAlert,
+  MlAutocomplete,
   MlAvatar,
   MlBadge,
   MlBarChart,
@@ -71,6 +78,7 @@ const components = {
   MlCheckbox,
   MlCombobox,
   MlDatePicker,
+  MlDateTimePicker,
   MlDivider,
   MlDonut,
   MlDrawer,
@@ -99,6 +107,7 @@ const components = {
   MlRadio,
   MlRadioGroup,
   MlRing,
+  MlSegmented,
   MlSelect,
   MlSkeleton,
   MlSkeletonItem,
@@ -112,8 +121,11 @@ const components = {
   MlTabs,
   MlTag,
   MlTextarea,
+  MlTimePicker,
+  MlTimeline,
   MlToastHost,
   MlTooltip,
+  MlTree,
   MlUpload,
 }
 
@@ -132,6 +144,7 @@ export default MalilionUI
 export {
   MlAccordion,
   MlAlert,
+  MlAutocomplete,
   MlAvatar,
   MlBadge,
   MlBarChart,
@@ -142,6 +155,7 @@ export {
   MlCheckbox,
   MlCombobox,
   MlDatePicker,
+  MlDateTimePicker,
   MlDivider,
   MlDonut,
   MlDrawer,
@@ -170,6 +184,7 @@ export {
   MlRadio,
   MlRadioGroup,
   MlRing,
+  MlSegmented,
   MlSelect,
   MlSkeleton,
   MlSkeletonItem,
@@ -183,8 +198,11 @@ export {
   MlTabs,
   MlTag,
   MlTextarea,
+  MlTimePicker,
+  MlTimeline,
   MlToastHost,
   MlTooltip,
+  MlTree,
   MlUpload,
 }
 
@@ -201,6 +219,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     MlAccordion: typeof MlAccordion
     MlAlert: typeof MlAlert
+    MlAutocomplete: typeof MlAutocomplete
     MlAvatar: typeof MlAvatar
     MlBadge: typeof MlBadge
     MlBarChart: typeof MlBarChart
@@ -211,6 +230,7 @@ declare module 'vue' {
     MlCheckbox: typeof MlCheckbox
     MlCombobox: typeof MlCombobox
     MlDatePicker: typeof MlDatePicker
+    MlDateTimePicker: typeof MlDateTimePicker
     MlDivider: typeof MlDivider
     MlDonut: typeof MlDonut
     MlDrawer: typeof MlDrawer
@@ -239,6 +259,7 @@ declare module 'vue' {
     MlRadio: typeof MlRadio
     MlRadioGroup: typeof MlRadioGroup
     MlRing: typeof MlRing
+    MlSegmented: typeof MlSegmented
     MlSelect: typeof MlSelect
     MlSkeleton: typeof MlSkeleton
     MlSkeletonItem: typeof MlSkeletonItem
@@ -252,8 +273,11 @@ declare module 'vue' {
     MlTabs: typeof MlTabs
     MlTag: typeof MlTag
     MlTextarea: typeof MlTextarea
+    MlTimePicker: typeof MlTimePicker
+    MlTimeline: typeof MlTimeline
     MlToastHost: typeof MlToastHost
     MlTooltip: typeof MlTooltip
+    MlTree: typeof MlTree
     MlUpload: typeof MlUpload
   }
   export interface GlobalDirectives {

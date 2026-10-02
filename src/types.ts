@@ -115,3 +115,33 @@ export interface MlTabBarItem {
   /** Small count bubble on the icon. */
   badge?: number | string
 }
+
+export interface MlSegmentedOption {
+  value: string | number
+  label?: string
+  icon?: IconName
+  disabled?: boolean
+}
+
+export type MlAutocompleteItem = string | { value: string; label?: string; hint?: string }
+
+export type MlTimelineTone = 'gold' | 'tech' | 'success' | 'danger' | 'steel'
+
+export interface MlTimelineItem {
+  title: string
+  /** Shown as the HUD timestamp; free text. */
+  time?: string
+  desc?: string
+  tone?: MlTimelineTone
+  icon?: IconName
+  /** Mark the node with a paw instead of a dot. */
+  paw?: boolean
+}
+
+export interface MlTreeNode {
+  key: string | number
+  label: string
+  children?: MlTreeNode[]
+  icon?: IconName
+  disabled?: boolean
+}

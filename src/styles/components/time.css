@@ -1,0 +1,146 @@
+/* Time pickers — scrolling hour / minute / second wheels in a metal panel */
+.ml-timepicker__panel,
+.ml-datetimepicker__panel {
+  background: var(--ml-brushed), var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+}
+
+.ml-datetimepicker__panel .ml-calendar {
+  background: none;
+  box-shadow: none;
+}
+
+.ml-time {
+  display: flex;
+  gap: 4px;
+  padding: 8px;
+}
+
+.ml-time__col {
+  position: relative;
+  width: 56px;
+  height: 224px;
+  margin: 0;
+  padding: 96px 0;
+  overflow-y: auto;
+  list-style: none;
+  scrollbar-width: none;
+  outline: none;
+  /* A gold "reticle" band marks the centre row */
+  background:
+    linear-gradient(var(--ml-accent-soft), var(--ml-accent-soft)) 0 96px / 100% 32px no-repeat;
+  mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 30%, #000 70%, transparent);
+}
+
+.ml-time__col::-webkit-scrollbar {
+  display: none;
+}
+
+.ml-time__col:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ml-focus);
+}
+
+.ml-time__cell {
+  display: grid;
+  place-items: center;
+  height: 32px;
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-time__cell:hover:not([aria-disabled='true']) {
+  background: var(--ml-surface-3);
+  color: var(--ml-text);
+}
+
+.ml-time__cell--selected {
+  background: var(--ml-metal-gold-soft);
+  color: var(--ml-text-on-metal);
+  font-weight: 700;
+}
+
+.ml-time__cell--selected:hover {
+  background: var(--ml-metal-gold-soft) !important;
+  color: var(--ml-text-on-metal) !important;
+}
+
+.ml-time__cell[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.ml-timepicker__footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 10px 10px;
+  border-top: 1px dashed var(--ml-line);
+}
+
+.ml-datetimepicker__body {
+  display: flex;
+  align-items: stretch;
+}
+
+.ml-datetimepicker__time {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px dashed var(--ml-line);
+}
+
+.ml-datetimepicker__time-label {
+  margin: 14px 12px 0;
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+  color: var(--ml-text-dim);
+}
+
+/* Wheels keep their fixed height so the centre band lines up across columns */
+.ml-datetimepicker__time .ml-time {
+  margin: auto 0;
+}
+
+@media (max-width: 560px) {
+  .ml-datetimepicker__body {
+    flex-direction: column;
+  }
+
+  .ml-datetimepicker__time {
+    border-left: 0;
+    border-top: 1px dashed var(--ml-line);
+  }
+
+  .ml-datetimepicker__time .ml-time__col {
+    height: 160px;
+    padding: 64px 0;
+    background-position: 0 64px;
+  }
+}
+
+/* Autocomplete */
+.ml-autocomplete {
+  position: relative;
+  min-width: 0;
+}
+
+.ml-autocomplete__clear {
+  position: static;
+}
+
+.ml-autocomplete__spinner {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  border: 2px solid var(--ml-line-strong);
+  border-top-color: var(--ml-accent);
+  border-radius: 50%;
+  animation: ml-spin 0.7s linear infinite;
+}
