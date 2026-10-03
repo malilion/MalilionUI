@@ -2,6 +2,9 @@
 import { computed, nextTick, onBeforeUnmount, ref, watch } from 'vue'
 import MlIcon from './MlIcon.vue'
 import { trapFocus, useScrollLock } from '../composables'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -31,7 +34,7 @@ const scrollLock = useScrollLock()
 
 const total = computed(() => props.images.length)
 const current = computed(() => props.images[index.value] ?? '')
-const alt = computed(() => props.alts[index.value] ?? `圖片 ${index.value + 1} / ${total.value}`)
+const alt = computed(() => props.alts[index.value] ?? loc.value.preview.image(index.value + 1, total.value))
 const canPrev = computed(() => total.value > 1 && (props.loop || index.value > 0))
 const canNext = computed(() => total.value > 1 && (props.loop || index.value < total.value - 1))
 
@@ -124,7 +127,7 @@ onBeforeUnmount(scrollLock.unlock)
         class="ml-preview"
         role="dialog"
         aria-modal="true"
-        aria-label="圖片預覽"
+        :aria-label="loc.preview.label"
         tabindex="-1"
         @keydown="onKeydown"
       >
@@ -155,30 +158,30 @@ onBeforeUnmount(scrollLock.unlock)
           {{ String(index + 1).padStart(2, '0') }} <span>/ {{ String(total).padStart(2, '0') }}</span>
         </p>
 
-        <button type="button" class="ml-preview__btn ml-preview__close" aria-label="關閉預覽" @click="close">
+        <button type="button" class="ml-preview__btn ml-preview__close" :aria-label="loc.preview.close" @click="close">
           <MlIcon name="close" />
         </button>
         <template v-if="total > 1">
-          <button type="button" class="ml-preview__btn ml-preview__nav ml-preview__nav--prev" aria-label="上一張" :disabled="!canPrev" @click="go(-1)">
+          <button type="button" class="ml-preview__btn ml-preview__nav ml-preview__nav--prev" :aria-label="loc.common.prev" :disabled="!canPrev" @click="go(-1)">
             <MlIcon name="chevronLeft" />
           </button>
-          <button type="button" class="ml-preview__btn ml-preview__nav ml-preview__nav--next" aria-label="下一張" :disabled="!canNext" @click="go(1)">
+          <button type="button" class="ml-preview__btn ml-preview__nav ml-preview__nav--next" :aria-label="loc.common.next" :disabled="!canNext" @click="go(1)">
             <MlIcon name="chevronRight" />
           </button>
         </template>
 
-        <div class="ml-preview__toolbar" role="toolbar" aria-label="檢視工具">
-          <button type="button" class="ml-preview__btn" aria-label="縮小" :disabled="scale <= ZOOM_MIN" @click="zoom(0.8)">
+        <div class="ml-preview__toolbar" role="toolbar" :aria-label="loc.preview.toolbar">
+          <button type="button" class="ml-preview__btn" :aria-label="loc.preview.zoomOut" :disabled="scale <= ZOOM_MIN" @click="zoom(0.8)">
             <MlIcon name="minus" />
           </button>
           <span class="ml-preview__zoom">{{ Math.round(scale * 100) }}%</span>
-          <button type="button" class="ml-preview__btn" aria-label="放大" :disabled="scale >= ZOOM_MAX" @click="zoom(1.25)">
+          <button type="button" class="ml-preview__btn" :aria-label="loc.preview.zoomIn" :disabled="scale >= ZOOM_MAX" @click="zoom(1.25)">
             <MlIcon name="plus" />
           </button>
-          <button type="button" class="ml-preview__btn" aria-label="旋轉 90 度" @click="rotate += 90">
+          <button type="button" class="ml-preview__btn" :aria-label="loc.preview.rotate" @click="rotate += 90">
             <MlIcon name="rotate" />
           </button>
-          <button type="button" class="ml-preview__btn" aria-label="重設" @click="reset">
+          <button type="button" class="ml-preview__btn" :aria-label="loc.preview.reset" @click="reset">
             <MlIcon name="expand" />
           </button>
         </div>

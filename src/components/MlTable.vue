@@ -4,6 +4,9 @@ import MlCheckbox from './MlCheckbox.vue'
 import MlLoader from './MlLoader.vue'
 import MlPaw from './MlPaw.vue'
 import type { MlTableColumn, MlTableSort } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Key = string | number
 
@@ -25,7 +28,7 @@ const props = withDefaults(
     hoverPaw?: boolean
     emptyText?: string
   }>(),
-  { rowKey: 'id', hoverPaw: true, emptyText: '這裡還沒有獵物' },
+  { rowKey: 'id', hoverPaw: true },
 )
 
 const emit = defineEmits<{ 'row-click': [row: Row] }>()
@@ -121,7 +124,7 @@ const columnCount = computed(() => props.columns.length + (props.selectable ? 1 
             <th v-if="selectable" class="ml-table__select" scope="col">
               <MlCheckbox
                 paw
-                aria-label="全選"
+                :aria-label="loc.table.selectAll"
                 :model-value="allSelected"
                 :indeterminate="someSelected"
                 :disabled="!view.length"
@@ -168,7 +171,7 @@ const columnCount = computed(() => props.columns.length + (props.selectable ? 1 
             <td v-if="selectable" class="ml-table__select" @click.stop>
               <MlCheckbox
                 paw
-                :aria-label="`選取第 ${index + 1} 列`"
+                :aria-label="loc.table.selectRow(index + 1)"
                 :model-value="selectedSet.has(keyOf(row))"
                 @update:model-value="(checked) => toggleRow(row, checked)"
               />
@@ -191,7 +194,7 @@ const columnCount = computed(() => props.columns.length + (props.selectable ? 1 
                   <span class="ml-table__empty-trail" aria-hidden="true">
                     <MlPaw v-for="n in 4" :key="n" tone="current" />
                   </span>
-                  <p>{{ emptyText }}</p>
+                  <p>{{ emptyText ?? loc.table.empty }}</p>
                 </div>
               </slot>
             </td>

@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import MlSkeletonItem from './MlSkeletonItem.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 withDefaults(
   defineProps<{
@@ -16,7 +19,7 @@ withDefaults(
     /** Read out to screen readers while loading. */
     label?: string
   }>(),
-  { loading: true, rows: 3, title: true, animated: true, label: '載入中…' },
+  { loading: true, rows: 3, title: true, animated: true },
 )
 </script>
 
@@ -27,7 +30,7 @@ withDefaults(
     role="status"
     aria-busy="true"
   >
-    <span class="ml-visually-hidden">{{ label }}</span>
+    <span class="ml-visually-hidden">{{ label ?? loc.skeleton }}</span>
     <slot name="template">
       <MlSkeletonItem v-if="avatar" variant="circle" class="ml-skeleton__avatar" />
       <div class="ml-skeleton__lines">

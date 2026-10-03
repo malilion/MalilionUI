@@ -2,6 +2,9 @@
 import { computed, ref } from 'vue'
 import MlPaw from './MlPaw.vue'
 import type { MlSize } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -22,7 +25,7 @@ const props = withDefaults(
     /** Accessible name. */
     label?: string
   }>(),
-  { max: 5, size: 'md', tone: 'gold', label: '評分' },
+  { max: 5, size: 'md', tone: 'gold' },
 )
 
 const emit = defineEmits<{ change: [value: number] }>()
@@ -92,7 +95,7 @@ function onKeydown(event: KeyboardEvent) {
       { 'ml-rate--interactive': interactive, 'ml-rate--disabled': disabled },
     ]"
     :role="readonly ? 'img' : 'slider'"
-    :aria-label="readonly ? `${label}：${valueText}` : label"
+    :aria-label="readonly ? `${label ?? loc.rate}：${valueText}` : label ?? loc.rate"
     :aria-valuemin="readonly ? undefined : 0"
     :aria-valuemax="readonly ? undefined : max"
     :aria-valuenow="readonly ? undefined : model"

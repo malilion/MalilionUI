@@ -5,6 +5,9 @@ import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import { describedBy } from '../composables'
 import { useFormField } from '../form'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -27,8 +30,6 @@ const props = withDefaults(
     id?: string
   }>(),
   {
-    placeholder: '選擇日期',
-    locale: 'zh-TW',
     weekStartsOn: 0,
     format: () => ({ year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }),
     placement: 'bottom-start',
@@ -46,7 +47,7 @@ const controlId = computed(() => props.id ?? `ml-datepicker-${autoId}`)
 const panelId = `${controlId.value}-panel`
 
 const display = computed(() =>
-  model.value ? new Intl.DateTimeFormat(props.locale, props.format).format(model.value) : '',
+  model.value ? new Intl.DateTimeFormat(props.locale ?? loc.value.name, props.format).format(model.value) : '',
 )
 
 async function show() {
@@ -108,13 +109,13 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocumentPoin
           @click="open ? hide() : show()"
         >
           <span v-if="display">{{ display }}</span>
-          <span v-else class="ml-datepicker__placeholder">{{ placeholder }}</span>
+          <span v-else class="ml-datepicker__placeholder">{{ placeholder ?? loc.date.pick }}</span>
         </button>
         <button
           v-if="clearable && model && !disabled"
           type="button"
           class="ml-datepicker__clear"
-          aria-label="清除日期"
+          :aria-label="loc.date.clear"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -125,7 +126,7 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocumentPoin
           v-if="open"
           :id="panelId"
           role="dialog"
-          aria-label="選擇日期"
+          :aria-label="loc.date.pick"
           :class="['ml-datepicker__panel', `ml-datepicker__panel--${placement}`]"
           @keydown="onPanelKeydown"
         >

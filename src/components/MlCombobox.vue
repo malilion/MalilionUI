@@ -6,6 +6,9 @@ import MlPaw from './MlPaw.vue'
 import { describedBy, useOutsidePointer, useSplitAttrs } from '../composables'
 import { useFormField } from '../form'
 import type { MlSelectOption, MlSize } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Value = string | number
 
@@ -36,13 +39,14 @@ const props = withDefaults(
     /** Renders hidden inputs so the value is posted with a native <form>. */
     name?: string
   }>(),
-  { size: 'md', placeholder: '請選擇', noMatchText: '找不到符合的選項' },
+  { size: 'md' },
 )
 
 const emit = defineEmits<{ change: [value: Value | Value[] | null] }>()
 const model = defineModel<Value | Value[] | null>({ default: null })
 
 const { fieldError, fieldRequired } = useFormField(props)
+const ph = computed(() => props.placeholder ?? loc.value.common.choose)
 const { rootAttrs, controlAttrs } = useSplitAttrs()
 const autoId = useId()
 const controlId = computed(() => props.id ?? `ml-combobox-${autoId}`)
@@ -278,7 +282,7 @@ const controlAria = computed(() => ({
                 type="button"
                 class="ml-combobox__tag-remove"
                 tabindex="-1"
-                :aria-label="`移除 ${option.label}`"
+                :aria-label="loc.common.remove(option.label)"
                 @click.stop="removeValue(option.value)"
               >
                 <MlIcon name="close" />
@@ -295,7 +299,7 @@ const controlAria = computed(() => ({
             autocomplete="off"
             aria-autocomplete="list"
             :value="open || multiple ? query : singleLabel"
-            :placeholder="multiple && hasValue ? '' : open && singleLabel ? singleLabel : placeholder"
+            :placeholder="multiple && hasValue ? '' : open && singleLabel ? singleLabel : ph"
             :disabled="disabled"
             @input="onInput"
             @keydown="onKeydown"
@@ -314,7 +318,7 @@ const controlAria = computed(() => ({
             <span v-if="!multiple && singleLabel" class="ml-combobox__single">
               <slot name="selected" :option="selectedOptions[0]">{{ singleLabel }}</slot>
             </span>
-            <span v-else-if="!hasValue" class="ml-combobox__placeholder">{{ placeholder }}</span>
+            <span v-else-if="!hasValue" class="ml-combobox__placeholder">{{ ph }}</span>
           </div>
         </div>
         <button
@@ -322,7 +326,7 @@ const controlAria = computed(() => ({
           type="button"
           class="ml-combobox__clear"
           tabindex="-1"
-          aria-label="清除"
+          :aria-label="loc.common.clear"
           @click.stop="clear"
         >
           <MlIcon name="close" />
@@ -374,7 +378,7 @@ const controlAria = computed(() => ({
             <MlPaw v-if="!multiple && isSelected(option)" tone="current" class="ml-dropdown__paw" />
           </li>
           <li v-if="!visible.length" class="ml-combobox__empty" role="presentation">
-            <MlPaw tone="steel" class="ml-combobox__empty-paw" />{{ noMatchText }}
+            <MlPaw tone="steel" class="ml-combobox__empty-paw" />{{ noMatchText ?? loc.common.noMatch }}
           </li>
         </ul>
       </Transition>

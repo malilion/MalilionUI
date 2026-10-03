@@ -5,6 +5,9 @@ import MlKbd from './MlKbd.vue'
 import MlPaw from './MlPaw.vue'
 import { useScrollLock } from '../composables'
 import type { MlCommandItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +20,7 @@ const props = withDefaults(
     /** Most results shown at once. */
     limit?: number
   }>(),
-  { placeholder: '輸入指令或搜尋…', shortcut: 'mod+k', emptyText: '找不到符合的指令', limit: 50 },
+  { shortcut: 'mod+k', limit: 50 },
 )
 
 const emit = defineEmits<{ select: [item: MlCommandItem] }>()
@@ -190,7 +193,7 @@ defineExpose({ shortcutKeys })
     <Transition name="ml-cmd" :duration="{ enter: 420, leave: 200 }">
       <div v-if="open" class="ml-cmd">
         <div class="ml-cmd__backdrop" @click="open = false" />
-        <div class="ml-cmd__panel" role="dialog" aria-modal="true" aria-label="指令面板">
+        <div class="ml-cmd__panel" role="dialog" aria-modal="true" :aria-label="loc.command.dialog">
           <div class="ml-cmd__search">
             <MlIcon name="search" class="ml-cmd__search-icon" />
             <input
@@ -205,12 +208,12 @@ defineExpose({ shortcutKeys })
               aria-autocomplete="list"
               :aria-controls="`${uid}-list`"
               :aria-activedescendant="results.length ? `${uid}-opt-${active}` : undefined"
-              :placeholder="placeholder"
+              :placeholder="placeholder ?? loc.command.placeholder"
               @keydown="onKeydown"
             />
             <MlKbd class="ml-cmd__esc">Esc</MlKbd>
           </div>
-          <div :id="`${uid}-list`" ref="listEl" class="ml-cmd__list" role="listbox" aria-label="指令">
+          <div :id="`${uid}-list`" ref="listEl" class="ml-cmd__list" role="listbox" :aria-label="loc.command.list">
             <template v-for="section in sections" :key="section.name">
               <div role="group" :aria-label="section.name || undefined">
                 <p v-if="section.name" class="ml-cmd__group" aria-hidden="true">{{ section.name }}</p>
@@ -239,12 +242,12 @@ defineExpose({ shortcutKeys })
               </div>
             </template>
             <p v-if="!results.length" class="ml-cmd__empty">
-              <MlPaw tone="steel" class="ml-cmd__empty-paw" />{{ emptyText }}
+              <MlPaw tone="steel" class="ml-cmd__empty-paw" />{{ emptyText ?? loc.command.empty }}
             </p>
           </div>
           <footer class="ml-cmd__foot" aria-hidden="true">
-            <span><MlKbd>↑</MlKbd><MlKbd>↓</MlKbd> 移動</span>
-            <span><MlKbd>Enter</MlKbd> 執行</span>
+            <span><MlKbd>↑</MlKbd><MlKbd>↓</MlKbd> {{ loc.command.move }}</span>
+            <span><MlKbd>Enter</MlKbd> {{ loc.command.run }}</span>
             <span class="ml-cmd__brand"><MlPaw tone="current" /> Malilion</span>
           </footer>
         </div>

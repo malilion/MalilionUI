@@ -1,6 +1,9 @@
 <script setup lang="ts" generic="T">
 import { computed, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import MlIcon from './MlIcon.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -16,7 +19,7 @@ const props = withDefaults(
     /** Accessible name for the carousel. */
     label?: string
   }>(),
-  { autoplay: 0, loop: true, arrows: true, indicators: true, height: 280, label: '輪播' },
+  { autoplay: 0, loop: true, arrows: true, indicators: true, height: 280 },
 )
 
 const index = defineModel<number>('index', { default: 0 })
@@ -101,7 +104,7 @@ const len = (v: number | string) => (typeof v === 'number' ? `${v}px` : v)
     ref="root"
     class="ml-carousel"
     aria-roledescription="carousel"
-    :aria-label="label"
+    :aria-label="label ?? loc.carousel.label"
     :style="{ '--_h': len(height) }"
     @mouseenter="hovering = true"
     @mouseleave="hovering = false"
@@ -136,10 +139,10 @@ const len = (v: number | string) => (typeof v === 'number' ? `${v}px` : v)
     </div>
 
     <template v-if="arrows && total > 1">
-      <button type="button" class="ml-carousel__arrow ml-carousel__arrow--prev" aria-label="上一張" :aria-controls="`${id}-slide-${index}`" :disabled="!canPrev" @click="prev">
+      <button type="button" class="ml-carousel__arrow ml-carousel__arrow--prev" :aria-label="loc.carousel.prev" :aria-controls="`${id}-slide-${index}`" :disabled="!canPrev" @click="prev">
         <MlIcon name="chevronLeft" />
       </button>
-      <button type="button" class="ml-carousel__arrow ml-carousel__arrow--next" aria-label="下一張" :aria-controls="`${id}-slide-${index}`" :disabled="!canNext" @click="next">
+      <button type="button" class="ml-carousel__arrow ml-carousel__arrow--next" :aria-label="loc.carousel.next" :aria-controls="`${id}-slide-${index}`" :disabled="!canNext" @click="next">
         <MlIcon name="chevronRight" />
       </button>
     </template>
@@ -149,7 +152,7 @@ const len = (v: number | string) => (typeof v === 'number' ? `${v}px` : v)
         v-if="autoplay"
         type="button"
         class="ml-carousel__play"
-        :aria-label="userPaused ? '開始自動播放' : '暫停自動播放'"
+        :aria-label="userPaused ? loc.carousel.play : loc.carousel.pause"
         @click="userPaused = !userPaused"
       >
         <MlIcon :name="userPaused ? 'play' : 'pause'" />
@@ -160,7 +163,7 @@ const len = (v: number | string) => (typeof v === 'number' ? `${v}px` : v)
           :key="i"
           type="button"
           :class="['ml-carousel__dot', { 'ml-carousel__dot--active': i === index }]"
-          :aria-label="`第 ${i + 1} 張`"
+          :aria-label="loc.carousel.slide(i + 1)"
           :aria-current="i === index || undefined"
           :style="i === index && playing ? { '--_dur': `${autoplay}ms` } : undefined"
           @click="go(i)"

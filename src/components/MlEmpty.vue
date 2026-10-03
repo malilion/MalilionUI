@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import MlMascot from './MlMascot.vue'
 import MlPaw from './MlPaw.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 withDefaults(
   defineProps<{
@@ -10,7 +13,7 @@ withDefaults(
     art?: 'lion' | 'paws' | 'none'
     size?: 'sm' | 'md'
   }>(),
-  { title: '這裡還沒有東西', art: 'lion', size: 'md' },
+  { art: 'lion', size: 'md' },
 )
 </script>
 
@@ -27,7 +30,7 @@ withDefaults(
         </span>
       </slot>
     </div>
-    <p class="ml-empty__title">{{ title }}</p>
+    <p class="ml-empty__title">{{ title ?? loc.empty.title }}</p>
     <p v-if="description || $slots.description" class="ml-empty__desc">
       <slot name="description">{{ description }}</slot>
     </p>

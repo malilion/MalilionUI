@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { mascotImages } from '../mascot'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +17,7 @@ const props = withDefaults(
     /** Alt text. Pass an empty string when the lion is decoration. */
     title?: string
   }>(),
-  { size: 96, pose: 'avatar', frame: 'none', title: '碼力獅' },
+  { size: 96, pose: 'avatar', frame: 'none' },
 )
 
 const src = computed(() => (props.pose === 'full' ? mascotImages.full : mascotImages.avatar))
@@ -30,6 +33,6 @@ const src = computed(() => (props.pose === 'full' ? mascotImages.full : mascotIm
     ]"
     :style="{ '--_size': `${size}px` }"
   >
-    <img class="ml-mascot__img" :src="src" :alt="title" draggable="false" decoding="async" />
+    <img class="ml-mascot__img" :src="src" :alt="title ?? loc.mascot" draggable="false" decoding="async" />
   </span>
 </template>

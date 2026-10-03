@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import MlIcon from './MlIcon.vue'
 import type { MlTone } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 withDefaults(
   defineProps<{
@@ -32,7 +35,7 @@ const selected = defineModel<boolean>('selected', { default: false })
   <span v-else :class="['ml-tag', `ml-tag--${tone}`, `ml-tag--${variant}`]">
     <slot name="icon" />
     <slot />
-    <button v-if="closable" type="button" class="ml-tag__close" aria-label="移除" @click="emit('close')">
+    <button v-if="closable" type="button" class="ml-tag__close" :aria-label="loc.common.remove('')" @click="emit('close')">
       <MlIcon name="close" />
     </button>
   </span>

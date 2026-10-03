@@ -6,6 +6,9 @@ import MlTree from './MlTree.vue'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
 import type { MlSize, MlTreeNode } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Key = string | number
 
@@ -28,13 +31,14 @@ const props = withDefaults(
     maxTags?: number
     id?: string
   }>(),
-  { placeholder: '請選擇', size: 'md', maxTags: 3 },
+  { size: 'md', maxTags: 3 },
 )
 
 const emit = defineEmits<{ change: [value: Key | Key[] | null] }>()
 const model = defineModel<Key | Key[] | null>({ default: null })
 const expanded = defineModel<Key[]>('expanded', { default: () => [] })
 const { fieldError, fieldRequired } = useFormField(props)
+const ph = computed(() => props.placeholder ?? loc.value.common.choose)
 
 const autoId = useId()
 const controlId = computed(() => props.id ?? `ml-treeselect-${autoId}`)
@@ -171,7 +175,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
                 type="button"
                 class="ml-combobox__tag-remove"
                 tabindex="-1"
-                :aria-label="`移除 ${node.label}`"
+                :aria-label="loc.common.remove(node.label)"
                 @click.stop="remove(node)"
               >
                 <MlIcon name="close" />
@@ -196,7 +200,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
             @keydown.space.prevent="open ? hide() : show()"
           >
             <span v-if="!multiple && shownNodes[0]" class="ml-combobox__single">{{ shownNodes[0].label }}</span>
-            <span v-else-if="!shownNodes.length" class="ml-combobox__placeholder">{{ placeholder }}</span>
+            <span v-else-if="!shownNodes.length" class="ml-combobox__placeholder">{{ ph }}</span>
           </div>
         </div>
         <button
@@ -204,7 +208,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
           type="button"
           class="ml-combobox__clear"
           tabindex="-1"
-          aria-label="清除"
+          :aria-label="loc.common.clear"
           @click.stop="clear"
         >
           <MlIcon name="close" />
@@ -216,14 +220,14 @@ useOutsidePointer(root, () => open.value, () => hide(false))
         <div v-if="open" ref="panel" class="ml-cascader__panel ml-treeselect__panel" @keydown="onPanelKeydown">
           <div v-if="searchable" class="ml-cascader__search ml-treeselect__search">
             <MlIcon name="search" />
-            <input v-model="query" type="text" placeholder="搜尋…" autocomplete="off" />
+            <input v-model="query" type="text" :placeholder="loc.common.search" autocomplete="off" />
           </div>
           <MlTree
             v-if="multiple"
             v-model:expanded="expanded"
             :data="data"
             :filter="query"
-            :label="label ?? placeholder"
+            :label="label ?? ph"
             checkable
             :selectable="false"
             :checked="keys"
@@ -234,7 +238,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
             v-model:expanded="expanded"
             :data="data"
             :filter="query"
-            :label="label ?? placeholder"
+            :label="label ?? ph"
             :selected="keys[0] ?? null"
             @select="onSelect"
           />

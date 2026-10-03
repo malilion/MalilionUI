@@ -5,6 +5,9 @@ import MlIcon from './MlIcon.vue'
 import { hexToHsva, hsvaToHex, parseHex, type HSVA } from './color'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -25,7 +28,6 @@ const props = withDefaults(
   }>(),
   {
     presets: () => ['#f0ad2f', '#cd7631', '#3eeed0', '#52e38a', '#ff5c48', '#ff8fa8', '#9ea7b5', '#12151c'],
-    placeholder: '選擇顏色',
     placement: 'bottom-start',
   },
 )
@@ -147,7 +149,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
 
 const valid = computed(() => !!parseHex(model.value))
 const areaText = computed(
-  () => `飽和度 ${Math.round(hsva.value.s * 100)}%，亮度 ${Math.round(hsva.value.v * 100)}%`,
+  () => loc.value.color.areaValue(Math.round(hsva.value.s * 100), Math.round(hsva.value.v * 100)),
 )
 </script>
 
@@ -177,13 +179,13 @@ const areaText = computed(
           @click="open ? hide() : show()"
         >
           <span v-if="valid">{{ model }}</span>
-          <span v-else class="ml-datepicker__placeholder">{{ placeholder }}</span>
+          <span v-else class="ml-datepicker__placeholder">{{ placeholder ?? loc.color.pick }}</span>
         </button>
         <button
           v-if="clearable && model && !disabled"
           type="button"
           class="ml-datepicker__clear"
-          aria-label="清除顏色"
+          :aria-label="loc.color.clear"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -195,7 +197,7 @@ const areaText = computed(
           v-if="open"
           :id="panelId"
           role="dialog"
-          aria-label="選擇顏色"
+          :aria-label="loc.color.pick"
           :class="['ml-datepicker__panel', `ml-datepicker__panel--${placement}`, 'ml-colorpicker__panel']"
           @keydown="onPanelKeydown"
         >
@@ -204,7 +206,7 @@ const areaText = computed(
             class="ml-colorpicker__area"
             role="slider"
             tabindex="0"
-            aria-label="飽和度與亮度"
+            :aria-label="loc.color.area"
             :aria-valuetext="areaText"
             :aria-valuenow="Math.round(hsva.s * 100)"
             aria-valuemin="0"
@@ -223,7 +225,7 @@ const areaText = computed(
           </div>
 
           <label class="ml-colorpicker__slider ml-colorpicker__slider--hue">
-            <span class="ml-visually-hidden">色相</span>
+            <span class="ml-visually-hidden">{{ loc.color.hue }}</span>
             <input
               type="range"
               min="0"
@@ -233,7 +235,7 @@ const areaText = computed(
             />
           </label>
           <label v-if="alpha" class="ml-colorpicker__slider ml-colorpicker__slider--alpha" :style="{ '--_c': solid }">
-            <span class="ml-visually-hidden">不透明度</span>
+            <span class="ml-visually-hidden">{{ loc.color.alpha }}</span>
             <input
               type="range"
               min="0"
@@ -246,7 +248,7 @@ const areaText = computed(
           <div class="ml-colorpicker__row">
             <span class="ml-colorpicker__preview" :style="{ '--_c': swatch }" aria-hidden="true" />
             <label class="ml-colorpicker__hex">
-              <span class="ml-visually-hidden">色碼</span>
+              <span class="ml-visually-hidden">{{ loc.color.hex }}</span>
               <input
                 v-model="hexInput"
                 type="text"
@@ -258,7 +260,7 @@ const areaText = computed(
             </label>
           </div>
 
-          <div v-if="presets.length" class="ml-colorpicker__presets" role="group" aria-label="預設顏色">
+          <div v-if="presets.length" class="ml-colorpicker__presets" role="group" :aria-label="loc.color.presets">
             <button
               v-for="c in presets"
               :key="c"

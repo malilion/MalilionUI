@@ -2,6 +2,9 @@
 import { computed, ref, watch } from 'vue'
 import MlImagePreview from './MlImagePreview.vue'
 import MlPaw from './MlPaw.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -73,17 +76,17 @@ function openPreview() {
     <span v-if="status === 'loading'" class="ml-image__placeholder" aria-hidden="true">
       <slot name="placeholder" />
     </span>
-    <span v-else-if="status === 'error'" class="ml-image__error" role="img" :aria-label="`${alt}（無法載入）`">
+    <span v-else-if="status === 'error'" class="ml-image__error" role="img" :aria-label="loc.image.failed(alt)">
       <slot name="error">
         <MlPaw tone="steel" class="ml-image__error-paw" />
-        <span>無法載入</span>
+        <span>{{ loc.image.error }}</span>
       </slot>
     </span>
     <button
       v-if="preview && status !== 'error'"
       type="button"
       class="ml-image__zoom"
-      :aria-label="`放大檢視：${alt}`"
+      :aria-label="loc.image.zoomIn(alt)"
       @click="openPreview"
     />
     <MlImagePreview

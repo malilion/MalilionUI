@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import MlIcon from './MlIcon.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 defineProps<{
   title?: string
@@ -17,7 +20,7 @@ const emit = defineEmits<{ back: [] }>()
   <header :class="['ml-navbar', { 'ml-navbar--large': large }]">
     <div class="ml-navbar__bar">
       <div class="ml-navbar__side">
-        <button v-if="back" type="button" class="ml-navbar__icon-btn" aria-label="返回" @click="emit('back')">
+        <button v-if="back" type="button" class="ml-navbar__icon-btn" :aria-label="loc.nav.back" @click="emit('back')">
           <MlIcon name="chevronLeft" />
         </button>
         <slot name="left" />

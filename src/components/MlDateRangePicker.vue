@@ -5,7 +5,10 @@ import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
+import { useLocale } from '../locale'
 import type { MlDateRange, MlRangePreset } from '../types'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -31,19 +34,16 @@ const props = withDefaults(
     id?: string
   }>(),
   {
-    startPlaceholder: '開始日期',
-    endPlaceholder: '結束日期',
-    locale: 'zh-TW',
     weekStartsOn: 0,
     format: () => ({ year: 'numeric', month: '2-digit', day: '2-digit' }),
     placement: 'bottom-start',
-    presets: () => defaultPresets,
   },
 )
 
 const emit = defineEmits<{ change: [range: MlDateRange] }>()
 const model = defineModel<MlDateRange>({ default: () => [null, null] })
 const { fieldError, fieldRequired } = useFormField(props)
+const presetList = computed(() => props.presets ?? defaultPresets(loc.value))
 
 const open = ref(false)
 const root = ref<HTMLElement>()
@@ -55,7 +55,7 @@ const autoId = useId()
 const controlId = computed(() => props.id ?? `ml-daterange-${autoId}`)
 const panelId = `${controlId.value}-panel`
 
-const fmt = (d: Date | null) => (d ? new Intl.DateTimeFormat(props.locale, props.format).format(d) : '')
+const fmt = (d: Date | null) => (d ? new Intl.DateTimeFormat(props.locale ?? loc.value.name, props.format).format(d) : '')
 const hasValue = computed(() => !!(model.value[0] || model.value[1]))
 const days = computed(() => {
   const [a, b] = model.value
@@ -108,21 +108,22 @@ useOutsidePointer(root, () => open.value, () => hide(false))
 
 <script lang="ts">
 import { addDays, startOfDay } from './dates'
+import type { MlLocale } from '../locale'
 
 const today = () => startOfDay(new Date())
-const defaultPresets: MlRangePreset[] = [
-  { label: '今天', value: () => [today(), today()] },
-  { label: '最近 7 天', value: () => [addDays(today(), -6), today()] },
-  { label: '最近 30 天', value: () => [addDays(today(), -29), today()] },
+const defaultPresets = (t: MlLocale): MlRangePreset[] => [
+  { label: t.date.today, value: () => [today(), today()] },
+  { label: t.date.last7, value: () => [addDays(today(), -6), today()] },
+  { label: t.date.last30, value: () => [addDays(today(), -29), today()] },
   {
-    label: '本月',
+    label: t.date.thisMonth,
     value: () => {
       const t = today()
       return [new Date(t.getFullYear(), t.getMonth(), 1), new Date(t.getFullYear(), t.getMonth() + 1, 0)]
     },
   },
   {
-    label: '上個月',
+    label: t.date.lastMonth,
     value: () => {
       const t = today()
       return [new Date(t.getFullYear(), t.getMonth() - 1, 1), new Date(t.getFullYear(), t.getMonth(), 0)]
@@ -149,16 +150,16 @@ const defaultPresets: MlRangePreset[] = [
           :disabled="disabled"
           @click="open ? hide() : show()"
         >
-          <span :class="{ 'ml-datepicker__placeholder': !model[0] }">{{ fmt(model[0]) || startPlaceholder }}</span>
+          <span :class="{ 'ml-datepicker__placeholder': !model[0] }">{{ fmt(model[0]) || (startPlaceholder ?? loc.date.rangeStart) }}</span>
           <MlIcon name="arrowRight" class="ml-daterange__arrow" />
-          <span :class="{ 'ml-datepicker__placeholder': !model[1] }">{{ fmt(model[1]) || endPlaceholder }}</span>
+          <span :class="{ 'ml-datepicker__placeholder': !model[1] }">{{ fmt(model[1]) || (endPlaceholder ?? loc.date.rangeEnd) }}</span>
         </button>
-        <span v-if="days" class="ml-daterange__days" aria-hidden="true">{{ days }} 天</span>
+        <span v-if="days" class="ml-daterange__days" aria-hidden="true">{{ loc.date.days(days) }}</span>
         <button
           v-if="clearable && hasValue && !disabled"
           type="button"
           class="ml-datepicker__clear"
-          aria-label="清除日期區間"
+          :aria-label="loc.date.clearRange"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -169,12 +170,12 @@ const defaultPresets: MlRangePreset[] = [
           v-if="open"
           :id="panelId"
           role="dialog"
-          aria-label="選擇日期區間"
+          :aria-label="loc.date.pickRange"
           :class="['ml-datepicker__panel', 'ml-daterange__panel', `ml-datepicker__panel--${placement}`]"
           @keydown="onPanelKeydown"
         >
-          <ul v-if="presets.length" class="ml-daterange__presets" aria-label="快速選擇">
-            <li v-for="preset in presets" :key="preset.label">
+          <ul v-if="presetList.length" class="ml-daterange__presets" :aria-label="loc.date.presets">
+            <li v-for="preset in presetList" :key="preset.label">
               <button type="button" class="ml-daterange__preset" @click="applyPreset(preset)">{{ preset.label }}</button>
             </li>
           </ul>
@@ -192,7 +193,7 @@ const defaultPresets: MlRangePreset[] = [
               @update:range="onDraft"
             />
             <p class="ml-daterange__status" aria-live="polite">
-              {{ draft[0] && !draft[1] ? `${fmt(draft[0])} → 再選結束日` : '先選開始日，再選結束日' }}
+              {{ draft[0] && !draft[1] ? loc.date.pickEnd(fmt(draft[0])) : loc.date.pickStart }}
             </p>
           </div>
         </div>

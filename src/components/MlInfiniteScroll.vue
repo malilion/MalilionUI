@@ -3,6 +3,9 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import MlButton from './MlButton.vue'
 import MlLoader from './MlLoader.vue'
 import MlPaw from './MlPaw.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +22,7 @@ const props = withDefaults(
     /** Show a "load more" button instead of loading automatically. */
     manual?: boolean
   }>(),
-  { distance: 200, loadingText: '小獅子正在搬資料…', finishedText: '沒有更多了' },
+  { distance: 200 },
 )
 
 const emit = defineEmits<{ load: [] }>()
@@ -63,13 +66,13 @@ watch(
     <div ref="sentinel" class="ml-infinite__foot" aria-live="polite">
       <template v-if="finished">
         <slot name="finished">
-          <span class="ml-infinite__end"><MlPaw tone="steel" />{{ finishedText }}<MlPaw tone="steel" /></span>
+          <span class="ml-infinite__end"><MlPaw tone="steel" />{{ finishedText ?? loc.infinite.finished }}<MlPaw tone="steel" /></span>
         </slot>
       </template>
       <template v-else-if="loading">
-        <slot name="loading"><MlLoader variant="paws" :size="32" :label="loadingText" /></slot>
+        <slot name="loading"><MlLoader variant="paws" :size="32" :label="loadingText ?? loc.infinite.loading" /></slot>
       </template>
-      <MlButton v-else-if="manual" variant="outline" size="sm" @click="emit('load')">載入更多</MlButton>
+      <MlButton v-else-if="manual" variant="outline" size="sm" @click="emit('load')">{{ loc.infinite.more }}</MlButton>
     </div>
   </div>
 </template>

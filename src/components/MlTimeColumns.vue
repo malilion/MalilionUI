@@ -2,6 +2,9 @@
 // Internal: the scrolling hour / minute / second wheels used by the time pickers.
 import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { padTime, range, toSeconds, type TimeParts } from './time'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Unit = 'h' | 'm' | 's'
 
@@ -22,10 +25,10 @@ const emit = defineEmits<{ change: [value: TimeParts] }>()
 
 const columns = computed(() => {
   const list: { unit: Unit; label: string; values: number[] }[] = [
-    { unit: 'h', label: '時', values: range(1, 24) },
-    { unit: 'm', label: '分', values: range(props.minuteStep, 60) },
+    { unit: 'h', label: loc.value.date.units.h, values: range(1, 24) },
+    { unit: 'm', label: loc.value.date.units.m, values: range(props.minuteStep, 60) },
   ]
-  if (props.seconds) list.push({ unit: 's', label: '秒', values: range(props.secondStep, 60) })
+  if (props.seconds) list.push({ unit: 's', label: loc.value.date.units.s, values: range(props.secondStep, 60) })
   return list
 })
 

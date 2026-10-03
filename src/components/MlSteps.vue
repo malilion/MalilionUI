@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import MlPaw from './MlPaw.vue'
 import type { MlStepItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 withDefaults(
   defineProps<{
@@ -9,12 +12,12 @@ withDefaults(
     current?: number
     label?: string
   }>(),
-  { current: 0, label: '進度步驟' },
+  { current: 0 },
 )
 </script>
 
 <template>
-  <ol class="ml-steps" :aria-label="label">
+  <ol class="ml-steps" :aria-label="label ?? loc.nav.steps">
     <li
       v-for="(item, i) in items"
       :key="`${i}-${item.title}`"
@@ -31,7 +34,7 @@ withDefaults(
       <span class="ml-steps__text">
         <span class="ml-steps__title">{{ item.title }}</span>
         <span v-if="item.desc" class="ml-steps__desc">{{ item.desc }}</span>
-        <span class="ml-visually-hidden">{{ i < current ? '（已完成）' : i === current ? '（進行中）' : '' }}</span>
+        <span class="ml-visually-hidden">{{ i < current ? loc.nav.stepDone : i === current ? loc.nav.stepCurrent : '' }}</span>
       </span>
     </li>
   </ol>

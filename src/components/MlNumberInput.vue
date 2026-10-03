@@ -4,6 +4,9 @@ import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import { describedBy, useSplitAttrs } from '../composables'
 import { useFormField } from '../form'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 defineOptions({ inheritAttrs: false })
 
@@ -58,7 +61,7 @@ function onChange(event: Event) {
       <button
         type="button"
         class="ml-number__btn"
-        aria-label="減少"
+        :aria-label="loc.common.decrease"
         tabindex="-1"
         :disabled="disabled || model <= min"
         @click="nudge(-1)"
@@ -83,7 +86,7 @@ function onChange(event: Event) {
       <button
         type="button"
         class="ml-number__btn"
-        aria-label="增加"
+        :aria-label="loc.common.increase"
         tabindex="-1"
         :disabled="disabled || model >= max"
         @click="nudge(1)"

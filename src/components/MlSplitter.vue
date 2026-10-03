@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref } from 'vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +20,7 @@ const props = withDefaults(
     /** Accessible name for the handle. */
     label?: string
   }>(),
-  { direction: 'horizontal', min: 10, max: 90, step: 2, defaultSize: 50, label: '調整面板大小' },
+  { direction: 'horizontal', min: 10, max: 90, step: 2, defaultSize: 50 },
 )
 
 /** Size of the first pane, in % of the splitter. */
@@ -87,7 +90,7 @@ onBeforeUnmount(stop)
       :aria-valuenow="Math.round(size)"
       :aria-valuemin="min"
       :aria-valuemax="max"
-      :aria-label="label"
+      :aria-label="label ?? loc.splitter"
       :aria-disabled="disabled || undefined"
       @pointerdown="onPointerDown"
       @pointermove="onPointerMove"

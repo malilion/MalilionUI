@@ -4,6 +4,9 @@ import MlMenuList from './MlMenuList.vue'
 import { menuKey, type MenuContext } from './menu'
 import { useOutsidePointer } from '../composables'
 import type { MlMenuItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -17,7 +20,7 @@ const props = withDefaults(
     /** Accessible name for the navigation landmark. */
     label?: string
   }>(),
-  { mode: 'vertical', label: '主選單' },
+  { mode: 'vertical' },
 )
 
 const emit = defineEmits<{ select: [item: MlMenuItem] }>()
@@ -107,7 +110,7 @@ function onKeydown(event: KeyboardEvent) {
       `ml-menu--${mode}`,
       { 'ml-menu--collapsed': mode === 'vertical' && collapsed },
     ]"
-    :aria-label="label"
+    :aria-label="label ?? loc.nav.menu"
     @keydown="onKeydown"
   >
     <MlMenuList :items="items" :depth="0" />

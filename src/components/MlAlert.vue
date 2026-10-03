@@ -2,6 +2,9 @@
 import { computed, ref } from 'vue'
 import MlIcon from './MlIcon.vue'
 import type { MlAlertTone } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -34,7 +37,7 @@ function close() {
         <p v-if="title" class="ml-alert__title">{{ title }}</p>
         <div v-if="$slots.default" class="ml-alert__body"><slot /></div>
       </div>
-      <button v-if="closable" type="button" class="ml-alert__close" aria-label="關閉" @click="close">
+      <button v-if="closable" type="button" class="ml-alert__close" :aria-label="loc.common.close" @click="close">
         <MlIcon name="close" />
       </button>
     </div>
