@@ -1,0 +1,249 @@
+/* Command palette (⌘K) — a HUD search console that drops from the top */
+.ml-cmd {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ml-z-modal);
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: min(14vh, 120px) 16px 16px;
+}
+
+.ml-cmd__backdrop {
+  position: absolute;
+  inset: 0;
+  background: var(--ml-scanlines), var(--ml-backdrop);
+  backdrop-filter: blur(6px) saturate(0.8);
+  -webkit-backdrop-filter: blur(6px) saturate(0.8);
+}
+
+.ml-cmd__panel {
+  --_cut: var(--ml-cut-lg);
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 620px);
+  max-height: min(560px, calc(100vh - 140px));
+  filter: var(--ml-drop-2);
+}
+
+.ml-cmd__panel::before,
+.ml-cmd__panel::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-cmd__panel::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+
+.ml-cmd__panel::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+}
+
+.ml-cmd__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 18px;
+  border-bottom: 1px solid var(--ml-line);
+}
+
+/* A scanning energy line under the search field */
+.ml-cmd__search::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--ml-accent), transparent);
+  background-size: 40% 100%;
+  background-repeat: no-repeat;
+  animation: ml-cmd-scan 2.6s var(--ml-ease) infinite;
+}
+
+@keyframes ml-cmd-scan {
+  from { background-position: -40% 0; }
+  to { background-position: 140% 0; }
+}
+
+.ml-cmd__search-icon {
+  width: 20px;
+  height: 20px;
+  flex: none;
+  color: var(--ml-accent-text);
+}
+
+.ml-cmd__input {
+  flex: 1;
+  min-width: 0;
+  height: 58px;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ml-text);
+  font: inherit;
+  font-size: 1.0625rem;
+  caret-color: var(--ml-accent);
+}
+
+.ml-cmd__input::placeholder {
+  color: var(--ml-text-dim);
+}
+
+.ml-cmd__esc {
+  flex: none;
+}
+
+.ml-cmd__list {
+  flex: 1;
+  min-height: 0;
+  padding: 6px 8px 10px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.ml-cmd__group {
+  margin: 0;
+  padding: 12px 12px 6px;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-cmd__item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 0 12px;
+  color: var(--ml-text-muted);
+  cursor: pointer;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+
+.ml-cmd__item--active {
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent 80%);
+  color: var(--ml-text);
+  box-shadow: inset 2px 0 0 var(--ml-accent);
+}
+
+.ml-cmd__item[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.ml-cmd__icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.ml-cmd__item--active .ml-cmd__icon {
+  color: var(--ml-accent-text);
+}
+
+.ml-cmd__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ml-cmd__hit {
+  background: none;
+  color: var(--ml-accent-text);
+  font-weight: 700;
+}
+
+.ml-cmd__shortcut {
+  flex: none;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.08em;
+}
+
+.ml-cmd__empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 0;
+  padding: 36px 12px;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-cmd__empty-paw {
+  width: 18px;
+  height: 18px;
+  animation: ml-paw-step 2.4s var(--ml-ease) infinite;
+}
+
+.ml-cmd__foot {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 18px;
+  border-top: 1px dashed var(--ml-line);
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-cmd__foot span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ml-cmd__brand {
+  margin-left: auto;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-paw);
+  font-weight: 700;
+}
+
+.ml-cmd__brand svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ml-cmd-enter-active,
+.ml-cmd-leave-active {
+  transition: opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-cmd-enter-active .ml-cmd__panel {
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-cmd-leave-active .ml-cmd__panel {
+  transition: transform var(--ml-dur) var(--ml-ease-in);
+}
+
+.ml-cmd-enter-from,
+.ml-cmd-leave-to {
+  opacity: 0;
+}
+
+.ml-cmd-enter-from .ml-cmd__panel,
+.ml-cmd-leave-to .ml-cmd__panel {
+  transform: translateY(-14px) scale(0.98);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-cmd__search::after { animation: none; }
+}

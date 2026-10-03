@@ -50,3 +50,8 @@
 @import './components/menu.css';
 @import './components/inputs-extra.css';
 @import './components/descriptions.css';
+@import './components/command.css';
+@import './components/cascader.css';
+@import './components/layout.css';
+@import './components/result.css';
+@import './components/misc.css';

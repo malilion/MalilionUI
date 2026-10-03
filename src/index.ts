@@ -3,6 +3,7 @@ import type { App, Plugin } from 'vue'
 import MlAccordion from './components/MlAccordion.vue'
 import MlAffix from './components/MlAffix.vue'
 import MlAlert from './components/MlAlert.vue'
+import MlAnchor from './components/MlAnchor.vue'
 import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
 import MlBackTop from './components/MlBackTop.vue'
@@ -14,10 +15,14 @@ import MlButton from './components/MlButton.vue'
 import MlCalendar from './components/MlCalendar.vue'
 import MlCard from './components/MlCard.vue'
 import MlCarousel from './components/MlCarousel.vue'
+import MlCascader from './components/MlCascader.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
+import MlCommandPalette from './components/MlCommandPalette.vue'
+import MlContextMenu from './components/MlContextMenu.vue'
 import MlCountUp from './components/MlCountUp.vue'
+import MlCountdown from './components/MlCountdown.vue'
 import MlDatePicker from './components/MlDatePicker.vue'
 import MlDateRangePicker from './components/MlDateRangePicker.vue'
 import MlDateTimePicker from './components/MlDateTimePicker.vue'
@@ -56,9 +61,11 @@ import MlPinInput from './components/MlPinInput.vue'
 import MlPopconfirm from './components/MlPopconfirm.vue'
 import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
+import MlQRCode from './components/MlQRCode.vue'
 import MlRadio from './components/MlRadio.vue'
 import MlRadioGroup from './components/MlRadioGroup.vue'
 import MlRate from './components/MlRate.vue'
+import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
 import MlSegmented from './components/MlSegmented.vue'
@@ -67,6 +74,7 @@ import MlSkeleton from './components/MlSkeleton.vue'
 import MlSkeletonItem from './components/MlSkeletonItem.vue'
 import MlSlider from './components/MlSlider.vue'
 import MlSparkline from './components/MlSparkline.vue'
+import MlSplitter from './components/MlSplitter.vue'
 import MlSpotlight from './components/MlSpotlight.vue'
 import MlStat from './components/MlStat.vue'
 import MlSteps from './components/MlSteps.vue'
@@ -84,6 +92,7 @@ import MlToastHost from './components/MlToastHost.vue'
 import MlTooltip from './components/MlTooltip.vue'
 import MlTransfer from './components/MlTransfer.vue'
 import MlTree from './components/MlTree.vue'
+import MlTreeSelect from './components/MlTreeSelect.vue'
 import MlUpload from './components/MlUpload.vue'
 import MlWatermark from './components/MlWatermark.vue'
 import { vPawStamp } from './pawStamp'
@@ -92,6 +101,7 @@ const components = {
   MlAccordion,
   MlAffix,
   MlAlert,
+  MlAnchor,
   MlAutocomplete,
   MlAvatar,
   MlBackTop,
@@ -103,10 +113,14 @@ const components = {
   MlCalendar,
   MlCard,
   MlCarousel,
+  MlCascader,
   MlCheckbox,
   MlColorPicker,
   MlCombobox,
+  MlCommandPalette,
+  MlContextMenu,
   MlCountUp,
+  MlCountdown,
   MlDatePicker,
   MlDateRangePicker,
   MlDateTimePicker,
@@ -145,9 +159,11 @@ const components = {
   MlPopconfirm,
   MlPopover,
   MlProgress,
+  MlQRCode,
   MlRadio,
   MlRadioGroup,
   MlRate,
+  MlResult,
   MlReveal,
   MlRing,
   MlSegmented,
@@ -156,6 +172,7 @@ const components = {
   MlSkeletonItem,
   MlSlider,
   MlSparkline,
+  MlSplitter,
   MlSpotlight,
   MlStat,
   MlSteps,
@@ -173,6 +190,7 @@ const components = {
   MlTooltip,
   MlTransfer,
   MlTree,
+  MlTreeSelect,
   MlUpload,
   MlWatermark,
 
@@ -194,6 +212,7 @@ export {
   MlAccordion,
   MlAffix,
   MlAlert,
+  MlAnchor,
   MlAutocomplete,
   MlAvatar,
   MlBackTop,
@@ -205,10 +224,14 @@ export {
   MlCalendar,
   MlCard,
   MlCarousel,
+  MlCascader,
   MlCheckbox,
   MlColorPicker,
   MlCombobox,
+  MlCommandPalette,
+  MlContextMenu,
   MlCountUp,
+  MlCountdown,
   MlDatePicker,
   MlDateRangePicker,
   MlDateTimePicker,
@@ -247,9 +270,11 @@ export {
   MlPopconfirm,
   MlPopover,
   MlProgress,
+  MlQRCode,
   MlRadio,
   MlRadioGroup,
   MlRate,
+  MlResult,
   MlReveal,
   MlRing,
   MlSegmented,
@@ -258,6 +283,7 @@ export {
   MlSkeletonItem,
   MlSlider,
   MlSparkline,
+  MlSplitter,
   MlSpotlight,
   MlStat,
   MlSteps,
@@ -275,6 +301,7 @@ export {
   MlTooltip,
   MlTransfer,
   MlTree,
+  MlTreeSelect,
   MlUpload,
   MlWatermark,
 
@@ -282,6 +309,8 @@ export {
 
 export { toast, useToast } from './toast'
 export { confirm, useConfirm } from './dialog'
+export { encodeQr } from './qrcode'
+export type { QrLevel, QrMatrix } from './qrcode'
 export type { MlToastItem } from './toast'
 export { vPawStamp, pawStamp, pawBurst } from './pawStamp'
 export type { PawBurstOptions } from './pawStamp'
@@ -296,6 +325,7 @@ declare module 'vue' {
     MlAccordion: typeof MlAccordion
     MlAffix: typeof MlAffix
     MlAlert: typeof MlAlert
+    MlAnchor: typeof MlAnchor
     MlAutocomplete: typeof MlAutocomplete
     MlAvatar: typeof MlAvatar
     MlBackTop: typeof MlBackTop
@@ -307,10 +337,14 @@ declare module 'vue' {
     MlCalendar: typeof MlCalendar
     MlCard: typeof MlCard
     MlCarousel: typeof MlCarousel
+    MlCascader: typeof MlCascader
     MlCheckbox: typeof MlCheckbox
     MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
+    MlCommandPalette: typeof MlCommandPalette
+    MlContextMenu: typeof MlContextMenu
     MlCountUp: typeof MlCountUp
+    MlCountdown: typeof MlCountdown
     MlDatePicker: typeof MlDatePicker
     MlDateRangePicker: typeof MlDateRangePicker
     MlDateTimePicker: typeof MlDateTimePicker
@@ -349,9 +383,11 @@ declare module 'vue' {
     MlPopconfirm: typeof MlPopconfirm
     MlPopover: typeof MlPopover
     MlProgress: typeof MlProgress
+    MlQRCode: typeof MlQRCode
     MlRadio: typeof MlRadio
     MlRadioGroup: typeof MlRadioGroup
     MlRate: typeof MlRate
+    MlResult: typeof MlResult
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
     MlSegmented: typeof MlSegmented
@@ -360,6 +396,7 @@ declare module 'vue' {
     MlSkeletonItem: typeof MlSkeletonItem
     MlSlider: typeof MlSlider
     MlSparkline: typeof MlSparkline
+    MlSplitter: typeof MlSplitter
     MlSpotlight: typeof MlSpotlight
     MlStat: typeof MlStat
     MlSteps: typeof MlSteps
@@ -377,6 +414,7 @@ declare module 'vue' {
     MlTooltip: typeof MlTooltip
     MlTransfer: typeof MlTransfer
     MlTree: typeof MlTree
+    MlTreeSelect: typeof MlTreeSelect
     MlUpload: typeof MlUpload
     MlWatermark: typeof MlWatermark
 

@@ -1,0 +1,170 @@
+/* Cascader & TreeSelect — pick from a hierarchy in a metal drop panel */
+.ml-cascader__path {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.ml-cascader__sep {
+  margin: 0 2px;
+  color: var(--ml-text-dim);
+}
+
+.ml-cascader__panel {
+  --_cut: var(--ml-cut);
+
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: var(--ml-z-tooltip);
+  isolation: isolate;
+  max-width: min(92vw, 720px);
+  filter: var(--ml-drop-2);
+  transform-origin: top left;
+}
+
+.ml-cascader__panel::before,
+.ml-cascader__panel::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-cascader__panel::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+
+.ml-cascader__panel::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+}
+
+.ml-cascader__cols {
+  display: flex;
+  overflow-x: auto;
+}
+
+.ml-cascader__col {
+  min-width: 160px;
+  max-height: 300px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+  animation: ml-cascader-col 260ms var(--ml-ease-spring);
+}
+
+@keyframes ml-cascader-col {
+  from { opacity: 0; translate: -8px 0; }
+}
+
+.ml-cascader__col + .ml-cascader__col {
+  border-left: 1px dashed var(--ml-line);
+}
+
+.ml-cascader__opt,
+.ml-cascader__hit {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 10px;
+  border: 0;
+  background: none;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: var(--ml-text-sm);
+  text-align: left;
+  cursor: pointer;
+  outline: none;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.ml-cascader__opt:hover,
+.ml-cascader__opt:focus-visible,
+.ml-cascader__hit:hover,
+.ml-cascader__hit:focus-visible {
+  background: var(--ml-surface-3);
+  color: var(--ml-text);
+}
+
+.ml-cascader__opt:focus-visible,
+.ml-cascader__hit:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ml-focus);
+}
+
+.ml-cascader__opt--on {
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent);
+  color: var(--ml-accent-text);
+  box-shadow: inset 2px 0 0 var(--ml-accent);
+}
+
+.ml-cascader__opt--chosen {
+  font-weight: 600;
+}
+
+.ml-cascader__opt[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.ml-cascader__label {
+  flex: 1;
+  white-space: nowrap;
+}
+
+.ml-cascader__arrow {
+  width: 13px;
+  height: 13px;
+  flex: none;
+  opacity: 0.7;
+}
+
+.ml-cascader__search {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-bottom: 1px dashed var(--ml-line);
+  color: var(--ml-text-dim);
+}
+
+.ml-cascader__search svg {
+  width: 15px;
+  height: 15px;
+  flex: none;
+}
+
+.ml-cascader__search input {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  outline: 0;
+  background: none;
+  color: var(--ml-text);
+  font: inherit;
+  font-size: var(--ml-text-sm);
+  caret-color: var(--ml-accent);
+}
+
+.ml-cascader__hits {
+  min-width: 280px;
+  max-height: 300px;
+  margin: 0;
+  padding: 6px;
+  overflow-y: auto;
+  list-style: none;
+}
+
+/* ── TreeSelect: the panel holds an MlTree ── */
+.ml-treeselect__panel {
+  right: 0;
+  min-width: 240px;
+  max-height: 340px;
+  padding: 6px;
+  overflow-y: auto;
+}
