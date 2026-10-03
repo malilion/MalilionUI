@@ -22,6 +22,28 @@ import App from './App.vue'
 createApp(App).use(MalilionUI).mount('#app')`,
   },
   {
+    title: '按需載入（建議，網站更輕）',
+    desc: '搭配 unplugin-vue-components：模板裡用到哪個元件，才匯入那個元件與它需要的樣式，不必 app.use、也不必引入整份 style.css。',
+    filename: 'vite.config.ts',
+    lang: 'ts',
+    code: `import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import { MalilionResolver } from '@malilion/ui/resolver'
+
+export default defineConfig({
+  plugins: [vue(), Components({ resolvers: [MalilionResolver()] })],
+})`,
+  },
+  {
+    title: '手動按需引入樣式',
+    desc: '不用自動匯入的話，每個元件各引入一次它的樣式入口。入口會一起帶上字體、色彩變數，以及它內部用到的子元件樣式；同一個樣式檔只會載入一次。',
+    filename: 'main.ts',
+    lang: 'ts',
+    code: `import '@malilion/ui/on-demand/MlButton'
+import '@malilion/ui/on-demand/MlCombobox'
+import { MlButton, MlCombobox } from '@malilion/ui'`,
+  },
+  {
     title: '載入中文字體（選用）',
     desc: '碼力獅品牌字型（Malilion Display / Sans / Mono）已內建在 style.css。中文會用系統字體，想要各平台一致可再加 Noto Sans TC。',
     filename: 'index.html',

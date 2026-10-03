@@ -26,7 +26,8 @@
     "url": "https://github.com/malilion/MalilionUI/issues"
   },
   "sideEffects": [
-    "**/*.css"
+    "**/*.css",
+    "./src/styles/on-demand/*.js"
   ],
   "main": "./dist/malilion-ui.js",
   "module": "./dist/malilion-ui.js",
@@ -35,6 +36,15 @@
     ".": {
       "types": "./dist/types/index.d.ts",
       "import": "./dist/malilion-ui.js"
+    },
+    "./on-demand/*": "./src/styles/on-demand/*.js",
+    "./nuxt": {
+      "types": "./dist/types/nuxt.d.ts",
+      "import": "./dist/nuxt.js"
+    },
+    "./resolver": {
+      "types": "./dist/types/resolver.d.ts",
+      "import": "./dist/resolver.js"
     },
     "./style.css": "./dist/style.css",
     "./css/*": "./src/styles/*",
@@ -50,22 +60,36 @@
   ],
   "scripts": {
     "dev": "vite --config playground/vite.config.ts",
-    "build": "vite build && vue-tsc -p tsconfig.build.json",
+    "build": "node scripts/build-style-map.mjs --check && vite build && vue-tsc -p tsconfig.build.json",
     "build:playground": "vite build --config playground/vite.config.ts",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json",
     "test": "vitest run",
     "screenshots": "node scripts/screenshots.mjs",
+    "styles:map": "node scripts/build-style-map.mjs",
+    "styles:check": "node scripts/check-on-demand.mjs",
     "prepublishOnly": "npm run typecheck && npm test && npm run build"
   },
   "peerDependencies": {
+    "@nuxt/kit": "^3.0.0 || ^4.0.0",
     "vue": "^3.5.0"
   },
+  "peerDependenciesMeta": {
+    "@nuxt/kit": {
+      "optional": true
+    }
+  },
   "devDependencies": {
+    "@nuxt/kit": "^4.5.2",
+    "@nuxt/schema": "^4.5.2",
     "@types/node": "^26.6.3",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
     "@vitejs/plugin-vue": "^6.0.9",
     "@vue/test-utils": "^2.5.1",
     "happy-dom": "^20.14.5",
     "playwright-core": "^1.63.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
     "typescript": "~5.9.3",
     "vite": "^8.3.2",
     "vitest": "^5.0.3",

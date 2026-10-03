@@ -235,6 +235,43 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 import type { MlButtonVariant, MlTableColumn, MlToastOptions, MlPawTone } from '@malilion/ui'
 ```
 
+## 按需載入
+
+只想帶走用到的元件？搭配 [unplugin-vue-components](https://github.com/unplugin/unplugin-vue-components)，模板裡用到哪個元件，就只匯入那個元件和它需要的樣式（不必 `app.use`，也不必引入整份 `style.css`）：
+
+```ts
+// vite.config.ts
+import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import { MalilionResolver } from '@malilion/ui/resolver'
+
+export default defineConfig({
+  plugins: [vue(), Components({ resolvers: [MalilionResolver()] })],
+})
+```
+
+不用自動匯入的話，每個元件各引入一次它的樣式入口（字體、色彩變數與它用到的子元件樣式都會一起帶上，重複的只載入一次）：
+
+```ts
+import '@malilion/ui/on-demand/MlButton'
+import '@malilion/ui/on-demand/MlCombobox'
+import { MlButton, MlCombobox } from '@malilion/ui'
+```
+
+以只用卡片、按鈕和徽章的頁面為例：樣式約 32 KB（完整版 196 KB）。
+
+## Nuxt
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@malilion/ui/nuxt'],
+  malilion: { locale: 'en' }, // 選用：css: 'on-demand' | 'full' | false、prefix
+})
+```
+
+模組會自動匯入所有元件、`useToast` / `useConfirm`，註冊 `v-paw-stamp` 與 `v-loading`，並預設只載入每頁用到的元件樣式。所有元件都通過伺服器端渲染與水合測試。
+
 ## 直接使用 CSS
 
 不是 Vue 專案？引入樣式表直接寫 class 就好，結構可以參考 `src/components/*.vue` 的 template。
