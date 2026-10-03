@@ -50,11 +50,12 @@ export interface PageDef {
   api?: ApiDoc[]
 }
 
-export type GroupId = 'start' | 'basic' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'mobile' | 'effects' | 'template'
+export type GroupId = 'start' | 'basic' | 'layout' | 'form' | 'feedback' | 'data' | 'chart' | 'nav' | 'mobile' | 'effects' | 'template'
 
 export const groups: { id: GroupId; label: string; en: string }[] = [
   { id: 'start', label: '開始', en: 'Getting started' },
   { id: 'basic', label: '基礎', en: 'Basic' },
+  { id: 'layout', label: '版面', en: 'Layout' },
   { id: 'form', label: '表單', en: 'Form' },
   { id: 'feedback', label: '回饋', en: 'Feedback' },
   { id: 'data', label: '資料展示', en: 'Data display' },
@@ -232,6 +233,88 @@ export const pages: PageDef[] = [
           { name: 'glow', desc: '金色光暈', type: 'boolean', default: 'false' },
           { name: 'animated', desc: '鬃毛呼吸與眨眼', type: 'boolean', default: 'false' },
           { name: 'title', desc: '無障礙名稱；不給則視為裝飾', type: 'string' },
+        ],
+      },
+    ],
+  },
+
+  {
+    id: 'layout',
+    title: 'Layout',
+    zh: '頁面框架',
+    group: 'layout',
+    isNew: true,
+    desc: '後台常見的「頁首＋側欄＋內容＋頁尾」骨架。桌機可以把側欄收成圖示列；窄螢幕自動變成滑出式抽屜，點遮罩或按 Esc 關閉。',
+    usage: `import { MlLayout } from '@malilion/ui'`,
+    examples: [{ file: 'layout/basic', title: '後台骨架', desc: '左上角的按鈕呼叫 toggleAside()：桌機收合側欄，手機開關抽屜。把瀏覽器縮窄看看。', block: true }],
+    api: [
+      {
+        component: 'MlLayout',
+        props: [
+          { name: 'v-model:collapsed', desc: '桌機側欄收成圖示列', type: 'boolean', default: 'false' },
+          { name: 'v-model:aside-open', desc: '手機抽屜是否打開', type: 'boolean', default: 'false' },
+          { name: 'aside-width / aside-collapsed-width', desc: '側欄寬度', type: 'string', default: `'248px' / '64px'` },
+          { name: 'aside-right', desc: '側欄放右邊', type: 'boolean', default: 'false' },
+          { name: 'sticky-header', desc: '頁首固定在頂端', type: 'boolean', default: 'true' },
+          { name: 'breakpoint', desc: '小於這個寬度（px）側欄變抽屜', type: 'number', default: '768' },
+          { name: 'full-height', desc: '撐滿視窗高度', type: 'boolean', default: 'true' },
+        ],
+        slots: [
+          { name: 'header', desc: '頁首，參數 { toggleAside, collapsed, mobile }' },
+          { name: 'aside', desc: '側欄，參數 { collapsed, mobile }' },
+          { name: 'default / footer', desc: '內容與頁尾' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'grid',
+    title: 'Grid',
+    zh: '格線',
+    group: 'layout',
+    isNew: true,
+    desc: '12 欄格線，或用 min-item-width 讓欄數自動適應。格線依「自己」的寬度（container query）在窄的時候疊成一欄，放在側欄或卡片裡也正確。',
+    usage: `import { MlGrid, MlGridItem } from '@malilion/ui'`,
+    examples: [{ file: 'grid/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlGrid',
+        props: [
+          { name: 'cols', desc: '欄數', type: 'number', default: '12' },
+          { name: 'min-item-width', desc: '自動欄：每欄至少多寬', type: 'string' },
+          { name: 'gap', desc: '間距', type: `'sm' | 'md' | 'lg' | number | string`, default: `'md'` },
+          { name: 'stack', desc: '自身寬度小於 560px 時疊成一欄', type: 'boolean', default: 'true' },
+        ],
+      },
+      {
+        component: 'MlGridItem',
+        props: [
+          { name: 'span', desc: '橫跨幾欄', type: 'number', default: '1' },
+          { name: 'offset', desc: '從第幾欄開始', type: 'number' },
+          { name: 'row-span', desc: '橫跨幾列', type: 'number' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'space',
+    title: 'Space',
+    zh: '間距',
+    group: 'layout',
+    isNew: true,
+    desc: '讓一排或一列元素保持一致的間距，還可以在中間自動插入細線或小腳印分隔。',
+    usage: `import { MlSpace } from '@malilion/ui'`,
+    examples: [{ file: 'space/basic', title: '基本用法', block: true }],
+    api: [
+      {
+        component: 'MlSpace',
+        props: [
+          { name: 'direction', desc: '方向', type: `'horizontal' | 'vertical'`, default: `'horizontal'` },
+          { name: 'size', desc: '間距', type: `'xs' | 'sm' | 'md' | 'lg' | 'xl' | number | string`, default: `'md'` },
+          { name: 'align / justify', desc: '對齊', type: 'string' },
+          { name: 'wrap', desc: '自動換行', type: 'boolean', default: 'true' },
+          { name: 'divider', desc: '分隔', type: `'line' | 'paw'` },
+          { name: 'fill', desc: '撐滿寬度', type: 'boolean', default: 'false' },
         ],
       },
     ],
@@ -1154,6 +1237,62 @@ export const pages: PageDef[] = [
       },
     ],
   },
+  {
+    id: 'virtual-list',
+    title: 'VirtualList',
+    zh: '虛擬捲動',
+    group: 'data',
+    isNew: true,
+    desc: '十萬筆資料也順暢：只畫出畫面上看得到的那幾十列。每列高度需要固定。',
+    usage: `import { MlVirtualList } from '@malilion/ui'`,
+    examples: [{ file: 'virtual-list/basic', title: '十萬筆', desc: 'scrollToIndex() 可以直接跳到任一筆。', block: true }],
+    api: [
+      {
+        component: 'MlVirtualList',
+        props: [
+          { name: 'items', desc: '資料', type: 'T[]' },
+          { name: 'item-height', desc: '每列高度（px）', type: 'number' },
+          { name: 'height', desc: '可視高度', type: 'number | string', default: '360' },
+          { name: 'overscan', desc: '上下多畫幾列，捲動更順', type: 'number', default: '6' },
+          { name: 'item-key', desc: '每列的 key', type: '(item, index) => string | number' },
+          { name: 'label', desc: '清單的無障礙名稱', type: 'string' },
+        ],
+        events: [
+          { name: 'reach-end', desc: '捲到底（可接著載入更多）', type: '() => void' },
+          { name: 'scrollToIndex(i, align?)', desc: '透過 ref 跳到某一列', type: `(index, 'start' | 'center' | 'end') => void` },
+        ],
+        slots: [
+          { name: 'default', desc: '每一列，參數 { item, index }' },
+          { name: 'empty', desc: '沒有資料時' },
+        ],
+      },
+    ],
+  },
+  {
+    id: 'infinite-scroll',
+    title: 'InfiniteScroll',
+    zh: '無限捲動',
+    group: 'data',
+    isNew: true,
+    desc: '捲到接近底部就觸發 load 載入下一頁；載入中顯示走路的小腳印，全部載完顯示「沒有更多了」。',
+    usage: `import { MlInfiniteScroll } from '@malilion/ui'`,
+    examples: [{ file: 'infinite-scroll/basic', title: '基本用法', desc: '這裡監聽的是外框的捲動區；預設監聽整個頁面。', block: true }],
+    api: [
+      {
+        component: 'MlInfiniteScroll',
+        props: [
+          { name: 'loading', desc: '載入中，不會重複觸發', type: 'boolean', default: 'false' },
+          { name: 'finished', desc: '全部載完', type: 'boolean', default: 'false' },
+          { name: 'distance', desc: '離底部多少 px 開始載入', type: 'number', default: '200' },
+          { name: 'container', desc: '捲動容器（元素或選擇器），預設是整頁', type: 'HTMLElement | string' },
+          { name: 'manual', desc: '改成按「載入更多」', type: 'boolean', default: 'false' },
+          { name: 'loading-text / finished-text', desc: '提示文字', type: 'string' },
+        ],
+        events: [{ name: 'load', desc: '需要下一頁時', type: '() => void' }],
+        slots: [{ name: 'loading / finished', desc: '自訂狀態' }],
+      },
+    ],
+  },
 
   /* ── 導覽 ─────────────────────────────────────────────── */
   {
@@ -1933,7 +2072,6 @@ export const pages: PageDef[] = [
     title: 'CountUp',
     zh: '數字滾動',
     group: 'effects',
-    isNew: true,
     desc: '捲到畫面上時，數字像儀表一樣快速衝上去再緩緩停住。值改變時會從目前的數字接著跑。螢幕閱讀器只會讀到最終數字；減少動態效果時直接顯示結果。',
     usage: `import { MlCountUp } from '@malilion/ui'`,
     examples: [{ file: 'count-up/basic', title: '基本用法', desc: '前後綴、小數、千分位，以及值變化時接著滾。', block: true }],
@@ -1961,7 +2099,6 @@ export const pages: PageDef[] = [
     title: 'DecryptText',
     zh: '解碼文字',
     group: 'effects',
-    isNew: true,
     desc: 'HUD 風格的解碼效果：先是一串亂碼，再由左到右鎖定成真正的文字。適合標題、系統訊息或載入畫面。整段文字會作為無障礙名稱，閱讀器不會念到亂碼。',
     usage: `import { MlDecryptText } from '@malilion/ui'`,
     examples: [{ file: 'decrypt-text/basic', title: '基本用法', desc: '換文字時會自動重新解碼；trigger="hover" 則是滑過才播放。' }],
@@ -1987,7 +2124,6 @@ export const pages: PageDef[] = [
     title: 'Tilt',
     zh: '立體傾斜',
     group: 'effects',
-    isNew: true,
     desc: '把任何卡片變成會跟著滑鼠傾斜的金屬板，加上一道追著游標走的鏡面反光。減少動態效果時只保留反光、不傾斜。',
     usage: `import { MlTilt } from '@malilion/ui'`,
     examples: [{ file: 'tilt/basic', title: '基本用法' }],
@@ -2010,7 +2146,6 @@ export const pages: PageDef[] = [
     title: 'BorderBeam',
     zh: '流光邊框',
     group: 'effects',
-    isNew: true,
     desc: '一道光沿著切角邊框不停繞行，適合強調推薦方案、進行中的任務或主要行動區塊。純 CSS，不佔 JavaScript。',
     usage: `import { MlBorderBeam } from '@malilion/ui'`,
     examples: [{ file: 'border-beam/basic', title: '色調與速度', block: true }],
@@ -2032,7 +2167,6 @@ export const pages: PageDef[] = [
     title: 'Marquee',
     zh: '跑馬燈',
     group: 'effects',
-    isNew: true,
     desc: '無縫循環的跑馬燈，適合合作夥伴 logo、技術標籤或報價。滑鼠移入或鍵盤聚焦時暫停；減少動態效果時改成可以手動捲動。',
     usage: `import { MlMarquee } from '@malilion/ui'`,
     examples: [{ file: 'marquee/basic', title: '基本用法', desc: '速度依內容寬度換算，不管放多少東西都是同樣的 px/秒。', block: true }],
@@ -2056,7 +2190,6 @@ export const pages: PageDef[] = [
     title: 'Reveal',
     zh: '捲動出場',
     group: 'effects',
-    isNew: true,
     desc: '內容捲進畫面時才出場：淡入上浮、縮放、左右滑入、模糊或翻轉。設定 stagger 會讓子元素一個接一個出場。沒有 JavaScript 或減少動態效果時，內容直接顯示。',
     usage: `import { MlReveal } from '@malilion/ui'`,
     examples: [
@@ -2083,7 +2216,6 @@ export const pages: PageDef[] = [
     title: 'Spotlight',
     zh: '聚光燈',
     group: 'effects',
-    isNew: true,
     desc: '游標像手電筒一樣照亮區塊，光圈裡浮現 HUD 格線，最靠近游標的邊框也會亮起。適合功能介紹卡或價格方案。',
     usage: `import { MlSpotlight } from '@malilion/ui'`,
     examples: [{ file: 'spotlight/basic', title: '基本用法', block: true }],
@@ -2133,7 +2265,6 @@ export const pages: PageDef[] = [
     title: 'PawBurst',
     zh: '腳印煙火',
     group: 'effects',
-    isNew: true,
     desc: '值得慶祝的時候（完成任務、按讚、付款成功），讓一把肉球腳印噴出來、畫出拋物線再淡出。可以包住任何按鈕，也能直接呼叫 pawBurst()。減少動態效果時不會播放。',
     usage: `import { MlPawBurst, pawBurst } from '@malilion/ui'`,
     examples: [{ file: 'paw-burst/basic', title: '基本用法' }],
