@@ -92,7 +92,15 @@ export interface MlLocale {
   contextMenu: string
   dialog: { ok: string }
   empty: { title: string }
-  table: { empty: string; selectAll: string; selectRow: (n: number) => string }
+  table: {
+    empty: string
+    selectAll: string
+    selectRow: (n: number) => string
+    expand: string
+    collapse: string
+    expandRow: (n: number) => string
+    total: (n: number) => string
+  }
   transfer: {
     titles: [string, string]
     filter: string
@@ -240,7 +248,15 @@ export const zhTW: MlLocale = {
   contextMenu: '右鍵選單',
   dialog: { ok: '知道了' },
   empty: { title: '這裡還沒有東西' },
-  table: { empty: '這裡還沒有獵物', selectAll: '全選', selectRow: (n) => `選取第 ${n} 列` },
+  table: {
+    empty: '這裡還沒有獵物',
+    selectAll: '全選',
+    selectRow: (n) => `選取第 ${n} 列`,
+    expand: '展開',
+    collapse: '收合',
+    expandRow: (n) => `展開第 ${n} 列詳細資料`,
+    total: (n) => `共 ${n} 筆`,
+  },
   transfer: {
     titles: ['可選', '已選'],
     filter: '搜尋…',
@@ -396,7 +412,15 @@ export const en: MlLocale = {
   contextMenu: 'Context menu',
   dialog: { ok: 'Got it' },
   empty: { title: 'Nothing here yet' },
-  table: { empty: 'No prey here yet', selectAll: 'Select all', selectRow: (n) => `Select row ${n}` },
+  table: {
+    empty: 'No prey here yet',
+    selectAll: 'Select all',
+    selectRow: (n) => `Select row ${n}`,
+    expand: 'Expand',
+    collapse: 'Collapse',
+    expandRow: (n) => `Show details for row ${n}`,
+    total: (n) => (n === 1 ? '1 row' : `${n} rows`),
+  },
   transfer: {
     titles: ['Available', 'Selected'],
     filter: 'Search…',
