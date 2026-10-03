@@ -30,8 +30,8 @@ describe('MlTable — paging', () => {
 describe('MlTable — expandable rows', () => {
   it('adds an expander column and renders the #expand slot for open rows', async () => {
     const wrapper = mount(MlTable, {
-      props: { columns, rows: rows.slice(0, 3), rowExpandable: (r: { id: number }) => r.id !== 2 },
-      slots: { expand: ({ row }: { row: { name: string } }) => h('p', { class: 'detail' }, `More about ${row.name}`) },
+      props: { columns, rows: rows.slice(0, 3), rowExpandable: (r: Record<string, unknown>) => r.id !== 2 },
+      slots: { expand: ({ row }: { row: Record<string, unknown> }) => h('p', { class: 'detail' }, `More about ${row.name}`) },
     })
     const buttons = wrapper.findAll('.ml-table__expander')
     expect(buttons).toHaveLength(2) // row 2 can't expand

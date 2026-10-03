@@ -1,0 +1,172 @@
+/* Tour — the lion walks you through the page */
+.ml-tour {
+  position: fixed;
+  inset: 0;
+  z-index: var(--ml-z-modal);
+}
+
+.ml-tour__catcher {
+  position: absolute;
+  inset: 0;
+}
+
+.ml-tour__dim {
+  position: absolute;
+  inset: 0;
+  background: var(--ml-backdrop);
+}
+
+/* The hole: everything outside it is darkened by its enormous shadow */
+.ml-tour__spot {
+  position: absolute;
+  z-index: 0;
+  border-radius: 8px;
+  box-shadow:
+    0 0 0 2px var(--ml-accent),
+    0 0 24px 4px rgb(240 173 47 / 0.35),
+    0 0 0 9999px var(--ml-backdrop);
+  pointer-events: none;
+  transition: top var(--ml-dur-slow) var(--ml-ease-spring), left var(--ml-dur-slow) var(--ml-ease-spring),
+    width var(--ml-dur-slow) var(--ml-ease-spring), height var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-tour__card {
+  --_cut: var(--ml-cut);
+
+  position: absolute;
+  z-index: 1;
+  isolation: isolate;
+  display: grid;
+  gap: 10px;
+  width: min(340px, calc(100vw - 32px));
+  padding: 16px 18px;
+  filter: var(--ml-drop-2);
+  outline: none;
+  animation: ml-tour-in 360ms var(--ml-ease-spring);
+}
+
+@keyframes ml-tour-in {
+  from { opacity: 0; scale: 0.96; }
+}
+
+.ml-tour__card::before,
+.ml-tour__card::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-tour__card::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+
+.ml-tour__card::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+}
+
+.ml-tour__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.ml-tour__lion {
+  flex: none;
+  animation: ml-tour-hop 520ms var(--ml-ease-spring);
+}
+
+@keyframes ml-tour-hop {
+  40% { translate: 0 -5px; }
+}
+
+.ml-tour__heading {
+  flex: 1;
+  min-width: 0;
+}
+
+.ml-tour__count {
+  margin: 0;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-tour__title {
+  margin: 2px 0 0;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-lg);
+  font-weight: 700;
+}
+
+.ml-tour__close {
+  display: grid;
+  place-items: center;
+  align-self: flex-start;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  cursor: pointer;
+}
+
+.ml-tour__close:hover { color: var(--ml-text); }
+.ml-tour__close:focus-visible { outline: 2px solid var(--ml-focus); }
+.ml-tour__close svg { width: 16px; height: 16px; }
+
+.ml-tour__body {
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+  line-height: 1.7;
+}
+
+.ml-tour__foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.ml-tour__dots {
+  display: flex;
+  gap: 5px;
+  margin-right: auto;
+}
+
+.ml-tour__dots i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ml-line-steel-strong);
+  transition: background var(--ml-dur) var(--ml-ease), width var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-tour__dots i.done { background: var(--ml-gold-600); }
+
+.ml-tour__dots i.on {
+  width: 16px;
+  border-radius: 3px;
+  background: var(--ml-accent);
+}
+
+.ml-tour-enter-active,
+.ml-tour-leave-active {
+  transition: opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-tour-enter-from,
+.ml-tour-leave-to {
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-tour__spot { transition: none; }
+}

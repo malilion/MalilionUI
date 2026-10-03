@@ -34,9 +34,10 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 101 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 115 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
+- i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
@@ -45,6 +46,15 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Visual effects that stay on brand: count-up numbers, HUD text decryption, metal tilt with glare, border beams, spotlight grids, scroll reveals and paw-print bursts — all of them calm down under `prefers-reduced-motion`
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - Zero runtime dependencies — only Vue as a peer dependency
+
+## What's New in 0.7
+
+- **i18n**: `MlConfigProvider` with built-in `zhTW` / `en`; every label, aria text, validation message and date format follows the locale
+- **Table**: fixed columns, sticky header, built-in paging, expandable rows, tree data, ellipsis
+- **`v-loading`**: a loading mask for any element, or `.fullscreen` for the whole page
+- **Brand & dev components**: `MlHeatmap` (contribution graph, optionally paw-shaped cells), `MlCodeBlock`, `MlTour` (the lion gives the tour), `MlChat` / `MlChatMessage` / `MlChatInput`
+- **Charts**: `MlRadarChart`, `MlGauge`
+- **Interaction**: `MlMention`, `MlSortable` (mouse, touch and keyboard), `MlKanban`, `MlFloatButton`, `MlBanner`
 
 ## What's New in 0.6
 
@@ -96,6 +106,8 @@ import App from './App.vue'
 
 createApp(App).use(MalilionUI).mount('#app')
 ```
+
+Built-in UI text defaults to Traditional Chinese. For English: `import MalilionUI, { en } from '@malilion/ui'` and `app.use(MalilionUI, { locale: en })`, or wrap part of the page in `<MlConfigProvider :locale="en">`.
 
 ```vue
 <template>
@@ -158,6 +170,10 @@ The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="Visual effects" width="100%">
 
+**0.7 · Heatmap, gauge, radar, code block & chat**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/devkit.png" alt="Heatmap, gauge, radar, code block and chat" width="100%">
+
 **0.6 · Menu, line chart & descriptions**
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/workspace.png" alt="Menu, line chart and descriptions" width="100%">
@@ -178,16 +194,16 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 
 | Category | Components |
 | --- | --- |
-| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
+| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlConfigProvider` |
 | Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` |
-| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` |
-| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` |
-| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` |
+| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` |
+| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` |
+| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
 | Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
 | Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` |
-| Directive | `v-paw-stamp` |
+| Directive | `v-paw-stamp` · `v-loading` |
 
 ## Component Props
 

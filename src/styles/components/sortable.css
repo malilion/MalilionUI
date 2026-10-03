@@ -1,0 +1,200 @@
+/* Sortable & Kanban — drag to reorder, carry cards between columns */
+.ml-sortable {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-sortable--horizontal {
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+
+.ml-sortable__item {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+  touch-action: none;
+  cursor: grab;
+}
+
+.ml-sortable--handle .ml-sortable__item,
+.ml-sortable--disabled .ml-sortable__item {
+  touch-action: auto;
+  cursor: auto;
+}
+
+.ml-sortable__content {
+  flex: 1;
+  min-width: 0;
+}
+
+.ml-sortable__handle {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  cursor: grab;
+  touch-action: none;
+}
+
+.ml-sortable__handle svg {
+  width: 9px;
+  height: 14px;
+  fill: currentColor;
+}
+
+.ml-sortable__handle:hover {
+  color: var(--ml-accent-text);
+}
+
+.ml-sortable__handle:focus-visible {
+  outline: 2px solid var(--ml-focus);
+}
+
+/* Keyboard pick-up: the row lifts with a gold rim */
+.ml-sortable__item--grabbed {
+  outline: 2px solid var(--ml-accent);
+  outline-offset: 2px;
+  box-shadow: 0 10px 24px rgb(0 0 0 / 0.35);
+}
+
+.ml-sortable__item--grabbed .ml-sortable__handle {
+  color: var(--ml-accent-text);
+}
+
+/* Where the dragged row will land: a dashed gold slot */
+.ml-sortable__placeholder {
+  min-height: 44px;
+  border: 1px dashed var(--ml-accent);
+  background: repeating-linear-gradient(135deg, var(--ml-accent-soft) 0 8px, transparent 8px 16px);
+  animation: ml-fade-in 160ms var(--ml-ease);
+}
+
+.ml-sortable--horizontal .ml-sortable__placeholder {
+  min-width: 80px;
+}
+
+/* The copy that follows the pointer */
+.ml-sortable__ghost {
+  position: fixed;
+  z-index: var(--ml-z-tooltip);
+  margin: 0;
+  pointer-events: none;
+  list-style: none;
+  rotate: 2deg;
+  scale: 1.02;
+  opacity: 0.92;
+  filter: drop-shadow(0 16px 28px rgb(0 0 0 / 0.45));
+}
+
+.ml-sortable-dragging,
+.ml-sortable-dragging * {
+  cursor: grabbing !important;
+  user-select: none !important;
+}
+
+.ml-sortable__empty {
+  list-style: none;
+}
+
+/* ── Kanban ── */
+.ml-kanban {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+
+.ml-kanban__col {
+  --_tone: var(--ml-steel-400);
+
+  display: flex;
+  flex-direction: column;
+  flex: 1 0 240px;
+  max-width: 340px;
+  min-height: 120px;
+  background: var(--ml-brushed), var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel), inset 0 3px 0 var(--_tone);
+}
+
+.ml-kanban__col--gold { --_tone: var(--ml-accent); }
+.ml-kanban__col--tech { --_tone: var(--ml-cyan-400); }
+.ml-kanban__col--bean { --_tone: var(--ml-bean-400); }
+.ml-kanban__col--success { --_tone: var(--ml-green-400); }
+.ml-kanban__col--danger { --_tone: var(--ml-red-400); }
+
+.ml-kanban__head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 14px 10px;
+}
+
+.ml-kanban__title {
+  flex: 1;
+  margin: 0;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+}
+
+.ml-kanban__count {
+  padding: 1px 8px;
+  border-radius: var(--ml-radius-full);
+  background: var(--ml-surface-inset);
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+}
+
+.ml-kanban__count--full {
+  background: var(--ml-danger-soft);
+  color: var(--ml-danger-text);
+}
+
+.ml-kanban__list {
+  flex: 1;
+  min-height: 60px;
+  padding: 4px 10px 12px;
+  transition: background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-kanban__list.ml-sortable--target {
+  background: linear-gradient(180deg, var(--ml-accent-soft), transparent 70%);
+}
+
+.ml-kanban__card {
+  padding: 10px 12px;
+  background: var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: box-shadow var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-sortable__item:hover .ml-kanban__card {
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+}
+
+.ml-kanban__empty {
+  display: grid;
+  place-items: center;
+  min-height: 56px;
+  margin: 0;
+  border: 1px dashed var(--ml-line-steel-strong);
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-kanban__foot {
+  padding: 0 10px 12px;
+}

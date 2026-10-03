@@ -1,0 +1,252 @@
+/* FloatButton (speed dial) & Banner */
+
+/* ── FloatButton ── */
+.ml-fab {
+  position: fixed;
+  z-index: var(--ml-z-tooltip);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.ml-fab--inline {
+  position: relative;
+  display: inline-flex;
+}
+
+/* Top corners: the actions drop below the main button */
+.ml-fab:not(.ml-fab--up) {
+  flex-direction: column-reverse;
+}
+
+.ml-fab__main {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ml-metal-gold);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25), 0 10px 24px rgb(0 0 0 / 0.45), 0 0 20px rgb(240 173 47 / 0.3);
+  color: var(--ml-text-on-metal);
+  cursor: pointer;
+  transition: translate var(--ml-dur) var(--ml-ease-spring), filter var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-fab--steel .ml-fab__main { background: var(--ml-metal-steel); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.3), 0 10px 24px rgb(0 0 0 / 0.45); }
+.ml-fab--tech .ml-fab__main { background: var(--ml-metal-cyan); box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.25), 0 10px 24px rgb(0 0 0 / 0.45), 0 0 20px rgb(62 238 208 / 0.3); }
+
+.ml-fab__main:hover {
+  translate: 0 -2px;
+  filter: brightness(1.08);
+}
+
+.ml-fab__main:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-fab__icon {
+  width: 24px;
+  height: 24px;
+  transition: rotate var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-fab--open .ml-fab__icon {
+  rotate: 135deg;
+}
+
+.ml-fab__badge {
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 5px;
+  border-radius: var(--ml-radius-full);
+  background: var(--ml-red-500);
+  box-shadow: 0 0 0 2px var(--ml-bg);
+  color: #fff;
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 20px;
+}
+
+.ml-fab__actions {
+  display: flex;
+  flex-direction: column-reverse;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-fab:not(.ml-fab--up) .ml-fab__actions {
+  flex-direction: column;
+}
+
+.ml-fab__actions li {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  opacity: 0;
+  translate: 0 12px;
+  scale: 0.6;
+  pointer-events: none;
+  transition: opacity var(--ml-dur) var(--ml-ease), translate var(--ml-dur-slow) var(--ml-ease-spring), scale var(--ml-dur-slow) var(--ml-ease-spring);
+  transition-delay: calc(var(--i) * 40ms);
+}
+
+.ml-fab--open .ml-fab__actions li {
+  opacity: 1;
+  translate: 0 0;
+  scale: 1;
+  pointer-events: auto;
+}
+
+.ml-fab__action {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-1);
+  color: var(--ml-accent-text);
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-fab__action:hover {
+  background: var(--ml-accent-soft);
+}
+
+.ml-fab__action:focus-visible {
+  outline: 2px solid var(--ml-focus);
+}
+
+.ml-fab__action--danger {
+  color: var(--ml-danger-text);
+}
+
+.ml-fab__action svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Labels sit on the side away from the screen edge */
+.ml-fab__label {
+  position: absolute;
+  top: 50%;
+  right: calc(100% + 10px);
+  translate: 0 -50%;
+  padding: 4px 10px;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-text);
+  font-size: var(--ml-text-xs);
+  white-space: nowrap;
+}
+
+.ml-fab--bottom-left .ml-fab__label,
+.ml-fab--top-left .ml-fab__label {
+  right: auto;
+  left: calc(100% + 10px);
+}
+
+/* ── Banner ── */
+.ml-banner {
+  --_tone: var(--ml-info);
+  --_soft: var(--ml-info-soft);
+  --_text: var(--ml-info-text);
+
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 16px;
+  background: linear-gradient(90deg, var(--_soft), transparent 70%), var(--ml-surface-2);
+  box-shadow: inset 0 -1px 0 var(--ml-line), inset 3px 0 0 var(--_tone);
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-banner--success { --_tone: var(--ml-success); --_soft: var(--ml-success-soft); --_text: var(--ml-success-text); }
+.ml-banner--warning { --_tone: var(--ml-warning); --_soft: var(--ml-warning-soft); --_text: var(--ml-warning-text); }
+.ml-banner--danger { --_tone: var(--ml-danger); --_soft: var(--ml-danger-soft); --_text: var(--ml-danger-text); }
+.ml-banner--gold,
+.ml-banner--paw { --_tone: var(--ml-accent); --_soft: var(--ml-accent-soft); --_text: var(--ml-accent-text); }
+.ml-banner--paw { --_tone: var(--ml-bean-400); --_soft: rgb(255 143 168 / 0.12); --_text: var(--ml-bean-300); }
+
+.ml-banner--sticky {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.ml-banner__icon {
+  display: grid;
+  place-items: center;
+  flex: none;
+  color: var(--_text);
+}
+
+.ml-banner__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.ml-banner__text {
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  line-height: 1.6;
+}
+
+.ml-banner__title {
+  margin-right: 8px;
+  color: var(--_text);
+}
+
+.ml-banner__action {
+  flex: none;
+}
+
+.ml-banner__close {
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  cursor: pointer;
+}
+
+.ml-banner__close:hover { color: var(--ml-text); }
+.ml-banner__close:focus-visible { outline: 2px solid var(--ml-focus); }
+.ml-banner__close svg { width: 15px; height: 15px; }
+
+.ml-banner-enter-active,
+.ml-banner-leave-active {
+  transition: opacity var(--ml-dur) var(--ml-ease), translate var(--ml-dur) var(--ml-ease);
+}
+
+.ml-banner-enter-from,
+.ml-banner-leave-to {
+  opacity: 0;
+  translate: 0 -8px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-fab__actions li,
+  .ml-fab__icon { transition: none; }
+}

@@ -127,6 +127,15 @@ export interface MlLocale {
   infinite: { loading: string; finished: string; more: string }
   skeleton: string
   splitter: string
+  mention: { placeholder: (trigger: string) => string }
+  sortable: { handle: string; moved: (label: string, pos: number, total: number) => string; grabbed: (label: string) => string; dropped: string }
+  kanban: { empty: string; full: string; count: (n: number, limit?: number) => string }
+  float: { open: string; close: string }
+  banner: { close: string }
+  chat: { log: string; latest: string; typing: string; placeholder: string; send: string; stop: string; status: { sending: string; sent: string; error: string } }
+  tour: { step: (n: number, total: number) => string; prev: string; next: string; finish: string; skip: string }
+  code: { copy: string; copied: string; expand: string; collapse: string; copiedToast: (file?: string) => string }
+  heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
   rate: string
   toast: { region: string; close: string }
   qrcode: { tooLong: string; label: (value: string) => string }
@@ -283,6 +292,20 @@ export const zhTW: MlLocale = {
   infinite: { loading: '小獅子正在搬資料…', finished: '沒有更多了', more: '載入更多' },
   skeleton: '載入中…',
   splitter: '調整面板大小',
+  mention: { placeholder: (t) => `輸入 ${t} 提及成員…` },
+  sortable: {
+    handle: '拖曳排序（空白鍵抓起，方向鍵移動）',
+    moved: (l, p, t) => `${l} 移到第 ${p} 個，共 ${t} 個`,
+    grabbed: (l) => `已抓起 ${l}，用方向鍵移動，空白鍵放下，Esc 取消`,
+    dropped: '已放下',
+  },
+  kanban: { empty: '拖曳卡片到這裡', full: '這一欄已滿', count: (n, l) => (l ? `${n} / ${l}` : `${n}`) },
+  float: { open: '展開更多操作', close: '收合操作' },
+  banner: { close: '關閉公告' },
+  chat: { log: '對話紀錄', latest: '最新訊息', typing: '正在輸入…', placeholder: '輸入訊息，Enter 送出，Shift + Enter 換行', send: '送出', stop: '停止產生', status: { sending: '傳送中…', sent: '已送出', error: '傳送失敗' } },
+  tour: { step: (n, t) => `第 ${n} / ${t} 步`, prev: '上一步', next: '下一步', finish: '完成', skip: '略過導覽' },
+  code: { copy: '複製', copied: '已複製', expand: '展開程式碼', collapse: '收起', copiedToast: (f) => `已複製 ${f ?? '程式碼'}` },
+  heatmap: { cell: (n, d) => `${d}：${n} 次`, summary: (t) => `一年內共 ${t.toLocaleString()} 次貢獻`, less: '少', more: '多' },
   rate: '評分',
   toast: { region: '通知', close: '關閉通知' },
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
@@ -447,6 +470,20 @@ export const en: MlLocale = {
   infinite: { loading: 'The cub is fetching more…', finished: 'That’s everything', more: 'Load more' },
   skeleton: 'Loading…',
   splitter: 'Resize panels',
+  mention: { placeholder: (t) => `Type ${t} to mention someone…` },
+  sortable: {
+    handle: 'Drag to reorder (Space to pick up, arrows to move)',
+    moved: (l, p, t) => `${l} moved to position ${p} of ${t}`,
+    grabbed: (l) => `Picked up ${l}. Use the arrow keys to move, Space to drop, Escape to cancel`,
+    dropped: 'Dropped',
+  },
+  kanban: { empty: 'Drop cards here', full: 'This column is full', count: (n, l) => (l ? `${n} / ${l}` : `${n}`) },
+  float: { open: 'More actions', close: 'Close actions' },
+  banner: { close: 'Dismiss announcement' },
+  chat: { log: 'Conversation', latest: 'Latest', typing: 'Typing…', placeholder: 'Message — Enter to send, Shift + Enter for a new line', send: 'Send', stop: 'Stop generating', status: { sending: 'Sending…', sent: 'Sent', error: 'Failed to send' } },
+  tour: { step: (n, t) => `Step ${n} of ${t}`, prev: 'Back', next: 'Next', finish: 'Done', skip: 'Skip tour' },
+  code: { copy: 'Copy', copied: 'Copied', expand: 'Show code', collapse: 'Hide', copiedToast: (f) => `Copied ${f ?? 'code'}` },
+  heatmap: { cell: (n, d) => `${n === 1 ? '1 contribution' : `${n} contributions`} on ${d}`, summary: (t) => `${t.toLocaleString()} contributions in the last year`, less: 'Less', more: 'More' },
   rate: 'Rating',
   toast: { region: 'Notifications', close: 'Dismiss notification' },
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },

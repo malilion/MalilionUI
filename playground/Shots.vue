@@ -9,6 +9,25 @@ import type { MlToastItem } from '../src/toast'
 
 const mailIcon = 'M3 6h18v12H3zM3 6l9 7 9-7'
 
+/* v0.7 — dev kit */
+const v7Today = new Date(2026, 9, 3)
+const v7Heat = Array.from({ length: 270 }, (_, i) => {
+  const seed = Math.abs(Math.sin(i * 12.9898) * 43758.5453) % 1
+  const date = new Date(2026, 9, 3 - i)
+  const weekday = date.getDay() % 6 !== 0
+  return { date, count: seed < (weekday ? 0.2 : 0.6) ? 0 : Math.round(seed * 8 + (Math.sin(i / 17) > 0.5 ? 5 : 0)) }
+})
+const v7Radar = [{ label: '前端', max: 100 }, { label: '後端', max: 100 }, { label: '設計', max: 100 }, { label: '測試', max: 100 }, { label: '溝通', max: 100 }]
+const v7Series = [
+  { name: '碼力獅', values: [95, 72, 88, 80, 76], tone: 'gold' as const },
+  { name: 'Nala', values: [70, 92, 55, 85, 90], tone: 'tech' as const },
+]
+const v7Code = `import MalilionUI, { en } from '@malilion/ui'
+
+createApp(App)
+  .use(MalilionUI, { locale: en })
+  .mount('#app')`
+
 /* v0.6 — workspace, inputs, brand */
 const v6Menu = [
   { key: 'g-main', label: '主要', group: true, children: [
@@ -954,6 +973,39 @@ const themes = [
       </div>
     </section>
 
+    <!-- ───────────── Dev kit (v0.7) ───────────── -->
+    <section data-shot="devkit" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">19 // Dev kit</p>
+          <h2 class="shot__title">熱力圖、儀表、雷達、程式碼與聊天</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v7-grid">
+        <MlCard eyebrow="Contributions" title="提交紀錄" class="v7-heat">
+          <MlHeatmap :data="v7Heat" :end="v7Today" :weeks="36" cell="paw" />
+        </MlCard>
+        <MlCard eyebrow="Gauge" title="系統負載" class="v7-gauges">
+          <div class="row">
+            <MlGauge :value="64" unit="%" label="CPU" :size="170" :bands="[{ from: 0, tone: 'success' }, { from: 70, tone: 'gold' }, { from: 90, tone: 'danger' }]" />
+            <MlGauge :value="182" :max="300" unit="ms" label="延遲" tone="tech" :size="170" />
+          </div>
+        </MlCard>
+        <MlCard eyebrow="Radar" title="能力值" class="v7-radar">
+          <MlRadarChart :indicators="v7Radar" :series="v7Series" :size="300" />
+        </MlCard>
+        <div class="stack v7-side">
+          <MlCodeBlock :code="v7Code" lang="ts" filename="main.ts" line-numbers :highlight="[4]" />
+          <MlChat :height="250" class="v7-chat">
+            <MlChatMessage role="user" name="你" content="可以換成英文嗎？" time="10:03" />
+            <MlChatMessage role="assistant" name="碼力獅" content="可以！0.7 起內建多語系 🐾" time="10:03" />
+            <MlChatMessage role="assistant" name="碼力獅" typing />
+          </MlChat>
+        </div>
+      </div>
+    </section>
+
     <div data-shot="logo" class="logo-shot">
       <MlMascot :size="132" frame="ring" title="碼力獅" />
     </div>
@@ -1594,6 +1646,28 @@ body {
 .fx-marquee {
   margin-top: 26px;
 }
+/* v0.7 panel */
+.v7-grid {
+  display: grid;
+  grid-template-columns: 1.25fr 1fr;
+  gap: 22px;
+}
+
+.v7-heat,
+.v7-radar {
+  min-width: 0;
+}
+
+.v7-radar .ml-radar {
+  display: grid;
+  justify-items: center;
+}
+
+.v7-chat .ml-chat__log {
+  gap: 10px;
+  padding: 12px;
+}
+
 /* v0.6 panels */
 .hero__paw {
   margin: 10px 0 -6px;
