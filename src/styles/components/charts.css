@@ -322,3 +322,200 @@
   font-family: var(--ml-font-mono);
   font-variant-numeric: tabular-nums;
 }
+
+/* ── Line chart ── */
+.ml-line {
+  --_h: 220px;
+
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+}
+
+.ml-line__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-line__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ml-line__key i {
+  width: 14px;
+  height: 3px;
+  border-radius: 2px;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.ml-line__body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ml-line__axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: var(--_h);
+  padding: 8px 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-line__axis span {
+  line-height: 0;
+}
+
+.ml-line__main {
+  min-width: 0;
+}
+
+.ml-line__plot {
+  position: relative;
+  height: var(--_h);
+  outline: none;
+  cursor: crosshair;
+}
+
+.ml-line__plot:focus-visible {
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-line__plot svg {
+  display: block;
+  overflow: visible;
+}
+
+.ml-line__grid line {
+  stroke: var(--ml-line-steel);
+  stroke-width: 1;
+}
+
+.ml-line__grid .ml-line__zero,
+.ml-line__grid line:last-child {
+  stroke: var(--ml-line-strong);
+}
+
+.ml-line__stroke {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  filter: drop-shadow(0 0 4px rgb(0 0 0 / 0.35));
+  stroke-dasharray: 1;
+  /* Each line draws itself left to right, one after another */
+  animation: ml-sparkline-draw 1100ms var(--ml-ease) backwards;
+  animation-delay: calc(var(--_i, 0) * 160ms);
+}
+
+.ml-line__area {
+  animation: ml-fade-in var(--ml-dur-chart) var(--ml-ease) backwards;
+  animation-delay: calc(400ms + var(--_i, 0) * 160ms);
+}
+
+.ml-line__dot {
+  stroke: var(--ml-surface);
+  stroke-width: 1.5;
+}
+
+.ml-line__cursor line {
+  stroke: var(--ml-line-strong);
+  stroke-dasharray: 3 4;
+}
+
+.ml-line__focus {
+  stroke: var(--ml-surface);
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px currentColor);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-paw-pop 260ms var(--ml-ease-spring);
+}
+
+.ml-line__tip {
+  position: absolute;
+  top: 6px;
+  z-index: 1;
+  min-width: 132px;
+  padding: 8px 10px;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-2);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  pointer-events: none;
+}
+
+.ml-line__tip--right { translate: 14px 0; }
+.ml-line__tip--left { translate: calc(-100% - 14px) 0; }
+
+.ml-line__tip p {
+  margin: 0;
+}
+
+.ml-line__tip-title {
+  margin-bottom: 4px !important;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.ml-line__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+  line-height: 1.8;
+}
+
+.ml-line__tip-row i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.ml-line__tip-row span {
+  flex: 1;
+}
+
+.ml-line__tip-row b {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-line__x {
+  position: relative;
+  height: 20px;
+  margin-top: 8px;
+}
+
+.ml-line__x span {
+  position: absolute;
+  top: 0;
+  translate: -50% 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+}
+
+.ml-line__x span:first-child { translate: 0 0; }
+.ml-line__x span:last-child:not(:first-child) { translate: -100% 0; }
+
+.ml-line__x--on {
+  color: var(--ml-accent-text) !important;
+}

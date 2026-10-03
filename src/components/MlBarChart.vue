@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
+import { niceStep } from './charts'
 import type { MlChartDatum, MlChartTone } from '../types'
 
 const props = withDefaults(
@@ -21,15 +22,11 @@ const props = withDefaults(
 
 const fmt = (v: number) => (props.format ? props.format(v) : v.toLocaleString())
 
-// Pick a round step per gridline (…, 15, 20, 25, 30, 40, 50, 60, 80, 100, …)
-// so every tick is a readable number, then stack `ticks` of them.
+// Round gridline steps so every tick is a readable number.
 const top = computed(() => {
   const max = Math.max(0, ...props.data.map((d) => d.value))
   if (max === 0) return props.ticks
-  const rawStep = max / props.ticks
-  const magnitude = 10 ** Math.floor(Math.log10(rawStep))
-  const step = ([1, 1.5, 2, 2.5, 3, 4, 5, 6, 8, 10].find((m) => m * magnitude >= rawStep) ?? 10) * magnitude
-  return step * props.ticks
+  return niceStep(max, props.ticks) * props.ticks
 })
 
 const tickValues = computed(() =>

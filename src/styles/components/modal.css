@@ -161,3 +161,39 @@
 .ml-modal-leave-from .ml-modal__panel {
   clip-path: inset(-80px);
 }
+
+/* ── confirm() / confirm.prompt() dialogs ── */
+.ml-dialog__body {
+  display: flex;
+  gap: 14px;
+}
+
+.ml-dialog__icon {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  margin-top: 2px;
+  color: var(--ml-accent-text);
+  filter: drop-shadow(0 0 6px var(--ml-accent-soft));
+}
+
+.ml-dialog__body--danger .ml-dialog__icon {
+  color: var(--ml-danger-text);
+}
+
+.ml-dialog__content {
+  display: grid;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ml-dialog__message {
+  margin: 0;
+  white-space: pre-line;
+}
+
+.ml-dialog__form {
+  display: grid;
+  gap: 8px;
+}

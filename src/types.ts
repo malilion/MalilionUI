@@ -153,3 +153,82 @@ export interface MlTransferItem {
   hint?: string
   disabled?: boolean
 }
+
+export interface MlMenuItem {
+  key: string
+  label: string
+  icon?: IconName
+  /** Render as a link instead of a button. */
+  href?: string
+  children?: MlMenuItem[]
+  /** Small count or text bubble on the right. */
+  badge?: number | string
+  disabled?: boolean
+  /** Non-clickable section heading; its children render as a flat group. */
+  group?: boolean
+}
+
+export interface MlRangePreset {
+  label: string
+  /** The range itself, or a function so "last 7 days" stays relative to today. */
+  value: MlDateRange | (() => MlDateRange)
+}
+
+export interface MlLineSeries {
+  name: string
+  data: number[]
+  tone?: MlChartTone
+  /** Override the stroke colour. */
+  color?: string
+}
+
+export interface MlDescriptionItem {
+  label: string
+  value?: string | number
+  /** Columns this cell spans. */
+  span?: number
+  /** Monospace value (ids, hashes, amounts). */
+  mono?: boolean
+}
+
+export interface MlConfirmOptions {
+  title?: string
+  message?: string
+  eyebrow?: string
+  confirmText?: string
+  cancelText?: string
+  /** Red confirm button for destructive actions. */
+  danger?: boolean
+  /** Show a text input; confirm resolves with its value instead of `true`. */
+  prompt?: { placeholder?: string; defaultValue?: string; label?: string }
+  width?: number | string
+}
+
+export interface MlCommandItem {
+  value: string
+  label: string
+  /** Group heading the command is listed under. */
+  group?: string
+  icon?: IconName
+  /** Right-aligned shortcut hint, e.g. "⌘ S". */
+  shortcut?: string
+  /** Extra words that should also match the search. */
+  keywords?: string[]
+  disabled?: boolean
+}
+
+export interface MlCascaderOption {
+  value: string | number
+  label: string
+  children?: MlCascaderOption[]
+  disabled?: boolean
+}
+
+export interface MlAnchorItem {
+  /** Element id to scroll to (without "#"). */
+  id: string
+  label: string
+  children?: MlAnchorItem[]
+}
+
+export type MlResultStatus = 'success' | 'info' | 'warning' | 'error' | '403' | '404' | '500'
