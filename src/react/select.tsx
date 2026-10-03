@@ -19,6 +19,7 @@ import { Field } from './form'
 import { useLocale } from './locale'
 import { useTransition } from './overlay'
 import { cx, describedBy, useControllable } from './utils'
+import { useFormField } from './validation'
 
 type Value = string | number
 type Key = string | number
@@ -79,7 +80,8 @@ export interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement
   prefix?: ReactNode
 }
 
-export function Select({ options, value, defaultValue, onChange, label, hint, error, index, placeholder, size = 'md', prefix, id, required, disabled, className, style, ...rest }: SelectProps) {
+export function Select({ options, value, defaultValue, onChange, label, hint, error: errorProp, index, placeholder, size = 'md', prefix, id, required: requiredProp, disabled, className, style, ...rest }: SelectProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const controlId = useControlId('ml-select', id)
   const [current, set] = useControllable<Value | undefined>(value, defaultValue, onChange as (v: Value | undefined) => void)
   return (
@@ -158,11 +160,11 @@ export function Combobox({
   onChange,
   label,
   hint,
-  error,
+  error: errorProp,
   index,
   placeholder,
   size = 'md',
-  required,
+  required: requiredProp,
   disabled,
   id,
   searchable,
@@ -177,6 +179,7 @@ export function Combobox({
   renderOption,
   className,
 }: ComboboxProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const loc = useLocale()
   const controlId = useControlId('ml-combobox', id)
   const listId = `${controlId}-list`
@@ -513,11 +516,11 @@ export function Autocomplete({
   limit = 8,
   label,
   hint,
-  error,
+  error: errorProp,
   index,
   placeholder,
   size = 'md',
-  required,
+  required: requiredProp,
   disabled,
   clearable,
   id,
@@ -531,6 +534,7 @@ export function Autocomplete({
   onKeyDown,
   ...rest
 }: AutocompleteProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const loc = useLocale()
   const controlId = useControlId('ml-autocomplete', id)
   const listId = `${controlId}-list`
@@ -759,11 +763,11 @@ export function Cascader({
   onChange,
   label,
   hint,
-  error,
+  error: errorProp,
   index,
   placeholder,
   size = 'md',
-  required,
+  required: requiredProp,
   disabled,
   clearable,
   changeOnSelect,
@@ -772,6 +776,7 @@ export function Cascader({
   id,
   className,
 }: CascaderProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const loc = useLocale()
   const controlId = useControlId('ml-cascader', id)
   const ph = placeholder ?? loc.cascader.placeholder
@@ -1109,11 +1114,11 @@ export function TreeSelect({
   multiple,
   label,
   hint,
-  error,
+  error: errorProp,
   index,
   placeholder,
   size = 'md',
-  required,
+  required: requiredProp,
   disabled,
   clearable,
   searchable,
@@ -1121,6 +1126,7 @@ export function TreeSelect({
   id,
   className,
 }: TreeSelectProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const loc = useLocale()
   const controlId = useControlId('ml-treeselect', id)
   const ph = placeholder ?? loc.common.choose

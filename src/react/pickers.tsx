@@ -21,6 +21,7 @@ import { Field } from './form'
 import { useLocale } from './locale'
 import { useTransition } from './overlay'
 import { cx, describedBy, useControllable } from './utils'
+import { useFormField } from './validation'
 
 const NO_RANGE: MlDateRange = [null, null]
 const cleanId = (id: string) => id.replace(/[^\w-]/g, '')
@@ -319,7 +320,8 @@ interface FrameProps extends PickerBase {
 }
 
 function PickerFrame(p: FrameProps) {
-  const { pop, controlId, error, disabled, hint } = p
+  const { pop, controlId, disabled, hint } = p
+  const { error, required } = useFormField(p)
   const panelId = `${controlId}-panel`
   function onPanelKeyDown(event: KeyboardEvent) {
     if (event.key === 'Escape') {
@@ -328,7 +330,7 @@ function PickerFrame(p: FrameProps) {
     } else p.onPanelKeyDown?.(event)
   }
   return (
-    <Field controlId={controlId} label={p.label} hint={hint} error={error} index={p.index} required={p.required} className={p.className}>
+    <Field controlId={controlId} label={p.label} hint={hint} error={error} index={p.index} required={required} className={p.className}>
       <div ref={pop.root} className={cx('ml-datepicker', p.rootClass)}>
         <div className={cx('ml-input', { 'ml-input--error': error, 'ml-input--disabled': disabled })}>
           {p.affix}

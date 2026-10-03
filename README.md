@@ -39,7 +39,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has 45 React components with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 115) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -54,7 +54,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - **On-demand loading**: `@malilion/ui/resolver` for unplugin-vue-components bundles only the components and styles you use (a page with a card, a button and a badge drops from 196 KB to 32 KB of CSS); or import `@malilion/ui/on-demand/MlButton` by hand
 - **Nuxt module**: `modules: ['@malilion/ui/nuxt']` auto-imports components and composables, registers the directives and loads per-page styles
 - **SSR**: every docs example passes server-side rendering and hydration tests
-- **React**: `@malilion/ui/react` ships 67 components whose markup is checked against the Vue ones, ready for the Next.js App Router
+- **React**: `@malilion/ui/react` ships all 115 components, with markup checked against the Vue ones, ready for the Next.js App Router
 
 ## What's New in 0.7
 
@@ -303,7 +303,7 @@ export default function Page() {
 
 Form controls follow React conventions: `value` + `onChange` is controlled, `defaultValue` is uncontrolled. For i18n wrap with `<ConfigProvider locale={en}>`.
 
-Available now: Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider · Select · Combobox · Autocomplete · Cascader · TreeSelect · Calendar · DatePicker · DateRangePicker · DateTimePicker · TimePicker · ColorPicker · Upload · Drawer · Popover · Dropdown · Popconfirm · confirm() / DialogHost · CommandPalette · Table · Tree · Transfer · VirtualList. Still Vue-only for now: menus, forms with validation, the remaining inputs (slider, rate, number / pin / tag input, mention), layout helpers and the playful effects.
+Every Vue component has a React twin named without the `Ml` prefix (`MlDatePicker` → `DatePicker`). `v-model` maps to `value` / `defaultValue` / `onChange`, `v-model:open` to `open` / `onOpenChange`, named slots to props or render functions, and the directives `v-loading` / `v-paw-stamp` to `<Loading>` / `usePawStamp()`. `<Form>` + `<FormItem>` validate React fields with the same rules as the Vue version.
 
 ## Using the CSS Directly
 

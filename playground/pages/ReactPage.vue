@@ -40,13 +40,18 @@ export default function Page() {
   )
 }`
 const components = [
-  'Button', 'Badge', 'Tag', 'Kbd', 'Divider', 'Paw', 'Icon', 'Card', 'Alert', 'Banner', 'Result', 'Empty', 'Mascot',
-  'Avatar', 'Stat', 'Progress', 'Loader', 'Skeleton', 'Breadcrumb', 'Steps', 'Descriptions', 'Timeline', 'Field',
-  'Input', 'Textarea', 'Checkbox', 'Switch', 'RadioGroup', 'Radio', 'Tabs', 'Segmented', 'Pagination', 'Tooltip',
-  'Modal', 'ToastHost', 'Ring', 'Sparkline', 'BarChart', 'Donut', 'Heatmap', 'Gauge', 'RadarChart', 'QRCode',
-  'CodeBlock', 'Countdown', 'ConfigProvider', 'Select', 'Combobox', 'Autocomplete', 'Cascader', 'TreeSelect',
-  'Calendar', 'DatePicker', 'DateRangePicker', 'DateTimePicker', 'TimePicker', 'ColorPicker', 'Upload', 'Drawer',
-  'Popover', 'Dropdown', 'Popconfirm', 'DialogHost', 'CommandPalette', 'Table', 'Tree', 'Transfer', 'VirtualList',
+  'Accordion', 'Affix', 'Alert', 'Anchor', 'Autocomplete', 'Avatar', 'BackTop', 'Badge', 'Banner', 'BarChart',
+  'BorderBeam', 'Breadcrumb', 'Button', 'Calendar', 'Card', 'Carousel', 'Cascader', 'Chat', 'ChatInput',
+  'ChatMessage', 'Checkbox', 'CodeBlock', 'ColorPicker', 'Combobox', 'CommandPalette', 'ContextMenu', 'CountUp',
+  'Countdown', 'DatePicker', 'DateRangePicker', 'DateTimePicker', 'DecryptText', 'Descriptions', 'DialogHost',
+  'Divider', 'Donut', 'Drawer', 'Dropdown', 'Empty', 'Field', 'FloatButton', 'Form', 'FormItem', 'Gauge', 'Grid',
+  'GridItem', 'Heatmap', 'Icon', 'Image', 'ImagePreview', 'InfiniteScroll', 'Input', 'Kanban', 'Kbd', 'Layout',
+  'LineChart', 'LionMark', 'List', 'ListItem', 'Loader', 'Marquee', 'Mascot', 'Mention', 'Menu', 'Modal', 'NavBar',
+  'NumberInput', 'Pagination', 'Paw', 'PawBurst', 'Phone', 'PinInput', 'Popconfirm', 'Popover', 'Progress', 'QRCode',
+  'RadarChart', 'Radio', 'RadioGroup', 'Rate', 'Result', 'Reveal', 'Ring', 'Segmented', 'Select', 'Skeleton',
+  'SkeletonItem', 'Slider', 'Sortable', 'Space', 'Sparkline', 'Splitter', 'Spotlight', 'Stat', 'Steps', 'Switch',
+  'TabBar', 'Table', 'Tabs', 'Tag', 'TagInput', 'Textarea', 'Tilt', 'TimePicker', 'Timeline', 'ToastHost', 'Tooltip',
+  'Tour', 'Transfer', 'Tree', 'TreeSelect', 'Upload', 'VirtualList', 'Watermark', 'ConfigProvider',
 ]
 </script>
 
@@ -56,7 +61,7 @@ const components = [
       eyebrow="Getting started / 開始"
       title="React"
       zh="React 與 Next.js"
-      desc="@malilion/ui/react 提供 67 個 React 元件，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
+      desc="@malilion/ui/react 提供全部 115 個元件的 React 版，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
     />
 
     <section class="block">
@@ -73,11 +78,11 @@ const components = [
     </section>
 
     <section class="block">
-      <h2>目前提供的元件</h2>
+      <h2>全部元件</h2>
       <div class="chips">
         <MlTag v-for="c in components" :key="c" tone="tech" variant="outline">{{ c }}</MlTag>
       </div>
-      <p class="note">選單、表單驗證、其餘輸入元件（Slider、Rate、數字／PIN／標籤輸入、Mention）、版面工具與特效類元件目前只有 Vue 版，會陸續補上。</p>
+      <p class="note">名稱就是 Vue 版去掉 Ml 前綴（MlDatePicker → DatePicker）。v-model 對應 value／defaultValue／onChange，v-model:open 對應 open／onOpenChange，具名插槽改成同名 prop 或 render 函式；指令 v-loading、v-paw-stamp 改為 &lt;Loading&gt; 與 usePawStamp()。</p>
     </section>
 
     <section class="block">
