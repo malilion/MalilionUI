@@ -43,16 +43,16 @@ const FOCUSABLE =
   'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), ' +
   'textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
 
-/* ── Scroll lock shared by every open modal ── */
+/* ── Scroll lock shared by every open modal, drawer and palette ── */
 let lockCount = 0
 let previousOverflow = ''
-function lockScroll() {
+export function lockScroll() {
   if (lockCount++ === 0) {
     previousOverflow = document.documentElement.style.overflow
     document.documentElement.style.overflow = 'hidden'
   }
 }
-function unlockScroll() {
+export function unlockScroll() {
   if (--lockCount === 0) document.documentElement.style.overflow = previousOverflow
 }
 

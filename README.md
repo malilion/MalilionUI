@@ -54,7 +54,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - **On-demand loading**: `@malilion/ui/resolver` for unplugin-vue-components bundles only the components and styles you use (a page with a card, a button and a badge drops from 196 KB to 32 KB of CSS); or import `@malilion/ui/on-demand/MlButton` by hand
 - **Nuxt module**: `modules: ['@malilion/ui/nuxt']` auto-imports components and composables, registers the directives and loads per-page styles
 - **SSR**: every docs example passes server-side rendering and hydration tests
-- **React**: `@malilion/ui/react` ships 45 components whose markup is checked against the Vue ones, ready for the Next.js App Router
+- **React**: `@malilion/ui/react` ships 67 components whose markup is checked against the Vue ones, ready for the Next.js App Router
 
 ## What's New in 0.7
 
@@ -303,7 +303,7 @@ export default function Page() {
 
 Form controls follow React conventions: `value` + `onChange` is controlled, `defaultValue` is uncontrolled. For i18n wrap with `<ConfigProvider locale={en}>`.
 
-Available now: Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider. Complex interactive components (selects, pickers, tables, menus…) are Vue-only for now.
+Available now: Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider · Select · Combobox · Autocomplete · Cascader · TreeSelect · Calendar · DatePicker · DateRangePicker · DateTimePicker · TimePicker · ColorPicker · Upload · Drawer · Popover · Dropdown · Popconfirm · confirm() / DialogHost · CommandPalette · Table · Tree · Transfer · VirtualList. Still Vue-only for now: menus, forms with validation, the remaining inputs (slider, rate, number / pin / tag input, mention), layout helpers and the playful effects.
 
 ## Using the CSS Directly
 

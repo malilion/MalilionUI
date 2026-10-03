@@ -44,7 +44,9 @@ const components = [
   'Avatar', 'Stat', 'Progress', 'Loader', 'Skeleton', 'Breadcrumb', 'Steps', 'Descriptions', 'Timeline', 'Field',
   'Input', 'Textarea', 'Checkbox', 'Switch', 'RadioGroup', 'Radio', 'Tabs', 'Segmented', 'Pagination', 'Tooltip',
   'Modal', 'ToastHost', 'Ring', 'Sparkline', 'BarChart', 'Donut', 'Heatmap', 'Gauge', 'RadarChart', 'QRCode',
-  'CodeBlock', 'Countdown', 'ConfigProvider',
+  'CodeBlock', 'Countdown', 'ConfigProvider', 'Select', 'Combobox', 'Autocomplete', 'Cascader', 'TreeSelect',
+  'Calendar', 'DatePicker', 'DateRangePicker', 'DateTimePicker', 'TimePicker', 'ColorPicker', 'Upload', 'Drawer',
+  'Popover', 'Dropdown', 'Popconfirm', 'DialogHost', 'CommandPalette', 'Table', 'Tree', 'Transfer', 'VirtualList',
 ]
 </script>
 
@@ -54,7 +56,7 @@ const components = [
       eyebrow="Getting started / 開始"
       title="React"
       zh="React 與 Next.js"
-      desc="@malilion/ui/react 提供 45 個 React 元件，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
+      desc="@malilion/ui/react 提供 67 個 React 元件，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
     />
 
     <section class="block">
@@ -75,7 +77,7 @@ const components = [
       <div class="chips">
         <MlTag v-for="c in components" :key="c" tone="tech" variant="outline">{{ c }}</MlTag>
       </div>
-      <p class="note">下拉選擇、日期選擇、表格、選單等複雜互動元件目前只有 Vue 版。</p>
+      <p class="note">選單、表單驗證、其餘輸入元件（Slider、Rate、數字／PIN／標籤輸入、Mention）、版面工具與特效類元件目前只有 Vue 版，會陸續補上。</p>
     </section>
 
     <section class="block">
