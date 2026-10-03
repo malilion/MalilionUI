@@ -236,3 +236,45 @@ export interface MlAnchorItem {
 }
 
 export type MlResultStatus = 'success' | 'info' | 'warning' | 'error' | '403' | '404' | '500'
+
+export interface MlHeatmapDatum {
+  /** A Date or an ISO date string ("2026-10-03"). */
+  date: Date | string
+  count: number
+}
+
+export interface MlTourStep {
+  /** Element to highlight: a CSS selector, the element, or a function returning it. None = centred card. */
+  target?: string | HTMLElement | (() => HTMLElement | null)
+  title: string
+  /** Plain-text body; use the default slot for rich content. */
+  content?: string
+  /** Side of the target the card sits on. */
+  placement?: 'top' | 'bottom' | 'left' | 'right'
+}
+
+export interface MlMentionOption {
+  value: string | number
+  /** Inserted after the trigger, e.g. "@Nala ". */
+  label: string
+  avatar?: string
+  /** Small text on the right, e.g. a role. */
+  hint?: string
+  disabled?: boolean
+}
+
+export interface MlKanbanColumn<Item = Record<string, unknown>> {
+  key: string
+  title: string
+  items: Item[]
+  tone?: MlChartTone
+  /** Most cards allowed; dropping more is refused. */
+  limit?: number
+}
+
+export interface MlFloatAction {
+  key: string
+  label: string
+  icon: IconName
+  danger?: boolean
+}

@@ -85,26 +85,6 @@ html {
   scroll-padding-top: 72px;
 }
 
-/* Syntax colours for <CodeBlock>, per theme */
-:root {
-  --tok-comment: var(--ml-text-dim);
-  --tok-string: var(--ml-green-300);
-  --tok-tag: var(--ml-gold-300);
-  --tok-punct: var(--ml-gold-500);
-  --tok-attr: var(--ml-cyan-300);
-  --tok-keyword: var(--ml-bean-300);
-  --tok-number: var(--ml-bronze-300);
-}
-
-[data-ml-theme='light'] {
-  --tok-string: var(--ml-green-600);
-  --tok-tag: #87560a;
-  --tok-punct: var(--ml-gold-600);
-  --tok-attr: var(--ml-cyan-700);
-  --tok-keyword: var(--ml-bean-600);
-  --tok-number: var(--ml-bronze-500);
-}
-
 body {
   margin: 0;
 }

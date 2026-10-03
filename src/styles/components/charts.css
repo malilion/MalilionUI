@@ -519,3 +519,268 @@
 .ml-line__x--on {
   color: var(--ml-accent-text) !important;
 }
+
+/* ── Heatmap (contribution graph) ── */
+.ml-heatmap {
+  --_l0: var(--ml-surface-inset);
+  --_l1: rgb(240 173 47 / 0.25);
+  --_l2: rgb(240 173 47 / 0.48);
+  --_l3: rgb(240 173 47 / 0.75);
+  --_l4: var(--ml-gold-300);
+
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+.ml-heatmap--tech { --_l1: rgb(62 238 208 / 0.22); --_l2: rgb(62 238 208 / 0.45); --_l3: rgb(62 238 208 / 0.7); --_l4: var(--ml-cyan-300); }
+.ml-heatmap--bean { --_l1: rgb(255 143 168 / 0.25); --_l2: rgb(255 143 168 / 0.48); --_l3: rgb(255 143 168 / 0.75); --_l4: var(--ml-bean-300); }
+.ml-heatmap--success { --_l1: rgb(82 227 138 / 0.22); --_l2: rgb(82 227 138 / 0.45); --_l3: rgb(82 227 138 / 0.7); --_l4: var(--ml-green-300); }
+
+.ml-heatmap__scroll {
+  overflow-x: auto;
+  padding-bottom: 2px;
+}
+
+.ml-heatmap svg {
+  display: block;
+}
+
+.ml-heatmap__axis {
+  fill: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 9px;
+}
+
+.ml-heatmap__cell {
+  fill: var(--_l0);
+  cursor: pointer;
+  transition: fill var(--ml-dur-fast) var(--ml-ease), stroke var(--ml-dur-fast) var(--ml-ease);
+  /* Columns fade in left to right, like a trail of steps */
+  animation: ml-fade-in 500ms var(--ml-ease) backwards;
+  animation-delay: calc(var(--_i, 0) * 12ms);
+}
+
+.ml-heatmap--square .ml-heatmap__cell--l0 {
+  stroke: var(--ml-line-steel);
+  stroke-width: 0.6;
+}
+
+.ml-heatmap__cell--l1 { fill: var(--_l1); }
+.ml-heatmap__cell--l2 { fill: var(--_l2); }
+.ml-heatmap__cell--l3 { fill: var(--_l3); }
+.ml-heatmap__cell--l4 { fill: var(--_l4); filter: drop-shadow(0 0 3px var(--_l3)); }
+
+.ml-heatmap__cell--hover {
+  stroke: var(--ml-text) !important;
+  stroke-width: 1.2 !important;
+}
+
+.ml-heatmap--paw .ml-heatmap__cell--l0 {
+  fill: var(--ml-line-steel-strong);
+  opacity: 0.5;
+}
+
+.ml-heatmap__foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-heatmap__legend {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ml-heatmap__swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 2.5px;
+  background: var(--_l0);
+}
+
+.ml-heatmap__swatch.ml-heatmap__cell--l0 { box-shadow: inset 0 0 0 1px var(--ml-line-steel); }
+.ml-heatmap__swatch.ml-heatmap__cell--l1 { background: var(--_l1); }
+.ml-heatmap__swatch.ml-heatmap__cell--l2 { background: var(--_l2); }
+.ml-heatmap__swatch.ml-heatmap__cell--l3 { background: var(--_l3); }
+.ml-heatmap__swatch.ml-heatmap__cell--l4 { background: var(--_l4); }
+
+.ml-heatmap__swatch { animation: none; cursor: default; filter: none; }
+
+/* ── Radar ── */
+.ml-radar {
+  display: inline-grid;
+  justify-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.ml-radar svg {
+  overflow: visible;
+}
+
+.ml-radar__grid polygon,
+.ml-radar__grid circle {
+  fill: none;
+  stroke: var(--ml-line-steel-strong);
+  stroke-width: 1;
+}
+
+.ml-radar__grid polygon:last-of-type,
+.ml-radar__grid circle:last-of-type {
+  stroke: var(--ml-line-strong);
+}
+
+.ml-radar__grid line {
+  stroke: var(--ml-line-steel);
+}
+
+.ml-radar__label {
+  fill: var(--ml-text-muted);
+  font-size: 11px;
+}
+
+.ml-radar__series {
+  transform-origin: 150px 150px;
+  animation: ml-radar-grow 800ms var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * 140ms);
+}
+
+@keyframes ml-radar-grow {
+  from { scale: 0; opacity: 0; }
+}
+
+.ml-radar__area {
+  fill: currentColor;
+  fill-opacity: 0.18;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linejoin: round;
+}
+
+.ml-radar__dot {
+  fill: currentColor;
+  stroke: var(--ml-surface);
+  stroke-width: 1.5;
+}
+
+.ml-radar__legend {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px 16px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-radar__legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.ml-radar__legend i {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  box-shadow: 0 0 6px currentColor;
+}
+
+/* ── Gauge ── */
+.ml-gauge {
+  position: relative;
+  display: inline-grid;
+  justify-items: center;
+  margin: 0;
+}
+
+.ml-gauge svg {
+  overflow: visible;
+}
+
+.ml-gauge__track {
+  fill: none;
+  stroke: var(--ml-surface-inset);
+  stroke-width: 12;
+  stroke-linecap: round;
+}
+
+.ml-gauge__bar {
+  fill: none;
+  stroke-width: 12;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  filter: drop-shadow(0 0 5px rgb(240 173 47 / 0.45));
+  transition: d var(--ml-dur-chart) var(--ml-ease-spring);
+  animation: ml-sparkline-draw 1s var(--ml-ease-spring) backwards;
+}
+
+.ml-gauge--danger .ml-gauge__bar { filter: drop-shadow(0 0 5px rgb(255 92 72 / 0.5)); }
+.ml-gauge--tech .ml-gauge__bar { filter: drop-shadow(0 0 5px rgb(62 238 208 / 0.45)); }
+
+.ml-gauge__band {
+  fill: none;
+  stroke-width: 3;
+  opacity: 0.8;
+}
+
+.ml-gauge__ticks line {
+  stroke: var(--ml-line-strong);
+  stroke-width: 1.5;
+}
+
+.ml-gauge__tick-label {
+  fill: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 8px;
+}
+
+.ml-gauge__needle {
+  stroke: var(--ml-text);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  transition: x2 var(--ml-dur-chart) var(--ml-ease-spring), y2 var(--ml-dur-chart) var(--ml-ease-spring);
+}
+
+.ml-gauge__hub {
+  fill: var(--ml-surface-3);
+  stroke: var(--ml-accent);
+  stroke-width: 2;
+}
+
+.ml-gauge__readout {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 4%;
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.ml-gauge__value {
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: calc(var(--_size, 220px) * 0.15);
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-gauge__value small {
+  margin-left: 2px;
+  color: var(--ml-text-muted);
+  font-size: 0.45em;
+}
+
+.ml-gauge__label {
+  color: var(--ml-text-dim);
+  font-size: max(11px, calc(var(--_size, 220px) * 0.055));
+}

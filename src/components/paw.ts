@@ -50,3 +50,17 @@ export function createPawSvg(): SVGSVGElement {
   svg.appendChild(pad)
   return svg
 }
+
+/** The whole paw (toes + pad) as one path in the 24×24 grid, for SVG charts. */
+export function createPawPath(): string {
+  const toes = PAW_TOES.map(({ cx, cy, rx, ry, rotate }) => {
+    const t = (rotate * Math.PI) / 180
+    // Two half-arcs between opposite ends of the rotated major axis.
+    const dx = ry * -Math.sin(t)
+    const dy = ry * Math.cos(t)
+    const a = `${(cx - dx).toFixed(2)} ${(cy - dy).toFixed(2)}`
+    const b = `${(cx + dx).toFixed(2)} ${(cy + dy).toFixed(2)}`
+    return `M${a}A${rx} ${ry} ${rotate} 1 0 ${b}A${rx} ${ry} ${rotate} 1 0 ${a}Z`
+  })
+  return toes.join('') + PAW_PAD
+}

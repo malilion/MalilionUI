@@ -8,6 +8,7 @@ import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
 import MlBackTop from './components/MlBackTop.vue'
 import MlBadge from './components/MlBadge.vue'
+import MlBanner from './components/MlBanner.vue'
 import MlBarChart from './components/MlBarChart.vue'
 import MlBorderBeam from './components/MlBorderBeam.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
@@ -16,7 +17,11 @@ import MlCalendar from './components/MlCalendar.vue'
 import MlCard from './components/MlCard.vue'
 import MlCarousel from './components/MlCarousel.vue'
 import MlCascader from './components/MlCascader.vue'
+import MlChat from './components/MlChat.vue'
+import MlChatInput from './components/MlChatInput.vue'
+import MlChatMessage from './components/MlChatMessage.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
+import MlCodeBlock from './components/MlCodeBlock.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
 import MlCommandPalette from './components/MlCommandPalette.vue'
@@ -36,15 +41,19 @@ import MlDrawer from './components/MlDrawer.vue'
 import MlDropdown from './components/MlDropdown.vue'
 import MlEmpty from './components/MlEmpty.vue'
 import MlField from './components/MlField.vue'
+import MlFloatButton from './components/MlFloatButton.vue'
 import MlForm from './components/MlForm.vue'
 import MlFormItem from './components/MlFormItem.vue'
+import MlGauge from './components/MlGauge.vue'
 import MlGrid from './components/MlGrid.vue'
 import MlGridItem from './components/MlGridItem.vue'
+import MlHeatmap from './components/MlHeatmap.vue'
 import MlIcon from './components/MlIcon.vue'
 import MlImage from './components/MlImage.vue'
 import MlImagePreview from './components/MlImagePreview.vue'
 import MlInfiniteScroll from './components/MlInfiniteScroll.vue'
 import MlInput from './components/MlInput.vue'
+import MlKanban from './components/MlKanban.vue'
 import MlKbd from './components/MlKbd.vue'
 import MlLayout from './components/MlLayout.vue'
 import MlLineChart from './components/MlLineChart.vue'
@@ -54,6 +63,7 @@ import MlListItem from './components/MlListItem.vue'
 import MlLoader from './components/MlLoader.vue'
 import MlMarquee from './components/MlMarquee.vue'
 import MlMascot from './components/MlMascot.vue'
+import MlMention from './components/MlMention.vue'
 import MlMenu from './components/MlMenu.vue'
 import MlModal from './components/MlModal.vue'
 import MlNavBar from './components/MlNavBar.vue'
@@ -67,6 +77,7 @@ import MlPopconfirm from './components/MlPopconfirm.vue'
 import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
 import MlQRCode from './components/MlQRCode.vue'
+import MlRadarChart from './components/MlRadarChart.vue'
 import MlRadio from './components/MlRadio.vue'
 import MlRadioGroup from './components/MlRadioGroup.vue'
 import MlRate from './components/MlRate.vue'
@@ -78,6 +89,7 @@ import MlSelect from './components/MlSelect.vue'
 import MlSkeleton from './components/MlSkeleton.vue'
 import MlSkeletonItem from './components/MlSkeletonItem.vue'
 import MlSlider from './components/MlSlider.vue'
+import MlSortable from './components/MlSortable.vue'
 import MlSpace from './components/MlSpace.vue'
 import MlSparkline from './components/MlSparkline.vue'
 import MlSplitter from './components/MlSplitter.vue'
@@ -96,6 +108,7 @@ import MlTimePicker from './components/MlTimePicker.vue'
 import MlTimeline from './components/MlTimeline.vue'
 import MlToastHost from './components/MlToastHost.vue'
 import MlTooltip from './components/MlTooltip.vue'
+import MlTour from './components/MlTour.vue'
 import MlTransfer from './components/MlTransfer.vue'
 import MlTree from './components/MlTree.vue'
 import MlTreeSelect from './components/MlTreeSelect.vue'
@@ -115,6 +128,7 @@ const components = {
   MlAvatar,
   MlBackTop,
   MlBadge,
+  MlBanner,
   MlBarChart,
   MlBorderBeam,
   MlBreadcrumb,
@@ -123,7 +137,11 @@ const components = {
   MlCard,
   MlCarousel,
   MlCascader,
+  MlChat,
+  MlChatInput,
+  MlChatMessage,
   MlCheckbox,
+  MlCodeBlock,
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
@@ -143,15 +161,19 @@ const components = {
   MlDropdown,
   MlEmpty,
   MlField,
+  MlFloatButton,
   MlForm,
   MlFormItem,
+  MlGauge,
   MlGrid,
   MlGridItem,
+  MlHeatmap,
   MlIcon,
   MlImage,
   MlImagePreview,
   MlInfiniteScroll,
   MlInput,
+  MlKanban,
   MlKbd,
   MlLayout,
   MlLineChart,
@@ -161,6 +183,7 @@ const components = {
   MlLoader,
   MlMarquee,
   MlMascot,
+  MlMention,
   MlMenu,
   MlModal,
   MlNavBar,
@@ -174,6 +197,7 @@ const components = {
   MlPopover,
   MlProgress,
   MlQRCode,
+  MlRadarChart,
   MlRadio,
   MlRadioGroup,
   MlRate,
@@ -185,6 +209,7 @@ const components = {
   MlSkeleton,
   MlSkeletonItem,
   MlSlider,
+  MlSortable,
   MlSpace,
   MlSparkline,
   MlSplitter,
@@ -203,6 +228,7 @@ const components = {
   MlTimeline,
   MlToastHost,
   MlTooltip,
+  MlTour,
   MlTransfer,
   MlTree,
   MlTreeSelect,
@@ -243,6 +269,7 @@ export {
   MlAvatar,
   MlBackTop,
   MlBadge,
+  MlBanner,
   MlBarChart,
   MlBorderBeam,
   MlBreadcrumb,
@@ -251,7 +278,11 @@ export {
   MlCard,
   MlCarousel,
   MlCascader,
+  MlChat,
+  MlChatInput,
+  MlChatMessage,
   MlCheckbox,
+  MlCodeBlock,
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
@@ -271,15 +302,19 @@ export {
   MlDropdown,
   MlEmpty,
   MlField,
+  MlFloatButton,
   MlForm,
   MlFormItem,
+  MlGauge,
   MlGrid,
   MlGridItem,
+  MlHeatmap,
   MlIcon,
   MlImage,
   MlImagePreview,
   MlInfiniteScroll,
   MlInput,
+  MlKanban,
   MlKbd,
   MlLayout,
   MlLineChart,
@@ -289,6 +324,7 @@ export {
   MlLoader,
   MlMarquee,
   MlMascot,
+  MlMention,
   MlMenu,
   MlModal,
   MlNavBar,
@@ -302,6 +338,7 @@ export {
   MlPopover,
   MlProgress,
   MlQRCode,
+  MlRadarChart,
   MlRadio,
   MlRadioGroup,
   MlRate,
@@ -313,6 +350,7 @@ export {
   MlSkeleton,
   MlSkeletonItem,
   MlSlider,
+  MlSortable,
   MlSpace,
   MlSparkline,
   MlSplitter,
@@ -331,6 +369,7 @@ export {
   MlTimeline,
   MlToastHost,
   MlTooltip,
+  MlTour,
   MlTransfer,
   MlTree,
   MlTreeSelect,
@@ -345,6 +384,7 @@ export { confirm, useConfirm } from './dialog'
 export { zhTW, en, setLocale, getLocale, useLocale } from './locale'
 export type { MlLocale } from './locale'
 export { encodeQr } from './qrcode'
+export { highlight, highlightLines } from './highlight'
 export type { QrLevel, QrMatrix } from './qrcode'
 export type { MlToastItem } from './toast'
 export { vPawStamp, pawStamp, pawBurst } from './pawStamp'
@@ -367,6 +407,7 @@ declare module 'vue' {
     MlAvatar: typeof MlAvatar
     MlBackTop: typeof MlBackTop
     MlBadge: typeof MlBadge
+    MlBanner: typeof MlBanner
     MlBarChart: typeof MlBarChart
     MlBorderBeam: typeof MlBorderBeam
     MlBreadcrumb: typeof MlBreadcrumb
@@ -375,7 +416,11 @@ declare module 'vue' {
     MlCard: typeof MlCard
     MlCarousel: typeof MlCarousel
     MlCascader: typeof MlCascader
+    MlChat: typeof MlChat
+    MlChatInput: typeof MlChatInput
+    MlChatMessage: typeof MlChatMessage
     MlCheckbox: typeof MlCheckbox
+    MlCodeBlock: typeof MlCodeBlock
     MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
     MlCommandPalette: typeof MlCommandPalette
@@ -395,15 +440,19 @@ declare module 'vue' {
     MlDropdown: typeof MlDropdown
     MlEmpty: typeof MlEmpty
     MlField: typeof MlField
+    MlFloatButton: typeof MlFloatButton
     MlForm: typeof MlForm
     MlFormItem: typeof MlFormItem
+    MlGauge: typeof MlGauge
     MlGrid: typeof MlGrid
     MlGridItem: typeof MlGridItem
+    MlHeatmap: typeof MlHeatmap
     MlIcon: typeof MlIcon
     MlImage: typeof MlImage
     MlImagePreview: typeof MlImagePreview
     MlInfiniteScroll: typeof MlInfiniteScroll
     MlInput: typeof MlInput
+    MlKanban: typeof MlKanban
     MlKbd: typeof MlKbd
     MlLayout: typeof MlLayout
     MlLineChart: typeof MlLineChart
@@ -413,6 +462,7 @@ declare module 'vue' {
     MlLoader: typeof MlLoader
     MlMarquee: typeof MlMarquee
     MlMascot: typeof MlMascot
+    MlMention: typeof MlMention
     MlMenu: typeof MlMenu
     MlModal: typeof MlModal
     MlNavBar: typeof MlNavBar
@@ -426,6 +476,7 @@ declare module 'vue' {
     MlPopover: typeof MlPopover
     MlProgress: typeof MlProgress
     MlQRCode: typeof MlQRCode
+    MlRadarChart: typeof MlRadarChart
     MlRadio: typeof MlRadio
     MlRadioGroup: typeof MlRadioGroup
     MlRate: typeof MlRate
@@ -437,6 +488,7 @@ declare module 'vue' {
     MlSkeleton: typeof MlSkeleton
     MlSkeletonItem: typeof MlSkeletonItem
     MlSlider: typeof MlSlider
+    MlSortable: typeof MlSortable
     MlSpace: typeof MlSpace
     MlSparkline: typeof MlSparkline
     MlSplitter: typeof MlSplitter
@@ -455,6 +507,7 @@ declare module 'vue' {
     MlTimeline: typeof MlTimeline
     MlToastHost: typeof MlToastHost
     MlTooltip: typeof MlTooltip
+    MlTour: typeof MlTour
     MlTransfer: typeof MlTransfer
     MlTree: typeof MlTree
     MlTreeSelect: typeof MlTreeSelect
