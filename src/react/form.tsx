@@ -15,6 +15,7 @@ import type { MlPlacement, MlRadioOption, MlSegmentedOption, MlSize, MlTabItem }
 import { Icon, Paw } from './basic'
 import { useLocale } from './locale'
 import { cx, describedBy, useControllable } from './utils'
+import { useFormField } from './validation'
 
 // useLayoutEffect warns during SSR; fall back to useEffect there.
 const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -80,7 +81,8 @@ export interface InputProps extends FieldBits, Omit<InputHTMLAttributes<HTMLInpu
   suffix?: ReactNode
 }
 
-export function Input({ label, hint, error, index, size = 'md', value, defaultValue = '', onChange, prefix, suffix, id, required, disabled, className, style, ...rest }: InputProps) {
+export function Input({ label, hint, error: errorProp, index, size = 'md', value, defaultValue = '', onChange, prefix, suffix, id, required: requiredProp, disabled, className, style, ...rest }: InputProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const autoId = useId()
   const controlId = id ?? `ml-input-${autoId.replace(/[^\w-]/g, '')}`
   const [current, set] = useControllable(value, defaultValue, onChange)
@@ -111,7 +113,8 @@ export interface TextareaProps extends FieldBits, Omit<TextareaHTMLAttributes<HT
   onChange?: (value: string) => void
 }
 
-export function Textarea({ label, hint, error, index, value, defaultValue = '', onChange, id, required, disabled, rows = 4, className, ...rest }: TextareaProps) {
+export function Textarea({ label, hint, error: errorProp, index, value, defaultValue = '', onChange, id, required: requiredProp, disabled, rows = 4, className, ...rest }: TextareaProps) {
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const autoId = useId()
   const controlId = id ?? `ml-textarea-${autoId.replace(/[^\w-]/g, '')}`
   const [current, set] = useControllable(value, defaultValue, onChange)

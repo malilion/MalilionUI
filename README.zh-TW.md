@@ -39,7 +39,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 多語系：內建繁體中文與英文，`app.use(MalilionUI, { locale: en })` 或 `<MlConfigProvider>` 一行切換，也能自訂文案
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
-- 也支援 React：`@malilion/ui/react` 提供 45 個 React 元件（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
+- 也支援 React：`@malilion/ui/react` 提供全部 115 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
 - 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
@@ -54,7 +54,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - **按需載入**：`@malilion/ui/resolver` 搭配 unplugin-vue-components，只打包用到的元件與樣式（只用卡片、按鈕、徽章的頁面，樣式從 196 KB 降到 32 KB）；也可以手動 `import '@malilion/ui/on-demand/MlButton'`
 - **Nuxt 模組**：`modules: ['@malilion/ui/nuxt']`，元件與組合函式自動匯入、指令自動註冊、每頁只載入用到的樣式
 - **SSR**：文件站全部範例都通過伺服器端渲染與水合測試
-- **React 版**：`@malilion/ui/react` 提供 67 個元件，HTML 結構與 Vue 版逐一比對一致，Next.js App Router 可直接使用
+- **React 版**：`@malilion/ui/react` 提供全部 115 個元件，HTML 結構與 Vue 版逐一比對一致，Next.js App Router 可直接使用
 
 ## 0.7 版新功能
 
@@ -303,7 +303,7 @@ export default function Page() {
 
 表單元件遵循 React 慣例：`value` + `onChange` 為受控，`defaultValue` 為非受控。多語系用 `<ConfigProvider locale={en}>`。
 
-目前提供：Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider · Select · Combobox · Autocomplete · Cascader · TreeSelect · Calendar · DatePicker · DateRangePicker · DateTimePicker · TimePicker · ColorPicker · Upload · Drawer · Popover · Dropdown · Popconfirm · confirm() / DialogHost · CommandPalette · Table · Tree · Transfer · VirtualList。選單、表單驗證、其餘輸入元件（Slider、Rate、數字／PIN／標籤輸入、Mention）、版面工具與特效類元件目前只有 Vue 版。
+每個 Vue 元件都有 React 版，名稱去掉 `Ml` 前綴（`MlDatePicker` → `DatePicker`）。`v-model` 對應 `value` / `defaultValue` / `onChange`，`v-model:open` 對應 `open` / `onOpenChange`，具名插槽改成 prop 或 render 函式，指令 `v-loading` / `v-paw-stamp` 改為 `<Loading>` / `usePawStamp()`。`<Form>` + `<FormItem>` 用和 Vue 版相同的規則驗證 React 欄位。
 
 ## 直接使用 CSS
 

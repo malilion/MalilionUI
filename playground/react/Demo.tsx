@@ -8,6 +8,8 @@ import {
   ConfigProvider,
   DatePicker,
   DialogHost,
+  Rate,
+  Slider,
   Table,
   confirm,
   Gauge,
@@ -69,6 +71,8 @@ export function Demo() {
                 <Combobox label="Stack" options={stacks} multiple searchable clearable defaultValue={['React']} />
                 <DatePicker label="Ship date" clearable />
                 <ColorPicker label="Mane colour" defaultValue="#f0ad2f" />
+                <Slider label="Roar volume" defaultValue={60} unit="dB" showValue />
+                <Rate label="Cuteness" defaultValue={4.5} allowHalf showValue />
               </div>
             ),
             table: (

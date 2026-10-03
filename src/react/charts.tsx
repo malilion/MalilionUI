@@ -1,11 +1,11 @@
-import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import { chartStops, niceStep, seriesColors } from '../components/charts'
+import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
+import { chartStops, niceStep, seriesColors, smoothPath } from '../components/charts'
 import { addDays, dayKey, startOfDay } from '../components/dates'
 import { createPawPath } from '../components/paw'
 import { highlightLines } from '../highlight'
 import { mascotImages } from '../mascot'
 import { encodeQr, qrEyePath, qrLayout, type QrLevel } from '../qrcode'
-import type { MlChartDatum, MlChartTone, MlHeatmapDatum } from '../types'
+import type { MlChartDatum, MlChartTone, MlHeatmapDatum, MlLineSeries } from '../types'
 import { Button, Paw, useSvgId } from './basic'
 import { toast } from './overlay'
 import { useLocale } from './locale'
@@ -784,5 +784,173 @@ export function Countdown({ to, duration, units = ['days', 'hours', 'minutes', '
         </Fragment>
       ))}
     </span>
+  )
+}
+
+/* ── LineChart ─────────────────────────────────────────── */
+
+export interface LineChartProps {
+  series: MlLineSeries[]
+  /** X-axis labels, one per data point. */
+  labels?: string[]
+  /** Plot height in px. */
+  height?: number
+  /** Fill the area under each line. */
+  area?: boolean
+  /** Monotone curves instead of straight segments. */
+  smooth?: boolean
+  /** Number of horizontal grid lines. */
+  ticks?: number
+  /** Mark every data point with a dot. */
+  dots?: boolean
+  /** Show the series legend (on by default with more than one series). */
+  legend?: boolean
+  format?: (value: number) => string
+  /** Accessible summary of the chart. */
+  label?: string
+}
+
+export function LineChart({ series, labels, height = 220, area = true, smooth = true, ticks = 4, dots = false, legend, format, label }: LineChartProps) {
+  const fmt = (v: number) => (format ? format(v) : v.toLocaleString())
+  const uid = useSvgId('ml-line')
+  // The SVG is drawn in real pixels (so strokes and dots never stretch); the width follows the container.
+  const plot = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState(600)
+  const [hover, setHover] = useState<number | null>(null)
+  useEffect(() => {
+    const el = plot.current
+    if (!el) return
+    if (el.clientWidth) setWidth(el.clientWidth)
+    if (typeof ResizeObserver === 'undefined') return
+    const observer = new ResizeObserver(([entry]) => setWidth(Math.max(80, Math.round(entry.contentRect.width))))
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [])
+
+  const PAD_Y = 8
+  const count = Math.max(1, ...series.map((s) => s.data.length))
+  const values = series.flatMap((s) => s.data)
+  const vMax = Math.max(0, ...values)
+  const vMin = Math.min(0, ...values)
+  const step = niceStep(vMax - vMin || 1, ticks)
+  const lo = Math.floor(vMin / step) * step
+  const hi = Math.max(lo + step * ticks, Math.ceil(vMax / step) * step)
+  const tickValues: number[] = []
+  for (let v = hi; v >= lo - step / 2; v -= step) tickValues.push(+v.toFixed(10))
+  const x = (i: number) => (count > 1 ? (i / (count - 1)) * width : width / 2)
+  const y = (v: number) => PAD_Y + (1 - (v - lo) / (hi - lo || 1)) * (height - PAD_Y * 2)
+  const baseline = y(Math.max(lo, 0))
+  const drawn = series.map((s, i) => {
+    const color = s.color ?? (s.tone ? chartStops[s.tone][0] : seriesColors[i % seriesColors.length])
+    const pts = s.data.map((v, j) => ({ x: x(j), y: y(v) }))
+    const line = smooth ? smoothPath(pts) : pts.map((p, j) => `${j ? 'L' : 'M'}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(' ')
+    const fill = pts.length ? `${line} L${pts[pts.length - 1].x.toFixed(1)} ${baseline} L${pts[0].x.toFixed(1)} ${baseline} Z` : ''
+    return { name: s.name, color, pts, line, fill, gradient: `${uid}-g${i}` }
+  })
+  // Thin the x labels so they never crowd (roughly one per 64px).
+  const labelEvery = Math.max(1, Math.ceil(((labels?.length ?? 0) * 64) / width))
+  const showLegend = legend ?? series.length > 1
+  const tipSide = hover !== null && x(hover) > width * 0.6 ? 'left' : 'right'
+  const summary = label ?? series.map((s) => `${s.name}：${s.data.map(fmt).join('、')}`).join('；')
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const moves: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1 }
+    if (event.key === 'Home') setHover(0)
+    else if (event.key === 'End') setHover(count - 1)
+    else if (event.key in moves) setHover(Math.min(count - 1, Math.max(0, (hover ?? -1) + moves[event.key])))
+    else if (event.key === 'Escape') setHover(null)
+    else return
+    event.preventDefault()
+  }
+
+  return (
+    <figure className="ml-line" style={{ '--_h': `${height}px` } as CSSProperties}>
+      {showLegend && (
+        <div className="ml-line__legend" aria-hidden="true">
+          {drawn.map((s) => (
+            <span key={s.name} className="ml-line__key">
+              <i style={{ background: s.color, color: s.color }} />
+              {s.name}
+            </span>
+          ))}
+        </div>
+      )}
+      <div className="ml-line__body">
+        <div className="ml-line__axis" aria-hidden="true">
+          {tickValues.map((t) => (
+            <span key={t}>{fmt(t)}</span>
+          ))}
+        </div>
+        <div className="ml-line__main">
+          <div
+            ref={plot}
+            className="ml-line__plot"
+            role="img"
+            tabIndex={0}
+            aria-label={summary}
+            onPointerMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect()
+              const ratio = (event.clientX - rect.left) / (rect.width || 1)
+              setHover(Math.min(count - 1, Math.max(0, Math.round(ratio * (count - 1)))))
+            }}
+            onPointerLeave={() => setHover(null)}
+            onKeyDown={onKeyDown}
+            onBlur={() => setHover(null)}
+          >
+            <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+              <defs>
+                {drawn.map((s) => (
+                  <linearGradient key={s.gradient} id={s.gradient} x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0" stopColor={s.color} stopOpacity={0.32} />
+                    <stop offset="1" stopColor={s.color} stopOpacity={0} />
+                  </linearGradient>
+                ))}
+              </defs>
+              <g className="ml-line__grid">
+                {tickValues.map((t) => (
+                  <line key={t} x1="0" x2={width} y1={y(t)} y2={y(t)} className={t === 0 ? 'ml-line__zero' : undefined} />
+                ))}
+              </g>
+              {drawn.map((s, i) => (
+                <g key={s.name} className="ml-line__series" style={{ '--_i': i } as CSSProperties}>
+                  {area && <path d={s.fill} fill={`url(#${s.gradient})`} className="ml-line__area" />}
+                  <path d={s.line} pathLength={1} className="ml-line__stroke" stroke={s.color} />
+                  {dots && s.pts.map((p, j) => <circle key={j} cx={p.x} cy={p.y} r={3} className="ml-line__dot" fill={s.color} />)}
+                </g>
+              ))}
+              {hover !== null && (
+                <g className="ml-line__cursor">
+                  <line x1={x(hover)} x2={x(hover)} y1="0" y2={height} />
+                  {drawn.map((s) => s.pts[hover] && <circle key={s.name} cx={s.pts[hover].x} cy={s.pts[hover].y} r={4.5} fill={s.color} className="ml-line__focus" />)}
+                </g>
+              )}
+            </svg>
+            {hover !== null && (
+              <div className={cx('ml-line__tip', `ml-line__tip--${tipSide}`)} style={{ left: `${x(hover)}px` }} aria-live="polite">
+                <p className="ml-line__tip-title">{labels?.[hover] ?? `#${hover + 1}`}</p>
+                {series.map((s, i) => (
+                  <p key={s.name} className="ml-line__tip-row">
+                    <i style={{ background: drawn[i].color }} />
+                    <span>{s.name}</span>
+                    <b>{s.data[hover] !== undefined ? fmt(s.data[hover]) : '—'}</b>
+                  </p>
+                ))}
+              </div>
+            )}
+          </div>
+          {!!labels?.length && (
+            <div className="ml-line__x" aria-hidden="true">
+              {labels.map((l, i) =>
+                i % labelEvery === 0 || i === hover ? (
+                  <span key={i} className={i === hover ? 'ml-line__x--on' : undefined} style={{ left: `${x(i)}px` }}>
+                    {l}
+                  </span>
+                ) : null,
+              )}
+            </div>
+          )}
+        </div>
+      </div>
+    </figure>
   )
 }
