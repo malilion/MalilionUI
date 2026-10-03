@@ -38,6 +38,10 @@
       "import": "./dist/malilion-ui.js"
     },
     "./on-demand/*": "./src/styles/on-demand/*.js",
+    "./react": {
+      "types": "./dist/types/react/index.d.ts",
+      "import": "./dist/react.js"
+    },
     "./nuxt": {
       "types": "./dist/types/nuxt.d.ts",
       "import": "./dist/nuxt.js"
@@ -60,9 +64,9 @@
   ],
   "scripts": {
     "dev": "vite --config playground/vite.config.ts",
-    "build": "node scripts/build-style-map.mjs --check && vite build && vue-tsc -p tsconfig.build.json",
+    "build": "node scripts/build-style-map.mjs --check && vite build && vue-tsc -p tsconfig.build.json && tsc -p tsconfig.react.build.json",
     "build:playground": "vite build --config playground/vite.config.ts",
-    "typecheck": "vue-tsc --noEmit -p tsconfig.json",
+    "typecheck": "vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.react.json",
     "test": "vitest run",
     "screenshots": "node scripts/screenshots.mjs",
     "styles:map": "node scripts/build-style-map.mjs",
@@ -71,10 +75,21 @@
   },
   "peerDependencies": {
     "@nuxt/kit": "^3.0.0 || ^4.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0",
     "vue": "^3.5.0"
   },
   "peerDependenciesMeta": {
     "@nuxt/kit": {
+      "optional": true
+    },
+    "react": {
+      "optional": true
+    },
+    "react-dom": {
+      "optional": true
+    },
+    "vue": {
       "optional": true
     }
   },

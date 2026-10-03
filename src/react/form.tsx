@@ -1,0 +1,567 @@
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useId,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type InputHTMLAttributes,
+  type KeyboardEvent,
+  type ReactNode,
+  type TextareaHTMLAttributes,
+} from 'react'
+import type { MlPlacement, MlRadioOption, MlSegmentedOption, MlSize, MlTabItem } from '../types'
+import { Icon, Paw } from './basic'
+import { useLocale } from './locale'
+import { cx, describedBy, useControllable } from './utils'
+
+// useLayoutEffect warns during SSR; fall back to useEffect there.
+const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
+
+/* ── Field ─────────────────────────────────────────────── */
+
+export interface FieldProps {
+  controlId?: string
+  label?: ReactNode
+  hint?: ReactNode
+  error?: string
+  /** HUD prefix before the label, e.g. "01". */
+  index?: string
+  required?: boolean
+  children?: ReactNode
+  className?: string
+}
+
+export function Field({ controlId, label, hint, error, index, required, children, className }: FieldProps) {
+  return (
+    <div className={cx('ml-field', className)}>
+      {label && (
+        <label id={controlId ? `${controlId}-label` : undefined} className="ml-field__label" htmlFor={controlId}>
+          {index && <span className="ml-field__index">{index}</span>}
+          {label}
+          {required && (
+            <span className="ml-field__required" aria-hidden="true">
+              *
+            </span>
+          )}
+        </label>
+      )}
+      {children}
+      {error ? (
+        <p id={`${controlId}-error`} className="ml-field__error">
+          <Icon name="warning" />
+          {error}
+        </p>
+      ) : hint ? (
+        <p id={`${controlId}-hint`} className="ml-field__hint">
+          {hint}
+        </p>
+      ) : null}
+    </div>
+  )
+}
+
+interface FieldBits {
+  label?: ReactNode
+  hint?: string
+  error?: string
+  index?: string
+}
+
+/* ── Input & Textarea ──────────────────────────────────── */
+
+export interface InputProps extends FieldBits, Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'prefix' | 'value' | 'defaultValue' | 'onChange'> {
+  size?: MlSize
+  value?: string
+  defaultValue?: string
+  onChange?: (value: string) => void
+  prefix?: ReactNode
+  suffix?: ReactNode
+}
+
+export function Input({ label, hint, error, index, size = 'md', value, defaultValue = '', onChange, prefix, suffix, id, required, disabled, className, style, ...rest }: InputProps) {
+  const autoId = useId()
+  const controlId = id ?? `ml-input-${autoId.replace(/[^\w-]/g, '')}`
+  const [current, set] = useControllable(value, defaultValue, onChange)
+  return (
+    <Field controlId={controlId} label={label} hint={hint} error={error} index={index} required={required} className={className}>
+      <div className={cx('ml-input', `ml-input--${size}`, { 'ml-input--error': error, 'ml-input--disabled': disabled })} style={style}>
+        {prefix && <span className="ml-input__affix">{prefix}</span>}
+        <input
+          id={controlId}
+          className="ml-input__control"
+          value={current}
+          onChange={(e) => set(e.target.value)}
+          required={required}
+          disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(controlId, hint, error)}
+          {...rest}
+        />
+        {suffix && <span className="ml-input__affix">{suffix}</span>}
+      </div>
+    </Field>
+  )
+}
+
+export interface TextareaProps extends FieldBits, Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'value' | 'defaultValue' | 'onChange'> {
+  value?: string
+  defaultValue?: string
+  onChange?: (value: string) => void
+}
+
+export function Textarea({ label, hint, error, index, value, defaultValue = '', onChange, id, required, disabled, rows = 4, className, ...rest }: TextareaProps) {
+  const autoId = useId()
+  const controlId = id ?? `ml-textarea-${autoId.replace(/[^\w-]/g, '')}`
+  const [current, set] = useControllable(value, defaultValue, onChange)
+  return (
+    <Field controlId={controlId} label={label} hint={hint} error={error} index={index} required={required} className={className}>
+      <div className={cx('ml-input', 'ml-input--textarea', { 'ml-input--error': error, 'ml-input--disabled': disabled })}>
+        <textarea
+          id={controlId}
+          className="ml-input__control"
+          rows={rows}
+          value={current}
+          onChange={(e) => set(e.target.value)}
+          required={required}
+          disabled={disabled}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={describedBy(controlId, hint, error)}
+          {...rest}
+        />
+      </div>
+    </Field>
+  )
+}
+
+/* ── Checkbox & Switch ─────────────────────────────────── */
+
+export interface CheckboxProps {
+  checked?: boolean
+  defaultChecked?: boolean
+  onChange?: (checked: boolean) => void
+  label?: ReactNode
+  hint?: ReactNode
+  disabled?: boolean
+  /** Stamp a paw print instead of a check mark. */
+  paw?: boolean
+  indeterminate?: boolean
+  name?: string
+  value?: string
+  className?: string
+  'aria-label'?: string
+}
+
+export function Checkbox({ checked, defaultChecked = false, onChange, label, hint, disabled, paw, indeterminate = false, className, ...inputProps }: CheckboxProps) {
+  const [on, set] = useControllable(checked, defaultChecked, onChange)
+  const input = useRef<HTMLInputElement>(null)
+  // `indeterminate` is a DOM property with no HTML attribute.
+  useEffect(() => {
+    if (input.current) input.current.indeterminate = indeterminate
+  }, [indeterminate])
+  return (
+    <label className={cx('ml-check', className, { 'ml-check--disabled': disabled })}>
+      <input ref={input} type="checkbox" className="ml-check__input" checked={on} disabled={disabled} onChange={(e) => set(e.target.checked)} {...inputProps} />
+      <span className="ml-check__box" aria-hidden="true">
+        {paw ? (
+          <Paw tone="current" className="ml-check__paw" />
+        ) : (
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={3} strokeLinecap="square">
+            <path d="M5 12.5l4.5 4.5L19 7.5" />
+          </svg>
+        )}
+        <span className="ml-check__dash" />
+      </span>
+      {(label || hint) && (
+        <span className="ml-check__text">
+          <span>{label}</span>
+          {hint && <span className="ml-check__hint">{hint}</span>}
+        </span>
+      )}
+    </label>
+  )
+}
+
+export interface SwitchProps {
+  checked?: boolean
+  defaultChecked?: boolean
+  onChange?: (checked: boolean) => void
+  label?: ReactNode
+  tone?: 'gold' | 'tech'
+  showState?: boolean
+  disabled?: boolean
+  id?: string
+  className?: string
+}
+
+export function Switch({ checked, defaultChecked = false, onChange, label, tone = 'gold', showState, disabled, id, className }: SwitchProps) {
+  const autoId = useId()
+  const controlId = id ?? `ml-switch-${autoId.replace(/[^\w-]/g, '')}`
+  const [on, set] = useControllable(checked, defaultChecked, onChange)
+  return (
+    <div className={cx('ml-switch', `ml-switch--${tone}`, className, { 'ml-switch--on': on })}>
+      <button id={controlId} type="button" role="switch" className="ml-switch__control" aria-checked={on} disabled={disabled} onClick={() => set(!on)}>
+        <span className="ml-switch__track">
+          <span className="ml-switch__thumb" />
+        </span>
+      </button>
+      {showState && (
+        <span className="ml-switch__state" aria-hidden="true">
+          {on ? 'ON' : 'OFF'}
+        </span>
+      )}
+      {label && (
+        <label htmlFor={controlId} className="ml-switch__label">
+          {label}
+        </label>
+      )}
+    </div>
+  )
+}
+
+/* ── RadioGroup & Radio ────────────────────────────────── */
+
+type RadioValue = string | number
+
+interface RadioGroupContext {
+  name: string
+  value: RadioValue | undefined
+  disabled?: boolean
+  variant: 'default' | 'card'
+  select: (v: RadioValue) => void
+}
+const RadioCtx = createContext<RadioGroupContext | null>(null)
+
+export interface RadioGroupProps {
+  value?: RadioValue
+  defaultValue?: RadioValue
+  onChange?: (value: RadioValue) => void
+  options?: MlRadioOption[]
+  label?: ReactNode
+  name?: string
+  disabled?: boolean
+  variant?: 'default' | 'card'
+  direction?: 'row' | 'column'
+  children?: ReactNode
+}
+
+export function RadioGroup({ value, defaultValue, onChange, options, label, name, disabled, variant = 'default', direction = 'row', children }: RadioGroupProps) {
+  const autoName = `ml-radio-${useId().replace(/[^\w-]/g, '')}`
+  const [current, set] = useControllable<RadioValue | undefined>(value, defaultValue, onChange as (v: RadioValue | undefined) => void)
+  return (
+    <fieldset className={cx('ml-radio-group', `ml-radio-group--${variant}`, `ml-radio-group--${direction}`)} disabled={disabled}>
+      {label && <legend className="ml-radio-group__label">{label}</legend>}
+      <div className="ml-radio-group__items">
+        <RadioCtx.Provider value={{ name: name ?? autoName, value: current, disabled, variant, select: set }}>
+          {children ?? options?.map((o) => <Radio key={o.value} value={o.value} label={o.label} hint={o.hint} disabled={o.disabled} />)}
+        </RadioCtx.Provider>
+      </div>
+    </fieldset>
+  )
+}
+
+export interface RadioProps {
+  value: RadioValue
+  label?: ReactNode
+  hint?: ReactNode
+  disabled?: boolean
+  /** Standalone use only. */
+  name?: string
+  checked?: boolean
+  onChange?: (value: RadioValue) => void
+}
+
+export function Radio({ value, label, hint, disabled, name, checked, onChange }: RadioProps) {
+  const group = useContext(RadioCtx)
+  const isChecked = group ? group.value === value : !!checked
+  const isDisabled = disabled || group?.disabled || false
+  return (
+    <label className={cx('ml-radio', { 'ml-radio--card': group?.variant === 'card', 'ml-radio--disabled': isDisabled })}>
+      <input
+        type="radio"
+        className="ml-radio__input"
+        name={group?.name ?? name}
+        value={String(value)}
+        checked={isChecked}
+        disabled={isDisabled}
+        onChange={() => (group ? group.select(value) : onChange?.(value))}
+      />
+      <span className="ml-radio__socket" aria-hidden="true">
+        <Paw tone="current" className="ml-radio__paw" />
+      </span>
+      {(label || hint) && (
+        <span className="ml-radio__text">
+          <span className="ml-radio__label">{label}</span>
+          {hint && <span className="ml-radio__hint">{hint}</span>}
+        </span>
+      )}
+    </label>
+  )
+}
+
+/* ── Tabs & Segmented (sliding indicator) ──────────────── */
+
+/** Measure the active element so the gold ink / plate can slide under it. */
+function useIndicator(activeEl: () => HTMLElement | undefined, deps: unknown[]) {
+  const [box, setBox] = useState({ x: 0, width: 0, ready: false })
+  const measure = () => {
+    const el = activeEl()
+    setBox(el ? { x: el.offsetLeft, width: el.offsetWidth, ready: true } : (b) => ({ ...b, ready: false }))
+  }
+  useIsoLayoutEffect(measure, deps)
+  useEffect(() => {
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(measure) : undefined
+    const el = activeEl()?.parentElement
+    if (ro && el) ro.observe(el)
+    document.fonts?.ready.then(measure)
+    return () => ro?.disconnect()
+  }, [])
+  return box
+}
+
+export interface TabsProps {
+  items: MlTabItem[]
+  value?: string
+  defaultValue?: string
+  onChange?: (value: string) => void
+  variant?: 'line' | 'plate'
+  label?: string
+  /** Panel content per tab value. */
+  panels?: Record<string, ReactNode>
+  renderTab?: (item: MlTabItem, active: boolean) => ReactNode
+}
+
+export function Tabs({ items, value, defaultValue, onChange, variant = 'line', label, panels, renderTab }: TabsProps) {
+  const base = `ml-tabs-${useId().replace(/[^\w-]/g, '')}`
+  const [current, set] = useControllable(value, defaultValue ?? items.find((i) => !i.disabled)?.value ?? '', onChange)
+  const tabEls = useRef(new Map<string, HTMLButtonElement>())
+  const ink = useIndicator(() => tabEls.current.get(current), [current, items])
+
+  function onKeydown(event: KeyboardEvent) {
+    const enabled = items.filter((i) => !i.disabled)
+    const at = enabled.findIndex((i) => i.value === current)
+    const next =
+      event.key === 'ArrowRight' ? (at + 1) % enabled.length : event.key === 'ArrowLeft' ? (at - 1 + enabled.length) % enabled.length : event.key === 'Home' ? 0 : event.key === 'End' ? enabled.length - 1 : -1
+    if (next < 0) return
+    event.preventDefault()
+    set(enabled[next].value)
+    tabEls.current.get(enabled[next].value)?.focus()
+  }
+
+  return (
+    <div className={cx('ml-tabs', `ml-tabs--${variant}`)}>
+      <div role="tablist" className="ml-tabs__list" aria-label={label}>
+        {items.map((item) => (
+          <button
+            key={item.value}
+            id={`${base}-tab-${item.value}`}
+            ref={(el) => {
+              if (el) tabEls.current.set(item.value, el)
+              else tabEls.current.delete(item.value)
+            }}
+            type="button"
+            role="tab"
+            className="ml-tabs__tab"
+            aria-selected={item.value === current}
+            aria-controls={`${base}-panel-${item.value}`}
+            tabIndex={item.value === current ? 0 : -1}
+            disabled={item.disabled}
+            onClick={() => !item.disabled && set(item.value)}
+            onKeyDown={onKeydown}
+          >
+            {renderTab ? renderTab(item, item.value === current) : item.label}
+          </button>
+        ))}
+        <span
+          className="ml-tabs__ink"
+          aria-hidden="true"
+          style={{ width: `${ink.width}px`, transform: `translateX(${ink.x}px)`, display: ink.ready ? undefined : 'none' }}
+        />
+      </div>
+      {panels &&
+        items.map((item) =>
+          panels[item.value] !== undefined ? (
+            <div
+              key={item.value}
+              id={`${base}-panel-${item.value}`}
+              role="tabpanel"
+              className="ml-tabs__panel"
+              tabIndex={0}
+              aria-labelledby={`${base}-tab-${item.value}`}
+              hidden={item.value !== current}
+            >
+              {panels[item.value]}
+            </div>
+          ) : null,
+        )}
+    </div>
+  )
+}
+
+export interface SegmentedProps {
+  options: MlSegmentedOption[]
+  value?: string | number
+  defaultValue?: string | number
+  onChange?: (value: string | number) => void
+  size?: MlSize
+  block?: boolean
+  disabled?: boolean
+  label?: string
+}
+
+export function Segmented({ options, value, defaultValue, onChange, size = 'md', block, disabled, label }: SegmentedProps) {
+  const [current, set] = useControllable<string | number | undefined>(value, defaultValue, onChange as (v: string | number | undefined) => void)
+  const els = useRef(new Map<string | number, HTMLButtonElement>())
+  const plate = useIndicator(() => (current !== undefined ? els.current.get(current) : undefined), [current, options])
+  const isDisabled = (o: MlSegmentedOption) => !!disabled || !!o.disabled
+  const enabled = options.filter((o) => !isDisabled(o))
+  const hasChecked = enabled.some((o) => o.value === current)
+
+  function onKeydown(event: KeyboardEvent) {
+    if (!enabled.length) return
+    const at = enabled.findIndex((o) => o.value === current)
+    const k = event.key
+    const next =
+      k === 'ArrowRight' || k === 'ArrowDown' ? (at + 1) % enabled.length : k === 'ArrowLeft' || k === 'ArrowUp' ? (at - 1 + enabled.length) % enabled.length : k === 'Home' ? 0 : k === 'End' ? enabled.length - 1 : -1
+    if (next < 0) return
+    event.preventDefault()
+    set(enabled[next].value)
+    els.current.get(enabled[next].value)?.focus()
+  }
+
+  return (
+    <div
+      role="radiogroup"
+      aria-label={label}
+      aria-disabled={disabled || undefined}
+      className={cx('ml-segmented', `ml-segmented--${size}`, { 'ml-segmented--block': block, 'ml-segmented--disabled': disabled })}
+      onKeyDown={onKeydown}
+    >
+      <span
+        className="ml-segmented__plate"
+        aria-hidden="true"
+        style={{ width: `${plate.width}px`, transform: `translateX(${plate.x}px)`, display: plate.ready ? undefined : 'none' }}
+      />
+      {options.map((o) => (
+        <button
+          key={o.value}
+          ref={(el) => {
+            if (el) els.current.set(o.value, el)
+            else els.current.delete(o.value)
+          }}
+          type="button"
+          role="radio"
+          aria-checked={o.value === current}
+          aria-label={!o.label ? String(o.value) : undefined}
+          disabled={isDisabled(o)}
+          tabIndex={isDisabled(o) ? -1 : hasChecked ? (o.value === current ? 0 : -1) : enabled[0] === o ? 0 : -1}
+          className={cx('ml-segmented__item', { 'ml-segmented__item--active': o.value === current })}
+          onClick={() => !isDisabled(o) && o.value !== current && set(o.value)}
+        >
+          {o.icon && <Icon name={o.icon} className="ml-segmented__icon" />}
+          {o.label && <span>{o.label}</span>}
+        </button>
+      ))}
+    </div>
+  )
+}
+
+/* ── Pagination ────────────────────────────────────────── */
+
+export interface PaginationProps {
+  /** Number of pages. */
+  total: number
+  page?: number
+  defaultPage?: number
+  onChange?: (page: number) => void
+  siblings?: number
+  label?: string
+}
+
+export function Pagination({ total, page, defaultPage = 1, onChange, siblings = 1, label }: PaginationProps) {
+  const loc = useLocale()
+  const [current, set] = useControllable(page, defaultPage, onChange)
+  const pages = Math.max(1, total)
+  const at = Math.min(Math.max(1, current), pages)
+  const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
+  const s = siblings
+  const slots: (number | 'gap-start' | 'gap-end')[] =
+    pages <= s * 2 + 5
+      ? range(1, pages)
+      : at - s <= 3
+        ? [...range(1, s * 2 + 3), 'gap-end', pages]
+        : at + s >= pages - 2
+          ? [1, 'gap-start', ...range(pages - (s * 2 + 2), pages)]
+          : [1, 'gap-start', ...range(at - s, at + s), 'gap-end', pages]
+  const go = (n: number) => set(Math.min(Math.max(1, n), pages))
+  return (
+    <nav className="ml-pagination" aria-label={label ?? loc.nav.pagination}>
+      <button type="button" className="ml-pagination__btn ml-pagination__btn--nav" aria-label={loc.nav.prevPage} disabled={at <= 1} onClick={() => go(at - 1)}>
+        <Icon name="chevronLeft" />
+      </button>
+      {slots.map((slot) =>
+        typeof slot === 'string' ? (
+          <span key={slot} className="ml-pagination__gap" aria-hidden="true">
+            …
+          </span>
+        ) : (
+          <button key={slot} type="button" className="ml-pagination__btn" aria-current={slot === at ? 'page' : undefined} aria-label={loc.nav.page(slot)} onClick={() => go(slot)}>
+            {slot}
+          </button>
+        ),
+      )}
+      <button type="button" className="ml-pagination__btn ml-pagination__btn--nav" aria-label={loc.nav.nextPage} disabled={at >= pages} onClick={() => go(at + 1)}>
+        <Icon name="chevronRight" />
+      </button>
+    </nav>
+  )
+}
+
+/* ── Tooltip ───────────────────────────────────────────── */
+
+export interface TooltipProps {
+  content: ReactNode
+  placement?: MlPlacement
+  delay?: number
+  /** One element: it gets aria-describedby pointing at the bubble. */
+  children: ReactNode
+}
+
+export function Tooltip({ content, placement = 'top', delay = 120, children }: TooltipProps) {
+  const bubbleId = `ml-tooltip-${useId().replace(/[^\w-]/g, '')}`
+  const root = useRef<HTMLSpanElement>(null)
+  const [visible, setVisible] = useState(false)
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const show = (immediate = false) => {
+    clearTimeout(timer.current)
+    if (immediate || delay <= 0) setVisible(true)
+    else timer.current = setTimeout(() => setVisible(true), delay)
+  }
+  const hide = () => {
+    clearTimeout(timer.current)
+    setVisible(false)
+  }
+  useEffect(() => {
+    const trigger = root.current?.firstElementChild
+    if (trigger && !trigger.classList.contains('ml-tooltip__bubble')) trigger.setAttribute('aria-describedby', bubbleId)
+    return () => clearTimeout(timer.current)
+  }, [bubbleId])
+  return (
+    <span
+      ref={root}
+      className="ml-tooltip"
+      onMouseEnter={() => show()}
+      onMouseLeave={hide}
+      onFocus={() => show(true)}
+      onBlur={hide}
+      onKeyDown={(e) => e.key === 'Escape' && hide()}
+    >
+      {children}
+      <span id={bubbleId} role="tooltip" className={cx('ml-tooltip__bubble', `ml-tooltip__bubble--${placement}`, { 'ml-tooltip__bubble--visible': visible })}>
+        {content}
+      </span>
+    </span>
+  )
+}
+

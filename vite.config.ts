@@ -36,13 +36,20 @@ export default defineConfig({
         'malilion-ui': fileURLToPath(new URL('./src/entry.ts', import.meta.url)),
         resolver: fileURLToPath(new URL('./src/resolver.ts', import.meta.url)),
         nuxt: fileURLToPath(new URL('./src/nuxt.ts', import.meta.url)),
+        react: fileURLToPath(new URL('./src/react/index.ts', import.meta.url)),
       },
       formats: ['es'],
       fileName: (_format, name) => `${name}.js`,
       cssFileName: 'style',
     },
     rollupOptions: {
-      external: ['vue', '@nuxt/kit', '@nuxt/schema'],
+      external: ['vue', '@nuxt/kit', '@nuxt/schema', 'react', 'react-dom', 'react/jsx-runtime'],
+      output: {
+        // Next.js App Router: the React entry uses hooks, so it's a client module.
+        banner: (chunk) => (chunk.name === 'react' ? "'use client';" : ''),
+        // Framework-free code both entries share (QR encoder, locale strings, mascot images…).
+        chunkFileNames: 'chunks/[name]-[hash].js',
+      },
     },
   },
   // Tests (e.g. the SSR render of every docs example) import '@malilion/ui' like the docs do.
@@ -53,6 +60,6 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
-    include: ['tests/**/*.test.ts'],
+    include: ['tests/**/*.test.{ts,tsx}'],
   },
 })

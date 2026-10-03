@@ -73,14 +73,22 @@ import { MlButton, MlCombobox } from '@malilion/ui'`,
 </html>`,
   },
   {
-    title: '在 React / 原生網頁使用',
-    desc: '所有外觀都在 .ml-* class 與 --ml-* 變數裡，只引入 CSS 也能用。',
-    filename: 'DeployButton.tsx',
+    title: '在 React / Next.js 使用',
+    desc: '@malilion/ui/react 提供 45 個 React 元件，HTML 結構與 Vue 版一致、共用同一份樣式；Next.js App Router 的 Server Component 可以直接使用。複雜互動元件（下拉選擇、日期、表格、選單等）目前只有 Vue 版。',
+    filename: 'page.tsx',
     lang: 'tsx',
     code: `import '@malilion/ui/style.css'
+import { Button, Card, ToastHost, toast } from '@malilion/ui/react'
 
-export function DeployButton() {
-  return <button className="ml-btn ml-btn--primary ml-btn--md">部署</button>
+export default function Page() {
+  return (
+    <>
+      <Card eyebrow="Pride / 01" title="獅群儀表板">
+        <Button stamp onClick={() => toast('嗷嗚～')}>部署</Button>
+      </Card>
+      <ToastHost />
+    </>
+  )
 }`,
   },
 ]
