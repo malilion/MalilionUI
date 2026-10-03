@@ -34,7 +34,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 79 components across basic, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 101 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
@@ -45,6 +45,19 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Visual effects that stay on brand: count-up numbers, HUD text decryption, metal tilt with glare, border beams, spotlight grids, scroll reveals and paw-print bursts — all of them calm down under `prefers-reduced-motion`
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - Zero runtime dependencies — only Vue as a peer dependency
+
+## What's New in 0.6
+
+22 new components plus `confirm()`, and the Malilion brand typefaces:
+
+- **Layout**: `MlLayout` (app shell; the sidebar becomes a drawer on phones), `MlGrid` / `MlGridItem`, `MlSpace`
+- **Form**: `MlDateRangePicker`, `MlCascader`, `MlTreeSelect`, `MlTagInput`, `MlPinInput`
+- **Feedback**: `confirm()` / `confirm.danger()` / `confirm.prompt()` / `confirm.alert()`, `MlResult` (the lion stars on 403 · 404 · 500)
+- **Data display**: `MlDescriptions`, `MlSplitter`, `MlVirtualList`, `MlInfiniteScroll`, `MlQRCode` (dependency-free encoder)
+- **Charts**: `MlLineChart`
+- **Navigation**: `MlMenu`, `MlCommandPalette` (⌘K), `MlContextMenu`, `MlAnchor`
+- **Effects**: `MlCountdown`
+- **Fonts**: bundled Malilion Display / Sans / Mono, plus the paw-print **Malilion Paw** (`.ml-font-paw`)
 
 ## What's New in 0.5
 
@@ -154,13 +167,14 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Category | Components |
 | --- | --- |
 | Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
-| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` |
-| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
-| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
+| Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` |
+| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` |
+| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` |
+| Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` |
 | Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
-| Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` |
+| Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` |
 | Directive | `v-paw-stamp` |
 
 ## Component Props

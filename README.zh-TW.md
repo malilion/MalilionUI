@@ -34,7 +34,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 79 個元件，涵蓋基礎、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
+- 101 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
 - 內建表單驗證：`MlForm` / `MlFormItem` 規則（必填、長度、格式、非同步檢查），錯誤會直接顯示在每個表單元件上
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
@@ -45,6 +45,19 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 符合品牌風格的視覺特效：數字滾動、HUD 解碼文字、金屬傾斜反光、流光邊框、聚光燈格線、捲動出場與腳印煙火，在 `prefers-reduced-motion` 下全部會收斂
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 - 執行期零依賴，只需要 Vue 作為 peer dependency
+
+## 0.6 版新功能
+
+新增 22 個元件與 `confirm()`，另外多了碼力獅專屬的品牌字型：
+
+- **版面**：`MlLayout`（後台骨架，手機自動變抽屜）、`MlGrid` / `MlGridItem`、`MlSpace`
+- **表單**：`MlDateRangePicker`、`MlCascader`、`MlTreeSelect`、`MlTagInput`、`MlPinInput`
+- **回饋**：`confirm()` / `confirm.danger()` / `confirm.prompt()` / `confirm.alert()`、`MlResult`（403 · 404 · 500 由小獅子登場）
+- **資料展示**：`MlDescriptions`、`MlSplitter`、`MlVirtualList`、`MlInfiniteScroll`、`MlQRCode`（零依賴 QR 編碼器）
+- **圖表**：`MlLineChart`
+- **導覽**：`MlMenu`、`MlCommandPalette`（⌘K）、`MlContextMenu`、`MlAnchor`
+- **視覺特效**：`MlCountdown`
+- **字型**：內建 Malilion Display / Sans / Mono，以及腳印風格的 **Malilion Paw**（`.ml-font-paw`）
 
 ## 0.5 版新功能
 
@@ -154,13 +167,14 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | 分類 | 元件 |
 | --- | --- |
 | 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` |
-| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` |
-| 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` |
-| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` |
-| 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` |
-| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` |
+| 版面 | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` |
+| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` |
+| 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` |
+| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` |
+| 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` |
+| 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` |
 | 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
-| 視覺特效 | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` |
+| 視覺特效 | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` |
 | 指令 | `v-paw-stamp` |
 
 ## 元件屬性
