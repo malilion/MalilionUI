@@ -112,7 +112,7 @@ toast('Roar!') // a paw toast by default
 toast.success({ title: 'Deployed', message: 'v0.2 is live' })
 ```
 
-The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style.css` — nothing to load. Chinese text uses system fonts; add Noto Sans TC if you want consistent CJK glyphs across platforms:
+The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style.css` — nothing to load. There is also **Malilion Paw**, a cute brand face where the dots on i, j and `. : ; ! ? …` are little paw prints (and `U+E000` is a full paw); use `class="ml-font-paw"` or `var(--ml-font-paw)`. Chinese text uses system fonts; add Noto Sans TC if you want consistent CJK glyphs across platforms:
 
 ```html
 <link

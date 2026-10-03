@@ -26,6 +26,7 @@ const componentCount = Object.keys(lib).filter((name) => /^Ml[A-Z]/.test(name)).
           <span class="ml-metal-text">MALILION</span>
           <span class="ml-metal-text ml-metal-text--steel">UI</span>
         </h1>
+        <p class="hero__paw ml-font-paw">hi, i'm malilion! let's ship it… &#xE000;</p>
         <p class="hero__lead">
           以<strong>獅子</strong>為魂、<strong>科技</strong>為骨、<strong>金屬</strong>為甲，
           再踩上一串<strong class="bean">可愛的肉球腳印</strong>。
@@ -95,6 +96,12 @@ const componentCount = Object.keys(lib).filter((name) => /^Ml[A-Z]/.test(name)).
 .hero__kicker {
   margin: 0 0 16px;
   color: var(--ml-accent-text);
+}
+
+.hero__paw {
+  margin: 14px 0 -6px;
+  color: var(--ml-accent-text);
+  font-size: 1.35rem;
 }
 
 .hero__title {
