@@ -59,6 +59,11 @@ try {
       await page.locator('[data-shot="pickers"] .open-color .ml-colorpicker__trigger').focus()
       await page.keyboard.press('Enter')
     },
+    // Drop the cascader open on the chosen path.
+    inputs: async () => {
+      await page.locator('[data-shot="inputs"] .open-cascader [role="combobox"]').focus()
+      await page.keyboard.press('ArrowDown')
+    },
     // Light the spotlight, lean the tilt card, and catch a paw burst mid-flight.
     effects: async () => {
       // Scroll first: the capture would otherwise scroll after the pointer is placed.

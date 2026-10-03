@@ -158,6 +158,18 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="視覺特效" width="100%">
 
+**0.6 · 選單、折線圖與描述清單**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/workspace.png" alt="選單、折線圖與描述清單" width="100%">
+
+**0.6 · 日期區間、級聯、標籤與驗證碼**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/inputs.png" alt="日期區間、級聯、標籤與驗證碼" width="100%">
+
+**0.6 · ⌘K 指令面板、404、QR Code 與倒數**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/brand.png" alt="指令面板、404、QR Code 與倒數" width="100%">
+
 每個元件在[文件站](https://malilion.github.io/MalilionUI/)都有自己的頁面：即時範例、一鍵複製原始碼與完整 API 表。
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="文件站" width="100%">

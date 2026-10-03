@@ -9,6 +9,48 @@ import type { MlToastItem } from '../src/toast'
 
 const mailIcon = 'M3 6h18v12H3zM3 6l9 7 9-7'
 
+/* v0.6 — workspace, inputs, brand */
+const v6Menu = [
+  { key: 'g-main', label: '主要', group: true, children: [
+    { key: 'dash', label: '儀表板', icon: 'grid' as const },
+    { key: 'deploy', label: '部署', icon: 'upload' as const, children: [
+      { key: 'pipelines', label: '流水線' },
+      { key: 'envs', label: '環境', badge: 3 },
+    ] },
+    { key: 'msg', label: '訊息', icon: 'message' as const, badge: 8 },
+  ] },
+  { key: 'g-team', label: '團隊', group: true, children: [
+    { key: 'pride', label: '獅群', icon: 'user' as const },
+    { key: 'set', label: '設定', icon: 'settings' as const },
+  ] },
+]
+const v6Labels = ['週一', '週二', '週三', '週四', '週五', '週六', '週日']
+const v6Series = [
+  { name: 'API 請求', data: [120, 132, 101, 134, 190, 230, 210], tone: 'gold' as const },
+  { name: '快取命中', data: [80, 92, 71, 104, 140, 180, 160], tone: 'tech' as const },
+]
+const v6Desc = [
+  { label: '版本', value: 'v0.6.0', mono: true },
+  { label: '環境', value: 'Production' },
+  { label: 'Commit', value: '09c031c', mono: true },
+]
+const v6Areas = [
+  { value: 'taipei', label: '台北市', children: [{ value: 'xinyi', label: '信義區' }, { value: 'daan', label: '大安區' }, { value: 'neihu', label: '內湖區' }] },
+  { value: 'newtaipei', label: '新北市', children: [{ value: 'banqiao', label: '板橋區' }] },
+  { value: 'taichung', label: '台中市', children: [{ value: 'xitun', label: '西屯區' }] },
+]
+const v6Tree = [
+  { key: 'users', label: '使用者', children: [{ key: 'read-users', label: '讀取使用者' }, { key: 'write-users', label: '修改使用者' }] },
+  { key: 'repos', label: '程式庫' },
+]
+const v6Range: [Date, Date] = [new Date(2026, 9, 6), new Date(2026, 9, 12)]
+const v6Commands = [
+  { icon: 'file' as const, label: '新增檔案', hit: [0, 1], shortcut: '⌘ N' },
+  { icon: 'settings' as const, label: '開啟設定', hit: [2, 3], shortcut: '⌘ ,' },
+  { icon: 'rotate' as const, label: '切換日光 / 夜間模式', hit: [], shortcut: '' },
+]
+const v6Deadline = Date.now() + ((2 * 24 + 7) * 3600 + 25 * 60 + 41) * 1000
+
 /* Forms */
 const roles = [
   { value: 'alpha', label: 'Alpha — 獅群領袖' },
@@ -819,6 +861,98 @@ const themes = [
       </MlMarquee>
     </section>
 
+    <!-- ───────────── Workspace (v0.6) ───────────── -->
+    <section data-shot="workspace" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">16 // Workspace</p>
+          <h2 class="shot__title">選單、折線圖與描述清單</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v6-work">
+        <MlMenu model-value="envs" :open-keys="['deploy']" :items="v6Menu" class="v6-menu" />
+        <div class="stack stack--loose">
+          <MlCard eyebrow="Traffic" title="本週流量">
+            <MlLineChart :series="v6Series" :labels="v6Labels" :height="190" dots />
+          </MlCard>
+          <MlDescriptions title="部署資訊" :items="v6Desc" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Inputs (v0.6) ───────────── -->
+    <section data-shot="inputs" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">17 // Inputs</p>
+          <h2 class="shot__title">日期區間、級聯、標籤與驗證碼</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v6-inputs">
+        <div class="stack stack--loose">
+          <MlDateRangePicker :model-value="v6Range" index="01" label="報表區間" />
+          <div class="open-cascader">
+            <MlCascader :model-value="['taipei', 'daan']" :options="v6Areas" index="02" label="縣市 / 區域" />
+          </div>
+        </div>
+        <div class="stack stack--loose">
+          <MlTagInput :model-value="['Vue', 'TypeScript', 'Vite']" index="03" label="技術標籤" :max="5" />
+          <MlTreeSelect :model-value="['users', 'read-users', 'write-users', 'repos']" :data="v6Tree" index="04" label="Token 權限" multiple />
+          <MlPinInput model-value="2846" label="簡訊驗證碼" :group-size="3" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Brand moments (v0.6) ───────────── -->
+    <section data-shot="brand" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">18 // Brand moments</p>
+          <h2 class="shot__title">⌘K、404、QR Code 與倒數</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v6-brand">
+        <!-- The palette is pure CSS classes, so it can be shown in place for the capture -->
+        <div class="ml-cmd__panel v6-cmd">
+          <div class="ml-cmd__search">
+            <MlIcon name="search" class="ml-cmd__search-icon" />
+            <span class="ml-cmd__input v6-cmd__q">開設</span>
+            <MlKbd>Esc</MlKbd>
+          </div>
+          <div class="ml-cmd__list">
+            <p class="ml-cmd__group">指令</p>
+            <div v-for="(c, i) in v6Commands" :key="c.label" :class="['ml-cmd__item', { 'ml-cmd__item--active': i === 1 }]">
+              <MlIcon :name="c.icon" class="ml-cmd__icon" />
+              <span class="ml-cmd__label">
+                <template v-for="(ch, k) in [...c.label]" :key="k">
+                  <mark v-if="i === 1 && (k === 0 || k === 2)" class="ml-cmd__hit">{{ ch }}</mark>
+                  <template v-else>{{ ch }}</template>
+                </template>
+              </span>
+              <span class="ml-cmd__shortcut">{{ c.shortcut }}</span>
+            </div>
+          </div>
+          <footer class="ml-cmd__foot">
+            <span><MlKbd>↑</MlKbd><MlKbd>↓</MlKbd> 移動</span>
+            <span><MlKbd>Enter</MlKbd> 執行</span>
+            <span class="ml-cmd__brand"><MlPaw tone="current" /> Malilion</span>
+          </footer>
+        </div>
+        <MlResult status="404" class="v6-404">
+          <template #actions><MlButton size="sm" stamp>帶我回家</MlButton></template>
+        </MlResult>
+        <div class="stack v6-side">
+          <MlQRCode value="https://malilion.github.io/MalilionUI/" logo="paw" :size="150">掃我看文件</MlQRCode>
+          <p class="ml-hud-label">新版倒數</p>
+          <MlCountdown :to="v6Deadline" :units="['days', 'hours', 'minutes']" paused />
+          <p class="v6-paw-font ml-font-paw">hi, i'm malilion! jiji… &#xE000;</p>
+        </div>
+      </div>
+    </section>
+
     <div data-shot="logo" class="logo-shot">
       <MlMascot :size="132" frame="ring" title="碼力獅" />
     </div>
@@ -1458,5 +1592,63 @@ body {
 
 .fx-marquee {
   margin-top: 26px;
+}
+/* v0.6 panels */
+.v6-work {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  gap: 28px;
+}
+
+.v6-menu {
+  padding: 8px;
+  background: var(--ml-brushed), var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+}
+
+.v6-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  min-height: 330px;
+}
+
+.v6-brand {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr 220px;
+  gap: 24px;
+  align-items: start;
+}
+
+.v6-cmd {
+  max-height: none;
+}
+
+.v6-cmd__q {
+  display: flex;
+  align-items: center;
+  height: 58px;
+}
+
+.v6-404 {
+  padding: 0;
+}
+
+.v6-404 .ml-result__code {
+  font-size: 92px;
+}
+
+.v6-404 .ml-result__lion {
+  margin-top: -6px;
+}
+
+.v6-side {
+  justify-items: start;
+}
+
+.v6-paw-font {
+  margin: 6px 0 0;
+  color: var(--ml-accent-text);
+  font-size: 20px;
 }
 </style>

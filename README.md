@@ -158,6 +158,18 @@ The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="Visual effects" width="100%">
 
+**0.6 · Menu, line chart & descriptions**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/workspace.png" alt="Menu, line chart and descriptions" width="100%">
+
+**0.6 · Date range, cascader, tags & PIN**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/inputs.png" alt="Date range, cascader, tag and PIN inputs" width="100%">
+
+**0.6 · ⌘K palette, 404, QR code & countdown**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/brand.png" alt="Command palette, 404, QR code and countdown" width="100%">
+
 Every component has its own page on the [docs site](https://malilion.github.io/MalilionUI/) with live examples, copy-to-clipboard source and full API tables.
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="Docs site" width="100%">
