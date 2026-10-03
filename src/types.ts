@@ -70,6 +70,10 @@ export interface MlTableColumn<Row = Record<string, unknown>> {
   /** Monospace, tabular digits — for ids, numbers, timestamps. */
   mono?: boolean
   format?: (value: unknown, row: Row) => string
+  /** Keep this column in view while the table scrolls sideways. */
+  fixed?: 'left' | 'right'
+  /** Cut long text with "…" (full text in a tooltip). */
+  ellipsis?: boolean
 }
 
 export interface MlTableSort {

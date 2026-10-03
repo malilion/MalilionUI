@@ -143,8 +143,8 @@
 }
 
 /* Hover paw: a small gutter on the first data column it walks into */
-.ml-table--hover-paw thead th:nth-child(1 of :not(.ml-table__select)),
-.ml-table--hover-paw tbody td:nth-child(1 of :not(.ml-table__select)) {
+.ml-table--hover-paw thead th:nth-child(1 of :not(.ml-table__select, .ml-table__expand-col)),
+.ml-table--hover-paw tbody tr:not(.ml-table__detail-row) td:nth-child(1 of :not(.ml-table__select, .ml-table__expand-col)) {
   padding-left: calc(var(--_pad-x) + 16px);
 }
 
@@ -212,4 +212,172 @@
   background: color-mix(in srgb, var(--ml-surface) 72%, transparent);
   backdrop-filter: blur(2px);
   -webkit-backdrop-filter: blur(2px);
+}
+
+/* ── Sticky header (max-height) ── */
+.ml-table--sticky .ml-table__scroll {
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+
+.ml-table--sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* ── Fixed columns ── */
+.ml-table .ml-table__fixed {
+  position: sticky;
+  z-index: 1;
+  background: var(--ml-surface);
+}
+
+.ml-table thead .ml-table__fixed {
+  z-index: 3;
+  background: var(--ml-surface-2);
+}
+
+/* A soft shadow on the fixed edge once content scrolls underneath it */
+.ml-table__fixed--last-left::after,
+.ml-table__fixed--first-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 12px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-table__fixed--last-left::after {
+  right: -12px;
+  background: linear-gradient(90deg, rgb(0 0 0 / 0.35), transparent);
+}
+
+.ml-table__fixed--first-right::after {
+  left: -12px;
+  background: linear-gradient(270deg, rgb(0 0 0 / 0.35), transparent);
+}
+
+.ml-table--scrolled-left .ml-table__fixed--last-left::after,
+.ml-table--scrolled-right .ml-table__fixed--first-right::after {
+  opacity: 1;
+}
+
+.ml-table__cell--ellipsis {
+  max-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── Expandable rows ── */
+.ml-table__expand-col {
+  width: 40px;
+  padding-right: 0 !important;
+}
+
+.ml-table__expander,
+.ml-table__tree-toggle {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  cursor: pointer;
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+  transition: color var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-table__expander:hover,
+.ml-table__tree-toggle:hover {
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+}
+
+.ml-table__expander:focus-visible,
+.ml-table__tree-toggle:focus-visible {
+  outline: 2px solid var(--ml-focus);
+}
+
+.ml-table__expander svg,
+.ml-table__tree-toggle svg {
+  width: 14px;
+  height: 14px;
+  transition: rotate var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-table__expander[aria-expanded='true'] svg,
+tr[aria-expanded='true'] .ml-table__tree-toggle svg {
+  rotate: 90deg;
+  color: var(--ml-accent-text);
+}
+
+.ml-table__detail-row td {
+  padding: 0 !important;
+  background: var(--ml-surface-inset) !important;
+}
+
+.ml-table__detail {
+  position: relative;
+  padding: 16px 20px 18px 56px;
+  box-shadow: inset 2px 0 0 var(--ml-accent);
+  animation: ml-table-detail 320ms var(--ml-ease-spring);
+}
+
+@keyframes ml-table-detail {
+  from { opacity: 0; translate: 0 -6px; }
+}
+
+.ml-table__row--open td {
+  border-bottom-color: transparent;
+}
+
+/* ── Tree rows ── */
+.ml-table__tree {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  margin-right: 6px;
+  padding-left: calc(var(--_level, 0) * 20px);
+}
+
+.ml-table__tree-leaf {
+  width: 22px;
+}
+
+.ml-table__row--child td {
+  color: var(--ml-text-muted);
+}
+
+/* ── Footer with pager ── */
+.ml-table__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px var(--_pad-x);
+  border-top: 1px solid var(--ml-line);
+}
+
+.ml-table__count {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+}
+
+/* Fixed cells must stay opaque so scrolled content never shows through */
+.ml-table tbody tr:not(.ml-table__empty-row):hover td.ml-table__fixed,
+.ml-table__row--selected td.ml-table__fixed {
+  background: color-mix(in srgb, var(--ml-accent) 12%, var(--ml-surface)) !important;
+}
+
+.ml-table--striped tbody tr:nth-child(even) td.ml-table__fixed {
+  background: color-mix(in srgb, var(--ml-surface-2) 60%, var(--ml-surface));
 }

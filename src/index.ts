@@ -103,6 +103,7 @@ import MlUpload from './components/MlUpload.vue'
 import MlVirtualList from './components/MlVirtualList.vue'
 import MlWatermark from './components/MlWatermark.vue'
 import { vPawStamp } from './pawStamp'
+import { vLoading } from './loading'
 import { setLocale, type MlLocale } from './locale'
 
 const components = {
@@ -227,6 +228,7 @@ export const MalilionUI: Plugin<[MalilionUIOptions?]> = {
       app.component(name, component)
     }
     app.directive('paw-stamp', vPawStamp)
+    app.directive('loading', vLoading)
   },
 }
 
@@ -346,6 +348,8 @@ export { encodeQr } from './qrcode'
 export type { QrLevel, QrMatrix } from './qrcode'
 export type { MlToastItem } from './toast'
 export { vPawStamp, pawStamp, pawBurst } from './pawStamp'
+export { vLoading } from './loading'
+export type { MlLoadingOptions } from './loading'
 export type { PawBurstOptions } from './pawStamp'
 export { lionAvatarUrl, lionFullUrl, mascotImages } from './mascot'
 export * from './types'
@@ -461,5 +465,6 @@ declare module 'vue' {
   }
   export interface GlobalDirectives {
     vPawStamp: typeof vPawStamp
+    vLoading: typeof vLoading
   }
 }

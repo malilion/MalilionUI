@@ -17,7 +17,7 @@ const page = ref(3)
         <MlDatePicker v-model="date" clearable />
         <MlCombobox :options="[{ value: 1, label: 'Simba' }, { value: 2, label: 'Nala' }]" :model-value="null" />
         <MlTagInput v-model="tags" :max="3" />
-        <MlPagination v-model="page" :total="120" />
+        <MlPagination v-model:page="page" :total="12" />
       </div>
       <MlEmpty size="sm" />
     </MlConfigProvider>
