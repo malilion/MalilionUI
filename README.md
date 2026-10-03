@@ -235,6 +235,43 @@ The full list for every component lives on the [docs site](https://malilion.gith
 import type { MlButtonVariant, MlTableColumn, MlToastOptions, MlPawTone } from '@malilion/ui'
 ```
 
+## On-demand Loading
+
+Only ship the components you use. With [unplugin-vue-components](https://github.com/unplugin/unplugin-vue-components), each component a template uses is imported together with just its own styles — no `app.use`, no full `style.css`:
+
+```ts
+// vite.config.ts
+import vue from '@vitejs/plugin-vue'
+import Components from 'unplugin-vue-components/vite'
+import { MalilionResolver } from '@malilion/ui/resolver'
+
+export default defineConfig({
+  plugins: [vue(), Components({ resolvers: [MalilionResolver()] })],
+})
+```
+
+Without auto-import, import each component's style entry once (fonts, tokens and the styles of components it uses inside come along; shared files load once):
+
+```ts
+import '@malilion/ui/on-demand/MlButton'
+import '@malilion/ui/on-demand/MlCombobox'
+import { MlButton, MlCombobox } from '@malilion/ui'
+```
+
+A page using only a card, a button and a badge ships about 32 KB of CSS (the full stylesheet is 196 KB).
+
+## Nuxt
+
+```ts
+// nuxt.config.ts
+export default defineNuxtConfig({
+  modules: ['@malilion/ui/nuxt'],
+  malilion: { locale: 'en' }, // optional: css: 'on-demand' | 'full' | false, prefix
+})
+```
+
+The module auto-imports every component plus `useToast` / `useConfirm`, registers `v-paw-stamp` and `v-loading`, and by default loads only the styles of the components each page uses. Every component passes server-side rendering and hydration tests.
+
 ## Using the CSS Directly
 
 Not on Vue? Import the stylesheet and write the classes — the templates in `src/components/*.vue` show the markup.
