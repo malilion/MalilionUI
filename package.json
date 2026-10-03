@@ -39,12 +39,14 @@
     "./style.css": "./dist/style.css",
     "./css/*": "./src/styles/*",
     "./package.json": "./package.json",
-    "./assets/*": "./src/assets/*"
+    "./assets/*": "./src/assets/*",
+    "./fonts/*": "./src/fonts/*"
   },
   "files": [
     "dist",
     "src/styles",
-    "src/assets"
+    "src/assets",
+    "src/fonts"
   ],
   "scripts": {
     "dev": "vite --config playground/vite.config.ts",
