@@ -4,6 +4,9 @@ import MlButton from './MlButton.vue'
 import MlIcon from './MlIcon.vue'
 import MlModal from './MlModal.vue'
 import { dialogState, settleDialog, type MlDialogRequest } from '../dialog'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 dialogState.hosts++
 onBeforeUnmount(() => dialogState.hosts--)
@@ -88,10 +91,10 @@ const icon = computed(() => (shown.value?.danger ? 'warning' : shown.value?.kind
     </div>
     <template #footer>
       <MlButton v-if="shown?.kind !== 'alert'" variant="ghost" @click="answer(cancelValue())">
-        {{ shown?.cancelText ?? '取消' }}
+        {{ shown?.cancelText ?? loc.common.cancel }}
       </MlButton>
       <MlButton :variant="shown?.danger ? 'danger' : 'primary'" stamp @click="answer(confirmValue())">
-        {{ shown?.confirmText ?? (shown?.kind === 'alert' ? '知道了' : '確定') }}
+        {{ shown?.confirmText ?? (shown?.kind === 'alert' ? loc.dialog.ok : loc.common.confirm) }}
       </MlButton>
     </template>
   </MlModal>

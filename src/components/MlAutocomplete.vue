@@ -5,6 +5,9 @@ import MlIcon from './MlIcon.vue'
 import { describedBy, useOutsidePointer, useSplitAttrs } from '../composables'
 import { useFormField } from '../form'
 import type { MlAutocompleteItem, MlSize } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 interface Suggestion {
   value: string
@@ -39,7 +42,7 @@ const props = withDefaults(
     /** Shown when a fetch returns nothing. Empty string hides the row. */
     noMatchText?: string
   }>(),
-  { suggestions: () => [], debounce: 200, minChars: 1, limit: 8, size: 'md', noMatchText: '沒有建議' },
+  { suggestions: () => [], debounce: 200, minChars: 1, limit: 8, size: 'md' },
 )
 
 const emit = defineEmits<{ select: [item: Suggestion] }>()
@@ -73,7 +76,7 @@ const items = computed<Suggestion[]>(() => {
 
 const enoughChars = computed(() => model.value.trim().length >= props.minChars)
 const showEmpty = computed(
-  () => !!props.fetchSuggestions && !!props.noMatchText && !loading.value && fetched.value !== null && !items.value.length,
+  () => !!props.fetchSuggestions && props.noMatchText !== '' && !loading.value && fetched.value !== null && !items.value.length,
 )
 const expanded = computed(() => open.value && enoughChars.value && (items.value.length > 0 || loading.value || showEmpty.value))
 
@@ -238,7 +241,7 @@ onBeforeUnmount(() => clearTimeout(timer))
           type="button"
           class="ml-combobox__clear ml-autocomplete__clear"
           tabindex="-1"
-          aria-label="清除"
+          :aria-label="loc.common.clear"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -277,9 +280,9 @@ onBeforeUnmount(() => clearTimeout(timer))
             <span v-if="item.hint" class="ml-dropdown__hint">{{ item.hint }}</span>
           </li>
           <li v-if="loading && !items.length" class="ml-combobox__empty" role="presentation">
-            <span class="ml-autocomplete__spinner" aria-hidden="true" />搜尋中…
+            <span class="ml-autocomplete__spinner" aria-hidden="true" />{{ loc.autocomplete.searching }}
           </li>
-          <li v-else-if="showEmpty" class="ml-combobox__empty" role="presentation">{{ noMatchText }}</li>
+          <li v-else-if="showEmpty" class="ml-combobox__empty" role="presentation">{{ noMatchText ?? loc.autocomplete.empty }}</li>
         </ul>
       </Transition>
     </div>

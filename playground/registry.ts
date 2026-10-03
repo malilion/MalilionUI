@@ -104,6 +104,46 @@ export const pages: PageDef[] = [
       },
     ],
   },
+  {
+    id: 'config-provider',
+    title: 'ConfigProvider',
+    zh: '多語系',
+    group: 'start',
+    isNew: true,
+    desc: '所有元件內建的文字（提示、按鈕、無障礙說明、表單驗證訊息、日期格式）都可以換語言。內建繁體中文與英文，也可以自訂。',
+    usage: `import { MlConfigProvider, en, zhTW } from '@malilion/ui'`,
+    setup: {
+      title: '整個 App 改成英文',
+      filename: 'main.ts',
+      lang: 'ts',
+      code: `import MalilionUI, { en } from '@malilion/ui'
+
+createApp(App).use(MalilionUI, { locale: en }).mount('#app')`,
+    },
+    examples: [
+      { file: 'config-provider/basic', title: '局部切換', desc: '包在 MlConfigProvider 裡的元件會跟著換；切換是即時的。', block: true },
+      { file: 'config-provider/custom', title: '自訂文案', desc: '從內建語系展開，只覆寫想改的字。', block: true },
+    ],
+    api: [
+      {
+        component: 'MlConfigProvider',
+        props: [
+          { name: 'locale', desc: '這個範圍內的語系；不給就沿用外層或全域設定', type: 'MlLocale' },
+          { name: 'theme', desc: '只讓這個範圍換主題（會包一層 data-ml-theme）', type: `'dark' | 'light'` },
+          { name: 'tag', desc: '設定 theme 時外層的標籤', type: 'string', default: `'div'` },
+        ],
+      },
+      {
+        component: '函式',
+        events: [
+          { name: 'app.use(MalilionUI, { locale })', desc: '設定全域語系', type: 'MalilionUIOptions' },
+          { name: 'setLocale(locale)', desc: '執行中切換全域語系', type: '(locale: MlLocale) => void' },
+          { name: 'useLocale()', desc: '在自己的元件裡讀目前語系', type: '() => ComputedRef<MlLocale>' },
+          { name: 'zhTW / en', desc: '內建語系', type: 'MlLocale' },
+        ],
+      },
+    ],
+  },
 
   /* ── 基礎 ─────────────────────────────────────────────── */
   {

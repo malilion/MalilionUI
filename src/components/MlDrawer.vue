@@ -2,6 +2,9 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import MlIcon from './MlIcon.vue'
 import { trapFocus, useScrollLock } from '../composables'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -83,7 +86,7 @@ onBeforeUnmount(scrollLock.unlock)
                 <slot name="title">{{ title }}</slot>
               </h2>
             </div>
-            <button v-if="!hideClose" type="button" class="ml-drawer__close" aria-label="關閉" @click="close">
+            <button v-if="!hideClose" type="button" class="ml-drawer__close" :aria-label="loc.common.close" @click="close">
               <MlIcon name="close" />
             </button>
           </header>

@@ -2,6 +2,9 @@
 import { computed, ref, useId } from 'vue'
 import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -14,7 +17,7 @@ const props = withDefaults(
     title?: string
     hint?: string
   }>(),
-  { title: '把檔案拖到這裡', multiple: true },
+  { multiple: true },
 )
 
 const emit = defineEmits<{ reject: [file: File, reason: 'type' | 'size'] }>()
@@ -107,8 +110,8 @@ function formatSize(bytes: number) {
       @drop.prevent="onDrop"
     >
       <MlIcon name="upload" class="ml-upload__icon" />
-      <span class="ml-upload__title">{{ title }}</span>
-      <span class="ml-upload__sub">或<u>點擊選擇檔案</u></span>
+      <span class="ml-upload__title">{{ title ?? loc.upload.title }}</span>
+      <span class="ml-upload__sub">{{ loc.upload.or }}<u>{{ loc.upload.browse }}</u></span>
       <span v-if="hint" class="ml-upload__hint">{{ hint }}</span>
     </label>
     <input
@@ -125,7 +128,7 @@ function formatSize(bytes: number) {
         <MlPaw tone="current" class="ml-upload__paw" />
         <span class="ml-upload__name">{{ file.name }}</span>
         <span class="ml-upload__size">{{ formatSize(file.size) }}</span>
-        <button type="button" class="ml-upload__remove" :aria-label="`移除 ${file.name}`" @click="remove(i)">
+        <button type="button" class="ml-upload__remove" :aria-label="loc.common.remove(file.name)" @click="remove(i)">
           <MlIcon name="close" />
         </button>
       </li>

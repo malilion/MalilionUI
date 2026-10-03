@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import MlPaw from './MlPaw.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 withDefaults(
   defineProps<{
@@ -12,7 +15,7 @@ withDefaults(
     /** Screen-reader text when there is no visible label. */
     srLabel?: string
   }>(),
-  { size: 48, variant: 'reactor', tone: 'gold', srLabel: '載入中' },
+  { size: 48, variant: 'reactor', tone: 'gold' },
 )
 
 // Twelve mane spikes; opacity ramps so the ticking rotation reads as a sweep.
@@ -55,6 +58,6 @@ const spikes = Array.from({ length: 12 }, (_, i) => ({
       </g>
     </svg>
     <span v-if="label" class="ml-loader__label">{{ label }}</span>
-    <span v-else class="ml-visually-hidden">{{ srLabel }}</span>
+    <span v-else class="ml-visually-hidden">{{ srLabel ?? loc.common.loading }}</span>
   </span>
 </template>

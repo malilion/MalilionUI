@@ -5,6 +5,9 @@ import MlCheckbox from './MlCheckbox.vue'
 import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
 import type { MlTransferItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Key = string | number
 type Side = 'left' | 'right'
@@ -21,8 +24,11 @@ const props = withDefaults(
     buttonTexts?: [string, string]
     emptyText?: string
   }>(),
-  { titles: () => ['可選', '已選'], filterPlaceholder: '搜尋…', emptyText: '沒有項目' },
+  {},
 )
+
+/** Column titles: the prop, else the locale's. */
+const heads = computed(() => props.titles ?? loc.value.transfer.titles)
 
 const emit = defineEmits<{ change: [keys: Key[], direction: Side, moved: Key[]] }>()
 /** Keys of the items in the right-hand list. */
@@ -91,10 +97,10 @@ const sides: Side[] = ['left', 'right']
             :model-value="allState(side) === true"
             :indeterminate="allState(side) === 'mixed'"
             :disabled="!visible(side).some((d) => !d.disabled)"
-            :aria-label="`全選${titles[s]}`"
+            :aria-label="loc.transfer.selectAll(heads[s])"
             @update:model-value="toggleAll(side)"
           />
-          <span :id="`${id}-${side}-title`" class="ml-transfer__title">{{ titles[s] }}</span>
+          <span :id="`${id}-${side}-title`" class="ml-transfer__title">{{ heads[s] }}</span>
           <span class="ml-transfer__count">
             {{ checked[side].length ? `${checked[side].length} / ` : '' }}{{ items[side].length }}
           </span>
@@ -104,11 +110,11 @@ const sides: Side[] = ['left', 'right']
           <input
             v-model="query[side]"
             type="search"
-            :placeholder="filterPlaceholder"
-            :aria-label="`搜尋${titles[s]}`"
+            :placeholder="filterPlaceholder ?? loc.transfer.filter"
+            :aria-label="loc.transfer.searchIn(heads[s])"
           />
         </div>
-        <TransitionGroup tag="ul" name="ml-transfer-item" class="ml-transfer__list" :aria-label="titles[s]">
+        <TransitionGroup tag="ul" name="ml-transfer-item" class="ml-transfer__list" :aria-label="heads[s]">
           <li v-for="item in visible(side)" :key="item.key" class="ml-transfer__item">
             <MlCheckbox
               :model-value="isChecked(side, item.key)"
@@ -121,14 +127,14 @@ const sides: Side[] = ['left', 'right']
           </li>
         </TransitionGroup>
         <p v-if="!visible(side).length" class="ml-transfer__empty">
-          <MlPaw tone="steel" />{{ query[side] ? '沒有符合的項目' : emptyText }}
+          <MlPaw tone="steel" />{{ query[side] ? loc.transfer.noMatch : emptyText ?? loc.transfer.empty }}
         </p>
       </section>
       <div v-if="s === 0" class="ml-transfer__actions">
         <MlButton
           size="sm"
           :square="!buttonTexts"
-          :aria-label="buttonTexts ? undefined : `移到${titles[1]}`"
+          :aria-label="buttonTexts ? undefined : loc.transfer.moveTo(heads[1])"
           :disabled="!checked.left.length"
           @click="move('right')"
         >
@@ -139,7 +145,7 @@ const sides: Side[] = ['left', 'right']
           size="sm"
           variant="outline"
           :square="!buttonTexts"
-          :aria-label="buttonTexts ? undefined : `移回${titles[0]}`"
+          :aria-label="buttonTexts ? undefined : loc.transfer.moveBack(heads[0])"
           :disabled="!checked.right.length"
           @click="move('left')"
         >

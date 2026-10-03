@@ -7,6 +7,9 @@ import MlTimeColumns from './MlTimeColumns.vue'
 import { formatTime, parseTime, toSeconds, type TimeParts } from './time'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -29,7 +32,7 @@ const props = withDefaults(
     placement?: 'bottom-start' | 'bottom-end'
     id?: string
   }>(),
-  { placeholder: '選擇時間', minuteStep: 1, secondStep: 1, placement: 'bottom-start' },
+  { minuteStep: 1, secondStep: 1, placement: 'bottom-start' },
 )
 
 /** "HH:mm" (or "HH:mm:ss" with `seconds`); null when empty. */
@@ -116,13 +119,13 @@ useOutsidePointer(root, () => open.value, () => hide(false))
           @click="open ? hide() : show()"
         >
           <span v-if="model">{{ model }}</span>
-          <span v-else class="ml-datepicker__placeholder">{{ placeholder }}</span>
+          <span v-else class="ml-datepicker__placeholder">{{ placeholder ?? loc.date.pickTime }}</span>
         </button>
         <button
           v-if="clearable && model && !disabled"
           type="button"
           class="ml-datepicker__clear"
-          aria-label="清除時間"
+          :aria-label="loc.date.clearTime"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -133,7 +136,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
           v-if="open"
           :id="panelId"
           role="dialog"
-          aria-label="選擇時間"
+          :aria-label="loc.date.pickTime"
           :class="['ml-datepicker__panel', `ml-datepicker__panel--${placement}`, 'ml-timepicker__panel']"
           @keydown="onPanelKeydown"
         >
@@ -148,8 +151,8 @@ useOutsidePointer(root, () => open.value, () => hide(false))
             @change="set"
           />
           <div class="ml-timepicker__footer">
-            <MlButton size="sm" variant="ghost" @click="now">現在</MlButton>
-            <MlButton size="sm" @click="hide()">確定</MlButton>
+            <MlButton size="sm" variant="ghost" @click="now">{{ loc.common.now }}</MlButton>
+            <MlButton size="sm" @click="hide()">{{ loc.common.confirm }}</MlButton>
           </div>
         </div>
       </Transition>

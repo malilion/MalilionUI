@@ -2,6 +2,9 @@
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { prefersReducedMotion } from '../composables'
 import type { MlAnchorItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -16,7 +19,7 @@ const props = withDefaults(
     /** Accessible name for the navigation landmark. */
     label?: string
   }>(),
-  { offset: 0, updateHash: true, label: '本頁目錄' },
+  { offset: 0, updateHash: true },
 )
 
 const emit = defineEmits<{ change: [id: string] }>()
@@ -123,7 +126,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <nav class="ml-anchor" :aria-label="label">
+  <nav class="ml-anchor" :aria-label="label ?? loc.nav.anchor">
     <p v-if="title" class="ml-anchor__title">{{ title }}</p>
     <div ref="list" class="ml-anchor__list">
       <span

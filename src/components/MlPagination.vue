@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import MlIcon from './MlIcon.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -10,7 +13,7 @@ const props = withDefaults(
     siblings?: number
     label?: string
   }>(),
-  { siblings: 1, label: '分頁' },
+  { siblings: 1 },
 )
 
 const page = defineModel<number>('page', { default: 1 })
@@ -39,11 +42,11 @@ function go(n: number) {
 </script>
 
 <template>
-  <nav class="ml-pagination" :aria-label="label">
+  <nav class="ml-pagination" :aria-label="label ?? loc.nav.pagination">
     <button
       type="button"
       class="ml-pagination__btn ml-pagination__btn--nav"
-      aria-label="上一頁"
+      :aria-label="loc.nav.prevPage"
       :disabled="page <= 1"
       @click="go(page - 1)"
     >
@@ -56,7 +59,7 @@ function go(n: number) {
         type="button"
         class="ml-pagination__btn"
         :aria-current="slot === page ? 'page' : undefined"
-        :aria-label="`第 ${slot} 頁`"
+        :aria-label="loc.nav.page(slot as number)"
         @click="go(slot)"
       >
         {{ slot }}
@@ -65,7 +68,7 @@ function go(n: number) {
     <button
       type="button"
       class="ml-pagination__btn ml-pagination__btn--nav"
-      aria-label="下一頁"
+      :aria-label="loc.nav.nextPage"
       :disabled="page >= total"
       @click="go(page + 1)"
     >

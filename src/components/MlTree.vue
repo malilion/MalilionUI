@@ -3,6 +3,9 @@ import { computed, nextTick, ref } from 'vue'
 import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
 import type { MlTreeNode } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Key = string | number
 
@@ -30,7 +33,7 @@ const props = withDefaults(
     /** Text when nothing matches the filter. */
     emptyText?: string
   }>(),
-  { selectable: true, emptyText: '沒有符合的節點' },
+  { selectable: true },
 )
 
 const emit = defineEmits<{ select: [node: MlTreeNode]; check: [node: MlTreeNode, checked: boolean] }>()
@@ -309,6 +312,6 @@ defineExpose({ expandAll, collapseAll })
         </span>
       </li>
     </ul>
-    <p v-if="!rows.length && query" class="ml-tree__empty">{{ emptyText }}</p>
+    <p v-if="!rows.length && query" class="ml-tree__empty">{{ emptyText ?? loc.tree.empty }}</p>
   </div>
 </template>

@@ -2,6 +2,9 @@
 import { computed, ref, useId } from 'vue'
 import { mascotImages } from '../mascot'
 import { encodeQr, type QrLevel } from '../qrcode'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -158,7 +161,7 @@ defineExpose({ toSVG, toDataURL })
       :width="size"
       :height="size"
       role="img"
-      :aria-label="title ?? `QR Code：${value}`"
+      :aria-label="title ?? loc.qrcode.label(value)"
       shape-rendering="geometricPrecision"
     >
       <rect :width="total" :height="total" :fill="background" rx="1" />
@@ -209,7 +212,7 @@ defineExpose({ toSVG, toDataURL })
         </template>
       </g>
     </svg>
-    <p v-else class="ml-qr__error" role="alert">內容太長，無法產生 QR Code</p>
+    <p v-else class="ml-qr__error" role="alert">{{ loc.qrcode.tooLong }}</p>
     <figcaption v-if="$slots.default" class="ml-qr__caption"><slot /></figcaption>
   </figure>
 </template>

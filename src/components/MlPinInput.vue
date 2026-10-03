@@ -4,6 +4,9 @@ import MlField from './MlField.vue'
 import { describedBy } from '../composables'
 import { useFormField } from '../form'
 import type { MlSize } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -157,7 +160,7 @@ defineExpose({ focus: () => focusBox(code.value.length), reset })
           :autocomplete="i === 0 ? 'one-time-code' : 'off'"
           :value="c"
           :disabled="disabled"
-          :aria-label="`第 ${i + 1} 碼，共 ${length} 碼`"
+          :aria-label="loc.pin.digit(i + 1, length)"
           :aria-invalid="fieldError ? true : undefined"
           :maxlength="i === 0 ? undefined : 1"
           @input="onInput($event, i)"

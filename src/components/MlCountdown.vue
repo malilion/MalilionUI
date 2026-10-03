@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, ref, watch } from 'vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -17,13 +20,12 @@ const props = withDefaults(
     /** Accessible name, read before the remaining time. */
     label?: string
   }>(),
-  { units: () => ['days', 'hours', 'minutes', 'seconds'], variant: 'tiles', label: '剩餘時間' },
+  { units: () => ['days', 'hours', 'minutes', 'seconds'], variant: 'tiles' },
 )
 
 const emit = defineEmits<{ finish: [] }>()
 
 const UNIT_MS = { days: 86_400_000, hours: 3_600_000, minutes: 60_000, seconds: 1000 } as const
-const defaultLabels = { days: '天', hours: '時', minutes: '分', seconds: '秒' }
 
 const now = ref(Date.now())
 let deadline = 0
@@ -90,7 +92,7 @@ watch(
 onBeforeUnmount(() => clearTimeout(timer))
 
 const spoken = computed(() =>
-  parts.value.map((p) => `${p.value} ${props.labels?.[p.unit] ?? defaultLabels[p.unit]}`).join(' '),
+  parts.value.map((p) => `${p.value} ${props.labels?.[p.unit] ?? loc.value.countdown[p.unit]}`).join(' '),
 )
 
 /** Restart from `duration` (or re-read `to`). */
@@ -106,7 +108,7 @@ defineExpose({ reset })
   <span
     :class="['ml-countdown', `ml-countdown--${variant}`, { 'ml-countdown--done': remaining <= 0 }]"
     role="timer"
-    :aria-label="`${label}：${spoken}`"
+    :aria-label="`${label ?? loc.countdown.label}：${spoken}`"
   >
     <slot :remaining="remaining" :parts="parts">
       <template v-for="(p, i) in parts" :key="p.unit">
@@ -117,7 +119,7 @@ defineExpose({ reset })
               <span :key="p.text" class="ml-countdown__digits">{{ p.text }}</span>
             </Transition>
           </span>
-          <span v-if="variant === 'tiles'" class="ml-countdown__label">{{ labels?.[p.unit] ?? defaultLabels[p.unit] }}</span>
+          <span v-if="variant === 'tiles'" class="ml-countdown__label">{{ labels?.[p.unit] ?? loc.countdown[p.unit] }}</span>
         </span>
       </template>
     </slot>

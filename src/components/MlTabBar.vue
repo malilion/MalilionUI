@@ -3,6 +3,9 @@ import { computed } from 'vue'
 import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
 import type { MlTabBarItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = defineProps<{
   items: MlTabBarItem[]
@@ -20,7 +23,7 @@ const right = computed(() => (props.actionLabel ? props.items.slice(half.value) 
 </script>
 
 <template>
-  <nav class="ml-tabbar" :aria-label="label ?? '主要導覽'">
+  <nav class="ml-tabbar" :aria-label="label ?? loc.nav.tabBar">
     <template v-for="group in [left, right]" :key="group === left ? 'l' : 'r'">
       <button
         v-for="item in group"

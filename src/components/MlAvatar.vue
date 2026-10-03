@@ -2,6 +2,9 @@
 import { computed, ref, watch } from 'vue'
 import { mascotImages } from '../mascot'
 import type { MlAvatarSize, MlAvatarStatus } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -19,7 +22,7 @@ const props = withDefaults(
 
 const failed = ref(false)
 const picture = computed(() => props.src ?? (props.lion ? mascotImages.avatar : undefined))
-const altText = computed(() => props.name ?? (props.lion ? '碼力獅' : ''))
+const altText = computed(() => props.name ?? (props.lion ? loc.value.mascot : ''))
 watch(picture, () => (failed.value = false))
 
 const CJK = /[\u3400-\u9fff\uf900-\ufaff]/
@@ -41,12 +44,7 @@ const initials = computed(() => {
     .join('')
 })
 
-const statusLabel: Record<MlAvatarStatus, string> = {
-  online: '在線',
-  busy: '忙碌',
-  away: '離開',
-  offline: '離線',
-}
+const statusLabel = computed<Record<MlAvatarStatus, string>>(() => loc.value.status)
 </script>
 
 <template>

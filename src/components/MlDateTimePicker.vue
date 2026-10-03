@@ -9,6 +9,9 @@ import { startOfDay } from './dates'
 import type { TimeParts } from './time'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -35,9 +38,7 @@ const props = withDefaults(
     id?: string
   }>(),
   {
-    placeholder: '選擇日期與時間',
     minuteStep: 1,
-    locale: 'zh-TW',
     weekStartsOn: 0,
     placement: 'bottom-start',
   },
@@ -60,7 +61,7 @@ const display = computed(() => {
     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
     second: props.seconds ? '2-digit' : undefined, hourCycle: 'h23',
   }
-  return new Intl.DateTimeFormat(props.locale, format).format(model.value)
+  return new Intl.DateTimeFormat(props.locale ?? loc.value.name, format).format(model.value)
 })
 
 const parts = computed<TimeParts | null>(() =>
@@ -154,13 +155,13 @@ useOutsidePointer(root, () => open.value, () => hide(false))
           @click="open ? hide() : show()"
         >
           <span v-if="display">{{ display }}</span>
-          <span v-else class="ml-datepicker__placeholder">{{ placeholder }}</span>
+          <span v-else class="ml-datepicker__placeholder">{{ placeholder ?? loc.date.pickDateTime }}</span>
         </button>
         <button
           v-if="clearable && model && !disabled"
           type="button"
           class="ml-datepicker__clear"
-          aria-label="清除日期時間"
+          :aria-label="loc.date.clearDateTime"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -171,7 +172,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
           v-if="open"
           :id="panelId"
           role="dialog"
-          aria-label="選擇日期與時間"
+          :aria-label="loc.date.pickDateTime"
           :class="['ml-datepicker__panel', `ml-datepicker__panel--${placement}`, 'ml-datetimepicker__panel']"
           @keydown="onPanelKeydown"
         >
@@ -188,7 +189,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
               @update:model-value="onPickDate"
             />
             <div class="ml-datetimepicker__time">
-              <p class="ml-datetimepicker__time-label">{{ parts ? '時間' : '先選日期或時間' }}</p>
+              <p class="ml-datetimepicker__time-label">{{ parts ? loc.date.time : loc.date.timeFirst }}</p>
               <MlTimeColumns
                 :value="parts"
                 :seconds="seconds"
@@ -200,8 +201,8 @@ useOutsidePointer(root, () => open.value, () => hide(false))
             </div>
           </div>
           <div class="ml-timepicker__footer">
-            <MlButton size="sm" variant="ghost" @click="now">現在</MlButton>
-            <MlButton size="sm" @click="hide()">確定</MlButton>
+            <MlButton size="sm" variant="ghost" @click="now">{{ loc.common.now }}</MlButton>
+            <MlButton size="sm" @click="hide()">{{ loc.common.confirm }}</MlButton>
           </div>
         </div>
       </Transition>

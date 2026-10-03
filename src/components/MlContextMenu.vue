@@ -2,6 +2,9 @@
 import { computed, nextTick, onBeforeUnmount, ref, useId } from 'vue'
 import MlIcon from './MlIcon.vue'
 import type { MlDropdownItem } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -10,7 +13,7 @@ const props = withDefaults(
     /** Accessible name for the menu. */
     label?: string
   }>(),
-  { label: '右鍵選單' },
+  {},
 )
 
 const emit = defineEmits<{ select: [item: MlDropdownItem]; open: [event: MouseEvent | KeyboardEvent] }>()
@@ -135,7 +138,7 @@ defineExpose({ open: show, close: () => close(false) })
         :id="menuId"
         ref="menu"
         role="menu"
-        :aria-label="label"
+        :aria-label="label ?? loc.contextMenu"
         class="ml-dropdown__menu ml-ctx__menu"
         :style="{ left: `${pos.x}px`, top: `${pos.y}px` }"
         @keydown="onMenuKeydown"

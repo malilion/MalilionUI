@@ -2,6 +2,7 @@
 import { computed, inject, onBeforeUnmount, provide, ref, useId, watch } from 'vue'
 import MlIcon from './MlIcon.vue'
 import { fieldKey, formKey, getPath, toRuleList, validateValue, type MlFormRule } from '../form'
+import { useLocale } from '../locale'
 
 const props = defineProps<{
   /** Path of this field's value in the form model, e.g. "email" or "address.city". */
@@ -11,6 +12,7 @@ const props = defineProps<{
 }>()
 
 const form = inject(formKey, null)
+const locale = useLocale()
 
 const root = ref<HTMLElement>()
 const error = ref<string>()
@@ -25,7 +27,7 @@ const value = computed(() => (form ? getPath(form.model(), props.prop) : undefin
 let run = 0
 async function validate() {
   const id = ++run
-  const message = await validateValue(value.value, allRules.value, form?.model() ?? {})
+  const message = await validateValue(value.value, allRules.value, form?.model() ?? {}, locale.value)
   // A slower async check must not overwrite a newer result.
   if (id === run) error.value = message
   return message

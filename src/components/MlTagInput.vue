@@ -5,6 +5,9 @@ import MlIcon from './MlIcon.vue'
 import { describedBy, useSplitAttrs } from '../composables'
 import { useFormField } from '../form'
 import type { MlSize } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 defineOptions({ inheritAttrs: false })
 
@@ -32,7 +35,7 @@ const props = withDefaults(
     /** Renders hidden inputs so the tags are posted with a native <form>. */
     name?: string
   }>(),
-  { size: 'md', placeholder: '輸入後按 Enter', separators: () => [','] },
+  { size: 'md', separators: () => [','] },
 )
 
 const emit = defineEmits<{ add: [tag: string]; remove: [tag: string]; reject: [tag: string, reason: string] }>()
@@ -64,11 +67,11 @@ function add(...raws: string[]) {
     const tag = raw.trim()
     if (!tag) continue
     let why = ''
-    if (props.max !== undefined && next.length >= props.max) why = `最多 ${props.max} 個`
-    else if (!props.allowDuplicates && next.includes(tag)) why = `「${tag}」已經有了`
+    if (props.max !== undefined && next.length >= props.max) why = loc.value.tagInput.max(props.max)
+    else if (!props.allowDuplicates && next.includes(tag)) why = loc.value.tagInput.duplicate(tag)
     else {
       const result = props.validate?.(tag) ?? true
-      if (result !== true) why = typeof result === 'string' ? result : `「${tag}」格式不符`
+      if (result !== true) why = typeof result === 'string' ? result : loc.value.tagInput.invalid(tag)
     }
     lastOk = !why
     if (why) {
@@ -153,7 +156,7 @@ function onInput(event: Event) {
       @click="input?.focus()"
     >
       <span v-if="$slots.prefix" class="ml-input__affix"><slot name="prefix" /></span>
-      <ul class="ml-taginput__list" :aria-label="label ? `${label}：已加入` : '已加入的標籤'">
+      <ul class="ml-taginput__list" :aria-label="loc.tagInput.added(label)">
         <li
           v-for="(tag, i) in model"
           :key="`${tag}-${i}`"
@@ -164,7 +167,7 @@ function onInput(event: Event) {
             v-if="!disabled"
             type="button"
             class="ml-combobox__tag-remove"
-            :aria-label="`移除 ${tag}`"
+            :aria-label="loc.common.remove(tag)"
             @click.stop="remove(i)"
           >
             <MlIcon name="close" />
@@ -181,7 +184,7 @@ function onInput(event: Event) {
             autocomplete="off"
             enterkeyhint="enter"
             :value="draft"
-            :placeholder="model.length ? '' : placeholder"
+            :placeholder="model.length ? '' : placeholder ?? loc.tagInput.placeholder"
             :disabled="disabled"
             :aria-invalid="shownError ? true : undefined"
             :aria-describedby="describedBy(controlId, hint, shownError)"
@@ -196,7 +199,7 @@ function onInput(event: Event) {
         v-if="clearable && model.length && !disabled"
         type="button"
         class="ml-datepicker__clear"
-        aria-label="清除全部"
+        :aria-label="loc.tagInput.clearAll"
         @click.stop="clear"
       >
         <MlIcon name="close" />

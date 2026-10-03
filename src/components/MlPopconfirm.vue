@@ -4,6 +4,9 @@ import MlButton from './MlButton.vue'
 import MlIcon from './MlIcon.vue'
 import MlPopover from './MlPopover.vue'
 import type { MlPlacement } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -16,7 +19,7 @@ const props = withDefaults(
     placement?: MlPlacement
     disabled?: boolean
   }>(),
-  { tone: 'warning', confirmText: '確定', cancelText: '取消', placement: 'top' },
+  { tone: 'warning', placement: 'top' },
 )
 
 const emit = defineEmits<{ confirm: []; cancel: [] }>()
@@ -65,9 +68,9 @@ function cancel() {
         <slot name="description">{{ description }}</slot>
       </p>
       <div class="ml-popconfirm__actions">
-        <MlButton ref="cancelBtn" size="sm" variant="ghost" @click="cancel">{{ cancelText }}</MlButton>
+        <MlButton ref="cancelBtn" size="sm" variant="ghost" @click="cancel">{{ cancelText ?? loc.common.cancel }}</MlButton>
         <MlButton size="sm" :variant="tone === 'danger' ? 'danger' : 'primary'" @click="confirm">
-          {{ confirmText }}
+          {{ confirmText ?? loc.common.confirm }}
         </MlButton>
       </div>
     </template>

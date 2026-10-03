@@ -6,6 +6,9 @@ import MlPaw from './MlPaw.vue'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
 import type { MlCascaderOption, MlSize } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 type Value = string | number
 
@@ -28,13 +31,14 @@ const props = withDefaults(
     separator?: string
     id?: string
   }>(),
-  { placeholder: '請選擇', size: 'md', separator: ' / ' },
+  { size: 'md', separator: ' / ' },
 )
 
 const emit = defineEmits<{ change: [path: Value[], options: MlCascaderOption[]] }>()
 /** The chosen path of values, outermost first. */
 const model = defineModel<Value[]>({ default: () => [] })
 const { fieldError, fieldRequired } = useFormField(props)
+const ph = computed(() => props.placeholder ?? loc.value.cascader.placeholder)
 
 const autoId = useId()
 const controlId = computed(() => props.id ?? `ml-cascader-${autoId}`)
@@ -251,14 +255,14 @@ useOutsidePointer(root, () => open.value, () => hide(false))
               <span v-if="i" class="ml-cascader__sep">{{ separator.trim() || '/' }}</span>{{ o.label }}
             </template>
           </span>
-          <span v-else class="ml-combobox__placeholder">{{ placeholder }}</span>
+          <span v-else class="ml-combobox__placeholder">{{ ph }}</span>
         </div>
         <button
           v-if="clearable && model.length && !disabled"
           type="button"
           class="ml-combobox__clear"
           tabindex="-1"
-          aria-label="清除"
+          :aria-label="loc.common.clear"
           @click.stop="clear"
         >
           <MlIcon name="close" />
@@ -267,10 +271,10 @@ useOutsidePointer(root, () => open.value, () => hide(false))
       </div>
 
       <Transition name="ml-dropdown">
-        <div v-if="open" ref="panel" class="ml-cascader__panel" role="dialog" :aria-label="label ?? placeholder">
+        <div v-if="open" ref="panel" class="ml-cascader__panel" role="dialog" :aria-label="label ?? ph">
           <div v-if="searchable" class="ml-cascader__search">
             <MlIcon name="search" />
-            <input v-model="query" type="text" placeholder="搜尋…" autocomplete="off" @keydown="onSearchKeydown" />
+            <input v-model="query" type="text" :placeholder="loc.common.search" autocomplete="off" @keydown="onSearchKeydown" />
           </div>
           <ul v-if="query.trim()" class="ml-cascader__hits">
             <li v-for="(path, i) in matches" :key="i">
@@ -285,7 +289,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
               </button>
             </li>
             <li v-if="!matches.length" class="ml-combobox__empty">
-              <MlPaw tone="steel" class="ml-combobox__empty-paw" />找不到符合的選項
+              <MlPaw tone="steel" class="ml-combobox__empty-paw" />{{ loc.common.noMatch }}
             </li>
           </ul>
           <div v-else class="ml-cascader__cols">

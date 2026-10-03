@@ -3,6 +3,9 @@ import { onBeforeUnmount, onMounted, ref } from 'vue'
 import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
 import type { MlToastItem } from '../toast'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = defineProps<{ item: MlToastItem }>()
 const emit = defineEmits<{ close: [] }>()
@@ -63,7 +66,7 @@ onBeforeUnmount(() => clearTimeout(timer))
     <button v-if="item.action" type="button" class="ml-toast__action" @click="runAction">
       {{ item.action.label }}
     </button>
-    <button v-if="item.closable" type="button" class="ml-toast__close" aria-label="關閉通知" @click="emit('close')">
+    <button v-if="item.closable" type="button" class="ml-toast__close" :aria-label="loc.toast.close" @click="emit('close')">
       <MlIcon name="close" />
     </button>
     <span

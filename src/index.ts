@@ -20,6 +20,7 @@ import MlCheckbox from './components/MlCheckbox.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
 import MlCommandPalette from './components/MlCommandPalette.vue'
+import MlConfigProvider from './components/MlConfigProvider.vue'
 import MlContextMenu from './components/MlContextMenu.vue'
 import MlCountUp from './components/MlCountUp.vue'
 import MlCountdown from './components/MlCountdown.vue'
@@ -102,6 +103,7 @@ import MlUpload from './components/MlUpload.vue'
 import MlVirtualList from './components/MlVirtualList.vue'
 import MlWatermark from './components/MlWatermark.vue'
 import { vPawStamp } from './pawStamp'
+import { setLocale, type MlLocale } from './locale'
 
 const components = {
   MlAccordion,
@@ -124,6 +126,7 @@ const components = {
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
+  MlConfigProvider,
   MlContextMenu,
   MlCountUp,
   MlCountdown,
@@ -208,9 +211,18 @@ const components = {
 
 }
 
-/** `app.use(MalilionUI)` registers every component and the v-paw-stamp directive. */
-export const MalilionUI: Plugin = {
-  install(app: App) {
+export interface MalilionUIOptions {
+  /** App-wide UI language, e.g. `en`. Defaults to Traditional Chinese (`zhTW`). */
+  locale?: MlLocale
+}
+
+/**
+ * `app.use(MalilionUI)` registers every component and the v-paw-stamp directive.
+ * `app.use(MalilionUI, { locale: en })` also sets the UI language.
+ */
+export const MalilionUI: Plugin<[MalilionUIOptions?]> = {
+  install(app: App, options?: MalilionUIOptions) {
+    if (options?.locale) setLocale(options.locale)
     for (const [name, component] of Object.entries(components)) {
       app.component(name, component)
     }
@@ -241,6 +253,7 @@ export {
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
+  MlConfigProvider,
   MlContextMenu,
   MlCountUp,
   MlCountdown,
@@ -327,6 +340,8 @@ export {
 
 export { toast, useToast } from './toast'
 export { confirm, useConfirm } from './dialog'
+export { zhTW, en, setLocale, getLocale, useLocale } from './locale'
+export type { MlLocale } from './locale'
 export { encodeQr } from './qrcode'
 export type { QrLevel, QrMatrix } from './qrcode'
 export type { MlToastItem } from './toast'
@@ -360,6 +375,7 @@ declare module 'vue' {
     MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
     MlCommandPalette: typeof MlCommandPalette
+    MlConfigProvider: typeof MlConfigProvider
     MlContextMenu: typeof MlContextMenu
     MlCountUp: typeof MlCountUp
     MlCountdown: typeof MlCountdown

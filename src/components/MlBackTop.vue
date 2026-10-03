@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
 import MlIcon from './MlIcon.vue'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -13,7 +16,7 @@ const props = withDefaults(
     /** Accessible name. */
     label?: string
   }>(),
-  { visibilityHeight: 400, right: 32, bottom: 32, label: '回到頂端' },
+  { visibilityHeight: 400, right: 32, bottom: 32 },
 )
 
 const emit = defineEmits<{ click: [] }>()
@@ -76,7 +79,7 @@ onBeforeUnmount(() => {
       v-if="visible"
       type="button"
       class="ml-backtop"
-      :aria-label="label"
+      :aria-label="label ?? loc.nav.backTop"
       :style="{ right: `${right}px`, bottom: `${bottom}px` }"
       @click="toTop"
     >

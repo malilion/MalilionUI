@@ -5,6 +5,9 @@ import MlMascot from './MlMascot.vue'
 import MlPaw from './MlPaw.vue'
 import type { IconName } from './icons'
 import type { MlResultStatus } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -17,17 +20,10 @@ const props = withDefaults(
   { status: 'info' },
 )
 
-const presets: Record<MlResultStatus, { title: string; subtitle: string; icon?: IconName }> = {
-  success: { title: '完成了！', subtitle: '一切順利，獅群為你歡呼。', icon: 'success' },
-  info: { title: '提醒你一下', subtitle: '這裡有些資訊值得留意。', icon: 'info' },
-  warning: { title: '請再確認一次', subtitle: '有些地方看起來不太對勁。', icon: 'warning' },
-  error: { title: '出了點問題', subtitle: '動作沒有完成，請稍後再試。', icon: 'danger' },
-  '403': { title: '這裡是獅王的領地', subtitle: '你沒有權限進入這個頁面。' },
-  '404': { title: '找不到這個頁面', subtitle: '小獅子把它叼走了，或是它從來不存在。' },
-  '500': { title: '伺服器打了個盹', subtitle: '我們的工程獅正在搶修，請稍後再回來。' },
-}
+const icons: Partial<Record<MlResultStatus, IconName>> = { success: 'success', info: 'info', warning: 'warning', error: 'danger' }
 
-const preset = computed(() => presets[props.status])
+/** Default copy comes from the locale; the icon from the status. */
+const preset = computed(() => ({ ...loc.value.result[props.status], icon: icons[props.status] }))
 const isCode = computed(() => /^\d+$/.test(props.status))
 /** The digits of an error code, with every 0 drawn as a paw print. */
 const digits = computed(() => (isCode.value ? [...props.status] : []))

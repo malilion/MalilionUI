@@ -4,6 +4,9 @@ import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
 import { addDays, addMonths, dayKey, monthGrid, sameDay, startOfDay } from './dates'
 import type { MlDateRange } from '../types'
+import { useLocale } from '../locale'
+
+const loc = useLocale()
 
 const props = withDefaults(
   defineProps<{
@@ -18,7 +21,7 @@ const props = withDefaults(
     /** 0 = Sunday, 1 = Monday. */
     weekStartsOn?: 0 | 1
   }>(),
-  { mode: 'single', locale: 'zh-TW', weekStartsOn: 0 },
+  { mode: 'single', weekStartsOn: 0 },
 )
 
 const emit = defineEmits<{ 'month-change': [year: number, month: number] }>()
@@ -39,16 +42,18 @@ const titleId = `ml-calendar-${useId()}`
 const days = computed(() => monthGrid(view.value.year, view.value.month, props.weekStartsOn))
 const weeks = computed(() => Array.from({ length: 6 }, (_, w) => days.value.slice(w * 7, w * 7 + 7)))
 
-const isZh = computed(() => props.locale.toLowerCase().startsWith('zh'))
+/** Intl locale: the prop, else the active MlLocale. */
+const lang = computed(() => props.locale ?? loc.value.name)
+const isZh = computed(() => lang.value.toLowerCase().startsWith('zh'))
 const weekdays = computed(() => {
-  const fmt = new Intl.DateTimeFormat(props.locale, { weekday: isZh.value ? 'narrow' : 'short' })
+  const fmt = new Intl.DateTimeFormat(lang.value, { weekday: isZh.value ? 'narrow' : 'short' })
   // 2023-01-01 was a Sunday.
   return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2023, 0, 1 + ((i + props.weekStartsOn) % 7))))
 })
 const title = computed(() =>
-  new Intl.DateTimeFormat(props.locale, { year: 'numeric', month: 'long' }).format(new Date(view.value.year, view.value.month, 1)),
+  new Intl.DateTimeFormat(lang.value, { year: 'numeric', month: 'long' }).format(new Date(view.value.year, view.value.month, 1)),
 )
-const fullDate = (d: Date) => new Intl.DateTimeFormat(props.locale, { dateStyle: 'full' }).format(d)
+const fullDate = (d: Date) => new Intl.DateTimeFormat(lang.value, { dateStyle: 'full' }).format(d)
 
 const markerKeys = computed(() => new Set((props.markers ?? []).map(dayKey)))
 
@@ -149,11 +154,11 @@ defineExpose({ focus })
 <template>
   <div :class="['ml-calendar', `ml-calendar--${mode}`]">
     <div class="ml-calendar__head">
-      <button type="button" class="ml-calendar__nav" aria-label="上個月" @click="shiftMonth(-1)">
+      <button type="button" class="ml-calendar__nav" :aria-label="loc.calendar.prevMonth" @click="shiftMonth(-1)">
         <MlIcon name="chevronLeft" />
       </button>
       <span :id="titleId" class="ml-calendar__title" aria-live="polite">{{ title }}</span>
-      <button type="button" class="ml-calendar__nav" aria-label="下個月" @click="shiftMonth(1)">
+      <button type="button" class="ml-calendar__nav" :aria-label="loc.calendar.nextMonth" @click="shiftMonth(1)">
         <MlIcon name="chevronRight" />
       </button>
     </div>

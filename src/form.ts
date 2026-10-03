@@ -1,3 +1,4 @@
+import { getLocale, type MlLocale } from './locale'
 import { computed, inject, type ComputedRef, type InjectionKey, type Ref } from 'vue'
 
 export type MlValidatorResult = boolean | string | void | undefined | null
@@ -42,26 +43,20 @@ function sizeOf(value: unknown): { size: number; unit: 'chars' | 'items' | 'valu
   return null
 }
 
-const minMessages = {
-  chars: (n: number) => `至少需要 ${n} 個字元`,
-  items: (n: number) => `至少選擇 ${n} 項`,
-  value: (n: number) => `不能小於 ${n}`,
-}
-const maxMessages = {
-  chars: (n: number) => `最多 ${n} 個字元`,
-  items: (n: number) => `最多選擇 ${n} 項`,
-  value: (n: number) => `不能大於 ${n}`,
-}
-
 /** First failing rule's message, or undefined when the value passes. */
 export async function validateValue(
   value: unknown,
   rules: MlFormRule[],
   model: Record<string, unknown> = {},
+  /** Messages to use; defaults to the app-wide locale. */
+  locale: MlLocale = getLocale(),
 ): Promise<string | undefined> {
+  const t = locale.form
+  const minMessages = { chars: t.minChars, items: t.minItems, value: t.minValue }
+  const maxMessages = { chars: t.maxChars, items: t.maxItems, value: t.maxValue }
   for (const rule of rules) {
     const empty = isEmptyValue(value)
-    if (rule.required && empty) return rule.message ?? '此欄位為必填'
+    if (rule.required && empty) return rule.message ?? t.required
     // Optional fields that are empty skip every other check.
     if (empty && !rule.validator) continue
 
@@ -72,8 +67,7 @@ export async function validateValue(
         rule.type === 'number' ? typeof value === 'number' ? !Number.isNaN(value) : value !== '' && !Number.isNaN(Number(value)) :
         Number.isInteger(typeof value === 'number' ? value : Number(value))
       if (!ok) {
-        const fallback = { email: '請輸入有效的電子郵件', url: '請輸入有效的網址', number: '請輸入數字', integer: '請輸入整數' }
-        return rule.message ?? fallback[rule.type]
+        return rule.message ?? t[rule.type]
       }
     }
 
@@ -81,11 +75,11 @@ export async function validateValue(
     if (size && rule.min !== undefined && size.size < rule.min) return rule.message ?? minMessages[size.unit](rule.min)
     if (size && rule.max !== undefined && size.size > rule.max) return rule.message ?? maxMessages[size.unit](rule.max)
 
-    if (rule.pattern && !empty && !rule.pattern.test(String(value))) return rule.message ?? '格式不正確'
+    if (rule.pattern && !empty && !rule.pattern.test(String(value))) return rule.message ?? t.pattern
 
     if (rule.validator) {
       const result = await rule.validator(value, model)
-      if (result === false) return rule.message ?? '格式不正確'
+      if (result === false) return rule.message ?? t.pattern
       if (typeof result === 'string' && result) return result
     }
   }
