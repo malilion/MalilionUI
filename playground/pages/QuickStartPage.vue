@@ -35,6 +35,17 @@ export default defineConfig({
 })`,
   },
   {
+    title: 'Nuxt 專案',
+    desc: '加上模組就好：所有元件與 useToast / useConfirm 自動匯入，指令自動註冊，預設只載入每頁用到的元件樣式。全部元件都通過伺服器端渲染與水合測試。',
+    filename: 'nuxt.config.ts',
+    lang: 'ts',
+    code: `export default defineNuxtConfig({
+  modules: ['@malilion/ui/nuxt'],
+  // 選用：locale: 'en'、css: 'on-demand' | 'full' | false、prefix
+  malilion: { locale: 'zhTW' },
+})`,
+  },
+  {
     title: '手動按需引入樣式',
     desc: '不用自動匯入的話，每個元件各引入一次它的樣式入口。入口會一起帶上字體、色彩變數，以及它內部用到的子元件樣式；同一個樣式檔只會載入一次。',
     filename: 'main.ts',
@@ -74,7 +85,7 @@ import { MlButton, MlCombobox } from '@malilion/ui'`,
   },
   {
     title: '在 React / Next.js 使用',
-    desc: '@malilion/ui/react 提供 45 個 React 元件，HTML 結構與 Vue 版一致、共用同一份樣式；Next.js App Router 的 Server Component 可以直接使用。複雜互動元件（下拉選擇、日期、表格、選單等）目前只有 Vue 版。',
+    desc: '@malilion/ui/react 提供 45 個 React 元件，HTML 結構與 Vue 版一致、共用同一份樣式；Next.js App Router 的 Server Component 可以直接使用。左側「React 與 Next.js」頁面有即時示範。',
     filename: 'page.tsx',
     lang: 'tsx',
     code: `import '@malilion/ui/style.css'

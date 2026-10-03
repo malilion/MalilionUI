@@ -48,9 +48,9 @@ const componentCount = Object.keys(lib).filter((name) => /^Ml[A-Z]/.test(name)).
     </section>
 
     <div class="stats">
-      <MlStat label="Components" :value="componentCount" caption="Vue 3 · TypeScript" />
+      <MlStat label="Components" :value="componentCount" caption="Vue 3 · React · Nuxt" />
       <MlStat label="Themes" :value="2" caption="Night Pride / Daylight" />
-      <MlStat label="Runtime deps" :value="0" caption="Peer：Vue 3.5+" />
+      <MlStat label="Runtime deps" :value="0" caption="Peer：Vue 3.5+ 或 React 18+" />
       <MlStat label="Paw prints" value="∞" caption="可愛無上限" />
     </div>
 

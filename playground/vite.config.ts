@@ -8,9 +8,10 @@ export default defineConfig({
   base: './',
   plugins: [vue()],
   resolve: {
-    alias: {
-      '@malilion/ui': fileURLToPath(new URL('../src/index.ts', import.meta.url)),
-    },
+    alias: [
+      { find: /^@malilion\/ui\/react$/, replacement: fileURLToPath(new URL('../src/react/index.ts', import.meta.url)) },
+      { find: /^@malilion\/ui$/, replacement: fileURLToPath(new URL('../src/index.ts', import.meta.url)) },
+    ],
   },
   server: {
     host: '127.0.0.1',

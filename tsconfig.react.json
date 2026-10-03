@@ -6,11 +6,20 @@
     "types": [
       "vite/client",
       "node"
-    ]
+    ],
+    "paths": {
+      "@malilion/ui": [
+        "./src/index.ts"
+      ],
+      "@malilion/ui/react": [
+        "./src/react/index.ts"
+      ]
+    }
   },
   "include": [
     "src/react/**/*",
-    "tests/react/**/*"
+    "tests/react/**/*",
+    "playground/react/**/*"
   ],
   "exclude": []
 }

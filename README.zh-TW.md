@@ -46,7 +46,15 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 處處都有腳印：`MlPaw`、`v-paw-stamp` 蓋章指令、腳印勾選框、單選、載入器與進度條跑者
 - 符合品牌風格的視覺特效：數字滾動、HUD 解碼文字、金屬傾斜反光、流光邊框、聚光燈格線、捲動出場與腳印煙火，在 `prefers-reduced-motion` 下全部會收斂
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
-- 執行期零依賴，只需要 Vue 作為 peer dependency
+- 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
+- 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
+
+## 0.8 版新功能
+
+- **按需載入**：`@malilion/ui/resolver` 搭配 unplugin-vue-components，只打包用到的元件與樣式（只用卡片、按鈕、徽章的頁面，樣式從 196 KB 降到 32 KB）；也可以手動 `import '@malilion/ui/on-demand/MlButton'`
+- **Nuxt 模組**：`modules: ['@malilion/ui/nuxt']`，元件與組合函式自動匯入、指令自動註冊、每頁只載入用到的樣式
+- **SSR**：文件站全部範例都通過伺服器端渲染與水合測試
+- **React 版**：`@malilion/ui/react` 提供 45 個元件，HTML 結構與 Vue 版逐一比對一致，Next.js App Router 可直接使用
 
 ## 0.7 版新功能
 
