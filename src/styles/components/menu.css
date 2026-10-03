@@ -1,0 +1,330 @@
+/* Menu — sidebar / top-bar navigation with nested submenus */
+.ml-menu {
+  --_rail: 56px;
+
+  position: relative;
+  font-size: var(--ml-text-sm);
+}
+
+.ml-menu__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-menu--vertical .ml-menu__list--depth-0 {
+  display: grid;
+  gap: 2px;
+}
+
+.ml-menu__item {
+  position: relative;
+}
+
+.ml-menu__group + .ml-menu__group,
+.ml-menu__item + .ml-menu__group {
+  margin-top: 10px;
+}
+
+.ml-menu__group-title {
+  margin: 0;
+  padding: 10px 14px 6px;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-menu__link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px 0 calc(14px + var(--_depth, 0) * 18px);
+  border: 0;
+  background: none;
+  color: var(--ml-text-muted);
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  outline: none;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-menu__link:hover {
+  background: var(--ml-surface-2);
+  color: var(--ml-text);
+}
+
+.ml-menu__link:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ml-focus);
+  color: var(--ml-text);
+}
+
+.ml-menu__link[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.ml-menu__link[aria-disabled='true']:hover {
+  background: none;
+}
+
+/* The chosen page: a gold energy bar on the left and a warm wash */
+.ml-menu__link--active,
+.ml-menu__link--active:hover {
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent 85%);
+  color: var(--ml-accent-text);
+  font-weight: 600;
+}
+
+.ml-menu__link--active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 10px var(--ml-accent);
+  animation: ml-menu-bar 320ms var(--ml-ease-spring);
+}
+
+@keyframes ml-menu-bar {
+  from { scale: 1 0; }
+}
+
+/* Headers whose submenu holds the active page */
+.ml-menu__item--in-path > .ml-menu__link {
+  color: var(--ml-accent-text);
+}
+
+.ml-menu__icon {
+  width: 18px;
+  height: 18px;
+  flex: none;
+}
+
+.ml-menu__label {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ml-menu__badge {
+  min-width: 20px;
+  padding: 2px 6px;
+  border-radius: var(--ml-radius-full);
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.ml-menu__chevron {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  opacity: 0.7;
+  transition: rotate var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-menu__item--open > .ml-menu__link .ml-menu__chevron {
+  rotate: 180deg;
+}
+
+/* Inline submenu: grid-row trick animates to the content's own height */
+.ml-menu__sub {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-menu__item--open > .ml-menu__sub {
+  grid-template-rows: 1fr;
+}
+
+.ml-menu__sub-inner {
+  position: relative;
+  min-height: 0;
+  overflow: hidden;
+}
+
+/* A thin steel rail down the left of an open submenu */
+.ml-menu__sub-inner::before {
+  content: '';
+  position: absolute;
+  left: 22px;
+  top: 4px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-menu__sub .ml-menu__list {
+  display: grid;
+  gap: 2px;
+  padding: 2px 0;
+}
+
+.ml-menu__sub .ml-menu__link {
+  min-height: 36px;
+}
+
+/* ── Pop-up submenus (top bar, collapsed rail) ── */
+.ml-menu__popup {
+  --_cut: var(--ml-cut);
+
+  position: absolute;
+  z-index: var(--ml-z-tooltip);
+  isolation: isolate;
+  min-width: 200px;
+  padding: 6px;
+  filter: var(--ml-drop-2);
+}
+
+.ml-menu__popup::before,
+.ml-menu__popup::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-menu__popup::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+
+.ml-menu__popup::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+}
+
+.ml-menu__popup-title {
+  margin: 0;
+  padding: 6px 12px 8px;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-menu__popup .ml-menu__list {
+  display: grid;
+  gap: 2px;
+}
+
+.ml-menu__popup .ml-menu__link {
+  min-height: 36px;
+  padding-left: 12px;
+}
+
+.ml-menu__popup--root {
+  top: calc(100% + 6px);
+  left: 0;
+  transform-origin: top left;
+}
+
+.ml-menu__popup--side {
+  top: -6px;
+  left: calc(100% + 6px);
+  transform-origin: top left;
+}
+
+/* Bridges the gap so the pointer can travel into the pop-up without it closing */
+.ml-menu__popup > .ml-menu__list::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  z-index: -2;
+}
+
+.ml-menu__popup .ml-menu__chevron,
+.ml-menu__popup .ml-menu__item--open > .ml-menu__link .ml-menu__chevron {
+  rotate: -90deg;
+}
+
+/* ── Horizontal top bar ── */
+.ml-menu--horizontal .ml-menu__list--depth-0 {
+  display: flex;
+  align-items: stretch;
+  gap: 4px;
+}
+
+.ml-menu--horizontal .ml-menu__list--depth-0 > .ml-menu__item > .ml-menu__link {
+  min-height: 48px;
+  padding: 0 14px;
+  clip-path: none;
+}
+
+.ml-menu--horizontal .ml-menu__list--depth-0 > .ml-menu__item > .ml-menu__link--active {
+  background: none;
+}
+
+/* Active top-bar item: an energy line along the bottom instead of the side */
+.ml-menu--horizontal .ml-menu__list--depth-0 > .ml-menu__item > .ml-menu__link--active::before,
+.ml-menu--horizontal .ml-menu__list--depth-0 > .ml-menu__item--in-path > .ml-menu__link::before {
+  content: '';
+  position: absolute;
+  inset: auto 10px 0;
+  top: auto;
+  width: auto;
+  height: 2px;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 10px var(--ml-accent);
+  animation: none;
+}
+
+/* ── Collapsed rail ── */
+.ml-menu--collapsed {
+  width: var(--_rail);
+}
+
+.ml-menu--collapsed .ml-menu__list--depth-0 > .ml-menu__item > .ml-menu__link {
+  justify-content: center;
+  padding: 0;
+}
+
+.ml-menu--collapsed .ml-menu__list--depth-0 > .ml-menu__item > .ml-menu__link > :not(.ml-menu__icon) {
+  display: none;
+}
+
+.ml-menu--collapsed .ml-menu__group-title {
+  overflow: hidden;
+  height: 1px;
+  margin: 8px 12px;
+  padding: 0;
+  background: var(--ml-line-steel);
+  color: transparent;
+}
+
+.ml-menu--collapsed .ml-menu__list--depth-0 > .ml-menu__item > .ml-menu__link > .ml-menu__badge:not(:empty) {
+  display: block;
+  position: absolute;
+  top: 6px;
+  right: 8px;
+  min-width: 0;
+  width: 7px;
+  height: 7px;
+  padding: 0;
+  overflow: hidden;
+  background: var(--ml-accent);
+  color: transparent;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-menu__sub { transition: none; }
+}

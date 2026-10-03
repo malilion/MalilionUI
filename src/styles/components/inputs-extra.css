@@ -1,0 +1,117 @@
+/* TagInput & PinInput */
+
+/* ── TagInput ── */
+.ml-taginput {
+  cursor: text;
+}
+
+.ml-taginput__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  flex: 1;
+  min-width: 0;
+  margin: 0;
+  padding: 7px 0;
+  list-style: none;
+}
+
+.ml-taginput__entry {
+  display: flex;
+  flex: 1 0 90px;
+}
+
+.ml-taginput__control {
+  min-height: 28px;
+}
+
+.ml-taginput__tag {
+  transition: background var(--ml-dur-fast) var(--ml-ease), box-shadow var(--ml-dur-fast) var(--ml-ease);
+}
+
+/* The tag a second Backspace would remove */
+.ml-taginput__tag--armed {
+  background: var(--ml-danger-soft);
+  box-shadow: inset 0 0 0 1px var(--ml-danger);
+  color: var(--ml-danger-text);
+}
+
+.ml-taginput__count {
+  flex: none;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+}
+
+/* ── PinInput ── */
+.ml-pin {
+  --_box: 48px;
+
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ml-pin--sm { --_box: 38px; }
+.ml-pin--lg { --_box: 58px; }
+
+.ml-pin__box {
+  --_line: var(--ml-line-steel-strong);
+
+  width: var(--_box);
+  height: calc(var(--_box) * 1.18);
+  padding: 0;
+  border: 0;
+  outline: none;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--_line), var(--ml-inset-shadow);
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+  color: var(--ml-text);
+  caret-color: var(--ml-accent);
+  font-family: var(--ml-font-display);
+  font-size: calc(var(--_box) * 0.48);
+  font-weight: 700;
+  text-align: center;
+  transition: box-shadow var(--ml-dur) var(--ml-ease), background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-pin__box:hover {
+  --_line: var(--ml-line-strong);
+}
+
+.ml-pin__box:focus {
+  --_line: var(--ml-accent);
+  box-shadow: inset 0 0 0 1px var(--_line), inset 0 -2px 0 var(--ml-accent), 0 0 0 0 transparent;
+  background: linear-gradient(180deg, transparent 60%, var(--ml-accent-soft)), var(--ml-surface-inset);
+}
+
+/* A filled box gets a metallic rim and pops in */
+.ml-pin__box--filled {
+  --_line: var(--ml-line-strong);
+  color: var(--ml-accent-text);
+  animation: ml-pin-pop 260ms var(--ml-ease-spring);
+}
+
+@keyframes ml-pin-pop {
+  50% { scale: 1.08; }
+}
+
+.ml-pin--error .ml-pin__box {
+  --_line: var(--ml-danger);
+  color: var(--ml-danger-text);
+  animation: ml-shake-in 360ms var(--ml-ease);
+}
+
+.ml-pin--disabled .ml-pin__box {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.ml-pin__sep {
+  width: 10px;
+  height: 2px;
+  margin: 0 2px;
+  background: var(--ml-line-strong);
+}
