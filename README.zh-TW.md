@@ -112,11 +112,11 @@ toast('嗷嗚～') // 預設是腳印通知
 toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 ```
 
-載入字體可以得到完整的機甲風格（沒有的話會退回系統字體）：
+碼力獅品牌字型（Malilion Display / Sans / Mono）已經內建在 `style.css` 裡，不用另外載入。中文字則交給系統字體；想要各平台一致的中文字形，可以再加上 Noto Sans TC：
 
 ```html
 <link
-  href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
   rel="stylesheet"
 />
 ```

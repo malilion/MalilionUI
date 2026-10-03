@@ -98,11 +98,12 @@
   --ml-radius-full: 999px;
 
   /* ── Type ───────────────────────────────────────────────── */
-  --ml-font-display: 'Chakra Petch', 'Rajdhani', 'Noto Sans TC', 'PingFang TC',
+  /* 'Malilion *' faces are self-hosted in fonts.css; the rest are fallbacks. */
+  --ml-font-display: 'Malilion Display', 'Chakra Petch', 'Rajdhani', 'Noto Sans TC', 'PingFang TC',
     'Microsoft JhengHei', system-ui, sans-serif;
-  --ml-font-body: 'IBM Plex Sans', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei',
+  --ml-font-body: 'Malilion Sans', 'IBM Plex Sans', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei',
     system-ui, sans-serif;
-  --ml-font-mono: 'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, monospace;
+  --ml-font-mono: 'Malilion Mono', 'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, monospace;
 
   --ml-text-xs: 0.75rem;
   --ml-text-sm: 0.875rem;

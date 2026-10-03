@@ -112,11 +112,11 @@ toast('Roar!') // a paw toast by default
 toast.success({ title: 'Deployed', message: 'v0.2 is live' })
 ```
 
-Load the fonts for the full mech look (the components fall back to system fonts without them):
+The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style.css` — nothing to load. Chinese text uses system fonts; add Noto Sans TC if you want consistent CJK glyphs across platforms:
 
 ```html
 <link
-  href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
   rel="stylesheet"
 />
 ```

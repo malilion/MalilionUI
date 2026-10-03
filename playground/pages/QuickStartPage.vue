@@ -22,12 +22,12 @@ import App from './App.vue'
 createApp(App).use(MalilionUI).mount('#app')`,
   },
   {
-    title: '載入字體（建議）',
-    desc: '找不到時會退回系統字體，但 Chakra Petch 才有那股機甲味。',
+    title: '載入中文字體（選用）',
+    desc: '碼力獅品牌字型（Malilion Display / Sans / Mono）已內建在 style.css。中文會用系統字體，想要各平台一致可再加 Noto Sans TC。',
     filename: 'index.html',
     lang: 'html',
     code: `<link
-  href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;600&family=Noto+Sans+TC:wght@400;500;700&display=swap"
+  href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap"
   rel="stylesheet"
 />`,
   },
