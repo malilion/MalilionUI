@@ -1,0 +1,125 @@
+/* Ellipsis — text that knows when it was cut, and offers the rest */
+.ml-ellipsis {
+  position: relative;
+  display: block;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.ml-ellipsis__text {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: var(--ml-radius-sm);
+  outline: none;
+}
+
+.ml-ellipsis__text:focus-visible {
+  box-shadow: 0 0 0 2px var(--ml-focus);
+}
+
+.ml-ellipsis--single .ml-ellipsis__text {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ml-ellipsis--multi .ml-ellipsis__text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: var(--ml-ellipsis-lines, 2);
+  line-clamp: var(--ml-ellipsis-lines, 2);
+}
+
+/* Middle mode draws its own "…", so the browser one must not kick in too */
+.ml-ellipsis--middle .ml-ellipsis__text {
+  position: relative;
+  text-overflow: clip;
+}
+
+.ml-ellipsis--expanded .ml-ellipsis__text {
+  display: block;
+  overflow: visible;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  -webkit-line-clamp: none;
+  line-clamp: none;
+}
+
+/* Hidden twin used to measure the middle cut in the same font */
+.ml-ellipsis__measure {
+  position: absolute;
+  top: 0;
+  left: 0;
+  white-space: pre;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* One line + toggle sit side by side; otherwise the toggle follows the text */
+.ml-ellipsis--single.ml-ellipsis--truncated:not(.ml-ellipsis--expanded):has(> .ml-ellipsis__toggle) {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.ml-ellipsis--single:has(> .ml-ellipsis__toggle) > .ml-ellipsis__text {
+  flex: 1 1 auto;
+}
+
+.ml-ellipsis__toggle {
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin: 4px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  border-radius: var(--ml-radius-sm);
+  transition: color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-ellipsis--single .ml-ellipsis__toggle {
+  margin-top: 0;
+}
+
+.ml-ellipsis__toggle::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-right: 1.5px solid currentcolor;
+  border-bottom: 1.5px solid currentcolor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform var(--ml-dur) var(--ml-ease);
+}
+
+.ml-ellipsis--expanded .ml-ellipsis__toggle::after {
+  transform: translateY(1px) rotate(-135deg);
+}
+
+.ml-ellipsis__toggle:hover {
+  color: var(--ml-accent-strong);
+}
+
+.ml-ellipsis__toggle:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+/* Long strings get a wider bubble that wraps anywhere */
+.ml-ellipsis .ml-tooltip__bubble {
+  max-width: min(420px, 90vw);
+  overflow-wrap: anywhere;
+  font-family: inherit;
+  letter-spacing: normal;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-ellipsis__toggle,
+  .ml-ellipsis__toggle::after { transition: none; }
+}

@@ -61,7 +61,7 @@ const components = [
       eyebrow="Getting started / 開始"
       title="React"
       zh="React 與 Next.js"
-      desc="@malilion/ui/react 提供全部 115 個元件的 React 版，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
+      desc="@malilion/ui/react 提供全部 121 個元件的 React 版，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
     />
 
     <section class="block">

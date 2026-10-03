@@ -1,0 +1,304 @@
+/* Markdown — prose typography for rendered Markdown and streamed AI answers */
+.ml-markdown {
+  min-width: 0;
+  color: var(--ml-text);
+  font-family: var(--ml-font-body);
+  font-size: var(--ml-text-sm);
+  line-height: 1.75;
+  /* Chat bubbles use pre-wrap; Markdown decides its own line breaks. */
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.ml-markdown > :first-child {
+  margin-top: 0;
+}
+
+.ml-markdown > :last-child {
+  margin-bottom: 0;
+}
+
+.ml-markdown__p {
+  margin: 0 0 0.85em;
+}
+
+/* ── Headings: machined display face with a gold tick ── */
+.ml-markdown__h {
+  position: relative;
+  margin: 1.6em 0 0.6em;
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: 0.01em;
+  scroll-margin-top: 72px;
+}
+
+.ml-markdown__h--1 {
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid var(--ml-line);
+  font-size: var(--ml-text-2xl);
+}
+
+.ml-markdown__h--2 {
+  padding-left: 12px;
+  font-size: var(--ml-text-xl);
+}
+
+.ml-markdown__h--2::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.22em;
+  bottom: 0.22em;
+  width: 3px;
+  background: var(--ml-metal-gold);
+  clip-path: polygon(0 0, 100% 3px, 100% 100%, 0 calc(100% - 3px));
+}
+
+.ml-markdown__h--3 {
+  font-size: var(--ml-text-lg);
+}
+
+.ml-markdown__h--4 {
+  font-size: var(--ml-text-md);
+}
+
+.ml-markdown__h--5,
+.ml-markdown__h--6 {
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+  text-transform: uppercase;
+  letter-spacing: var(--ml-tracking-hud);
+}
+
+.ml-markdown__anchor {
+  margin-left: 0.4em;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-weight: 400;
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-markdown__h:hover .ml-markdown__anchor,
+.ml-markdown__h:target .ml-markdown__anchor {
+  opacity: 1;
+}
+
+/* ── Inline ── */
+.ml-markdown strong {
+  color: var(--ml-text);
+  font-weight: 700;
+}
+
+.ml-markdown del {
+  color: var(--ml-text-dim);
+}
+
+.ml-markdown__code {
+  padding: 0.1em 0.4em;
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.875em;
+  overflow-wrap: anywhere;
+}
+
+.ml-markdown__link {
+  color: var(--ml-tech-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 3px;
+  transition: color var(--ml-dur-fast) var(--ml-ease), text-decoration-color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-markdown__link:hover {
+  color: var(--ml-accent-text);
+  text-decoration-color: currentColor;
+}
+
+.ml-markdown__link:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-markdown__img {
+  display: inline-block;
+  max-width: 100%;
+  height: auto;
+  vertical-align: middle;
+  box-shadow: 0 0 0 1px var(--ml-line-steel-strong);
+}
+
+/* ── Blocks ── */
+.ml-markdown__quote {
+  margin: 0 0 0.85em;
+  padding: 6px 14px;
+  border-left: 3px solid var(--ml-accent);
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent 85%);
+  color: var(--ml-text-muted);
+}
+
+.ml-markdown__quote > :last-child {
+  margin-bottom: 0;
+}
+
+.ml-markdown__list {
+  margin: 0 0 0.85em;
+  padding-left: 1.6em;
+}
+
+.ml-markdown__list .ml-markdown__list {
+  margin-bottom: 0;
+}
+
+.ml-markdown__li {
+  margin: 0.2em 0;
+}
+
+.ml-markdown__li::marker {
+  color: var(--ml-accent);
+  font-family: var(--ml-font-mono);
+  font-size: 0.9em;
+}
+
+.ml-markdown__list--loose > .ml-markdown__li > .ml-markdown__p {
+  margin-bottom: 0.5em;
+}
+
+.ml-markdown__li--task {
+  list-style: none;
+  margin-left: -1.4em;
+}
+
+.ml-markdown__check {
+  appearance: none;
+  position: relative;
+  width: 1em;
+  height: 1em;
+  margin: 0 0.5em 0 0;
+  vertical-align: -0.12em;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-surface-inset);
+}
+
+.ml-markdown__check:checked {
+  border-color: transparent;
+  background: var(--ml-metal-gold);
+}
+
+.ml-markdown__check:checked::after {
+  content: '';
+  position: absolute;
+  left: 32%;
+  top: 12%;
+  width: 28%;
+  height: 52%;
+  border: solid var(--ml-text-on-metal);
+  border-width: 0 2px 2px 0;
+  rotate: 45deg;
+}
+
+.ml-markdown__hr {
+  height: 1px;
+  margin: 1.5em 0;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--ml-line-strong) 20%, var(--ml-line-strong) 80%, transparent);
+}
+
+.ml-markdown .ml-code {
+  margin: 0 0 0.85em;
+}
+
+/* ── Table ── */
+.ml-markdown__table-wrap {
+  max-width: 100%;
+  margin: 0 0 0.85em;
+  overflow-x: auto;
+  border: 1px solid var(--ml-line);
+}
+
+.ml-markdown__table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95em;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-markdown__table th,
+.ml-markdown__table td {
+  padding: 7px 12px;
+  border-bottom: 1px solid var(--ml-line-steel);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: normal;
+}
+
+.ml-markdown__table th {
+  background: var(--ml-surface-2);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-display);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  border-bottom-color: var(--ml-line-strong);
+  white-space: nowrap;
+}
+
+.ml-markdown__table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.ml-markdown__table tbody tr:hover td {
+  background: var(--ml-accent-soft);
+}
+
+.ml-markdown__table .ml-markdown__cell--center {
+  text-align: center;
+}
+
+.ml-markdown__table .ml-markdown__cell--right {
+  text-align: right;
+}
+
+/* ── Streaming caret ── */
+.ml-markdown__caret {
+  display: inline-block;
+  margin-left: 2px;
+  color: var(--ml-accent);
+  vertical-align: -0.15em;
+  animation: ml-markdown-blink 1s steps(1, end) infinite;
+}
+
+.ml-markdown__caret--bar {
+  width: 0.5em;
+  height: 1.1em;
+  background: var(--ml-metal-gold);
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%);
+  filter: var(--ml-glow-gold);
+}
+
+.ml-markdown__caret--paw {
+  font-size: 1.05em;
+  line-height: 1;
+  vertical-align: -0.1em;
+  animation-name: ml-markdown-paw;
+  animation-timing-function: var(--ml-ease);
+}
+
+.ml-markdown__caret--paw .ml-paw {
+  display: block;
+}
+
+@keyframes ml-markdown-blink {
+  50% { opacity: 0; }
+}
+
+@keyframes ml-markdown-paw {
+  0%, 100% { opacity: 1; translate: 0 0; }
+  50% { opacity: 0.35; translate: 0 -2px; }
+}

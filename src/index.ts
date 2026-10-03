@@ -39,6 +39,7 @@ import MlDivider from './components/MlDivider.vue'
 import MlDonut from './components/MlDonut.vue'
 import MlDrawer from './components/MlDrawer.vue'
 import MlDropdown from './components/MlDropdown.vue'
+import MlEllipsis from './components/MlEllipsis.vue'
 import MlEmpty from './components/MlEmpty.vue'
 import MlField from './components/MlField.vue'
 import MlFloatButton from './components/MlFloatButton.vue'
@@ -50,6 +51,7 @@ import MlGridItem from './components/MlGridItem.vue'
 import MlHeatmap from './components/MlHeatmap.vue'
 import MlIcon from './components/MlIcon.vue'
 import MlImage from './components/MlImage.vue'
+import MlImageCropper from './components/MlImageCropper.vue'
 import MlImagePreview from './components/MlImagePreview.vue'
 import MlInfiniteScroll from './components/MlInfiniteScroll.vue'
 import MlInput from './components/MlInput.vue'
@@ -61,8 +63,10 @@ import MlLionMark from './components/MlLionMark.vue'
 import MlList from './components/MlList.vue'
 import MlListItem from './components/MlListItem.vue'
 import MlLoader from './components/MlLoader.vue'
+import MlMarkdown from './components/MlMarkdown.vue'
 import MlMarquee from './components/MlMarquee.vue'
 import MlMascot from './components/MlMascot.vue'
+import MlMasonry from './components/MlMasonry.vue'
 import MlMention from './components/MlMention.vue'
 import MlMenu from './components/MlMenu.vue'
 import MlModal from './components/MlModal.vue'
@@ -84,8 +88,10 @@ import MlRate from './components/MlRate.vue'
 import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
+import MlScrollbar from './components/MlScrollbar.vue'
 import MlSegmented from './components/MlSegmented.vue'
 import MlSelect from './components/MlSelect.vue'
+import MlSignaturePad from './components/MlSignaturePad.vue'
 import MlSkeleton from './components/MlSkeleton.vue'
 import MlSkeletonItem from './components/MlSkeletonItem.vue'
 import MlSlider from './components/MlSlider.vue'
@@ -159,6 +165,7 @@ const components = {
   MlDonut,
   MlDrawer,
   MlDropdown,
+  MlEllipsis,
   MlEmpty,
   MlField,
   MlFloatButton,
@@ -170,6 +177,7 @@ const components = {
   MlHeatmap,
   MlIcon,
   MlImage,
+  MlImageCropper,
   MlImagePreview,
   MlInfiniteScroll,
   MlInput,
@@ -181,8 +189,10 @@ const components = {
   MlList,
   MlListItem,
   MlLoader,
+  MlMarkdown,
   MlMarquee,
   MlMascot,
+  MlMasonry,
   MlMention,
   MlMenu,
   MlModal,
@@ -204,8 +214,10 @@ const components = {
   MlResult,
   MlReveal,
   MlRing,
+  MlScrollbar,
   MlSegmented,
   MlSelect,
+  MlSignaturePad,
   MlSkeleton,
   MlSkeletonItem,
   MlSlider,
@@ -300,6 +312,7 @@ export {
   MlDonut,
   MlDrawer,
   MlDropdown,
+  MlEllipsis,
   MlEmpty,
   MlField,
   MlFloatButton,
@@ -311,6 +324,7 @@ export {
   MlHeatmap,
   MlIcon,
   MlImage,
+  MlImageCropper,
   MlImagePreview,
   MlInfiniteScroll,
   MlInput,
@@ -322,8 +336,10 @@ export {
   MlList,
   MlListItem,
   MlLoader,
+  MlMarkdown,
   MlMarquee,
   MlMascot,
+  MlMasonry,
   MlMention,
   MlMenu,
   MlModal,
@@ -345,8 +361,10 @@ export {
   MlResult,
   MlReveal,
   MlRing,
+  MlScrollbar,
   MlSegmented,
   MlSelect,
+  MlSignaturePad,
   MlSkeleton,
   MlSkeletonItem,
   MlSlider,
@@ -385,7 +403,11 @@ export { zhTW, en, setLocale, getLocale, useLocale } from './locale'
 export type { MlLocale } from './locale'
 export { encodeQr } from './qrcode'
 export { highlight, highlightLines } from './highlight'
+export { parseMarkdown, parseInline, createMarkdownParser, sanitizeUrl, slugify, headingIds } from './markdown'
+export type { MdBlock, MdInline, MdHeading, MdCode, MdList, MdListItem, MdTable, MdAlign, MdParseOptions, MlMarkdownCodeSlot, MlMarkdownLinkSlot, MlMarkdownImageSlot } from './markdown'
 export type { QrLevel, QrMatrix } from './qrcode'
+export type { SignatureStroke, SignaturePoint } from './components/signature'
+export type { MlCropData, MlCropOutput } from './components/cropper'
 export type { MlToastItem } from './toast'
 export { vPawStamp, pawStamp, pawBurst } from './pawStamp'
 export { vLoading } from './loading'
@@ -438,6 +460,7 @@ declare module 'vue' {
     MlDonut: typeof MlDonut
     MlDrawer: typeof MlDrawer
     MlDropdown: typeof MlDropdown
+    MlEllipsis: typeof MlEllipsis
     MlEmpty: typeof MlEmpty
     MlField: typeof MlField
     MlFloatButton: typeof MlFloatButton
@@ -449,6 +472,7 @@ declare module 'vue' {
     MlHeatmap: typeof MlHeatmap
     MlIcon: typeof MlIcon
     MlImage: typeof MlImage
+    MlImageCropper: typeof MlImageCropper
     MlImagePreview: typeof MlImagePreview
     MlInfiniteScroll: typeof MlInfiniteScroll
     MlInput: typeof MlInput
@@ -460,8 +484,10 @@ declare module 'vue' {
     MlList: typeof MlList
     MlListItem: typeof MlListItem
     MlLoader: typeof MlLoader
+    MlMarkdown: typeof MlMarkdown
     MlMarquee: typeof MlMarquee
     MlMascot: typeof MlMascot
+    MlMasonry: typeof MlMasonry
     MlMention: typeof MlMention
     MlMenu: typeof MlMenu
     MlModal: typeof MlModal
@@ -483,8 +509,10 @@ declare module 'vue' {
     MlResult: typeof MlResult
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
+    MlScrollbar: typeof MlScrollbar
     MlSegmented: typeof MlSegmented
     MlSelect: typeof MlSelect
+    MlSignaturePad: typeof MlSignaturePad
     MlSkeleton: typeof MlSkeleton
     MlSkeletonItem: typeof MlSkeletonItem
     MlSlider: typeof MlSlider

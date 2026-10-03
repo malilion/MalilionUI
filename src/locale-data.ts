@@ -124,6 +124,7 @@ export interface MlLocale {
     image: (n: number, total: number) => string
   }
   infinite: { loading: string; finished: string; more: string }
+  ellipsis: { expand: string; collapse: string }
   skeleton: string
   splitter: string
   mention: { placeholder: (trigger: string) => string }
@@ -134,10 +135,27 @@ export interface MlLocale {
   chat: { log: string; latest: string; typing: string; placeholder: string; send: string; stop: string; status: { sending: string; sent: string; error: string } }
   tour: { step: (n: number, total: number) => string; prev: string; next: string; finish: string; skip: string }
   code: { copy: string; copied: string; expand: string; collapse: string; copiedToast: (file?: string) => string }
+  markdown: { streaming: string }
   heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
   rate: string
   toast: { region: string; close: string }
   qrcode: { tooLong: string; label: (value: string) => string }
+  signature: { label: string; placeholder: string; hint: string; undo: string; clear: string; empty: string; signed: (strokes: number) => string; cleared: string }
+  cropper: {
+    label: string
+    box: string
+    hint: string
+    empty: string
+    error: string
+    toolbar: string
+    zoom: string
+    zoomIn: string
+    zoomOut: string
+    rotateLeft: string
+    rotateRight: string
+    reset: string
+    status: (width: number, height: number, x: number, y: number, zoom: number) => string
+  }
   result: Record<'success' | 'info' | 'warning' | 'error' | '403' | '404' | '500', { title: string; subtitle: string }>
   form: {
     required: string
@@ -289,6 +307,7 @@ export const zhTW: MlLocale = {
     image: (n, total) => `圖片 ${n} / ${total}`,
   },
   infinite: { loading: '小獅子正在搬資料…', finished: '沒有更多了', more: '載入更多' },
+  ellipsis: { expand: '展開', collapse: '收起' },
   skeleton: '載入中…',
   splitter: '調整面板大小',
   mention: { placeholder: (t) => `輸入 ${t} 提及成員…` },
@@ -304,10 +323,36 @@ export const zhTW: MlLocale = {
   chat: { log: '對話紀錄', latest: '最新訊息', typing: '正在輸入…', placeholder: '輸入訊息，Enter 送出，Shift + Enter 換行', send: '送出', stop: '停止產生', status: { sending: '傳送中…', sent: '已送出', error: '傳送失敗' } },
   tour: { step: (n, t) => `第 ${n} / ${t} 步`, prev: '上一步', next: '下一步', finish: '完成', skip: '略過導覽' },
   code: { copy: '複製', copied: '已複製', expand: '展開程式碼', collapse: '收起', copiedToast: (f) => `已複製 ${f ?? '程式碼'}` },
+  markdown: { streaming: '正在產生回覆…' },
   heatmap: { cell: (n, d) => `${d}：${n} 次`, summary: (t) => `一年內共 ${t.toLocaleString()} 次貢獻`, less: '少', more: '多' },
   rate: '評分',
   toast: { region: '通知', close: '關閉通知' },
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
+  signature: {
+    label: '簽名板',
+    placeholder: '請在此簽名',
+    hint: '用滑鼠、手指或觸控筆在框內簽名。Ctrl + Z 復原上一筆，Delete 清除全部。',
+    undo: '復原上一筆',
+    clear: '清除簽名',
+    empty: '尚未簽名',
+    signed: (n) => `已簽名，共 ${n} 筆`,
+    cleared: '已清除簽名',
+  },
+  cropper: {
+    label: '圖片裁切',
+    box: '裁切框',
+    hint: '方向鍵移動裁切框（Shift 加速），Alt + 方向鍵調整大小，+ / − 縮放。也可以拖曳圖片平移，用滾輪或雙指縮放。',
+    empty: '尚未選擇圖片',
+    error: '圖片載入失敗',
+    toolbar: '裁切工具',
+    zoom: '縮放',
+    zoomIn: '放大',
+    zoomOut: '縮小',
+    rotateLeft: '向左旋轉 90°',
+    rotateRight: '向右旋轉 90°',
+    reset: '重設',
+    status: (w, h, x, y, z) => `裁切 ${w} × ${h}，位置 ${x}, ${y}，縮放 ${z}%`,
+  },
   result: {
     success: { title: '完成了！', subtitle: '一切順利，獅群為你歡呼。' },
     info: { title: '提醒你一下', subtitle: '這裡有些資訊值得留意。' },
@@ -467,6 +512,7 @@ export const en: MlLocale = {
     image: (n, total) => `Image ${n} of ${total}`,
   },
   infinite: { loading: 'The cub is fetching more…', finished: 'That’s everything', more: 'Load more' },
+  ellipsis: { expand: 'Show more', collapse: 'Show less' },
   skeleton: 'Loading…',
   splitter: 'Resize panels',
   mention: { placeholder: (t) => `Type ${t} to mention someone…` },
@@ -482,10 +528,36 @@ export const en: MlLocale = {
   chat: { log: 'Conversation', latest: 'Latest', typing: 'Typing…', placeholder: 'Message — Enter to send, Shift + Enter for a new line', send: 'Send', stop: 'Stop generating', status: { sending: 'Sending…', sent: 'Sent', error: 'Failed to send' } },
   tour: { step: (n, t) => `Step ${n} of ${t}`, prev: 'Back', next: 'Next', finish: 'Done', skip: 'Skip tour' },
   code: { copy: 'Copy', copied: 'Copied', expand: 'Show code', collapse: 'Hide', copiedToast: (f) => `Copied ${f ?? 'code'}` },
+  markdown: { streaming: 'Generating…' },
   heatmap: { cell: (n, d) => `${n === 1 ? '1 contribution' : `${n} contributions`} on ${d}`, summary: (t) => `${t.toLocaleString()} contributions in the last year`, less: 'Less', more: 'More' },
   rate: 'Rating',
   toast: { region: 'Notifications', close: 'Dismiss notification' },
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },
+  signature: {
+    label: 'Signature pad',
+    placeholder: 'Sign here',
+    hint: 'Sign inside the box with a mouse, finger or pen. Ctrl + Z undoes the last stroke, Delete clears everything.',
+    undo: 'Undo last stroke',
+    clear: 'Clear signature',
+    empty: 'Not signed yet',
+    signed: (n) => `Signed, ${n === 1 ? '1 stroke' : `${n} strokes`}`,
+    cleared: 'Signature cleared',
+  },
+  cropper: {
+    label: 'Image cropper',
+    box: 'Crop area',
+    hint: 'Arrow keys move the crop area (Shift for bigger steps), Alt + arrows resize it, + / − zoom. You can also drag the image to pan, and zoom with the wheel or a pinch.',
+    empty: 'No image selected',
+    error: 'The image failed to load',
+    toolbar: 'Crop tools',
+    zoom: 'Zoom',
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    rotateLeft: 'Rotate left 90°',
+    rotateRight: 'Rotate right 90°',
+    reset: 'Reset',
+    status: (w, h, x, y, z) => `Crop ${w} × ${h} at ${x}, ${y}, zoom ${z}%`,
+  },
   result: {
     success: { title: 'All done!', subtitle: 'Everything went smoothly — the pride cheers.' },
     info: { title: 'Heads up', subtitle: 'There’s something worth a look here.' },

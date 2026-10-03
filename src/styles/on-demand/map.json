@@ -173,6 +173,10 @@
     "components/dropdown.css",
     "components/effects.css"
   ],
+  "MlEllipsis": [
+    "components/tooltip.css",
+    "components/ellipsis.css"
+  ],
   "MlEmpty": [
     "components/paw.css",
     "components/mascot.css",
@@ -210,6 +214,9 @@
     "components/paw.css",
     "components/skeleton.css",
     "components/image.css"
+  ],
+  "MlImageCropper": [
+    "components/cropper.css"
   ],
   "MlImagePreview": [
     "components/skeleton.css",
@@ -252,11 +259,21 @@
     "components/loader.css",
     "components/paw.css"
   ],
+  "MlMarkdown": [
+    "components/button.css",
+    "components/paw.css",
+    "components/effects.css",
+    "components/code.css",
+    "components/markdown.css"
+  ],
   "MlMarquee": [
     "components/effects.css"
   ],
   "MlMascot": [
     "components/mascot.css"
+  ],
+  "MlMasonry": [
+    "components/masonry.css"
   ],
   "MlMention": [
     "components/field.css",
@@ -345,12 +362,20 @@
     "components/paw.css",
     "components/charts.css"
   ],
+  "MlScrollbar": [
+    "components/scrollbar.css"
+  ],
   "MlSegmented": [
     "components/segmented.css"
   ],
   "MlSelect": [
     "components/field.css",
     "components/form.css"
+  ],
+  "MlSignaturePad": [
+    "components/paw.css",
+    "components/effects.css",
+    "components/signature.css"
   ],
   "MlSkeleton": [
     "components/skeleton.css"
