@@ -3,7 +3,13 @@ import {
   Badge,
   Button,
   Card,
+  ColorPicker,
+  Combobox,
   ConfigProvider,
+  DatePicker,
+  DialogHost,
+  Table,
+  confirm,
   Gauge,
   Heatmap,
   Modal,
@@ -16,6 +22,14 @@ import {
   toast,
   zhTW,
 } from '@malilion/ui/react'
+
+const pride = [
+  { id: 1, name: 'Nala', role: 'Frontend', commits: 128 },
+  { id: 2, name: 'Simba', role: 'Backend', commits: 96 },
+  { id: 3, name: 'Kiara', role: 'Design', commits: 54 },
+  { id: 4, name: 'Mufasa', role: 'DevOps', commits: 77 },
+]
+const stacks = ['Vue', 'React', 'Nuxt', 'Next.js', 'Vite'].map((s) => ({ value: s, label: s }))
 
 const today = new Date()
 const commits = Array.from({ length: 120 }, (_, i) => ({
@@ -41,15 +55,37 @@ export function Demo() {
             <Button variant="steel" onClick={() => setCpu((v) => Math.max(0, v - 8))}>−8%</Button>
             <Button variant="outline" onClick={() => toast.success({ title: 'Roar!', message: `CPU ${cpu}%` })}>toast()</Button>
             <Button variant="ghost" onClick={() => setOpen(true)}>Modal</Button>
+            <Button variant="ghost" onClick={async () => toast(String(await confirm.danger({ title: 'confirm()', message: 'Delete the den?' })))}>confirm()</Button>
             <Switch label="Live" defaultChecked />
             <Badge tone="success" dot>Online</Badge>
           </div>
         </Card>
-        <Tabs items={[{ value: 'heat', label: 'Heatmap' }, { value: 'about', label: 'About' }]} panels={{ heat: <Heatmap data={commits} weeks={18} cell="paw" />, about: '45 React components, same markup as Vue.' }} />
+        <Tabs
+          items={[{ value: 'heat', label: 'Heatmap' }, { value: 'form', label: 'Form' }, { value: 'table', label: 'Table' }]}
+          panels={{
+            heat: <Heatmap data={commits} weeks={18} cell="paw" />,
+            form: (
+              <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+                <Combobox label="Stack" options={stacks} multiple searchable clearable defaultValue={['React']} />
+                <DatePicker label="Ship date" clearable />
+                <ColorPicker label="Mane colour" defaultValue="#f0ad2f" />
+              </div>
+            ),
+            table: (
+              <Table
+                rowKey="id"
+                selectable
+                columns={[{ key: 'name', title: 'Name', sortable: true }, { key: 'role', title: 'Role' }, { key: 'commits', title: 'Commits', sortable: true, mono: true, align: 'right' }]}
+                rows={pride}
+              />
+            ),
+          }}
+        />
         <Modal open={open} onClose={() => setOpen(false)} eyebrow="React" title="Hello from React" footer={<Button onClick={() => setOpen(false)}>OK</Button>}>
           這個對話框是 React 渲染的，樣式和 Vue 版完全相同。
         </Modal>
         <ToastHost />
+        <DialogHost />
       </div>
     </ConfigProvider>
   )

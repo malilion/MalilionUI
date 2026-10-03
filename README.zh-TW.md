@@ -54,7 +54,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - **按需載入**：`@malilion/ui/resolver` 搭配 unplugin-vue-components，只打包用到的元件與樣式（只用卡片、按鈕、徽章的頁面，樣式從 196 KB 降到 32 KB）；也可以手動 `import '@malilion/ui/on-demand/MlButton'`
 - **Nuxt 模組**：`modules: ['@malilion/ui/nuxt']`，元件與組合函式自動匯入、指令自動註冊、每頁只載入用到的樣式
 - **SSR**：文件站全部範例都通過伺服器端渲染與水合測試
-- **React 版**：`@malilion/ui/react` 提供 45 個元件，HTML 結構與 Vue 版逐一比對一致，Next.js App Router 可直接使用
+- **React 版**：`@malilion/ui/react` 提供 67 個元件，HTML 結構與 Vue 版逐一比對一致，Next.js App Router 可直接使用
 
 ## 0.7 版新功能
 
@@ -303,7 +303,7 @@ export default function Page() {
 
 表單元件遵循 React 慣例：`value` + `onChange` 為受控，`defaultValue` 為非受控。多語系用 `<ConfigProvider locale={en}>`。
 
-目前提供：Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider。下拉選擇、日期選擇、表格、選單等複雜互動元件目前只有 Vue 版。
+目前提供：Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider · Select · Combobox · Autocomplete · Cascader · TreeSelect · Calendar · DatePicker · DateRangePicker · DateTimePicker · TimePicker · ColorPicker · Upload · Drawer · Popover · Dropdown · Popconfirm · confirm() / DialogHost · CommandPalette · Table · Tree · Transfer · VirtualList。選單、表單驗證、其餘輸入元件（Slider、Rate、數字／PIN／標籤輸入、Mention）、版面工具與特效類元件目前只有 Vue 版。
 
 ## 直接使用 CSS
 
