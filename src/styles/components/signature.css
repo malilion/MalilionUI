@@ -1,0 +1,143 @@
+/* SignaturePad — an inset metal plate with a signing line and a paw mark */
+.ml-signature {
+  /* Ink when no pen-color is given: read by the canvas through `color`. */
+  --ml-signature-ink: var(--ml-accent-text);
+  position: relative;
+  display: block;
+  height: var(--_h, 200px);
+  min-width: 0;
+  background-color: var(--_paper, var(--ml-surface-inset));
+  background-image: var(--ml-brushed);
+  box-shadow: var(--ml-inset-shadow), inset 0 0 0 1px var(--ml-line-steel-strong);
+  outline: none;
+  clip-path: polygon(var(--ml-cut) 0, 100% 0, 100% calc(100% - var(--ml-cut)), calc(100% - var(--ml-cut)) 100%, 0 100%, 0 var(--ml-cut));
+  transition: box-shadow var(--ml-dur-fast) var(--ml-ease);
+}
+
+/* A custom paper colour is shown flat, like the exported image. */
+.ml-signature[style*='--_paper'] {
+  background-image: none;
+}
+
+.ml-signature:hover:not(.ml-signature--disabled),
+.ml-signature--drawing {
+  box-shadow: var(--ml-inset-shadow), inset 0 0 0 1px var(--ml-line-strong);
+}
+
+.ml-signature:focus-visible {
+  box-shadow: var(--ml-inset-shadow), inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-signature__pad {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ml-signature--disabled {
+  opacity: 0.55;
+}
+
+.ml-signature--disabled .ml-signature__pad {
+  cursor: not-allowed;
+}
+
+.ml-signature__canvas {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  color: var(--ml-signature-ink);
+}
+
+/* The signing line sits a third of the way up, with the paw where an "×" would go. */
+.ml-signature__line {
+  position: absolute;
+  right: 28px;
+  bottom: 30%;
+  left: 28px;
+  display: flex;
+  align-items: flex-end;
+  border-bottom: 1px dashed var(--ml-line-strong);
+  pointer-events: none;
+}
+
+.ml-signature__mark {
+  margin: 0 0 6px -2px;
+  color: var(--ml-accent);
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+.ml-signature__placeholder {
+  position: absolute;
+  right: 28px;
+  bottom: calc(30% + 10px);
+  left: 52px;
+  overflow: hidden;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-lg);
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.ml-signature__tools {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: flex;
+  gap: 6px;
+}
+
+.ml-signature__tool {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-text-muted);
+  cursor: pointer;
+  clip-path: polygon(var(--ml-cut-sm) 0, 100% 0, 100% calc(100% - var(--ml-cut-sm)), calc(100% - var(--ml-cut-sm)) 100%, 0 100%, 0 var(--ml-cut-sm));
+  transition: color var(--ml-dur-fast) var(--ml-ease), box-shadow var(--ml-dur-fast) var(--ml-ease), opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-signature__tool svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-signature__tool:hover:not(:disabled) {
+  color: var(--ml-accent-text);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+}
+
+.ml-signature__tool:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-signature__tool:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ml-signature--disabled .ml-signature__tool:disabled {
+  opacity: 0.35;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-signature,
+  .ml-signature__tool {
+    transition: none;
+  }
+}

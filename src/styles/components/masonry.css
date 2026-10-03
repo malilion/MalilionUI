@@ -1,0 +1,53 @@
+/* Masonry — a waterfall that drops each tile into the shortest column */
+.ml-masonry {
+  --ml-masonry-gap: 16px;
+
+  position: relative;
+  row-gap: var(--ml-masonry-gap);
+  column-gap: var(--ml-masonry-gap);
+}
+
+/* Before measuring (server render, no JS): plain row-by-row columns, same DOM order */
+.ml-masonry:not(.ml-masonry--ready) {
+  display: grid;
+  grid-template-columns: repeat(var(--ml-masonry-cols, 3), minmax(0, 1fr));
+  align-items: start;
+}
+
+.ml-masonry__item {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.ml-masonry--ready > .ml-masonry__item {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--ml-masonry-col);
+  visibility: hidden;
+}
+
+.ml-masonry--ready > .ml-masonry__item--placed {
+  visibility: visible;
+}
+
+.ml-masonry--animate > .ml-masonry__item--settled {
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-masonry--animate > .ml-masonry__item--placed {
+  animation: ml-masonry-in var(--ml-dur-slow) var(--ml-ease-spring) both;
+}
+
+@keyframes ml-masonry-in {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+    scale: 0.97;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-masonry--animate > .ml-masonry__item--settled { transition: none; }
+  .ml-masonry--animate > .ml-masonry__item--placed { animation: none; }
+}

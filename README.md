@@ -34,12 +34,12 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 115 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 121 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has every component (all 115) with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 121) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -49,12 +49,22 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
+## What's New in 0.9
+
+- **React, complete**: every one of the 121 components now has a React twin in `@malilion/ui/react` — selects, date / time / colour pickers, upload, Table, Tree, Transfer, menus, Tour, Kanban, charts and effects — plus `<Form>` / `<FormItem>` validation sharing the Vue rules, and `<Loading>` / `usePawStamp()` for the directives
+- **`MlMarkdown`**: zero-dependency Markdown built for AI chat — streams token by token without flicker, a paw caret, GFM tables and task lists, code blocks through `MlCodeBlock`, and XSS-safe by construction (no `v-html`)
+- **`MlEllipsis`**: multi-line clamp that shows a tooltip only when text is really cut, expand / collapse, and middle ellipsis for hashes and file names
+- **`MlScrollbar`**: metal overlay scrollbar over native scrolling — draggable thumbs, auto-hide, `reach-end`
+- **`MlMasonry`**: waterfall layout into the shortest column, responsive columns, SSR-safe
+- **`MlSignaturePad`**: smooth, speed / pressure-sensitive ink, undo, PNG / SVG export, survives resizes
+- **`MlImageCropper`**: drag / resize / zoom / rotate, fixed ratios and a circle mask, keyboard controls, exports Blob / canvas — pairs with `MlUpload` and `MlAvatar`
+
 ## What's New in 0.8
 
 - **On-demand loading**: `@malilion/ui/resolver` for unplugin-vue-components bundles only the components and styles you use (a page with a card, a button and a badge drops from 196 KB to 32 KB of CSS); or import `@malilion/ui/on-demand/MlButton` by hand
 - **Nuxt module**: `modules: ['@malilion/ui/nuxt']` auto-imports components and composables, registers the directives and loads per-page styles
 - **SSR**: every docs example passes server-side rendering and hydration tests
-- **React**: `@malilion/ui/react` ships all 115 components, with markup checked against the Vue ones, ready for the Next.js App Router
+- **React**: `@malilion/ui/react` ships 45 components whose markup is checked against the Vue ones, ready for the Next.js App Router
 
 ## What's New in 0.7
 
@@ -204,10 +214,10 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Category | Components |
 | --- | --- |
 | Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlConfigProvider` |
-| Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` |
+| Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
+| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` · `MlSignaturePad` · `MlImageCropper` |
 | Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
 | Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
