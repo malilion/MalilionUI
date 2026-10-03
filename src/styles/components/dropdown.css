@@ -141,3 +141,15 @@
   opacity: 0;
   transform: translateY(-6px) scale(0.97);
 }
+
+/* ContextMenu: the same menu, pinned to the pointer */
+.ml-ctx {
+  display: contents;
+}
+
+.ml-ctx__menu {
+  position: fixed;
+  top: 0;
+  min-width: 200px;
+  transform-origin: top left;
+}

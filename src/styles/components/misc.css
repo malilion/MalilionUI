@@ -1,0 +1,156 @@
+/* Countdown & QRCode */
+
+/* ── Countdown ── */
+.ml-countdown {
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-countdown__unit {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+}
+
+.ml-countdown__value {
+  position: relative;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+.ml-countdown--tiles .ml-countdown__value {
+  min-width: 64px;
+  height: 72px;
+  padding: 0 8px;
+  background: var(--ml-metal-gunmetal);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-1);
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-display);
+  font-size: 2.4rem;
+  font-weight: 700;
+}
+
+/* The split line across the middle of a flip tile */
+.ml-countdown--tiles .ml-countdown__value::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgb(0 0 0 / 0.45);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+[data-ml-theme='light'] .ml-countdown--tiles .ml-countdown__value {
+  background: var(--ml-plate-fill);
+}
+
+.ml-countdown__label {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+}
+
+.ml-countdown__colon {
+  color: var(--ml-line-strong);
+  font-family: var(--ml-font-display);
+  font-weight: 700;
+  animation: ml-countdown-blink 1s steps(1) infinite;
+}
+
+.ml-countdown--tiles .ml-countdown__colon {
+  font-size: 2rem;
+  line-height: 72px;
+}
+
+@keyframes ml-countdown-blink {
+  50% { opacity: 0.3; }
+}
+
+.ml-countdown--text {
+  gap: 2px;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-weight: 600;
+}
+
+.ml-countdown--done .ml-countdown__value,
+.ml-countdown--done.ml-countdown--text {
+  color: var(--ml-text-dim);
+}
+
+.ml-countdown--done .ml-countdown__colon {
+  animation: none;
+}
+
+.ml-countdown-flip-enter-active {
+  transition: transform 260ms var(--ml-ease-spring), opacity 200ms var(--ml-ease);
+}
+
+.ml-countdown-flip-leave-active {
+  transition: transform 140ms var(--ml-ease-in), opacity 140ms var(--ml-ease-in);
+}
+
+.ml-countdown-flip-enter-from {
+  transform: translateY(-40%) rotateX(60deg);
+  opacity: 0;
+}
+
+.ml-countdown-flip-leave-to {
+  transform: translateY(40%) rotateX(-60deg);
+  opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-countdown__colon { animation: none; }
+  .ml-countdown-flip-enter-active,
+  .ml-countdown-flip-leave-active { transition: none; }
+}
+
+/* ── QRCode ── */
+.ml-qr {
+  display: inline-grid;
+  justify-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.ml-qr svg {
+  display: block;
+  padding: 6px;
+  background: var(--ml-metal-steel);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  box-shadow: var(--ml-shadow-1);
+  box-sizing: content-box;
+  animation: ml-qr-in 520ms var(--ml-ease-spring);
+}
+
+@keyframes ml-qr-in {
+  from { opacity: 0; scale: 0.94; }
+}
+
+.ml-qr__caption {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.06em;
+}
+
+.ml-qr__error {
+  display: grid;
+  place-items: center;
+  width: var(--_size);
+  height: var(--_size);
+  margin: 0;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-danger);
+  color: var(--ml-danger-text);
+  font-size: var(--ml-text-sm);
+  text-align: center;
+}
