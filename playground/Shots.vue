@@ -250,6 +250,7 @@ const themes = [
           <span class="ml-metal-text">MALILION</span>
           <span class="ml-metal-text ml-metal-text--steel">UI</span>
         </h1>
+        <p class="hero__paw ml-font-paw">hi, i'm malilion! let's ship it… &#xE000;</p>
         <p class="hero__lead">
           <strong>獅子</strong> × <strong>科技</strong> × <strong>金屬</strong> ×
           <strong class="bean">肉球</strong><br />
@@ -264,7 +265,7 @@ const themes = [
           </MlButton>
         </div>
         <div class="row hero__badges">
-          <MlBadge paw>48 Components</MlBadge>
+          <MlBadge paw>101 Components</MlBadge>
           <MlBadge tone="tech" dot>Vue 3 · TS</MlBadge>
           <MlBadge tone="steel">2 Themes</MlBadge>
           <MlBadge tone="bean" solid paw>Cute</MlBadge>
@@ -1594,6 +1595,12 @@ body {
   margin-top: 26px;
 }
 /* v0.6 panels */
+.hero__paw {
+  margin: 10px 0 -6px;
+  color: var(--ml-accent-text);
+  font-size: 24px;
+}
+
 .v6-work {
   display: grid;
   grid-template-columns: 250px 1fr;
