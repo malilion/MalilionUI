@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed, ref, useId } from 'vue'
 import { mascotImages } from '../mascot'
-import { encodeQr, type QrLevel } from '../qrcode'
+import { encodeQr, qrEyePath, qrLayout, type QrLevel } from '../qrcode'
 import { useLocale } from '../locale'
 
 const loc = useLocale()
@@ -51,81 +51,14 @@ const matrix = computed(() => {
   }
 })
 
-const total = computed(() => (matrix.value?.size ?? 21) + props.margin * 2)
-
-/** Square hole in the middle for the logo (about a fifth of the code). */
-const hole = computed(() => {
-  const m = matrix.value
-  if (!m || props.logo === 'none') return null
-  const span = Math.round(m.size * 0.22) | 1 // odd, so it centres on a module
-  const start = (m.size - span) / 2
-  return { start, end: start + span, span }
-})
-
-const inHole = (x: number, y: number) => {
-  const h = hole.value
-  return !!h && x >= h.start - 0.5 && x < h.end + 0.5 && y >= h.start - 0.5 && y < h.end + 0.5
-}
-
-/** Every dark data module as one path (finder eyes are drawn separately). */
-const dataPath = computed(() => {
-  const m = matrix.value
-  if (!m) return ''
-  const o = props.margin
-  const out: string[] = []
-  const finder = (x: number, y: number) =>
-    (x < 7 && y < 7) || (x >= m.size - 7 && y < 7) || (x < 7 && y >= m.size - 7)
-  const dark = (x: number, y: number) =>
-    x >= 0 && y >= 0 && x < m.size && y < m.size && m.modules[y][x] && !finder(x, y) && !inHole(x, y)
-  const r = 0.38
-  for (let y = 0; y < m.size; y++) {
-    for (let x = 0; x < m.size; x++) {
-      if (!dark(x, y)) continue
-      const px = x + o
-      const py = y + o
-      if (props.shape === 'square') {
-        out.push(`M${px} ${py}h1v1h-1z`)
-        continue
-      }
-      // Round a corner only where both neighbours on that side are light, so
-      // touching modules merge into solid shapes (much easier to scan).
-      const up = dark(x, y - 1)
-      const down = dark(x, y + 1)
-      const left = dark(x - 1, y)
-      const right = dark(x + 1, y)
-      const tl = !up && !left ? r : 0
-      const tr = !up && !right ? r : 0
-      const br = !down && !right ? r : 0
-      const bl = !down && !left ? r : 0
-      out.push(
-        `M${px + tl} ${py}h${1 - tl - tr}` +
-          (tr ? `a${tr} ${tr} 0 0 1 ${tr} ${tr}` : '') +
-          `v${1 - tr - br}` +
-          (br ? `a${br} ${br} 0 0 1 -${br} ${br}` : '') +
-          `h-${1 - br - bl}` +
-          (bl ? `a${bl} ${bl} 0 0 1 -${bl} -${bl}` : '') +
-          `v-${1 - bl - tl}` +
-          (tl ? `a${tl} ${tl} 0 0 1 ${tl} -${tl}` : '') +
-          'z',
-      )
-    }
-  }
-  return out.join('')
-})
-
-/** The three corner eyes: an outer ring and an inner pupil each. */
-const eyes = computed(() => {
-  const m = matrix.value
-  if (!m) return []
-  const o = props.margin
-  return [
-    [0, 0],
-    [m.size - 7, 0],
-    [0, m.size - 7],
-  ].map(([x, y]) => ({ x: x + o, y: y + o }))
-})
-
-const radius = computed(() => (props.shape === 'square' ? { outer: 0, inner: 0 } : { outer: 1.8, inner: 0.9 }))
+const layout = computed(() =>
+  matrix.value ? qrLayout(matrix.value, { margin: props.margin, shape: props.shape, logo: props.logo !== 'none' }) : null,
+)
+const total = computed(() => layout.value?.total ?? 21 + props.margin * 2)
+const hole = computed(() => layout.value?.hole ?? null)
+const dataPath = computed(() => layout.value?.dataPath ?? '')
+const eyes = computed(() => layout.value?.eyes ?? [])
+const radius = computed(() => layout.value?.radius ?? { outer: 0, inner: 0 })
 
 /** The SVG markup, e.g. to save as a file. */
 function toSVG() {
@@ -168,8 +101,7 @@ defineExpose({ toSVG, toDataURL })
       <path :d="dataPath" :fill="color" />
       <g v-for="(eye, i) in eyes" :key="i" :fill="eyeColor">
         <path
-          :d="`M${eye.x} ${eye.y}m${radius.outer} 0h${7 - radius.outer * 2}a${radius.outer} ${radius.outer} 0 0 1 ${radius.outer} ${radius.outer}v${7 - radius.outer * 2}a${radius.outer} ${radius.outer} 0 0 1 -${radius.outer} ${radius.outer}h-${7 - radius.outer * 2}a${radius.outer} ${radius.outer} 0 0 1 -${radius.outer} -${radius.outer}v-${7 - radius.outer * 2}a${radius.outer} ${radius.outer} 0 0 1 ${radius.outer} -${radius.outer}z
-             M${eye.x + 1} ${eye.y + 1}v5h5v-5z`"
+          :d="qrEyePath(eye, radius.outer)"
           fill-rule="evenodd"
         />
         <rect :x="eye.x + 2" :y="eye.y + 2" width="3" height="3" :rx="radius.inner" />

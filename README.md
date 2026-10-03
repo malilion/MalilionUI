@@ -39,6 +39,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
+- React too: `@malilion/ui/react` has 45 React components with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -271,6 +272,30 @@ export default defineNuxtConfig({
 ```
 
 The module auto-imports every component plus `useToast` / `useConfirm`, registers `v-paw-stamp` and `v-loading`, and by default loads only the styles of the components each page uses. Every component passes server-side rendering and hydration tests.
+
+## React / Next.js
+
+`@malilion/ui/react` ships React components that render exactly the same markup as the Vue ones (an automated test compares every pair), styled by the same stylesheet. Works with React 18 / 19 and directly inside Next.js App Router Server Components (the entry is marked `'use client'`).
+
+```tsx
+import '@malilion/ui/style.css'
+import { Button, Card, ToastHost, toast } from '@malilion/ui/react'
+
+export default function Page() {
+  return (
+    <>
+      <Card eyebrow="Pride / 01" title="Pride dashboard">
+        <Button stamp onClick={() => toast('Roar!')}>Deploy</Button>
+      </Card>
+      <ToastHost />
+    </>
+  )
+}
+```
+
+Form controls follow React conventions: `value` + `onChange` is controlled, `defaultValue` is uncontrolled. For i18n wrap with `<ConfigProvider locale={en}>`.
+
+Available now: Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider. Complex interactive components (selects, pickers, tables, menus…) are Vue-only for now.
 
 ## Using the CSS Directly
 

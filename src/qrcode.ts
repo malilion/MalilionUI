@@ -291,3 +291,82 @@ export function encodeQr(text: string, level: QrLevel = 'M', minVersion = 1): Qr
 
   return { size, version: ver, modules, isFunction }
 }
+
+export interface QrLayout {
+  /** viewBox side, quiet zone included. */
+  total: number
+  /** Every dark data module (finder eyes excluded) as one path. */
+  dataPath: string
+  /** Top-left corners of the three finder eyes, in viewBox units. */
+  eyes: { x: number; y: number }[]
+  /** Square hole in the middle for a logo, in matrix units. */
+  hole: { start: number; end: number; span: number } | null
+  /** Corner radii for the eyes' outer ring and pupil. */
+  radius: { outer: number; inner: number }
+}
+
+/** Geometry for drawing a QR matrix as SVG (shared by the Vue and React components). */
+export function qrLayout(m: QrMatrix, opts: { margin: number; shape: 'square' | 'rounded'; logo: boolean }): QrLayout {
+  const o = opts.margin
+  const span = Math.round(m.size * 0.22) | 1 // odd, so it centres on a module
+  const hole = opts.logo ? { start: (m.size - span) / 2, end: (m.size - span) / 2 + span, span } : null
+  const inHole = (x: number, y: number) =>
+    !!hole && x >= hole.start - 0.5 && x < hole.end + 0.5 && y >= hole.start - 0.5 && y < hole.end + 0.5
+  const finder = (x: number, y: number) => (x < 7 && y < 7) || (x >= m.size - 7 && y < 7) || (x < 7 && y >= m.size - 7)
+  const dark = (x: number, y: number) =>
+    x >= 0 && y >= 0 && x < m.size && y < m.size && m.modules[y][x] && !finder(x, y) && !inHole(x, y)
+  const r = 0.38
+  const out: string[] = []
+  for (let y = 0; y < m.size; y++) {
+    for (let x = 0; x < m.size; x++) {
+      if (!dark(x, y)) continue
+      const px = x + o
+      const py = y + o
+      if (opts.shape === 'square') {
+        out.push(`M${px} ${py}h1v1h-1z`)
+        continue
+      }
+      // Round a corner only where both neighbours on that side are light, so
+      // touching modules merge into solid shapes (much easier to scan).
+      const up = dark(x, y - 1)
+      const down = dark(x, y + 1)
+      const left = dark(x - 1, y)
+      const right = dark(x + 1, y)
+      const tl = !up && !left ? r : 0
+      const tr = !up && !right ? r : 0
+      const br = !down && !right ? r : 0
+      const bl = !down && !left ? r : 0
+      out.push(
+        `M${px + tl} ${py}h${1 - tl - tr}` +
+          (tr ? `a${tr} ${tr} 0 0 1 ${tr} ${tr}` : '') +
+          `v${1 - tr - br}` +
+          (br ? `a${br} ${br} 0 0 1 -${br} ${br}` : '') +
+          `h-${1 - br - bl}` +
+          (bl ? `a${bl} ${bl} 0 0 1 -${bl} -${bl}` : '') +
+          `v-${1 - bl - tl}` +
+          (tl ? `a${tl} ${tl} 0 0 1 ${tl} -${tl}` : '') +
+          'z',
+      )
+    }
+  }
+  return {
+    total: m.size + o * 2,
+    dataPath: out.join(''),
+    eyes: [
+      [0, 0],
+      [m.size - 7, 0],
+      [0, m.size - 7],
+    ].map(([x, y]) => ({ x: x + o, y: y + o })),
+    hole,
+    radius: opts.shape === 'square' ? { outer: 0, inner: 0 } : { outer: 1.8, inner: 0.9 },
+  }
+}
+
+/** Outer ring path of a finder eye (rounded square with a 5×5 hole, evenodd). */
+export function qrEyePath(eye: { x: number; y: number }, ro: number) {
+  return (
+    `M${eye.x} ${eye.y}m${ro} 0h${7 - ro * 2}a${ro} ${ro} 0 0 1 ${ro} ${ro}v${7 - ro * 2}a${ro} ${ro} 0 0 1 -${ro} ${ro}` +
+    `h-${7 - ro * 2}a${ro} ${ro} 0 0 1 -${ro} -${ro}v-${7 - ro * 2}a${ro} ${ro} 0 0 1 ${ro} -${ro}z` +
+    `M${eye.x + 1} ${eye.y + 1}v5h5v-5z`
+  )
+}

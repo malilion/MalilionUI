@@ -39,6 +39,7 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 多語系：內建繁體中文與英文，`app.use(MalilionUI, { locale: en })` 或 `<MlConfigProvider>` 一行切換，也能自訂文案
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
+- 也支援 React：`@malilion/ui/react` 提供 45 個 React 元件（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
 - 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
@@ -271,6 +272,30 @@ export default defineNuxtConfig({
 ```
 
 模組會自動匯入所有元件、`useToast` / `useConfirm`，註冊 `v-paw-stamp` 與 `v-loading`，並預設只載入每頁用到的元件樣式。所有元件都通過伺服器端渲染與水合測試。
+
+## React / Next.js
+
+`@malilion/ui/react` 提供 React 版元件，輸出的 HTML 結構與 Vue 版完全相同（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，可以直接用在 Next.js App Router 的 Server Component 裡（已標記 `'use client'`）。
+
+```tsx
+import '@malilion/ui/style.css'
+import { Button, Card, ToastHost, toast } from '@malilion/ui/react'
+
+export default function Page() {
+  return (
+    <>
+      <Card eyebrow="Pride / 01" title="獅群儀表板">
+        <Button stamp onClick={() => toast('嗷嗚～')}>部署</Button>
+      </Card>
+      <ToastHost />
+    </>
+  )
+}
+```
+
+表單元件遵循 React 慣例：`value` + `onChange` 為受控，`defaultValue` 為非受控。多語系用 `<ConfigProvider locale={en}>`。
+
+目前提供：Button · Badge · Tag · Kbd · Divider · Paw · Icon · Card · Alert · Banner · Result · Empty · Mascot · Avatar · Stat · Progress · Loader · Skeleton · Breadcrumb · Steps · Descriptions · Timeline · Field · Input · Textarea · Checkbox · Switch · RadioGroup / Radio · Tabs · Segmented · Pagination · Tooltip · Modal · ToastHost + toast() · Ring · Sparkline · BarChart · Donut · Heatmap · Gauge · RadarChart · QRCode · CodeBlock · Countdown · ConfigProvider。下拉選擇、日期選擇、表格、選單等複雜互動元件目前只有 Vue 版。
 
 ## 直接使用 CSS
 
