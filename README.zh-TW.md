@@ -112,7 +112,7 @@ toast('嗷嗚～') // 預設是腳印通知
 toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 ```
 
-碼力獅品牌字型（Malilion Display / Sans / Mono）已經內建在 `style.css` 裡，不用另外載入。中文字則交給系統字體；想要各平台一致的中文字形，可以再加上 Noto Sans TC：
+碼力獅品牌字型（Malilion Display / Sans / Mono）已經內建在 `style.css` 裡，不用另外載入。另外還有專屬的可愛字體 **Malilion Paw**——i、j 的點和 `. : ; ! ? …` 都換成了小腳印，`U+E000` 則是一個完整的腳印；加上 `class="ml-font-paw"` 或用 `var(--ml-font-paw)` 就能使用。中文字則交給系統字體；想要各平台一致的中文字形，可以再加上 Noto Sans TC：
 
 ```html
 <link

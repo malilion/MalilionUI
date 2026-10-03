@@ -3,3 +3,4 @@ dist
 dist-playground
 .DS_Store
 *.log
+scripts/.cache/

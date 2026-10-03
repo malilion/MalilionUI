@@ -103,6 +103,9 @@
     'Microsoft JhengHei', system-ui, sans-serif;
   --ml-font-body: 'Malilion Sans', 'IBM Plex Sans', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei',
     system-ui, sans-serif;
+  /* Cute 碼力獅 face: dots become paw prints. For brand moments, not body copy. */
+  --ml-font-paw: 'Malilion Paw', 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei',
+    system-ui, sans-serif;
   --ml-font-mono: 'Malilion Mono', 'JetBrains Mono', 'SFMono-Regular', ui-monospace, Menlo, monospace;
 
   --ml-text-xs: 0.75rem;

@@ -70,6 +70,11 @@
   color: var(--ml-text-dim);
 }
 
+.ml-font-paw {
+  font-family: var(--ml-font-paw);
+  font-weight: 700;
+}
+
 .ml-visually-hidden {
   position: absolute !important;
   width: 1px;

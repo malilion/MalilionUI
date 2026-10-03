@@ -79,6 +79,10 @@ const override = `/* 覆寫語意代幣，就能換掉整套元件的顏色 */
           <p class="ml-hud-label">Mono · JetBrains Mono</p>
           <p class="type__mono">const pride = await lion.roar()</p>
         </div>
+        <div>
+          <p class="ml-hud-label">Paw · Malilion Paw</p>
+          <p class="type__paw ml-font-paw">Hi! I'm Malilion :) jiji… &#xE000;</p>
+        </div>
       </div>
     </section>
 
@@ -168,6 +172,11 @@ const override = `/* 覆寫語意代幣，就能換掉整套元件的顏色 */
   font-size: 1.6rem;
   font-weight: 700;
   letter-spacing: 0.04em;
+}
+
+.type__paw {
+  color: var(--ml-accent-text);
+  font-size: 1.6rem;
 }
 
 .type__body {
