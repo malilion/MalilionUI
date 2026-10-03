@@ -33,6 +33,7 @@
   ],
   "exclude": [
     "src/react/**/*",
-    "tests/react/**/*"
+    "tests/react/**/*",
+    "playground/react/**/*"
   ]
 }

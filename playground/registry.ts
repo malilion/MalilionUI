@@ -73,6 +73,7 @@ export const pages: PageDef[] = [
   { id: 'home', title: 'Overview', zh: '總覽', group: 'start', desc: '' },
   { id: 'start', title: 'Quick start', zh: '快速開始', group: 'start', desc: '' },
   { id: 'tokens', title: 'Design tokens', zh: '設計代幣', group: 'start', desc: '' },
+  { id: 'react', title: 'React', zh: 'React 與 Next.js', group: 'start', desc: '', isNew: true },
   {
     id: 'paw',
     title: 'Paw',

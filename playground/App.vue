@@ -6,6 +6,7 @@ import ComponentPage from './pages/ComponentPage.vue'
 import HomePage from './pages/HomePage.vue'
 import QuickStartPage from './pages/QuickStartPage.vue'
 import TokensPage from './pages/TokensPage.vue'
+import ReactPage from './pages/ReactPage.vue'
 import { route } from './router'
 import { groups, pageById } from './registry'
 
@@ -72,6 +73,7 @@ watch(
         <HomePage v-if="page.id === 'home'" />
         <QuickStartPage v-else-if="page.id === 'start'" />
         <TokensPage v-else-if="page.id === 'tokens'" />
+        <ReactPage v-else-if="page.id === 'react'" />
         <ComponentPage v-else :key="page.id" :page="page" />
         <PageNav :id="page.id" />
       </main>

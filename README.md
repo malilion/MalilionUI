@@ -46,7 +46,15 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Paw-print details everywhere: `MlPaw`, the `v-paw-stamp` directive, paw checkboxes, radios, loaders and progress runners
 - Visual effects that stay on brand: count-up numbers, HUD text decryption, metal tilt with glare, border beams, spotlight grids, scroll reveals and paw-print bursts — all of them calm down under `prefers-reduced-motion`
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
-- Zero runtime dependencies — only Vue as a peer dependency
+- On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
+- Zero runtime dependencies — only Vue (or React) as a peer dependency
+
+## What's New in 0.8
+
+- **On-demand loading**: `@malilion/ui/resolver` for unplugin-vue-components bundles only the components and styles you use (a page with a card, a button and a badge drops from 196 KB to 32 KB of CSS); or import `@malilion/ui/on-demand/MlButton` by hand
+- **Nuxt module**: `modules: ['@malilion/ui/nuxt']` auto-imports components and composables, registers the directives and loads per-page styles
+- **SSR**: every docs example passes server-side rendering and hydration tests
+- **React**: `@malilion/ui/react` ships 45 components whose markup is checked against the Vue ones, ready for the Next.js App Router
 
 ## What's New in 0.7
 
