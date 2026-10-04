@@ -144,6 +144,9 @@
   "MlCountUp": [
     "components/effects.css"
   ],
+  "MlCuteIcon": [
+    "components/cute-icon.css"
+  ],
   "MlCountdown": [
     "components/misc.css"
   ],
@@ -230,6 +233,9 @@
   "MlGauge": [
     "components/paw.css",
     "components/charts.css"
+  ],
+  "MlGlobe": [
+    "components/globe.css"
   ],
   "MlGrid": [
     "components/layout.css"
@@ -353,6 +359,11 @@
   ],
   "MlPaw": [
     "components/paw.css"
+  ],
+  "MlPuzzle": [
+    "components/paw.css",
+    "components/effects.css",
+    "components/puzzle.css"
   ],
   "MlPawBurst": [
     "components/paw.css",

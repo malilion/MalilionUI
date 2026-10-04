@@ -1,0 +1,195 @@
+/* CuteIcon — sticker-style icons with faces */
+.ml-cute {
+  /* Palette: every layer names one of these */
+  --_ink: #4a2c1f;
+  --_gold: #ffc94a;
+  --_orange: #f59a3c;
+  --_yellow: #ffe066;
+  --_brown: #c08552;
+  --_tan: #f0c793;
+  --_cream: #fff1d6;
+  --_white: #ffffff;
+  --_gray: #d7dde6;
+  --_pink: #ffa3b8;
+  --_red: #ff6f6f;
+  --_green: #7fd47f;
+  --_mint: #9eeccf;
+  --_sky: #8fd3ff;
+  --_purple: #b9a0ff;
+  --_pearl: #5a3a2a;
+  --_steel: #c6cdd7;
+  --_navy: #2c3443;
+  --_cyan: #5ee8d0;
+  --_blush: 0.65;
+  --_stroke: 1.5px;
+
+  display: inline-block;
+  flex: none;
+  width: var(--_size, 1em);
+  height: var(--_size, 1em);
+  vertical-align: -0.15em;
+  overflow: visible;
+}
+
+.ml-cute__layer {
+  stroke: var(--_ink);
+  stroke-width: var(--_stroke);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+.ml-cute__layer--fill,
+.ml-cute__layer--hole { paint-order: normal; }
+.ml-cute__layer--hole { fill-rule: evenodd; }
+.ml-cute__layer--flat,
+.ml-cute__layer--eye,
+.ml-cute__layer--shine,
+.ml-cute__layer--blush { stroke: none; }
+.ml-cute__layer.ml-cute__layer--line { fill: none; }
+.ml-cute__layer--blush { opacity: var(--_blush); }
+
+/* Each colour paints the fill — or, for a line layer, the stroke */
+.ml-cute__layer--ink { fill: var(--_ink); }
+.ml-cute__layer--gold { fill: var(--_gold); }
+.ml-cute__layer--orange { fill: var(--_orange); }
+.ml-cute__layer--yellow { fill: var(--_yellow); }
+.ml-cute__layer--brown { fill: var(--_brown); }
+.ml-cute__layer--tan { fill: var(--_tan); }
+.ml-cute__layer--cream { fill: var(--_cream); }
+.ml-cute__layer--white { fill: var(--_white); }
+.ml-cute__layer--gray { fill: var(--_gray); }
+.ml-cute__layer--pink { fill: var(--_pink); }
+.ml-cute__layer--red { fill: var(--_red); }
+.ml-cute__layer--green { fill: var(--_green); }
+.ml-cute__layer--mint { fill: var(--_mint); }
+.ml-cute__layer--sky { fill: var(--_sky); }
+.ml-cute__layer--purple { fill: var(--_purple); }
+.ml-cute__layer--pearl { fill: var(--_pearl); }
+.ml-cute__layer--steel { fill: var(--_steel); }
+.ml-cute__layer--navy { fill: var(--_navy); }
+.ml-cute__layer--cyan { fill: var(--_cyan); }
+/* A line layer is drawn in its colour; coloured lines (rays, stems, sprinkles) are a little bolder */
+.ml-cute__layer--line { stroke: var(--_ink); }
+.ml-cute__layer--line.ml-cute__layer--orange { stroke: var(--_orange); }
+.ml-cute__layer--line.ml-cute__layer--yellow { stroke: var(--_yellow); }
+.ml-cute__layer--line.ml-cute__layer--green { stroke: var(--_green); }
+.ml-cute__layer--line.ml-cute__layer--sky { stroke: var(--_sky); }
+.ml-cute__layer--line.ml-cute__layer--white { stroke: var(--_white); }
+.ml-cute__layer--line.ml-cute__layer--brown { stroke: var(--_brown); }
+.ml-cute__layer--line.ml-cute__layer--gold { stroke: var(--_gold); }
+.ml-cute__layer--line.ml-cute__layer--cyan { stroke: var(--_cyan); }
+.ml-cute__layer--line:not(.ml-cute__layer--ink) { stroke-width: calc(var(--_stroke) * 1.4); }
+
+/* Metal: the brand palette — lion gold, bronze, titanium, circuit cyan, toe-bean pink */
+.ml-cute--metal {
+  --_ink: #2c323d;
+  --_gold: #f0ad2f;
+  --_orange: #cd7631;
+  --_yellow: #f9c757;
+  --_brown: #a85a1e;
+  --_tan: #e9a066;
+  --_cream: #fff4cc;
+  --_white: #e3e7ed;
+  --_gray: #9ea7b5;
+  --_pink: #ff8fa8;
+  --_red: #ff5c48;
+  --_green: #52e38a;
+  --_mint: #7af6e2;
+  --_sky: #3eeed0;
+  --_purple: #b7a2ff;
+  --_pearl: #2b1b06;
+  --_steel: #c3cad4;
+  --_navy: #151a23;
+  --_cyan: #3eeed0;
+}
+/* A specular glint across every filled shape */
+.ml-cute--metal .ml-cute__layer:is(.ml-cute__layer--fill, .ml-cute__layer--hole, .ml-cute__layer--line) {
+  filter: drop-shadow(0 -0.6px 0 rgb(255 255 255 / 0.55)) drop-shadow(0 0.8px 0 rgb(0 0 0 / 0.25));
+}
+
+/* Mono: tinted by the text colour */
+.ml-cute--mono {
+  --_ink: currentColor;
+  --_blush: 0;
+}
+.ml-cute--mono .ml-cute__layer:not(.ml-cute__layer--ink, .ml-cute__layer--line) {
+  fill: color-mix(in oklab, currentColor 22%, transparent);
+}
+.ml-cute--mono .ml-cute__layer--white:is(.ml-cute__layer--flat, .ml-cute__layer--shine, .ml-cute__layer--eye) {
+  fill: transparent;
+}
+.ml-cute--mono .ml-cute__layer--line { stroke: currentColor; }
+
+/* Line: outlines only, in the text colour */
+.ml-cute--line { --_ink: currentColor; --_blush: 0; }
+.ml-cute--line .ml-cute__layer { fill: none; stroke: currentColor; }
+.ml-cute--line .ml-cute__layer--flat,
+.ml-cute--line .ml-cute__layer--shine { display: none; }
+.ml-cute--line .ml-cute__layer--eye.ml-cute__layer--ink,
+.ml-cute--line .ml-cute__layer--flat.ml-cute__layer--ink { display: inline; fill: currentColor; stroke: none; }
+
+/* Light theme: a touch more outline so pale stickers don't wash out */
+[data-ml-theme='light'] .ml-cute { --_stroke: 1.6px; }
+
+/* ── Motion ──────────────────────────────────────────────── */
+.ml-cute--bounce { animation: ml-cute-bounce 1.2s var(--ml-ease) infinite; transform-origin: 50% 100%; }
+.ml-cute--wiggle { animation: ml-cute-wiggle 1.6s ease-in-out infinite; transform-origin: 50% 85%; }
+.ml-cute--float { animation: ml-cute-float 3s ease-in-out infinite; }
+.ml-cute--beat { animation: ml-cute-beat 1.1s ease-in-out infinite; }
+.ml-cute--spin { animation: ml-cute-spin 4s linear infinite; }
+.ml-cute--blink .ml-cute__layer:is(.ml-cute__layer--eye, .ml-cute__layer--shine) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-cute-blink 3.6s ease-in-out infinite;
+}
+/* Every moving icon blinks too */
+.ml-cute:is(.ml-cute--bounce, .ml-cute--wiggle, .ml-cute--float, .ml-cute--beat) .ml-cute__layer:is(.ml-cute__layer--eye, .ml-cute__layer--shine) {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-cute-blink 4.2s ease-in-out infinite;
+}
+
+/* hover: still until pointed at (or until its link / button is) */
+.ml-cute--hover,
+.ml-cute--hover .ml-cute__layer { animation-play-state: paused !important; }
+.ml-cute--hover:hover,
+.ml-cute--hover:hover .ml-cute__layer,
+:is(a, button, [role='button'], label):is(:hover, :focus-visible) .ml-cute--hover,
+:is(a, button, [role='button'], label):is(:hover, :focus-visible) .ml-cute--hover .ml-cute__layer {
+  animation-play-state: running !important;
+}
+
+@keyframes ml-cute-bounce {
+  0%, 100% { transform: translateY(0) scale(1, 1); }
+  30% { transform: translateY(-14%) scale(0.95, 1.05); }
+  55% { transform: translateY(0) scale(1.08, 0.92); }
+  70% { transform: translateY(-3%) scale(0.98, 1.02); }
+}
+@keyframes ml-cute-wiggle {
+  0%, 60%, 100% { transform: rotate(0); }
+  10% { transform: rotate(-10deg); }
+  25% { transform: rotate(9deg); }
+  40% { transform: rotate(-6deg); }
+  52% { transform: rotate(3deg); }
+}
+@keyframes ml-cute-float {
+  0%, 100% { transform: translateY(0) rotate(-2deg); }
+  50% { transform: translateY(-10%) rotate(2deg); }
+}
+@keyframes ml-cute-beat {
+  0%, 40%, 100% { transform: scale(1); }
+  15% { transform: scale(1.14); }
+  28% { transform: scale(0.97); }
+}
+@keyframes ml-cute-spin {
+  to { transform: rotate(360deg); }
+}
+@keyframes ml-cute-blink {
+  0%, 90%, 100% { transform: scaleY(1); }
+  94% { transform: scaleY(0.1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-cute,
+  .ml-cute .ml-cute__layer { animation: none !important; }
+}

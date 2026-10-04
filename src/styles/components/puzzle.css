@@ -1,0 +1,177 @@
+/* Puzzle — jigsaw pieces you swap into place */
+.ml-puzzle {
+  --_w: 360px;
+  --_ratio: 1;
+  --_accent: var(--ml-gold-300);
+  --_glow: rgb(240 173 47 / 0.55);
+  --_art-a: #ffdb7d;
+  --_art-b: #e8a527;
+  --_art-c: #7c4e0b;
+  --_edge: rgb(255 255 255 / 0.32);
+  --_tray: var(--ml-surface-inset);
+  --_slot: rgb(255 255 255 / 0.12);
+
+  display: grid;
+  gap: 10px;
+  width: min(100%, var(--_w));
+  min-width: 0;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ml-puzzle--tech { --_accent: var(--ml-cyan-300); --_glow: rgb(62 238 208 / 0.5); --_art-a: #b4fbef; --_art-b: #14cfb2; --_art-c: #0b4f47; }
+.ml-puzzle--bean { --_accent: var(--ml-bean-300); --_glow: rgb(255 143 168 / 0.5); --_art-a: #ffe3ea; --_art-b: #ff8fa8; --_art-c: #8f3550; }
+.ml-puzzle--steel { --_accent: var(--ml-steel-200); --_glow: rgb(198 205 215 / 0.45); --_art-a: #f4f6f9; --_art-b: #9ea7b5; --_art-c: #2c323d; }
+
+[data-ml-theme='light'] .ml-puzzle {
+  --_accent: var(--ml-gold-600);
+  --_glow: rgb(169 108 14 / 0.4);
+  --_edge: rgb(0 0 0 / 0.22);
+  --_slot: rgb(0 0 0 / 0.1);
+}
+[data-ml-theme='light'] .ml-puzzle--tech { --_accent: var(--ml-cyan-700); --_glow: rgb(10 159 137 / 0.4); }
+[data-ml-theme='light'] .ml-puzzle--bean { --_accent: var(--ml-bean-600); --_glow: rgb(201 77 108 / 0.4); }
+[data-ml-theme='light'] .ml-puzzle--steel { --_accent: var(--ml-steel-600); --_glow: rgb(65 73 86 / 0.35); }
+
+.ml-puzzle__svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: var(--_ratio);
+  overflow: visible;
+  touch-action: none;
+}
+.ml-puzzle__svg:focus { outline: none; }
+
+.ml-puzzle__stop--a { stop-color: var(--_art-a); }
+.ml-puzzle__stop--b { stop-color: var(--_art-b); }
+.ml-puzzle__stop--c { stop-color: var(--_art-c); }
+
+.ml-puzzle__tray {
+  fill: var(--_tray);
+  stroke: var(--ml-line);
+  stroke-width: 1;
+}
+.ml-puzzle__ghost {
+  opacity: 0.14;
+  filter: grayscale(0.6);
+  pointer-events: none;
+}
+.ml-puzzle__slots {
+  fill: none;
+  stroke: var(--_slot);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+
+/* ── Pieces ─────────────────────────────────────────────── */
+.ml-puzzle__piece {
+  transform-box: view-box;
+  scale: 0.92;
+  cursor: grab;
+  outline: none;
+  filter: drop-shadow(0 3px 4px rgb(0 0 0 / 0.35));
+  transition:
+    translate 260ms var(--ml-ease-spring),
+    scale 200ms var(--ml-ease),
+    filter 200ms var(--ml-ease);
+}
+.ml-puzzle__piece--placed { scale: 1; filter: none; }
+.ml-puzzle__piece--locked { cursor: default; }
+.ml-puzzle__piece--selected { scale: 1.04; filter: drop-shadow(0 0 6px var(--_glow)) drop-shadow(0 6px 8px rgb(0 0 0 / 0.35)); }
+.ml-puzzle__piece--dragging {
+  scale: 1.06;
+  cursor: grabbing;
+  transition: scale 200ms var(--ml-ease), filter 200ms var(--ml-ease);
+  filter: drop-shadow(0 0 6px var(--_glow)) drop-shadow(0 10px 12px rgb(0 0 0 / 0.4));
+}
+.ml-puzzle--disabled .ml-puzzle__piece,
+.ml-puzzle--solved .ml-puzzle__piece { cursor: default; }
+
+.ml-puzzle__image,
+.ml-puzzle__art { pointer-events: none; }
+
+.ml-puzzle__edge {
+  fill: none;
+  stroke: var(--_edge);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+  /* The outline is the piece's hit area (the picture inside ignores the pointer) */
+  pointer-events: all;
+  transition: stroke 200ms var(--ml-ease), stroke-width 200ms var(--ml-ease), opacity 400ms var(--ml-ease);
+}
+/* A piece snapping home flashes its outline */
+.ml-puzzle__piece--placed .ml-puzzle__edge { animation: ml-puzzle-snap 600ms var(--ml-ease) both; }
+.ml-puzzle__piece--selected .ml-puzzle__edge,
+.ml-puzzle__piece--dragging .ml-puzzle__edge { stroke: var(--_accent); stroke-width: 2.4; }
+.ml-puzzle__piece:focus-visible .ml-puzzle__edge {
+  stroke: var(--ml-focus);
+  stroke-width: 2.6;
+  stroke-dasharray: 6 3;
+}
+
+.ml-puzzle__num {
+  fill: #fff;
+  font-family: var(--ml-font-display);
+  font-size: 30px;
+  font-weight: 700;
+  text-anchor: middle;
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: rgb(0 0 0 / 0.35);
+  stroke-width: 3px;
+  pointer-events: none;
+}
+
+/* ── Solved ─────────────────────────────────────────────── */
+.ml-puzzle--solved .ml-puzzle__edge { opacity: 0; animation: none; }
+.ml-puzzle--solved .ml-puzzle__num { opacity: 0; transition: opacity 400ms var(--ml-ease); }
+.ml-puzzle--solved .ml-puzzle__svg { animation: ml-puzzle-done 900ms var(--ml-ease) both; }
+
+@keyframes ml-puzzle-snap {
+  0% { stroke: var(--_accent); stroke-width: 3; }
+  100% { stroke: var(--_edge); stroke-width: 1.2; }
+}
+@keyframes ml-puzzle-done {
+  0% { filter: drop-shadow(0 0 0 transparent); }
+  40% { filter: drop-shadow(0 0 18px var(--_glow)); }
+  100% { filter: drop-shadow(0 0 6px var(--_glow)); }
+}
+
+/* ── Toolbar ────────────────────────────────────────────── */
+.ml-puzzle__bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-sm);
+  letter-spacing: 0.04em;
+  color: var(--ml-text-muted);
+}
+.ml-puzzle__stat { font-variant-numeric: tabular-nums; }
+.ml-puzzle__stat--progress { color: var(--_accent); }
+.ml-puzzle--solved .ml-puzzle__stat--progress::before { content: '✦ '; }
+.ml-puzzle__shuffle {
+  margin-left: auto;
+  padding: 5px 12px;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius-sm);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: color var(--ml-dur-fast) var(--ml-ease), border-color var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-puzzle__shuffle:hover:not(:disabled) { color: var(--_accent); border-color: var(--_accent); }
+.ml-puzzle__shuffle:focus-visible { outline: 2px solid var(--ml-focus); outline-offset: 2px; }
+.ml-puzzle__shuffle:disabled { opacity: 0.5; cursor: not-allowed; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-puzzle__piece,
+  .ml-puzzle__edge { transition: none; }
+  .ml-puzzle__piece--placed .ml-puzzle__edge,
+  .ml-puzzle--solved .ml-puzzle__svg { animation: none; }
+}
