@@ -85,7 +85,7 @@ import { MlButton, MlCombobox } from '@malilion/ui'`,
   },
   {
     title: '在 React / Next.js 使用',
-    desc: '@malilion/ui/react 提供全部 129 個元件的 React 版，HTML 結構與 Vue 版一致、共用同一份樣式；Next.js App Router 的 Server Component 可以直接使用。左側「React 與 Next.js」頁面有即時示範。',
+    desc: '@malilion/ui/react 提供全部 133 個元件的 React 版，HTML 結構與 Vue 版一致、共用同一份樣式；Next.js App Router 的 Server Component 可以直接使用。左側「React 與 Next.js」頁面有即時示範。',
     filename: 'page.tsx',
     lang: 'tsx',
     code: `import '@malilion/ui/style.css'

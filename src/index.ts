@@ -23,11 +23,13 @@ import MlChatMessage from './components/MlChatMessage.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
 import MlCheckboxGroup from './components/MlCheckboxGroup.vue'
 import MlCodeBlock from './components/MlCodeBlock.vue'
+import MlCodeDiff from './components/MlCodeDiff.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
 import MlCommandPalette from './components/MlCommandPalette.vue'
 import MlConfigProvider from './components/MlConfigProvider.vue'
 import MlContextMenu from './components/MlContextMenu.vue'
+import MlCopyButton from './components/MlCopyButton.vue'
 import MlCountUp from './components/MlCountUp.vue'
 import MlCountdown from './components/MlCountdown.vue'
 import MlDatePicker from './components/MlDatePicker.vue'
@@ -57,6 +59,7 @@ import MlImageCropper from './components/MlImageCropper.vue'
 import MlImagePreview from './components/MlImagePreview.vue'
 import MlInfiniteScroll from './components/MlInfiniteScroll.vue'
 import MlInput from './components/MlInput.vue'
+import MlJsonViewer from './components/MlJsonViewer.vue'
 import MlKanban from './components/MlKanban.vue'
 import MlKbd from './components/MlKbd.vue'
 import MlLayout from './components/MlLayout.vue'
@@ -115,6 +118,7 @@ import MlTag from './components/MlTag.vue'
 import MlTagInput from './components/MlTagInput.vue'
 import MlTaiwanRegion from './components/MlTaiwanRegion.vue'
 import MlTaiwanMap from './components/MlTaiwanMap.vue'
+import MlTerminal from './components/MlTerminal.vue'
 import MlTextarea from './components/MlTextarea.vue'
 import MlThemeToggle from './components/MlThemeToggle.vue'
 import MlTilt from './components/MlTilt.vue'
@@ -158,11 +162,13 @@ const components = {
   MlCheckbox,
   MlCheckboxGroup,
   MlCodeBlock,
+  MlCodeDiff,
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
   MlConfigProvider,
   MlContextMenu,
+  MlCopyButton,
   MlCountUp,
   MlCountdown,
   MlDatePicker,
@@ -192,6 +198,7 @@ const components = {
   MlImagePreview,
   MlInfiniteScroll,
   MlInput,
+  MlJsonViewer,
   MlKanban,
   MlKbd,
   MlLayout,
@@ -250,6 +257,7 @@ const components = {
   MlTagInput,
   MlTaiwanRegion,
   MlTaiwanMap,
+  MlTerminal,
   MlTextarea,
   MlThemeToggle,
   MlTilt,
@@ -316,11 +324,13 @@ export {
   MlCheckbox,
   MlCheckboxGroup,
   MlCodeBlock,
+  MlCodeDiff,
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
   MlConfigProvider,
   MlContextMenu,
+  MlCopyButton,
   MlCountUp,
   MlCountdown,
   MlDatePicker,
@@ -350,6 +360,7 @@ export {
   MlImagePreview,
   MlInfiniteScroll,
   MlInput,
+  MlJsonViewer,
   MlKanban,
   MlKbd,
   MlLayout,
@@ -408,6 +419,7 @@ export {
   MlTagInput,
   MlTaiwanRegion,
   MlTaiwanMap,
+  MlTerminal,
   MlTextarea,
   MlThemeToggle,
   MlTilt,
@@ -433,8 +445,41 @@ export { configureTheme, getThemeState, setTheme, toggleTheme, subscribeTheme, t
 export type { MlThemeMode, MlResolvedTheme, MlThemeState, MlThemeOptions, MlThemeOrigin, MlSetThemeOptions } from './theme'
 export { useTheme } from './useTheme'
 export type { UseThemeReturn } from './useTheme'
+export { copyText, copyRich, copySource, isClipboardSupported } from './clipboard'
+export type { MlRichClipboard, MlCopySource } from './clipboard'
+export { useClipboard } from './useClipboard'
+export type { UseClipboardOptions, UseClipboardReturn } from './useClipboard'
+export {
+  parseJson,
+  formatJsonPath,
+  searchJson,
+  flattenJson,
+  stringifyJson,
+  jsonSafeUrl,
+  jsonIsDate,
+} from './components/json'
+export type { JsonParseResult, JsonParseError, JsonSegment, JsonRow, JsonNodeRow, JsonSearch } from './components/json'
 export { encodeQr } from './qrcode'
 export { highlight, highlightLines } from './highlight'
+export { highlightTokens } from './highlight'
+export type { HighlightToken } from './highlight'
+export { diffLines, diffWords, diffFile, parsePatch, splitLines, decorateDiff, layoutDiff, foldRanges, diffFileName, diffLangOf, diffModel } from './diff'
+export type {
+  DiffLine,
+  DiffLineType,
+  DiffHunkHeader,
+  DiffFile,
+  DiffFileStatus,
+  DiffOptions,
+  DiffWordRanges,
+  DiffSegment,
+  DiffViewLine,
+  DiffRow,
+  DiffDecorateOptions,
+  DiffLayoutOptions,
+  DiffModelInput,
+  MlCodeDiffView,
+} from './diff'
 export { parseMarkdown, parseInline, createMarkdownParser, sanitizeUrl, slugify, headingIds } from './markdown'
 export type { MdBlock, MdInline, MdHeading, MdCode, MdList, MdListItem, MdTable, MdAlign, MdParseOptions, MlMarkdownCodeSlot, MlMarkdownLinkSlot, MlMarkdownImageSlot } from './markdown'
 export type { QrLevel, QrMatrix } from './qrcode'
@@ -442,6 +487,8 @@ export type { SignatureStroke, SignaturePoint } from './components/signature'
 export type { MlCropData, MlCropOutput } from './components/cropper'
 export type { MlWheelPrize } from './components/wheel'
 export { pickWeighted as pickWheelPrize } from './components/wheel'
+export { parseTerminalMarkup, terminalPlainText, terminalTranscript, normalizeTerminalLines } from './components/terminal'
+export type { MlTerminalLine, MlTerminalLineType, MlTerminalTone, MlTerminalScript, MlTerminalStyle, TerminalSegment } from './components/terminal'
 export { scorePassword, checkPasswordRules } from './components/password'
 export type { MlPasswordScore, MlPasswordRules, MlPasswordRuleKey, MlPasswordRuleResult } from './components/password'
 export type { MlToastItem } from './toast'
@@ -514,11 +561,13 @@ declare module 'vue' {
     MlCheckbox: typeof MlCheckbox
     MlCheckboxGroup: typeof MlCheckboxGroup
     MlCodeBlock: typeof MlCodeBlock
+    MlCodeDiff: typeof MlCodeDiff
     MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
     MlCommandPalette: typeof MlCommandPalette
     MlConfigProvider: typeof MlConfigProvider
     MlContextMenu: typeof MlContextMenu
+    MlCopyButton: typeof MlCopyButton
     MlCountUp: typeof MlCountUp
     MlCountdown: typeof MlCountdown
     MlDatePicker: typeof MlDatePicker
@@ -548,6 +597,7 @@ declare module 'vue' {
     MlImagePreview: typeof MlImagePreview
     MlInfiniteScroll: typeof MlInfiniteScroll
     MlInput: typeof MlInput
+    MlJsonViewer: typeof MlJsonViewer
     MlKanban: typeof MlKanban
     MlKbd: typeof MlKbd
     MlLayout: typeof MlLayout
@@ -606,6 +656,7 @@ declare module 'vue' {
     MlTagInput: typeof MlTagInput
     MlTaiwanRegion: typeof MlTaiwanRegion
     MlTaiwanMap: typeof MlTaiwanMap
+    MlTerminal: typeof MlTerminal
     MlTextarea: typeof MlTextarea
     MlThemeToggle: typeof MlThemeToggle
     MlTilt: typeof MlTilt

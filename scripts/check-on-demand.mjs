@@ -25,7 +25,8 @@ const server = await createServer({
 await server.listen()
 const base = server.resolvedUrls.local[0]
 const browser = await chromium.launch(process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH } : { channel: 'chrome' })
-const page = await browser.newPage({ viewport: { width: 1200, height: 900 } })
+// Reduced motion stops typing / counting animations moving on between the two snapshots.
+const page = await browser.newPage({ viewport: { width: 1200, height: 900 }, reducedMotion: 'reduce' })
 
 const PROPS = [
   'display', 'position', 'color', 'background-color', 'background-image', 'border-top-color', 'border-top-width',

@@ -86,6 +86,7 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'useLocale', as: 'useMlLocale', from: PKG },
       { name: 'setLocale', as: 'setMlLocale', from: PKG },
       { name: 'useTheme', as: 'useMlTheme', from: PKG },
+      { name: 'useClipboard', as: 'useMlClipboard', from: PKG },
     ])
 
     // Styles.

@@ -1,0 +1,440 @@
+/* CodeDiff — two machined plates side by side: teal for what was added, red for what was cut */
+.ml-diff {
+  --ml-diff-add-bg: rgb(20 207 178 / 0.09);
+  --ml-diff-add-gutter: rgb(20 207 178 / 0.16);
+  --ml-diff-add-word: rgb(20 207 178 / 0.3);
+  --ml-diff-add-text: var(--ml-cyan-300);
+  --ml-diff-del-bg: rgb(255 92 72 / 0.09);
+  --ml-diff-del-gutter: rgb(255 92 72 / 0.16);
+  --ml-diff-del-word: rgb(255 92 72 / 0.32);
+  --ml-diff-del-text: var(--ml-red-300);
+  --ml-diff-sticky-top: 0px;
+
+  /* Syntax colours follow MlCodeBlock's --ml-code-* when that sheet is loaded. */
+  --_comment: var(--ml-code-comment, var(--ml-text-dim));
+  --_string: var(--ml-code-string, var(--ml-green-300));
+  --_tag: var(--ml-code-tag, var(--ml-gold-300));
+  --_punct: var(--ml-code-punct, var(--ml-gold-500));
+  --_attr: var(--ml-code-attr, var(--ml-cyan-300));
+  --_keyword: var(--ml-code-keyword, var(--ml-bean-300));
+  --_number: var(--ml-code-number, var(--ml-bronze-300));
+
+  position: relative;
+  min-width: 0;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+}
+
+[data-ml-theme='light'] .ml-diff {
+  --ml-diff-add-bg: rgb(10 159 137 / 0.1);
+  --ml-diff-add-gutter: rgb(10 159 137 / 0.18);
+  --ml-diff-add-word: rgb(10 159 137 / 0.28);
+  --ml-diff-add-text: var(--ml-cyan-700);
+  --ml-diff-del-bg: rgb(229 64 45 / 0.08);
+  --ml-diff-del-gutter: rgb(229 64 45 / 0.15);
+  --ml-diff-del-word: rgb(229 64 45 / 0.24);
+  --ml-diff-del-text: var(--ml-red-600);
+
+  --_string: var(--ml-code-string, var(--ml-green-600));
+  --_tag: var(--ml-code-tag, #87560a);
+  --_punct: var(--ml-code-punct, var(--ml-gold-600));
+  --_attr: var(--ml-code-attr, var(--ml-cyan-700));
+  --_keyword: var(--ml-code-keyword, var(--ml-bean-600));
+  --_number: var(--ml-code-number, var(--ml-bronze-500));
+}
+
+/* ── Header ── */
+.ml-diff__bar {
+  position: sticky;
+  top: var(--ml-diff-sticky-top);
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 12px;
+  padding: 8px 10px 8px 14px;
+  background: var(--ml-surface);
+  border-bottom: 1px dashed var(--ml-line);
+  box-shadow: inset 0 0 0 1px var(--ml-line), inset 0 1px 0 var(--ml-line-strong);
+}
+
+.ml-diff__title,
+.ml-diff__file-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font-size: var(--ml-text-xs);
+}
+
+.ml-diff__name {
+  min-width: 0;
+  overflow: hidden;
+  color: var(--ml-text-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ml-diff__lang,
+.ml-diff__status {
+  flex: none;
+  padding: 2px 6px;
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-size: 0.625rem;
+}
+
+.ml-diff__status--added {
+  background: var(--ml-diff-add-bg);
+  color: var(--ml-diff-add-text);
+}
+
+.ml-diff__status--deleted {
+  background: var(--ml-diff-del-bg);
+  color: var(--ml-diff-del-text);
+}
+
+.ml-diff__stats {
+  display: inline-flex;
+  flex: none;
+  gap: 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-diff__stat--add { color: var(--ml-diff-add-text); }
+.ml-diff__stat--del { color: var(--ml-diff-del-text); }
+
+.ml-diff__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+.ml-diff__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ml-diff__pos {
+  min-width: 5.5em;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+  font-variant-numeric: tabular-nums;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.ml-diff__btn,
+.ml-diff__view,
+.ml-diff__expand {
+  font: inherit;
+  cursor: pointer;
+  transition: color var(--ml-dur-fast, 0.15s), background var(--ml-dur-fast, 0.15s), border-color var(--ml-dur-fast, 0.15s);
+}
+
+.ml-diff__btn {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--ml-line-steel-strong);
+  color: var(--ml-text-muted);
+}
+
+.ml-diff__btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ml-diff__btn:hover {
+  border-color: var(--ml-line-strong);
+  color: var(--ml-accent-text);
+}
+
+.ml-diff__views {
+  display: inline-flex;
+  border: 1px solid var(--ml-line-steel-strong);
+}
+
+.ml-diff__view {
+  padding: 3px 10px;
+  background: transparent;
+  border: 0;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-diff__view + .ml-diff__view {
+  border-left: 1px solid var(--ml-line-steel-strong);
+}
+
+.ml-diff__view:hover {
+  color: var(--ml-text);
+}
+
+.ml-diff__view--on {
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+  box-shadow: inset 0 -2px 0 var(--ml-accent);
+}
+
+.ml-diff__btn:focus-visible,
+.ml-diff__view:focus-visible,
+.ml-diff__expand:focus-visible {
+  outline: 1px solid var(--ml-focus);
+  outline-offset: -1px;
+}
+
+.ml-diff__file-head {
+  padding: 6px 14px;
+  background: var(--ml-surface-2);
+  border-top: 1px solid var(--ml-line-steel);
+  border-bottom: 1px solid var(--ml-line-steel);
+}
+
+.ml-diff__file + .ml-diff__file {
+  margin-top: 10px;
+}
+
+/* ── Table ── */
+.ml-diff__body {
+  overflow-y: auto;
+}
+
+.ml-diff__scroll {
+  overflow-x: auto;
+  outline: none;
+}
+
+.ml-diff__scroll:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ml-focus);
+}
+
+.ml-diff__table {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  tab-size: 2;
+}
+
+.ml-diff--wrap .ml-diff__table {
+  table-layout: fixed;
+}
+
+/* Column headers exist for screen readers only. */
+.ml-diff__th {
+  height: 0;
+  padding: 0;
+  border: 0;
+  overflow: hidden;
+  font-size: 0;
+  line-height: 0;
+}
+
+.ml-diff__th--num {
+  width: 4.5em;
+}
+
+.ml-diff__table td {
+  padding: 0;
+  vertical-align: top;
+}
+
+.ml-diff__num {
+  width: 1%;
+  min-width: 3.4em;
+  padding: 0 10px !important;
+  color: var(--ml-text-dim);
+  font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+  user-select: none;
+  border-right: 1px solid var(--ml-line-steel);
+}
+
+.ml-diff__code {
+  position: relative;
+  padding: 0 14px 0 24px !important;
+}
+
+.ml-diff--split .ml-diff__code {
+  width: 50%;
+}
+
+.ml-diff--split .ml-diff__code--old {
+  border-right: 1px solid var(--ml-line);
+}
+
+.ml-diff__text {
+  white-space: pre;
+}
+
+.ml-diff--wrap .ml-diff__text {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ml-diff__sign {
+  position: absolute;
+  left: 9px;
+  top: 0;
+  user-select: none;
+}
+
+.ml-diff__sr {
+  user-select: none;
+}
+
+.ml-diff__eof {
+  margin-left: 10px;
+  padding: 0 5px;
+  border: 1px dashed var(--ml-line-steel-strong);
+  color: var(--ml-text-dim);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Added / removed */
+.ml-diff__cell--add,
+.ml-diff__row--add > td {
+  background: var(--ml-diff-add-bg);
+}
+
+.ml-diff__cell--del,
+.ml-diff__row--del > td {
+  background: var(--ml-diff-del-bg);
+}
+
+.ml-diff__num.ml-diff__cell--add,
+.ml-diff__row--add > .ml-diff__num {
+  background: var(--ml-diff-add-gutter);
+  color: var(--ml-diff-add-text);
+}
+
+.ml-diff__num.ml-diff__cell--del,
+.ml-diff__row--del > .ml-diff__num {
+  background: var(--ml-diff-del-gutter);
+  color: var(--ml-diff-del-text);
+}
+
+.ml-diff__cell--add .ml-diff__sign { color: var(--ml-diff-add-text); }
+.ml-diff__cell--del .ml-diff__sign { color: var(--ml-diff-del-text); }
+
+.ml-diff__word {
+  border-radius: 2px;
+}
+
+.ml-diff__cell--add .ml-diff__word {
+  background: var(--ml-diff-add-word);
+  box-shadow: 0 1px 0 var(--ml-diff-add-text);
+}
+
+.ml-diff__cell--del .ml-diff__word {
+  background: var(--ml-diff-del-word);
+  text-decoration: line-through;
+  text-decoration-color: color-mix(in srgb, var(--ml-diff-del-text) 55%, transparent);
+}
+
+/* Split view: the empty half of a one-sided row, a brushed-steel hatch */
+.ml-diff__cell--empty {
+  background: repeating-linear-gradient(135deg, transparent 0 6px, var(--ml-line-steel) 6px 7px);
+}
+
+/* Current change (n / p): a gold rail on the left */
+.ml-diff__row {
+  outline: none;
+}
+
+.ml-diff__row--current > td:first-child {
+  box-shadow: inset 3px 0 0 var(--ml-accent);
+}
+
+.ml-diff__row:focus-visible > td {
+  box-shadow: inset 0 1px 0 var(--ml-focus), inset 0 -1px 0 var(--ml-focus);
+}
+
+.ml-diff__row:focus-visible > td:first-child {
+  box-shadow: inset 3px 0 0 var(--ml-accent), inset 0 1px 0 var(--ml-focus), inset 0 -1px 0 var(--ml-focus);
+}
+
+/* Folds, hunk headers, notes */
+.ml-diff__fold > td {
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent 70%);
+  border-top: 1px dashed var(--ml-line);
+  border-bottom: 1px dashed var(--ml-line);
+}
+
+.ml-diff__expand {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 3px 14px;
+  background: transparent;
+  border: 0;
+  color: var(--ml-accent-text);
+  font-size: var(--ml-text-xs);
+  text-align: left;
+}
+
+.ml-diff__expand svg {
+  width: 13px;
+  height: 13px;
+  flex: none;
+}
+
+.ml-diff__expand:hover {
+  background: var(--ml-accent-soft);
+}
+
+.ml-diff__hunk > td {
+  padding: 3px 14px !important;
+  background: color-mix(in srgb, var(--ml-accent-soft) 70%, transparent);
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+  white-space: pre;
+  border-top: 1px solid var(--ml-line);
+  border-bottom: 1px solid var(--ml-line);
+}
+
+.ml-diff--wrap .ml-diff__hunk > td {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ml-diff__note > td {
+  padding: 18px 14px !important;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+  text-align: center;
+}
+
+/* Syntax colours */
+.ml-diff .tok-comment { color: var(--_comment); font-style: italic; }
+.ml-diff .tok-string { color: var(--_string); }
+.ml-diff .tok-tag { color: var(--_tag); }
+.ml-diff .tok-punct { color: var(--_punct); }
+.ml-diff .tok-attr { color: var(--_attr); }
+.ml-diff .tok-keyword { color: var(--_keyword); }
+.ml-diff .tok-number { color: var(--_number); }
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-diff__btn,
+  .ml-diff__view,
+  .ml-diff__expand {
+    transition: none;
+  }
+}

@@ -95,6 +95,9 @@
     "components/effects.css",
     "components/code.css"
   ],
+  "MlCodeDiff": [
+    "components/diff.css"
+  ],
   "MlColorPicker": [
     "components/field.css",
     "components/paw.css",
@@ -119,6 +122,12 @@
   "MlContextMenu": [
     "components/paw.css",
     "components/dropdown.css"
+  ],
+  "MlCopyButton": [
+    "components/button.css",
+    "components/paw.css",
+    "components/effects.css",
+    "components/copy-button.css"
   ],
   "MlCountUp": [
     "components/effects.css"
@@ -243,6 +252,12 @@
   "MlInput": [
     "components/field.css",
     "components/form.css"
+  ],
+  "MlJsonViewer": [
+    "components/button.css",
+    "components/paw.css",
+    "components/effects.css",
+    "components/json-viewer.css"
   ],
   "MlKanban": [
     "components/sortable.css"
@@ -472,6 +487,10 @@
   ],
   "MlTaiwanMap": [
     "components/taiwan-map.css"
+  ],
+  "MlTerminal": [
+    "components/paw.css",
+    "components/terminal.css"
   ],
   "MlTextarea": [
     "components/field.css",

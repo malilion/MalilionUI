@@ -2,6 +2,7 @@ import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, typ
 import { barLayout, bubbleRadius, chartStops, diamondPath, funnelStages, linearFit, nearestIndex, niceScale, niceStep, percentText, seriesColors, smoothPath, type BarSegment } from '../components/charts'
 import { addDays, dayKey, startOfDay } from '../components/dates'
 import { createPawPath } from '../components/paw'
+import { copyText } from '../clipboard'
 import { highlightLines } from '../highlight'
 import { mascotImages } from '../mascot'
 import { encodeQr, qrEyePath, qrLayout, type QrLevel } from '../qrcode'
@@ -783,19 +784,7 @@ export function CodeBlock({ code, lang = 'ts', filename, lineNumbers, highlight,
   const marked = new Set(highlight ?? [])
 
   async function copy() {
-    try {
-      await navigator.clipboard.writeText(source)
-    } catch {
-      const area = document.createElement('textarea')
-      area.value = source
-      area.setAttribute('readonly', '')
-      area.style.position = 'fixed'
-      area.style.opacity = '0'
-      document.body.appendChild(area)
-      area.select()
-      document.execCommand('copy')
-      area.remove()
-    }
+    if (!(await copyText(source))) return
     setCopied(true)
     clearTimeout(reset.current)
     reset.current = setTimeout(() => setCopied(false), 1600)
