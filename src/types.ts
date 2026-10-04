@@ -8,6 +8,18 @@ export type MlAlertTone = 'info' | 'success' | 'warning' | 'danger'
 export type MlProgressTone = 'gold' | 'tech' | 'success' | 'danger'
 export type MlAvatarSize = 'sm' | 'md' | 'lg' | 'xl'
 export type MlAvatarStatus = 'online' | 'busy' | 'away' | 'offline'
+export type MlAvatarRing = 'gold' | 'steel' | 'tech'
+/** One person in an MlAvatarGroup. */
+export interface MlAvatarGroupItem {
+  name?: string
+  src?: string
+  status?: MlAvatarStatus
+  /** Overrides the group's ring for this avatar. */
+  ring?: MlAvatarRing
+  lion?: boolean
+}
+export type MlTextTone = 'default' | 'dim' | 'gold' | 'tech' | 'success' | 'warning' | 'danger'
+export type MlTextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type MlPlacement = 'top' | 'bottom' | 'left' | 'right'
 
 export interface MlTabItem {

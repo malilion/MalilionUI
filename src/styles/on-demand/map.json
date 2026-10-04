@@ -34,6 +34,9 @@
   "MlAvatar": [
     "components/avatar.css"
   ],
+  "MlAvatarGroup": [
+    "components/avatar.css"
+  ],
   "MlBackTop": [
     "components/utilities.css"
   ],
@@ -56,6 +59,9 @@
   "MlBarChart": [
     "components/paw.css",
     "components/charts.css"
+  ],
+  "MlBarcode": [
+    "components/barcode.css"
   ],
   "MlBorderBeam": [
     "components/effects.css"
@@ -347,6 +353,9 @@
     "components/paw.css",
     "components/charts.css"
   ],
+  "MlLink": [
+    "components/typography.css"
+  ],
   "MlLionMark": [
     "components/lion-mark.css"
   ],
@@ -615,6 +624,13 @@
     "components/paw.css",
     "components/terminal.css"
   ],
+  "MlText": [
+    "components/button.css",
+    "components/paw.css",
+    "components/effects.css",
+    "components/copy-button.css",
+    "components/typography.css"
+  ],
   "MlTextarea": [
     "components/field.css",
     "components/form.css"
@@ -639,6 +655,9 @@
   "MlTimeline": [
     "components/paw.css",
     "components/timeline.css"
+  ],
+  "MlTitle": [
+    "components/typography.css"
   ],
   "MlToastHost": [
     "components/paw.css",

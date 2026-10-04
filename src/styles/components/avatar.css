@@ -78,3 +78,45 @@
 .ml-avatar-group > .ml-avatar + .ml-avatar {
   margin-left: calc(var(--_size) * -0.22);
 }
+
+.ml-avatar-group > .ml-avatar {
+  transition: translate 180ms var(--ml-ease), margin 220ms var(--ml-ease);
+}
+
+.ml-avatar-group--tight > .ml-avatar + .ml-avatar { margin-left: calc(var(--_size) * -0.36); }
+.ml-avatar-group--loose > .ml-avatar + .ml-avatar { margin-left: calc(var(--_size) * -0.08); }
+
+/* Lift the hovered avatar so a buried face can be seen. */
+.ml-avatar-group > .ml-avatar:hover {
+  z-index: 1;
+  translate: 0 -3px;
+}
+
+.ml-avatar-group__more {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+}
+
+.ml-avatar-group__more .ml-avatar__initials {
+  font-family: var(--ml-font-mono);
+  font-size: calc(var(--_size) * 0.3);
+  text-transform: none;
+}
+
+button.ml-avatar-group__more {
+  cursor: pointer;
+}
+
+button.ml-avatar-group__more:focus-visible {
+  z-index: 1;
+  outline: none;
+  filter: drop-shadow(0 0 4px var(--ml-cyan-400));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-avatar-group > .ml-avatar { transition: none; }
+  .ml-avatar-group > .ml-avatar:hover { translate: none; }
+}

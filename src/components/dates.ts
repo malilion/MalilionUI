@@ -87,13 +87,15 @@ export function periodKey(date: Date, type: PeriodType) {
 export const quarterOf = (date: Date) => Math.floor(date.getMonth() / 3) + 1
 
 /** First year of the decade containing `year` (2026 → 2020). */
-export const decadeStart = (year: number) => Math.floor(year / 10) * 10
+export const decadeStart = (year: number, calendar?: MlCalendarSystem) =>
+  calendar === 'roc' ? Math.floor(toRocYear(year) / 10) * 10 + ROC_OFFSET : Math.floor(year / 10) * 10
 
 /**
  * The page a panel shows for `date`: the year for month / quarter panels,
  * the decade's first year for the year panel.
  */
-export const periodPage = (date: Date, type: PeriodType) => (type === 'year' ? decadeStart(date.getFullYear()) : date.getFullYear())
+export const periodPage = (date: Date, type: PeriodType, calendar?: MlCalendarSystem) =>
+  type === 'year' ? decadeStart(date.getFullYear(), calendar) : date.getFullYear()
 
 /** Cells of a page: 12 months, 4 quarters, or the decade plus one year either side (12). */
 export function periodGrid(type: PeriodType, page: number) {
@@ -115,10 +117,49 @@ export function periodDisabled(date: Date, type: PeriodType, min?: Date, max?: D
   return disabledDate?.(periodStart(date, type)) ?? false
 }
 
-/** Display text of a period from the locale strings ("2026 年 10 月", "2026 Q4"…). */
-export function formatPeriod(date: Date, type: PeriodType, t: MlLocale['date']['period']) {
-  const y = date.getFullYear()
-  if (type === 'year') return t.year(y)
-  if (type === 'quarter') return t.quarter(y, quarterOf(date))
-  return t.month(y, date.getMonth() + 1)
+/**
+ * Display text of a period from the locale strings ("2026 年 10 月", "2026 Q4"…).
+ * Pass `roc` (the locale's `date.roc`) for 民國: "民國 115 年 10 月".
+ */
+export function formatPeriod(date: Date, type: PeriodType, t: MlLocale['date']['period'], roc?: MlLocale['date']['roc']) {
+  const [era, y] = roc ? rocParts(date.getFullYear(), roc) : ['', date.getFullYear()]
+  const text = type === 'year' ? t.year(y) : type === 'quarter' ? t.quarter(y, quarterOf(date)) : t.month(y, date.getMonth() + 1)
+  return era ? `${era} ${text}` : text
+}
+
+/** Title of a year panel's page ("2020 – 2029 年", "民國 110 – 119 年"). */
+export function formatDecade(page: number, t: MlLocale['date']['period'], roc?: MlLocale['date']['roc']) {
+  if (!roc) return t.decade(page, page + 9)
+  const [era, from] = rocParts(page, roc)
+  const [, to] = rocParts(page + 9, roc)
+  // A page straddling 民國元年 has no tidy single-era label; fall back to Gregorian.
+  return toRocYear(page) > 0 ? `${era} ${t.decade(from, to)}` : t.decade(page, page + 9)
+}
+
+/* ── 民國紀年 (Republic of China calendar) ───────────────── */
+
+/** Which year numbering the pickers show: Gregorian (2026) or 民國 (115). */
+export type MlCalendarSystem = 'gregory' | 'roc'
+
+/** 民國元年 is 1912, so ROC year = Gregorian − 1911 (≤ 0 means 民國前). */
+export const ROC_OFFSET = 1911
+export const toRocYear = (year: number) => year - ROC_OFFSET
+export const fromRocYear = (rocYear: number) => rocYear + ROC_OFFSET
+
+/** Intl options with the ROC calendar mixed in when asked for. */
+export function withCalendar(options: Intl.DateTimeFormatOptions, calendar?: MlCalendarSystem): Intl.DateTimeFormatOptions {
+  return calendar === 'roc' ? { ...options, calendar: 'roc' } : options
+}
+
+/** Era prefix and the positive year number to show: 2026 → ['民國', 115], 1911 → ['民國前', 1]. */
+export function rocParts(year: number, t: MlLocale['date']['roc']): [string, number] {
+  const n = toRocYear(year)
+  return n > 0 ? [t.era, n] : [t.before, 1 - n]
+}
+
+/** Year shown in a year-panel cell: "2026", or "115" / "前1" for 民國. */
+export function yearCellText(year: number, calendar?: MlCalendarSystem) {
+  if (calendar !== 'roc') return String(year)
+  const n = toRocYear(year)
+  return n > 0 ? String(n) : `前${1 - n}`
 }

@@ -1,4 +1,5 @@
 import { useId, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
+import { hiddenNames, splitAvatars } from '../components/avatar-group'
 import { icons, type IconName } from '../components/icons'
 import { PAW_PAD, PAW_SHINE, PAW_TOES } from '../components/paw'
 import { mascotImages } from '../mascot'
@@ -6,6 +7,8 @@ import { pawStamp } from '../pawStamp'
 import { safeHref } from '../url'
 import type {
   MlAlertTone,
+  MlAvatarGroupItem,
+  MlAvatarRing,
   MlAvatarSize,
   MlAvatarStatus,
   MlBreadcrumbItem,
@@ -21,7 +24,7 @@ import type {
   MlTone,
 } from '../types'
 import { useLocale } from './locale'
-import { cx, len } from './utils'
+import { cx, len, useControllable } from './utils'
 
 /** An id that is safe inside url(#…) references. */
 export function useSvgId(prefix: string) {
@@ -396,16 +399,18 @@ export interface AvatarProps {
   status?: MlAvatarStatus
   /** Use the Malilion mascot as the picture. */
   lion?: boolean
+  /** Native tooltip. */
+  title?: string
   className?: string
 }
 
-export function Avatar({ src, name, size = 'md', ring = 'gold', status, lion, className }: AvatarProps) {
+export function Avatar({ src, name, size = 'md', ring = 'gold', status, lion, title, className }: AvatarProps) {
   const loc = useLocale()
   const picture = src ?? (lion ? mascotImages.avatar : undefined)
   const [failedFor, setFailedFor] = useState<string>()
   const showImg = !!picture && failedFor !== picture
   return (
-    <span className={cx('ml-avatar', `ml-avatar--${size}`, `ml-avatar--${ring}`, className)} role={showImg ? undefined : 'img'} aria-label={showImg ? undefined : name}>
+    <span className={cx('ml-avatar', `ml-avatar--${size}`, `ml-avatar--${ring}`, className)} role={showImg ? undefined : 'img'} aria-label={showImg ? undefined : name} title={title}>
       <span className="ml-avatar__face">
         {showImg ? (
           <img className="ml-avatar__img" src={picture} alt={name ?? (lion ? loc.mascot : '')} onError={() => setFailedFor(picture)} />
@@ -421,6 +426,90 @@ export function Avatar({ src, name, size = 'md', ring = 'gold', status, lion, cl
         </span>
       )}
     </span>
+  )
+}
+
+export interface AvatarGroupProps {
+  /** The people to show. Without items, children are stacked as-is. */
+  items?: MlAvatarGroupItem[]
+  /** Most avatars to draw before the "+N" chip. */
+  max?: number
+  /** Real headcount when only some people are loaded (e.g. 128 members, 5 avatars). */
+  total?: number
+  size?: MlAvatarSize
+  /** Ring for avatars that don't set their own. */
+  ring?: MlAvatarRing
+  /** How far the avatars overlap. */
+  spacing?: 'tight' | 'normal' | 'loose'
+  /** The "+N" chip becomes a button that reveals everyone passed in. */
+  expandable?: boolean
+  expanded?: boolean
+  defaultExpanded?: boolean
+  onExpandedChange?: (expanded: boolean) => void
+  /** Accessible name of the group. Default "成員". */
+  label?: string
+  className?: string
+  children?: ReactNode
+}
+
+const NO_PEOPLE: MlAvatarGroupItem[] = []
+
+export function AvatarGroup({
+  items = NO_PEOPLE,
+  max,
+  total,
+  size = 'md',
+  ring = 'gold',
+  spacing = 'normal',
+  expandable,
+  expanded,
+  defaultExpanded = false,
+  onExpandedChange,
+  label,
+  className,
+  children,
+}: AvatarGroupProps) {
+  const loc = useLocale()
+  const [open, setOpen] = useControllable(expanded, defaultExpanded, onExpandedChange)
+  const split = splitAvatars(items, max, total, open)
+  const tooltip = hiddenNames(split, loc.name.toLowerCase().startsWith('zh') ? '、' : ', ') || undefined
+  const canExpand = expandable && split.hidden.length > 0
+  const chip = cx('ml-avatar', `ml-avatar--${size}`, 'ml-avatar--steel', 'ml-avatar-group__more')
+  const face = (text: string) => (
+    <span className="ml-avatar__face">
+      <span className="ml-avatar__initials" aria-hidden="true">
+        {text}
+      </span>
+    </span>
+  )
+  return (
+    <div role="group" aria-label={label ?? loc.avatarGroup.label} className={cx('ml-avatar-group', `ml-avatar-group--${spacing}`, className, { 'ml-avatar-group--expanded': open })}>
+      {items.length ? (
+        <>
+          {split.shown.map((p, i) => (
+            <Avatar key={i} name={p.name} src={p.src} status={p.status} lion={p.lion} ring={p.ring ?? ring} size={size} title={p.name} />
+          ))}
+          {canExpand ? (
+            <button type="button" className={chip} aria-expanded={open} aria-label={loc.avatarGroup.showAll(split.hidden.length)} title={tooltip} onClick={() => setOpen(!open)}>
+              {face(`+${split.more}`)}
+            </button>
+          ) : (
+            split.more > 0 && (
+              <span role="img" className={chip} aria-label={loc.avatarGroup.more(split.more)} title={tooltip}>
+                {face(`+${split.more}`)}
+              </span>
+            )
+          )}
+          {expandable && open && (
+            <button type="button" className={cx(chip, 'ml-avatar-group__less')} aria-label={loc.avatarGroup.collapse} title={loc.avatarGroup.collapse} onClick={() => setOpen(false)}>
+              {face('−')}
+            </button>
+          )}
+        </>
+      ) : (
+        children
+      )}
+    </div>
   )
 }
 

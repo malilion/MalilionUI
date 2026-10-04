@@ -4,6 +4,7 @@ import { forwardRef, useEffect, useId, useImperativeHandle, useRef, useState, ty
 import {
   addPeriods,
   comparePeriods,
+  formatDecade,
   formatPeriod,
   periodColumns,
   periodDisabled,
@@ -13,6 +14,9 @@ import {
   periodStart,
   quarterOf,
   samePeriod,
+  withCalendar,
+  yearCellText,
+  type MlCalendarSystem,
   type PeriodType,
 } from '../components/dates'
 import type { MlDateRange } from '../types'
@@ -38,10 +42,12 @@ export interface PeriodPanelProps {
   /** Called with each period's first day. */
   disabledDate?: (date: Date) => boolean
   locale?: string
+  /** 'roc' numbers the years 民國 (115) instead of Gregorian (2026). */
+  calendar?: MlCalendarSystem
 }
 
 export const PeriodPanel = forwardRef<{ focus(): void }, PeriodPanelProps>(function PeriodPanel(
-  { type, mode = 'single', value, defaultValue = null, onChange, range, defaultRange = NO_RANGE, onRangeChange, min, max, disabledDate, locale },
+  { type, mode = 'single', value, defaultValue = null, onChange, range, defaultRange = NO_RANGE, onRangeChange, min, max, disabledDate, locale, calendar },
   ref,
 ) {
   const loc = useLocale()
@@ -50,7 +56,7 @@ export const PeriodPanel = forwardRef<{ focus(): void }, PeriodPanelProps>(funct
   const [now] = useState(() => new Date())
   const anchor = mode === 'range' ? rng[0] : model
   /** Year shown (month / quarter panels) or first year of the decade (year panel). */
-  const [page, setPage] = useState(() => periodPage(anchor ?? now, type))
+  const [page, setPage] = useState(() => periodPage(anchor ?? now, type, calendar))
   /** The period that owns the roving tabindex. */
   const [focused, setFocused] = useState(() => periodStart(anchor ?? now, type))
   const [hovered, setHovered] = useState<Date | null>(null)
@@ -66,16 +72,17 @@ export const PeriodPanel = forwardRef<{ focus(): void }, PeriodPanelProps>(funct
   const perPage = PER_PAGE[type]
   const lang = locale ?? loc.name
   const t = loc.date.period
-  const title = type === 'year' ? t.decade(page, page + 9) : t.year(page)
+  const roc = calendar === 'roc' ? loc.date.roc : undefined
+  const title = type === 'year' ? formatDecade(page, t, roc) : formatPeriod(new Date(page, 0, 1), 'year', t, roc)
   const prevLabel = type === 'year' ? loc.calendar.prevDecade : loc.calendar.prevYear
   const nextLabel = type === 'year' ? loc.calendar.nextDecade : loc.calendar.nextYear
   const shortMonth = new Intl.DateTimeFormat(lang, { month: 'short' })
-  const longMonth = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long' })
+  const longMonth = new Intl.DateTimeFormat(lang, withCalendar({ year: 'numeric', month: 'long' }, calendar))
 
   const cellText = (d: Date) =>
-    type === 'month' ? shortMonth.format(d) : type === 'quarter' ? t.quarterCell(quarterOf(d)) : String(d.getFullYear())
-  const cellLabel = (d: Date) => (type === 'month' ? longMonth.format(d) : formatPeriod(d, type, t))
-  const isOutside = (d: Date) => type === 'year' && periodPage(d, 'year') !== page
+    type === 'month' ? shortMonth.format(d) : type === 'quarter' ? t.quarterCell(quarterOf(d)) : yearCellText(d.getFullYear(), calendar)
+  const cellLabel = (d: Date) => (type === 'month' ? longMonth.format(d) : formatPeriod(d, type, t, roc))
+  const isOutside = (d: Date) => type === 'year' && periodPage(d, 'year', calendar) !== page
   const isCurrent = (d: Date) => samePeriod(d, now, type)
   const isDisabled = (d: Date) => periodDisabled(d, type, min, max, disabledDate)
   const isSelected = (d: Date) => (mode === 'single' ? samePeriod(d, model, type) : samePeriod(d, rng[0], type) || samePeriod(d, rng[1], type))
@@ -90,7 +97,7 @@ export const PeriodPanel = forwardRef<{ focus(): void }, PeriodPanelProps>(funct
   }
 
   function setView(d: Date) {
-    const next = periodPage(d, type)
+    const next = periodPage(d, type, calendar)
     if (next !== page) setSlide(next > page ? 'next' : 'prev')
     setPage(next)
   }
@@ -114,7 +121,7 @@ export const PeriodPanel = forwardRef<{ focus(): void }, PeriodPanelProps>(funct
   function moveFocus(d: Date) {
     pendingFocus.current = true
     setFocused(d)
-    if (periodPage(d, type) !== page) setView(d)
+    if (periodPage(d, type, calendar) !== page) setView(d)
   }
 
   useEffect(() => {

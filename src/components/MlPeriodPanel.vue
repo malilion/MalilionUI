@@ -6,6 +6,7 @@ import MlIcon from './MlIcon.vue'
 import {
   addPeriods,
   comparePeriods,
+  formatDecade,
   formatPeriod,
   periodColumns,
   periodDisabled,
@@ -15,6 +16,9 @@ import {
   periodStart,
   quarterOf,
   samePeriod,
+  withCalendar,
+  yearCellText,
+  type MlCalendarSystem,
   type PeriodType,
 } from './dates'
 import type { MlDateRange } from '../types'
@@ -32,6 +36,8 @@ const props = withDefaults(
     /** Called with each period's first day. */
     disabledDate?: (date: Date) => boolean
     locale?: string
+    /** 'roc' numbers the years 民國 (115) instead of Gregorian (2026). */
+    calendar?: MlCalendarSystem
   }>(),
   { mode: 'single' },
 )
@@ -42,7 +48,7 @@ const range = defineModel<MlDateRange>('range', { default: () => [null, null] })
 const now = new Date()
 const initial = (props.mode === 'range' ? range.value[0] : model.value) ?? now
 /** Year shown (month / quarter panels) or first year of the decade (year panel). */
-const page = ref(periodPage(initial, props.type))
+const page = ref(periodPage(initial, props.type, props.calendar))
 /** The period that owns the roving tabindex. */
 const focused = ref(periodStart(initial, props.type))
 const hovered = ref<Date | null>(null)
@@ -61,21 +67,24 @@ const perPage = computed(() => ({ month: 12, quarter: 4, year: 10 })[props.type]
 
 const lang = computed(() => props.locale ?? loc.value.name)
 const t = computed(() => loc.value.date.period)
-const title = computed(() => (props.type === 'year' ? t.value.decade(page.value, page.value + 9) : t.value.year(page.value)))
+const roc = computed(() => (props.calendar === 'roc' ? loc.value.date.roc : undefined))
+const title = computed(() =>
+  props.type === 'year' ? formatDecade(page.value, t.value, roc.value) : formatPeriod(new Date(page.value, 0, 1), 'year', t.value, roc.value),
+)
 const prevLabel = computed(() => (props.type === 'year' ? loc.value.calendar.prevDecade : loc.value.calendar.prevYear))
 const nextLabel = computed(() => (props.type === 'year' ? loc.value.calendar.nextDecade : loc.value.calendar.nextYear))
 
 function cellText(d: Date) {
   if (props.type === 'month') return new Intl.DateTimeFormat(lang.value, { month: 'short' }).format(d)
   if (props.type === 'quarter') return t.value.quarterCell(quarterOf(d))
-  return String(d.getFullYear())
+  return yearCellText(d.getFullYear(), props.calendar)
 }
 function cellLabel(d: Date) {
-  if (props.type === 'month') return new Intl.DateTimeFormat(lang.value, { year: 'numeric', month: 'long' }).format(d)
-  return formatPeriod(d, props.type, t.value)
+  if (props.type === 'month') return new Intl.DateTimeFormat(lang.value, withCalendar({ year: 'numeric', month: 'long' }, props.calendar)).format(d)
+  return formatPeriod(d, props.type, t.value, roc.value)
 }
 
-const isOutside = (d: Date) => props.type === 'year' && periodPage(d, 'year') !== page.value
+const isOutside = (d: Date) => props.type === 'year' && periodPage(d, 'year', props.calendar) !== page.value
 const isCurrent = (d: Date) => samePeriod(d, now, props.type)
 const isDisabled = (d: Date) => periodDisabled(d, props.type, props.min, props.max, props.disabledDate)
 
@@ -95,7 +104,7 @@ function inRange(d: Date) {
 }
 
 function setView(d: Date) {
-  const next = periodPage(d, props.type)
+  const next = periodPage(d, props.type, props.calendar)
   if (next !== page.value) slide.value = next > page.value ? 'next' : 'prev'
   page.value = next
 }
@@ -121,7 +130,7 @@ function shiftPage(delta: number) {
 
 async function moveFocus(d: Date) {
   focused.value = d
-  if (periodPage(d, props.type) !== page.value) setView(d)
+  if (periodPage(d, props.type, props.calendar) !== page.value) setView(d)
   await nextTick()
   gridRef.value?.querySelector<HTMLElement>(`[data-period="${periodKey(d, props.type)}"]`)?.focus()
 }

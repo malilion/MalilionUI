@@ -1,0 +1,45 @@
+/* ── Barcode ── */
+.ml-barcode {
+  display: inline-grid;
+  justify-items: center;
+  gap: 10px;
+  max-width: 100%;
+  margin: 0;
+}
+
+.ml-barcode svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  padding: 6px;
+  background: var(--ml-metal-steel);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+  box-shadow: var(--ml-shadow-1);
+  box-sizing: content-box;
+  animation: ml-barcode-in 420ms var(--ml-ease);
+}
+
+@keyframes ml-barcode-in {
+  from { opacity: 0; translate: 0 6px; }
+}
+
+.ml-barcode__caption {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.06em;
+}
+
+.ml-barcode__error {
+  margin: 0;
+  padding: 18px 20px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-danger);
+  color: var(--ml-danger-text);
+  font-size: var(--ml-text-sm);
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-barcode svg { animation: none; }
+}
