@@ -1,0 +1,361 @@
+/* Mobile gestures: PullRefresh (pull down to reload) and SwipeCell (swipe a row for actions) */
+
+/* ── PullRefresh ── */
+.ml-pull-refresh {
+  --_head: 56px;
+  --_p: 0;
+
+  position: relative;
+  overflow: hidden;
+  overflow: clip;
+}
+
+.ml-pull-refresh--dragging {
+  overscroll-behavior-y: contain;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ml-pull-refresh__track {
+  position: relative;
+  transition: transform var(--ml-dur) var(--ml-ease);
+}
+
+.ml-pull-refresh--dragging .ml-pull-refresh__track {
+  transition: none;
+}
+
+.ml-pull-refresh__head {
+  position: absolute;
+  inset: auto 0 100% 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  height: var(--_head);
+  overflow: hidden;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-pull-refresh__icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+}
+
+.ml-pull-refresh__ring {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  rotate: -90deg;
+  fill: none;
+  stroke-width: 2.5;
+}
+
+.ml-pull-refresh__ring-track {
+  stroke: var(--ml-line-steel);
+}
+
+.ml-pull-refresh__ring-fill {
+  stroke: var(--ml-accent);
+  stroke-dasharray: calc(var(--_p) * 100) 100;
+  stroke-linecap: round;
+}
+
+/* The paw turns and fills with gold as you pull. */
+.ml-pull-refresh__paw {
+  width: 18px;
+  height: 18px;
+  opacity: calc(0.35 + var(--_p) * 0.65);
+  filter: grayscale(calc(1 - var(--_p)));
+  rotate: calc(var(--_p) * 180deg - 180deg);
+  scale: calc(0.7 + var(--_p) * 0.3);
+}
+
+.ml-pull-refresh--loosing .ml-pull-refresh__paw {
+  scale: 1.15;
+  filter: drop-shadow(0 0 6px rgb(240 173 47 / 0.6));
+  transition: scale var(--ml-dur-fast) var(--ml-ease-spring);
+}
+
+.ml-pull-refresh--loosing .ml-pull-refresh__text {
+  color: var(--ml-accent-text);
+}
+
+/* Refreshing: four paw prints stamped round a circle. */
+.ml-pull-refresh__spinner {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  color: var(--ml-accent);
+  animation: ml-pull-refresh-turn 2.4s linear infinite;
+}
+
+.ml-pull-refresh__step {
+  position: absolute;
+  top: calc(50% - 6px);
+  left: calc(50% - 6px);
+  width: 12px;
+  height: 12px;
+  transform: rotate(calc(var(--i) * 90deg)) translateY(-11px);
+  opacity: 0.2;
+  animation: ml-pull-refresh-stamp 1.2s var(--ml-ease) infinite;
+  animation-delay: calc(var(--i) * 0.3s);
+}
+
+.ml-pull-refresh__result {
+  width: 22px;
+  height: 22px;
+  color: var(--ml-success);
+  animation: ml-pull-refresh-pop var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-pull-refresh--fail .ml-pull-refresh__result {
+  color: var(--ml-danger);
+}
+
+.ml-pull-refresh--success .ml-pull-refresh__text {
+  color: var(--ml-success-text);
+}
+
+.ml-pull-refresh--fail .ml-pull-refresh__text {
+  color: var(--ml-danger-text);
+}
+
+/* Keyboard / screen-reader fallback: shown only when focused. */
+.ml-pull-refresh__button {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border: 1px solid var(--ml-accent);
+  border-radius: var(--ml-radius-full);
+  background: var(--ml-bg-elevated);
+  box-shadow: var(--ml-shadow-1);
+  color: var(--ml-accent-text);
+  font: inherit;
+  font-size: var(--ml-text-sm);
+  cursor: pointer;
+  translate: -50% 0;
+}
+
+.ml-pull-refresh__button svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ml-pull-refresh__button:not(:focus-visible) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  white-space: nowrap;
+}
+
+.ml-pull-refresh__button:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+@keyframes ml-pull-refresh-turn {
+  to { rotate: 360deg; }
+}
+
+@keyframes ml-pull-refresh-stamp {
+  0%, 100% { opacity: 0.2; scale: 0.8; }
+  30% { opacity: 1; scale: 1.1; }
+}
+
+@keyframes ml-pull-refresh-blink {
+  0%, 100% { opacity: 0.2; }
+  30% { opacity: 1; }
+}
+
+@keyframes ml-pull-refresh-pop {
+  from { scale: 0.4; opacity: 0; }
+}
+
+/* ── SwipeCell ── */
+.ml-swipe-cell {
+  position: relative;
+  overflow: hidden;
+  list-style: none;
+}
+
+.ml-swipe-cell__content {
+  position: relative;
+  z-index: 1;
+  background: var(--ml-swipe-cell-bg, var(--ml-bg));
+  touch-action: pan-y;
+  transition: transform var(--ml-dur) var(--ml-ease);
+}
+
+.ml-list--inset .ml-swipe-cell__content {
+  --ml-swipe-cell-bg: var(--ml-surface);
+}
+
+.ml-swipe-cell--dragging .ml-swipe-cell__content {
+  transition: none;
+  cursor: grabbing;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ml-swipe-cell--open .ml-swipe-cell__content {
+  box-shadow: 0 0 18px rgb(0 0 0 / 0.35);
+}
+
+.ml-swipe-cell__actions {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+}
+
+.ml-swipe-cell__actions--left {
+  left: 0;
+}
+
+.ml-swipe-cell__actions--right {
+  right: 0;
+}
+
+.ml-swipe-cell__action {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-width: 72px;
+  padding: 0 14px;
+  border: 0;
+  background: var(--ml-steel-600);
+  color: #fff;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    min-width var(--ml-dur-fast) var(--ml-ease),
+    padding var(--ml-dur-fast) var(--ml-ease),
+    filter var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-swipe-cell__action svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ml-swipe-cell__action:hover {
+  filter: brightness(1.12);
+}
+
+.ml-swipe-cell__action:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -4px;
+}
+
+.ml-swipe-cell__action--accent {
+  background: var(--ml-metal-gold);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-swipe-cell__action--warning {
+  background: linear-gradient(180deg, var(--ml-bronze-300), var(--ml-bronze-500));
+  color: var(--ml-text-on-metal);
+}
+
+.ml-swipe-cell__action--danger {
+  background: var(--ml-metal-red);
+}
+
+/* Full swipe: the outermost action takes the whole revealed area. */
+.ml-swipe-cell--full .ml-swipe-cell__action:not(.ml-swipe-cell__action--expanded) {
+  flex: 0 0 0;
+  min-width: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.ml-swipe-cell__actions--right .ml-swipe-cell__action--expanded {
+  align-items: flex-start;
+  padding-left: 22px;
+}
+
+.ml-swipe-cell__actions--left .ml-swipe-cell__action--expanded {
+  align-items: flex-end;
+  padding-right: 22px;
+}
+
+/* Keyboard / screen-reader route to the actions: appears when focused. */
+.ml-swipe-cell__more {
+  position: absolute;
+  top: 50%;
+  right: 8px;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 1px solid var(--ml-accent);
+  border-radius: var(--ml-radius-full);
+  background: var(--ml-bg-elevated);
+  color: var(--ml-accent-text);
+  cursor: pointer;
+  translate: 0 -50%;
+}
+
+.ml-swipe-cell__more svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
+}
+
+.ml-swipe-cell__more:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-swipe-cell__more:not(:focus-visible) {
+  clip-path: inset(50%);
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  border: 0;
+}
+
+.ml-swipe-cell--disabled .ml-swipe-cell__content {
+  touch-action: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-pull-refresh__track,
+  .ml-swipe-cell__content,
+  .ml-swipe-cell__action {
+    transition: none;
+  }
+
+  .ml-pull-refresh__spinner,
+  .ml-pull-refresh__result {
+    animation: none;
+  }
+
+  .ml-pull-refresh__step {
+    animation-name: ml-pull-refresh-blink;
+    animation-duration: 2.4s;
+  }
+}

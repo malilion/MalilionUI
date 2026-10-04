@@ -34,13 +34,13 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 133 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
+- 139 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
 - 內建表單驗證：`MlForm` / `MlFormItem` 規則（必填、長度、格式、非同步檢查），錯誤會直接顯示在每個表單元件上
 - 台灣格式驗證：`twRules.nationalId()`／`residentId()`／`businessId()`／`mobile()`／`landline()`／`mobileBarcode()`／`citizenCert()`／`postalCode()` 直接放進 `MlForm` 與 React `<Form>`，錯誤訊息跟著語系；底層是不依賴框架的檢查函式（`isTwNationalId`、採財政部 2023 年「可被 5 整除」新制的 `isTwBusinessId`、依號碼計畫檢查區碼的 `isTwLandline`…）與 `formatTwPhone()` 等格式化工具
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 多語系：內建繁體中文與英文，`app.use(MalilionUI, { locale: en })` 或 `<MlConfigProvider>` 一行切換，也能自訂文案
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
-- 也支援 React：`@malilion/ui/react` 提供全部 133 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
+- 也支援 React：`@malilion/ui/react` 提供全部 139 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
 - 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
@@ -49,6 +49,14 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 - 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
 - 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
+
+## 0.12 版新功能
+
+- **台灣格式驗證**：`twRules` 支援身分證、居留證、統一編號（2023 年起的「可被 5 整除」新規則）、依數位發展部號碼計畫的手機與市話、電子發票手機條碼與自然人憑證載具、郵遞區號，附排版工具，Vue 與 React 表單都能用
+- **`MlTaiwanMap`**：台灣 22 縣市面量圖，圖資取自內政部國土測繪中心開放資料，離島放大放在框內，有圖例、鍵盤移到相鄰縣市，可和 `MlTaiwanRegion` 互相連動；圖資只在用到時載入
+- **開發者工具**：`MlTerminal`（逐字打出指令、進度條與轉圈，伺服器端輸出完整內容）、`MlCodeDiff`（左右對照／合併檢視、行內標出改動字詞、段落收合、讀取 git patch）、`MlCopyButton` + `useClipboard()`（複製成功蓋腳印章）、`MlJsonViewer`（可搜尋的 JSON 樹，複製路徑與值）
+- **行動版**：`MlBottomSheet`（多段高度、往下一滑關閉、可遮罩或不遮罩）、`MlActionSheet` + `await actionSheet()`、`MlPullRefresh` 下拉重新整理、`MlSwipeCell`（滑到底直接執行、同組只開一列、鍵盤選單）、`MlPickerView`（立體慣性滾輪、連動欄位、日期／時間工具）
+- 共 139 個元件，Vue 與 React 都有
 
 ## 0.11 版新功能
 
@@ -243,7 +251,7 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` |
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` |
 | 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
-| 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
+| 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` |
 | 視覺特效 | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` · `MlLuckyWheel` · `MlTerminal` |
 | 指令 | `v-paw-stamp` · `v-loading` |
 
@@ -312,7 +320,7 @@ export default defineNuxtConfig({
 })
 ```
 
-模組會自動匯入所有元件、`useToast` / `useConfirm`，註冊 `v-paw-stamp` 與 `v-loading`，並預設只載入每頁用到的元件樣式。所有元件都通過伺服器端渲染與水合測試。
+模組會自動匯入所有元件、`useToast` / `useConfirm` / `useActionSheet`，註冊 `v-paw-stamp` 與 `v-loading`，並預設只載入每頁用到的元件樣式。所有元件都通過伺服器端渲染與水合測試。
 
 ## React / Next.js
 
