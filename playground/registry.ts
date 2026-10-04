@@ -1911,7 +1911,7 @@ export default defineNuxtConfig({
     zh: 'Markdown 渲染',
     group: 'data',
     isNew: true,
-    desc: '零依賴的 Markdown 渲染器，專為 AI 對話串流設計。輸出的是真正的元素而不是 v-html，原始 HTML 一律當文字、javascript: 之類的連結會被拿掉，天生防 XSS。程式碼區塊交給 MlCodeBlock，有上色與複製；串流時未閉合的 ** 不會閃出星號、還沒結束的程式碼區塊也已經是程式碼區塊，只有最後一段會重新渲染。解析是線性時間、巢狀深度上限 32 層，特製的惡意輸入也不會讓頁面卡死或崩潰。',
+    desc: '零依賴的 Markdown 渲染器，專為 AI 對話串流設計。輸出的是真正的元素而不是 v-html，原始 HTML 一律當文字、javascript: 之類的連結會被拿掉，天生防 XSS。程式碼區塊交給 MlCodeBlock，有上色與複製；串流時未閉合的 ** 不會閃出星號、還沒結束的程式碼區塊也已經是程式碼區塊，只有最後一段會重新渲染。中文裡的網址遇到全形標點（。，、「」等）就結束，「網址：https://…」也會自動變成連結。解析是線性時間、巢狀深度上限 32 層，特製的惡意輸入也不會讓頁面卡死或崩潰。',
     usage: `import { MlMarkdown, parseMarkdown } from '@malilion/ui'`,
     examples: [
       { file: 'markdown/basic', title: '語法一覽', desc: '標題、強調、清單（含巢狀與任務清單）、引言、GFM 表格（含對齊）、程式碼與分隔線。', block: true },
