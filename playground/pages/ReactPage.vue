@@ -40,21 +40,24 @@ export default function Page() {
   )
 }`
 const components = [
-  'Accordion', 'ActionSheet', 'ActionSheetHost', 'Affix', 'Alert', 'Anchor', 'Autocomplete', 'Avatar', 'BackTop',
-  'Badge', 'Banner', 'BarChart', 'BorderBeam', 'BottomSheet', 'Breadcrumb', 'Button', 'Calendar', 'Card', 'Carousel',
-  'Cascader', 'Chat', 'ChatInput', 'ChatMessage', 'Checkbox', 'CheckboxGroup', 'CodeBlock', 'CodeDiff',
-  'ColorPicker', 'Combobox', 'CommandPalette', 'ConfigProvider', 'ContextMenu', 'CopyButton', 'CountUp', 'Countdown', 'CuteIcon',
-  'DatePicker', 'DateRangePicker', 'DateTimePicker', 'DecryptText', 'Descriptions', 'DialogHost', 'Divider', 'Donut',
-  'Drawer', 'Dropdown', 'Ellipsis', 'Empty', 'Field', 'FloatButton', 'Form', 'FormItem', 'FunnelChart', 'Gacha', 'Gauge', 'Globe', 'GridLottery',
-  'Grid', 'GridItem', 'Heatmap', 'Icon', 'Image', 'ImageCropper', 'ImagePreview', 'InfiniteScroll', 'Input',
-  'JsonViewer', 'Kanban', 'Kbd', 'Layout', 'LineChart', 'LionMark', 'List', 'ListItem', 'Loader', 'LuckyWheel',
-  'Markdown', 'Marquee', 'Mascot', 'Masonry', 'Mention', 'Menu', 'Modal', 'NavBar', 'NumberInput', 'Pagination',
-  'PasswordInput', 'Paw', 'PawBurst', 'Phone', 'PickerView', 'PinInput', 'Popconfirm', 'Popover', 'Progress', 'Puzzle',
-  'PullRefresh', 'QRCode', 'RadarChart', 'Radio', 'RadioGroup', 'Rate', 'Result', 'Reveal', 'Ring', 'ScatterChart', 'ScratchCard',
-  'Scrollbar', 'Segmented', 'Select', 'SignaturePad', 'Skeleton', 'SkeletonItem', 'Slider', 'SliderCaptcha', 'Sortable', 'Space',
-  'Sparkline', 'Splitter', 'Spotlight', 'Stat', 'Steps', 'Switch', 'SwipeCell', 'TabBar', 'Table', 'Tabs', 'Tag',
-  'TagInput', 'TaiwanRegion', 'TaiwanMap', 'Terminal', 'Textarea', 'ThemeToggle', 'Tilt', 'TimePicker', 'Timeline',
-  'ToastHost', 'Tooltip', 'Tour', 'Transfer', 'Tree', 'TreeSelect', 'Upload', 'VirtualList', 'Watermark',
+  'Accordion', 'ActionSheet', 'ActionSheetHost', 'Affix', 'Alert', 'Anchor', 'Aurora', 'Autocomplete', 'Avatar',
+  'BackTop', 'Badge', 'BankPicker', 'Banner', 'BarChart', 'BorderBeam', 'BottomSheet', 'Breadcrumb', 'Button',
+  'Calendar', 'Candlestick', 'Card', 'Carousel', 'Cascader', 'Chat', 'ChatInput', 'ChatMessage', 'Checkbox',
+  'CheckboxGroup', 'Clock', 'CodeBlock', 'CodeDiff', 'ColorPicker', 'Combobox', 'CommandPalette', 'Comments',
+  'ConfigProvider', 'ContextMenu', 'CopyButton', 'Countdown', 'CountUp', 'CuteIcon', 'DatePicker',
+  'DateRangePicker', 'DateTimePicker', 'DecryptText', 'Descriptions', 'DialogHost', 'Divider', 'Donut', 'Drawer',
+  'Dropdown', 'Ellipsis', 'Empty', 'Field', 'FloatButton', 'Form', 'FormItem', 'FunnelChart', 'Gacha', 'Gantt',
+  'Gauge', 'Globe', 'Grid', 'GridItem', 'GridLottery', 'Heatmap', 'Icon', 'Image', 'ImageCropper', 'ImagePreview',
+  'Inbox', 'InfiniteScroll', 'Input', 'InvoiceChecker', 'JsonViewer', 'Kanban', 'Kbd', 'Layout', 'LineChart',
+  'LionMark', 'List', 'ListItem', 'Loader', 'LuckyWheel', 'LunarCalendar', 'Markdown', 'Marquee', 'Mascot',
+  'Masonry', 'Mention', 'Menu', 'Modal', 'NavBar', 'NumberInput', 'Pagination', 'Particles', 'PasswordInput',
+  'Paw', 'PawBurst', 'Phone', 'PickerView', 'PinInput', 'Popconfirm', 'Popover', 'Progress', 'PullRefresh',
+  'Puzzle', 'QRCode', 'Radar', 'RadarChart', 'Radio', 'RadioGroup', 'Rate', 'Result', 'Reveal', 'Ring', 'Sankey',
+  'ScatterChart', 'ScratchCard', 'Scrollbar', 'Segmented', 'Select', 'SignaturePad', 'Skeleton', 'SkeletonItem',
+  'Slider', 'SliderCaptcha', 'Sortable', 'Space', 'Sparkline', 'Splitter', 'Spotlight', 'Stat', 'Steps',
+  'StickerPicker', 'SwipeCell', 'SwipeStack', 'Switch', 'TabBar', 'Table', 'Tabs', 'Tag', 'TagInput', 'TaiwanMap',
+  'TaiwanRegion', 'Terminal', 'Textarea', 'ThemeToggle', 'Tilt', 'Timeline', 'TimePicker', 'ToastHost', 'Tooltip',
+  'Tour', 'Transfer', 'Tree', 'Treemap', 'TreeSelect', 'Upload', 'VirtualList', 'Watermark',
 ]
 </script>
 
@@ -64,7 +67,7 @@ const components = [
       eyebrow="Getting started / 開始"
       title="React"
       zh="React 與 Next.js"
-      desc="@malilion/ui/react 提供全部 146 個元件的 React 版，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
+      desc="@malilion/ui/react 提供全部 161 個元件的 React 版，輸出的 HTML 結構和 Vue 版一模一樣（有自動化測試逐一比對），共用同一份樣式。支援 React 18 / 19，Next.js App Router 的 Server Component 可以直接使用。"
     />
 
     <section class="block">
