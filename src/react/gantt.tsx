@@ -1,6 +1,7 @@
 import { Fragment, useEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent, type PointerEvent as ReactPointerEvent } from 'react'
 import { chartStops } from '../components/charts'
 import {
+  ganttTipLeft,
   GANTT_DAY_WIDTH,
   ganttArrow,
   ganttDate,
@@ -92,6 +93,9 @@ export function Gantt({
   /* ── Drag & keyboard edits (a draft until the parent applies onChange) ── */
   const [draft, setDraft] = useState<{ id: string; start: number; end: number } | null>(null)
   const [dragging, setDragging] = useState(false)
+  /** The visible slice of the timeline, for keeping the tooltip on screen. */
+  const [view, setView] = useState<{ scroll: number; width: number } | null>(null)
+  const onScroll = (event: { currentTarget: HTMLElement }) => setView({ scroll: event.currentTarget.scrollLeft, width: event.currentTarget.clientWidth })
   const [hovered, setHovered] = useState<string | null>(null)
   const [focused, setFocused] = useState<string | null>(null)
   const [live, setLive] = useState('')
@@ -209,7 +213,7 @@ export function Gantt({
   }
 
   const tipBar = dragging ? undefined : bars.find((b) => b.id === (hovered ?? focused))
-  const tip = tipBar ? { b: tipBar, below: tipBar.r < 2, left: tipBar.milestone ? tipBar.left + dayW / 2 : tipBar.left + Math.min(tipBar.width, 240) / 2 } : null
+  const tip = tipBar ? { b: tipBar, below: tipBar.r < 2, left: ganttTipLeft(tipBar.milestone ? tipBar.left + dayW / 2 : tipBar.left + Math.min(tipBar.width, 240) / 2, view) } : null
 
   const toggle = (group: string) => setCollapsed((c) => (c.includes(group) ? c.filter((g) => g !== group) : [...c, group]))
   const summary = `${label ?? loc.gantt.summary(spans.length)}. ${loc.gantt.hint}${editable ? `，${loc.gantt.editHint}` : ''}`
@@ -249,7 +253,7 @@ export function Gantt({
             ),
           )}
         </div>
-        <div className="ml-gantt__scroll">
+        <div className="ml-gantt__scroll" onScroll={onScroll} onPointerEnter={onScroll} onFocus={onScroll}>
           <div className="ml-gantt__canvas" style={{ width: `${canvasWidth}px` }}>
             <div className="ml-gantt__header" aria-hidden="true">
               <div className="ml-gantt__scale">

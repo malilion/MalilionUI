@@ -210,3 +210,12 @@ export function ganttArrow(x: number, y: number) {
   const r = (n: number) => +n.toFixed(1)
   return `M${r(x)} ${r(y)}l-6 -4v8Z`
 }
+
+/**
+ * Keep a tooltip centred at `left` (timeline px) inside the visible part of the
+ * scrolling timeline, so it never hides behind the frame's edge.
+ */
+export function ganttTipLeft(left: number, view: { scroll: number; width: number } | null, half = 92): number {
+  if (!view || view.width <= half * 2) return left
+  return Math.min(Math.max(left, view.scroll + half), view.scroll + view.width - half)
+}
