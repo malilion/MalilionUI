@@ -148,6 +148,13 @@
     "components/controls.css",
     "components/command.css"
   ],
+  "MlComments": [
+    "components/avatar.css",
+    "components/paw.css",
+    "components/mascot.css",
+    "components/empty-upload.css",
+    "components/comments.css"
+  ],
   "MlConfigProvider": [],
   "MlContextMenu": [
     "components/paw.css",
@@ -292,6 +299,14 @@
   "MlImagePreview": [
     "components/skeleton.css",
     "components/image.css"
+  ],
+  "MlInbox": [
+    "components/avatar.css",
+    "components/paw.css",
+    "components/mascot.css",
+    "components/empty-upload.css",
+    "components/cute-icon.css",
+    "components/inbox.css"
   ],
   "MlInfiniteScroll": [
     "components/button.css",
@@ -541,11 +556,23 @@
     "components/paw.css",
     "components/navigation.css"
   ],
+  "MlStickerPicker": [
+    "components/cute-icon.css",
+    "components/sticker-picker.css"
+  ],
   "MlSwitch": [
     "components/switch.css"
   ],
   "MlSwipeCell": [
     "components/mobile.css",
+    "components/pull-swipe.css"
+  ],
+  "MlSwipeStack": [
+    "components/paw.css",
+    "components/mascot.css",
+    "components/empty-upload.css",
+    "components/cute-icon.css",
+    "components/swipe-stack.css",
     "components/pull-swipe.css"
   ],
   "MlTabBar": [

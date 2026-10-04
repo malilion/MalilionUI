@@ -1,0 +1,184 @@
+/* SwipeStack — a deck of chamfered cards: drag the top one left / right (or up) to throw it */
+.ml-swipe-stack {
+  --_ss-w: 320px;
+  --_ss-h: 420px;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+  width: min(100%, var(--_ss-w));
+  margin-inline: auto;
+  outline: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ml-swipe-stack:focus-visible .ml-swipe-stack__card--top {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-swipe-stack__deck {
+  --_ss-p: 0;
+  position: relative;
+  width: 100%;
+  /* Room under the top card for the ones peeking out below it */
+  height: calc(var(--_ss-h) + 28px);
+}
+
+.ml-swipe-stack__card {
+  --_ss-i: 0;
+  --_ss-d: max(0, var(--_ss-i) - var(--_ss-p));
+  position: absolute;
+  inset: 0 0 28px;
+  z-index: calc(10 - var(--_ss-i));
+  overflow: hidden;
+  border-radius: 18px;
+  background: var(--ml-surface-2);
+  box-shadow: 0 0 0 1px var(--ml-line-strong), 0 14px 30px rgb(0 0 0 / 0.4);
+  transform: translateY(calc(var(--_ss-d) * 14px)) scale(calc(1 - var(--_ss-d) * 0.05));
+  transform-origin: 50% 100%;
+  transition: transform var(--ml-dur) var(--ml-ease), opacity var(--ml-dur) var(--ml-ease);
+}
+.ml-swipe-stack__card:not(.ml-swipe-stack__card--top) {
+  opacity: calc(1 - var(--_ss-d) * 0.18);
+}
+
+.ml-swipe-stack__card--top {
+  transform: translate(var(--_ss-x, 0px), var(--_ss-y, 0px)) rotate(var(--_ss-r, 0deg));
+  transform-origin: 50% 90%;
+  cursor: grab;
+  touch-action: none;
+}
+.ml-swipe-stack__card--dragging {
+  cursor: grabbing;
+  transition: none;
+}
+.ml-swipe-stack--disabled .ml-swipe-stack__card--top { cursor: default; }
+
+.ml-swipe-stack__content {
+  height: 100%;
+}
+.ml-swipe-stack__content img { -webkit-user-drag: none; }
+
+/* Stamps fade in as the card leans their way */
+.ml-swipe-stack__stamp {
+  position: absolute;
+  top: 26px;
+  padding: 4px 14px;
+  border: 4px solid currentColor;
+  border-radius: 10px;
+  font-family: var(--ml-font-display);
+  font-size: 30px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  line-height: 1.1;
+  text-shadow: 0 0 10px color-mix(in oklab, currentColor 50%, transparent);
+  pointer-events: none;
+  opacity: 0;
+}
+.ml-swipe-stack__stamp--like {
+  left: 22px;
+  color: var(--ml-green-300);
+  rotate: -14deg;
+  opacity: var(--_ss-like, 0);
+}
+.ml-swipe-stack__stamp--nope {
+  right: 22px;
+  color: var(--ml-red-400);
+  rotate: 14deg;
+  opacity: var(--_ss-nope, 0);
+}
+.ml-swipe-stack__stamp--super {
+  top: auto;
+  bottom: 70px;
+  left: 50%;
+  translate: -50% 0;
+  color: var(--ml-cyan-300);
+  rotate: -6deg;
+  opacity: var(--_ss-super, 0);
+}
+.ml-swipe-stack__card--leaving .ml-swipe-stack__stamp { opacity: 1; }
+
+/* Thrown card */
+.ml-swipe-stack__card--leaving {
+  z-index: 20;
+  pointer-events: none;
+  animation: ml-swipe-stack-out 320ms var(--ml-ease-in) forwards;
+}
+@keyframes ml-swipe-stack-out {
+  from { transform: translate(var(--_ss-x), var(--_ss-y)) rotate(var(--_ss-r)); opacity: 1; }
+  to { transform: translate(var(--_ss-tx), var(--_ss-ty)) rotate(var(--_ss-tr)); opacity: 0; }
+}
+
+/* Undo: the card flies back in from where it went */
+.ml-swipe-stack__card--back-right { animation: ml-swipe-stack-back-right 320ms var(--ml-ease) both; }
+.ml-swipe-stack__card--back-left { animation: ml-swipe-stack-back-left 320ms var(--ml-ease) both; }
+.ml-swipe-stack__card--back-up { animation: ml-swipe-stack-back-up 320ms var(--ml-ease) both; }
+@keyframes ml-swipe-stack-back-right { from { transform: translate(140%, 0) rotate(20deg); opacity: 0; } }
+@keyframes ml-swipe-stack-back-left { from { transform: translate(-140%, 0) rotate(-20deg); opacity: 0; } }
+@keyframes ml-swipe-stack-back-up { from { transform: translate(0, -140%); opacity: 0; } }
+
+.ml-swipe-stack__empty {
+  position: absolute;
+  inset: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed var(--ml-line-strong);
+  border-radius: 18px;
+}
+
+/* ── Buttons ── */
+.ml-swipe-stack__actions {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.ml-swipe-stack__btn {
+  display: inline-grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ml-surface-2);
+  box-shadow: 0 0 0 1px var(--ml-line-strong), 0 6px 16px rgb(0 0 0 / 0.35);
+  color: var(--ml-text);
+  font-size: 26px;
+  cursor: pointer;
+  transition: scale var(--ml-dur-fast) var(--ml-ease-spring), box-shadow var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-swipe-stack__btn svg { width: 24px; height: 24px; }
+.ml-swipe-stack__btn--nope { color: var(--ml-red-400); }
+.ml-swipe-stack__btn--undo {
+  width: 42px;
+  height: 42px;
+  color: var(--ml-accent-text);
+}
+.ml-swipe-stack__btn--undo svg { width: 18px; height: 18px; }
+.ml-swipe-stack__btn--like { box-shadow: 0 0 0 1px color-mix(in oklab, var(--ml-bean-300) 60%, transparent), 0 6px 16px rgb(0 0 0 / 0.35); }
+.ml-swipe-stack__btn--super { box-shadow: 0 0 0 1px color-mix(in oklab, var(--ml-cyan-300) 60%, transparent), 0 6px 16px rgb(0 0 0 / 0.35); }
+.ml-swipe-stack__btn:hover:not(:disabled) { scale: 1.08; }
+.ml-swipe-stack__btn:active:not(:disabled) { scale: 0.92; }
+.ml-swipe-stack__btn:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+.ml-swipe-stack__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+[data-ml-theme='light'] .ml-swipe-stack__card { box-shadow: 0 0 0 1px var(--ml-line-strong), 0 12px 26px rgb(20 30 50 / 0.16); }
+[data-ml-theme='light'] .ml-swipe-stack__btn { background: var(--ml-surface); box-shadow: 0 0 0 1px var(--ml-line-strong), 0 6px 14px rgb(20 30 50 / 0.12); }
+[data-ml-theme='light'] .ml-swipe-stack__stamp--like { color: #17944a; }
+[data-ml-theme='light'] .ml-swipe-stack__stamp--nope { color: var(--ml-red-500); }
+[data-ml-theme='light'] .ml-swipe-stack__stamp--super { color: #0a8f7b; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-swipe-stack__card,
+  .ml-swipe-stack__btn { transition: none; }
+  .ml-swipe-stack__card--leaving { display: none; }
+  .ml-swipe-stack__card--back-right,
+  .ml-swipe-stack__card--back-left,
+  .ml-swipe-stack__card--back-up { animation: none; }
+}
