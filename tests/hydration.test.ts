@@ -29,6 +29,8 @@ describe('hydration', () => {
         client.unmount()
       }
       expect(messages.filter((m) => /hydrat|mismatch/i.test(m))).toEqual([])
-    })
+      // Server render + hydration of the bigger examples (a long diff, charts) can take
+      // a few seconds on a busy CI runner.
+    }, 20_000)
   }
 })

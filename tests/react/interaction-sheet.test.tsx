@@ -16,8 +16,19 @@ function render(el: React.ReactElement) {
 const key = (el: Element, k: string) => act(() => void el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true })))
 const click = (el: Element | null) => act(() => void (el as HTMLElement).click())
 const flush = (ms = 50) => act(() => new Promise((r) => setTimeout(r, ms)))
+// Gesture velocity comes from event.timeStamp; a virtual clock keeps it independent of machine load.
+let clock = 1000
 const pointer = (type: string, target: EventTarget, clientY: number) =>
-  act(() => void target.dispatchEvent(new PointerEvent(type, { clientY, pointerId: 1, pointerType: 'mouse', button: 0, bubbles: true })))
+  act(() => {
+    const event = new PointerEvent(type, { clientY, pointerId: 1, pointerType: 'mouse', button: 0, bubbles: true })
+    Object.defineProperty(event, 'timeStamp', { value: clock })
+    void target.dispatchEvent(event)
+  })
+/** Let `ms` pass on the gesture clock (and let React settle). */
+const tick = (ms: number) => {
+  clock += ms
+  return flush(Math.min(ms, 20))
+}
 
 let restore: PropertyDescriptor | undefined
 beforeAll(() => {
@@ -106,12 +117,15 @@ describe('React sheets', () => {
     await flush()
     const handle = document.querySelector('.ml-sheet__handle')!
     pointer('pointerdown', handle, 600)
+    clock += 8
     pointer('pointermove', window, 590)
+    clock += 8
     pointer('pointermove', window, 490)
     expect(document.querySelector('.ml-sheet')!.classList).toContain('ml-sheet--dragging')
     expect(document.querySelector<HTMLElement>('.ml-sheet__panel')!.style.getPropertyValue('--_h')).toBe('300px')
+    clock += 8
     pointer('pointermove', window, 390)
-    await flush(130)
+    await tick(130)
     pointer('pointermove', window, 390)
     pointer('pointerup', window, 390)
     expect(host.querySelector('#snap')!.textContent).toBe('1')
@@ -119,13 +133,16 @@ describe('React sheets', () => {
     // A gentle flick down from the middle snap → lowest; a flick from the lowest → closed.
     pointer('pointerdown', handle, 400)
     for (const y of [410, 422, 434]) {
+      await tick(20)
       pointer('pointermove', window, y)
-      await flush(20)
     }
     pointer('pointerup', window, 434)
     expect(host.querySelector('#snap')!.textContent).toBe('0')
     pointer('pointerdown', handle, 600)
-    for (const y of [610, 640, 690]) pointer('pointermove', window, y)
+    for (const y of [610, 640, 690]) {
+      clock += 8
+      pointer('pointermove', window, y)
+    }
     pointer('pointerup', window, 690)
     expect(onClose).toHaveBeenCalledOnce()
     await flush(320)
