@@ -240,6 +240,17 @@ export interface MlLocale {
   checkboxGroup: { all: string }
   /** MlBottomSheet / MlActionSheet. */
   sheet: { handle: string; position: (n: number, total: number) => string; actions: string }
+  puzzle: {
+    label: (alt?: string) => string
+    piece: (n: number, row: number, col: number, placed: boolean) => string
+    picked: (n: number) => string
+    swapped: (a: number, b: number) => string
+    solved: (moves: number, time: string) => string
+    progress: (placed: number, total: number) => string
+    moves: (n: number) => string
+    shuffle: string
+  }
+  globe: { label: string; summary: (markers: number) => string; hint: string; marker: (label: string, place: string) => string }
   password: {
     show: string
     hide: string
@@ -576,6 +587,22 @@ export const zhTW: MlLocale = {
   },
   checkboxGroup: { all: '全選' },
   sheet: { handle: '調整面板高度', position: (n, total) => `第 ${n} 段，共 ${total} 段`, actions: '動作選單' },
+  puzzle: {
+    label: (alt) => (alt ? `拼圖：${alt}` : '拼圖'),
+    piece: (n, r, c, ok) => `第 ${n} 塊，位在第 ${r} 列第 ${c} 欄${ok ? '，已放對' : ''}`,
+    picked: (n) => `拿起第 ${n} 塊：移到要交換的位置再按 Enter，Esc 放下`,
+    swapped: (a, b) => `第 ${a} 塊與第 ${b} 塊交換`,
+    solved: (m, t) => `完成！共 ${m} 步，用時 ${t}`,
+    progress: (p, t) => `${p} / ${t} 塊就位`,
+    moves: (n) => `${n} 步`,
+    shuffle: '重新打亂',
+  },
+  globe: {
+    label: '地球',
+    summary: (n) => (n ? `地球，${n} 個標記` : '地球'),
+    hint: '方向鍵旋轉，Home 回到起點',
+    marker: (l, p) => `${l}（${p}）`,
+  },
   password: {
     show: '顯示密碼',
     hide: '隱藏密碼',
@@ -917,6 +944,22 @@ export const en: MlLocale = {
   },
   checkboxGroup: { all: 'Select all' },
   sheet: { handle: 'Resize sheet', position: (n, total) => `Position ${n} of ${total}`, actions: 'Actions' },
+  puzzle: {
+    label: (alt) => (alt ? `Jigsaw puzzle: ${alt}` : 'Jigsaw puzzle'),
+    piece: (n, r, c, ok) => `Piece ${n}, row ${r}, column ${c}${ok ? ', in place' : ''}`,
+    picked: (n) => `Picked up piece ${n}: move to a piece and press Enter to swap, Escape to put it down`,
+    swapped: (a, b) => `Swapped pieces ${a} and ${b}`,
+    solved: (m, t) => `Solved in ${m} ${m === 1 ? 'move' : 'moves'}, ${t}`,
+    progress: (p, t) => `${p} of ${t} in place`,
+    moves: (n) => `${n} ${n === 1 ? 'move' : 'moves'}`,
+    shuffle: 'Shuffle',
+  },
+  globe: {
+    label: 'Globe',
+    summary: (n) => (n ? `Globe with ${n} ${n === 1 ? 'marker' : 'markers'}` : 'Globe'),
+    hint: 'Arrow keys rotate, Home goes back',
+    marker: (l, p) => `${l} (${p})`,
+  },
   password: {
     show: 'Show password',
     hide: 'Hide password',

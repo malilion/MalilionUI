@@ -51,13 +51,15 @@ export default defineConfig({
         chunkFileNames: 'chunks/[name]-[hash].js',
         // The 368-district Taiwan table gets its own chunk, so it is only fetched (and
         // only kept by a bundler) when something actually imports it.
-        // Same for the 縣市 outlines of MlTaiwanMap / TaiwanMap.
+        // Same for the 縣市 outlines of MlTaiwanMap / TaiwanMap and the land mask of MlGlobe / Globe.
         manualChunks: (id) =>
           /\/src\/(taiwan-regions|components\/region)\.ts$/.test(id)
             ? 'taiwan-regions'
             : /\/src\/(taiwan-map-data|components\/taiwan-map)\.ts$/.test(id)
               ? 'taiwan-map'
-              : undefined,
+              : /\/src\/(globe-data|components\/globe)\.ts$/.test(id)
+                ? 'globe'
+                : undefined,
       },
     },
   },

@@ -1,0 +1,202 @@
+/* Globe — dotted orthographic Earth with markers and routes */
+.ml-globe {
+  --_size: 360px;
+  --_land: var(--ml-gold-300);
+  --_ocean-hi: #2a2416;
+  --_ocean: #14120c;
+  --_ocean-lo: #070605;
+  --_halo: rgb(240 173 47 / 0.32);
+  --_grid: rgb(249 199 87 / 0.12);
+  --_dot: 1.6;
+
+  position: relative;
+  width: min(100%, var(--_size));
+  min-width: 0;
+  margin: 0;
+}
+
+.ml-globe--tech { --_land: var(--ml-cyan-300); --_ocean-hi: #0f2a28; --_ocean: #081614; --_ocean-lo: #030807; --_halo: rgb(62 238 208 / 0.3); --_grid: rgb(122 246 226 / 0.12); }
+.ml-globe--bean { --_land: var(--ml-bean-300); --_ocean-hi: #2d1a20; --_ocean: #160c10; --_ocean-lo: #080406; --_halo: rgb(255 143 168 / 0.3); --_grid: rgb(255 179 195 / 0.12); }
+.ml-globe--success { --_land: var(--ml-green-300); --_ocean-hi: #11291a; --_ocean: #08150d; --_ocean-lo: #030805; --_halo: rgb(82 227 138 / 0.28); --_grid: rgb(138 240 174 / 0.12); }
+.ml-globe--danger { --_land: var(--ml-red-300); --_ocean-hi: #2e1512; --_ocean: #170a08; --_ocean-lo: #080303; --_halo: rgb(255 92 72 / 0.3); --_grid: rgb(255 143 128 / 0.12); }
+
+[data-ml-theme='light'] .ml-globe { --_land: var(--ml-gold-600); --_ocean-hi: #ffffff; --_ocean: #f6efe0; --_ocean-lo: #e3d6bb; --_halo: rgb(212 143 23 / 0.25); --_grid: rgb(124 78 11 / 0.14); }
+[data-ml-theme='light'] .ml-globe--tech { --_land: var(--ml-cyan-700); --_ocean: #e8f6f3; --_ocean-lo: #c7e6df; --_halo: rgb(10 159 137 / 0.22); --_grid: rgb(11 111 97 / 0.14); }
+[data-ml-theme='light'] .ml-globe--bean { --_land: var(--ml-bean-600); --_ocean: #fbeef1; --_ocean-lo: #f0d3da; --_halo: rgb(201 77 108 / 0.22); --_grid: rgb(201 77 108 / 0.14); }
+[data-ml-theme='light'] .ml-globe--success { --_land: var(--ml-green-600); --_ocean: #eaf7ef; --_ocean-lo: #cfe9d9; --_halo: rgb(22 138 71 / 0.22); --_grid: rgb(22 138 71 / 0.14); }
+[data-ml-theme='light'] .ml-globe--danger { --_land: var(--ml-red-600); --_ocean: #fbeceb; --_ocean-lo: #f1d0cc; --_halo: rgb(180 44 30 / 0.22); --_grid: rgb(180 44 30 / 0.14); }
+
+.ml-globe__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+/* The sea: a lit ball, 90 of the 200 view-box units in radius */
+.ml-globe__sphere {
+  position: absolute;
+  inset: 5%;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 34% 28%, rgb(255 255 255 / 0.1), transparent 42%),
+    radial-gradient(circle at 40% 36%, var(--_ocean-hi), var(--_ocean) 55%, var(--_ocean-lo) 100%);
+  box-shadow:
+    inset -10px -14px 28px rgb(0 0 0 / 0.45),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06);
+}
+.ml-globe--atmosphere .ml-globe__sphere {
+  box-shadow:
+    inset -10px -14px 28px rgb(0 0 0 / 0.45),
+    inset 0 0 0 1px rgb(255 255 255 / 0.06),
+    0 0 0 1px var(--_halo),
+    0 0 calc(var(--_size) * 0.08) var(--_halo),
+    0 0 calc(var(--_size) * 0.2) color-mix(in oklab, var(--_halo) 45%, transparent);
+}
+[data-ml-theme='light'] .ml-globe__sphere { box-shadow: inset -10px -14px 28px rgb(124 78 11 / 0.14), inset 0 0 0 1px rgb(0 0 0 / 0.06); }
+[data-ml-theme='light'] .ml-globe--atmosphere .ml-globe__sphere {
+  box-shadow:
+    inset -10px -14px 28px rgb(124 78 11 / 0.14),
+    inset 0 0 0 1px rgb(0 0 0 / 0.06),
+    0 0 calc(var(--_size) * 0.08) var(--_halo);
+}
+
+.ml-globe__svg {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  border-radius: 50%;
+  touch-action: pan-y;
+}
+.ml-globe--draggable .ml-globe__svg { cursor: grab; touch-action: none; }
+.ml-globe--dragging .ml-globe__svg { cursor: grabbing; }
+.ml-globe__svg:focus { outline: none; }
+.ml-globe__svg:focus-visible { outline: 2px dashed var(--ml-focus); outline-offset: 4px; }
+
+.ml-globe__grid {
+  fill: none;
+  stroke: var(--_grid);
+  stroke-width: 0.5;
+  pointer-events: none;
+}
+
+/* Land: zero-length segments with round caps become dots */
+.ml-globe__land {
+  fill: none;
+  stroke: var(--_land);
+  stroke-width: var(--_dot);
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.ml-globe__land--side { opacity: 0.62; stroke-width: calc(var(--_dot) * 0.9); }
+.ml-globe__land--rim { opacity: 0.3; stroke-width: calc(var(--_dot) * 0.75); }
+
+/* ── Routes ─────────────────────────────────────────────── */
+.ml-globe__arc { --_c: var(--ml-gold-300); }
+.ml-globe__arc--tech { --_c: var(--ml-cyan-300); }
+.ml-globe__arc--bean { --_c: var(--ml-bean-300); }
+.ml-globe__arc--success { --_c: var(--ml-green-300); }
+.ml-globe__arc--danger { --_c: var(--ml-red-300); }
+[data-ml-theme='light'] .ml-globe__arc { --_c: var(--ml-gold-600); }
+[data-ml-theme='light'] .ml-globe__arc--tech { --_c: var(--ml-cyan-700); }
+[data-ml-theme='light'] .ml-globe__arc--bean { --_c: var(--ml-bean-600); }
+[data-ml-theme='light'] .ml-globe__arc--success { --_c: var(--ml-green-600); }
+[data-ml-theme='light'] .ml-globe__arc--danger { --_c: var(--ml-red-600); }
+
+.ml-globe__arc-track,
+.ml-globe__arc-glint {
+  fill: none;
+  stroke: var(--_c);
+  stroke-linecap: round;
+  pointer-events: none;
+}
+.ml-globe__arc-track { stroke-width: 0.8; opacity: 0.45; }
+.ml-globe__arc-glint {
+  stroke-width: 1.6;
+  stroke-dasharray: 0.16 0.84;
+  filter: drop-shadow(0 0 2px var(--_c));
+  animation: ml-globe-glint 2.6s linear infinite;
+}
+
+/* ── Markers ────────────────────────────────────────────── */
+.ml-globe__marker {
+  --_c: var(--ml-gold-300);
+  cursor: pointer;
+  outline: none;
+  transition: opacity var(--ml-dur) var(--ml-ease);
+}
+.ml-globe__marker--tech { --_c: var(--ml-cyan-300); }
+.ml-globe__marker--bean { --_c: var(--ml-bean-300); }
+.ml-globe__marker--success { --_c: var(--ml-green-300); }
+.ml-globe__marker--danger { --_c: var(--ml-red-400); }
+[data-ml-theme='light'] .ml-globe__marker { --_c: var(--ml-gold-600); }
+[data-ml-theme='light'] .ml-globe__marker--tech { --_c: var(--ml-cyan-700); }
+[data-ml-theme='light'] .ml-globe__marker--bean { --_c: var(--ml-bean-600); }
+[data-ml-theme='light'] .ml-globe__marker--success { --_c: var(--ml-green-600); }
+[data-ml-theme='light'] .ml-globe__marker--danger { --_c: var(--ml-red-600); }
+
+.ml-globe__marker--back { opacity: 0; pointer-events: none; }
+.ml-globe__hit { fill: transparent; }
+.ml-globe__dot {
+  fill: var(--_c);
+  stroke: var(--ml-bg);
+  stroke-width: 1;
+  filter: drop-shadow(0 0 3px var(--_c));
+  transition: r var(--ml-dur) var(--ml-ease-spring);
+}
+.ml-globe__pulse {
+  fill: none;
+  stroke: var(--_c);
+  stroke-width: 1;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-globe-pulse 2s var(--ml-ease) infinite;
+}
+.ml-globe__marker--active .ml-globe__dot,
+.ml-globe__marker:focus-visible .ml-globe__dot { stroke: var(--ml-focus); stroke-width: 1.4; }
+.ml-globe__label {
+  fill: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: 7px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: var(--ml-bg);
+  stroke-width: 2.5px;
+  stroke-linejoin: round;
+  pointer-events: none;
+}
+
+.ml-globe__tip {
+  position: absolute;
+  z-index: 1;
+  translate: -50% calc(-100% - 12px);
+  padding: 4px 9px;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-bg-elevated);
+  box-shadow: var(--ml-shadow-1);
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+@keyframes ml-globe-glint {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes ml-globe-pulse {
+  0% { scale: 1; opacity: 0.9; }
+  100% { scale: 3.2; opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-globe__arc-glint,
+  .ml-globe__pulse { animation: none; }
+  .ml-globe__pulse { opacity: 0; }
+}

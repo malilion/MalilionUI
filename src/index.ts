@@ -34,6 +34,7 @@ import MlConfigProvider from './components/MlConfigProvider.vue'
 import MlContextMenu from './components/MlContextMenu.vue'
 import MlCopyButton from './components/MlCopyButton.vue'
 import MlCountUp from './components/MlCountUp.vue'
+import MlCuteIcon from './components/MlCuteIcon.vue'
 import MlCountdown from './components/MlCountdown.vue'
 import MlDatePicker from './components/MlDatePicker.vue'
 import MlDateRangePicker from './components/MlDateRangePicker.vue'
@@ -53,6 +54,7 @@ import MlForm from './components/MlForm.vue'
 import MlFormItem from './components/MlFormItem.vue'
 import MlFunnelChart from './components/MlFunnelChart.vue'
 import MlGauge from './components/MlGauge.vue'
+import MlGlobe from './components/MlGlobe.vue'
 import MlGrid from './components/MlGrid.vue'
 import MlGridItem from './components/MlGridItem.vue'
 import MlHeatmap from './components/MlHeatmap.vue'
@@ -84,6 +86,7 @@ import MlNumberInput from './components/MlNumberInput.vue'
 import MlPagination from './components/MlPagination.vue'
 import MlPasswordInput from './components/MlPasswordInput.vue'
 import MlPaw from './components/MlPaw.vue'
+import MlPuzzle from './components/MlPuzzle.vue'
 import MlPawBurst from './components/MlPawBurst.vue'
 import MlPhone from './components/MlPhone.vue'
 import MlPickerView from './components/MlPickerView.vue'
@@ -179,6 +182,7 @@ const components = {
   MlContextMenu,
   MlCopyButton,
   MlCountUp,
+  MlCuteIcon,
   MlCountdown,
   MlDatePicker,
   MlDateRangePicker,
@@ -198,6 +202,7 @@ const components = {
   MlFormItem,
   MlFunnelChart,
   MlGauge,
+  MlGlobe,
   MlGrid,
   MlGridItem,
   MlHeatmap,
@@ -229,6 +234,7 @@ const components = {
   MlPagination,
   MlPasswordInput,
   MlPaw,
+  MlPuzzle,
   MlPawBurst,
   MlPhone,
   MlPickerView,
@@ -347,6 +353,7 @@ export {
   MlContextMenu,
   MlCopyButton,
   MlCountUp,
+  MlCuteIcon,
   MlCountdown,
   MlDatePicker,
   MlDateRangePicker,
@@ -366,6 +373,7 @@ export {
   MlFormItem,
   MlFunnelChart,
   MlGauge,
+  MlGlobe,
   MlGrid,
   MlGridItem,
   MlHeatmap,
@@ -397,6 +405,7 @@ export {
   MlPagination,
   MlPasswordInput,
   MlPaw,
+  MlPuzzle,
   MlPawBurst,
   MlPhone,
   MlPickerView,
@@ -567,6 +576,25 @@ export type {
 export * from './validators-tw'
 export type { MlFormRule, MlFormRules, MlFormErrors, MlValidatorResult } from './form'
 export type { IconName } from './components/icons'
+export { cuteIcons, CUTE_ICON_GROUPS, CUTE_ICON_NAMES } from './components/cute-icons'
+export type { CuteIconName, CuteColor, CuteLayer, CuteLayerKind, MlCuteIconAnimation, MlCuteIconVariant } from './components/cute-icons'
+export {
+  puzzleEdges,
+  puzzlePiecePath,
+  puzzleRandom,
+  puzzleShuffle,
+  puzzleSolved,
+  puzzleSwap,
+} from './components/puzzle'
+export type { MlPuzzleResult, MlPuzzleTone, PuzzleEdges, PuzzleDirection } from './components/puzzle'
+export {
+  GLOBE_HOME,
+  globeArcPath,
+  globeDistance,
+  globeFormatPoint,
+  globeProject,
+} from './components/globe'
+export type { MlGlobeArc, MlGlobeMarker, MlGlobePoint, MlGlobeTone, GlobeView, GlobeProjected } from './components/globe'
 
 declare module 'vue' {
   export interface GlobalComponents {
@@ -604,6 +632,7 @@ declare module 'vue' {
     MlContextMenu: typeof MlContextMenu
     MlCopyButton: typeof MlCopyButton
     MlCountUp: typeof MlCountUp
+    MlCuteIcon: typeof MlCuteIcon
     MlCountdown: typeof MlCountdown
     MlDatePicker: typeof MlDatePicker
     MlDateRangePicker: typeof MlDateRangePicker
@@ -623,6 +652,7 @@ declare module 'vue' {
     MlFormItem: typeof MlFormItem
     MlFunnelChart: typeof MlFunnelChart
     MlGauge: typeof MlGauge
+    MlGlobe: typeof MlGlobe
     MlGrid: typeof MlGrid
     MlGridItem: typeof MlGridItem
     MlHeatmap: typeof MlHeatmap
@@ -654,6 +684,7 @@ declare module 'vue' {
     MlPagination: typeof MlPagination
     MlPasswordInput: typeof MlPasswordInput
     MlPaw: typeof MlPaw
+    MlPuzzle: typeof MlPuzzle
     MlPawBurst: typeof MlPawBurst
     MlPhone: typeof MlPhone
     MlPickerView: typeof MlPickerView
