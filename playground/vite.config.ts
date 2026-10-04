@@ -19,6 +19,8 @@ export default defineConfig({
   ],
   resolve: {
     alias: [
+      { find: /^@malilion\/ui\/editor$/, replacement: fileURLToPath(new URL('../src/editor.ts', import.meta.url)) },
+      { find: /^@malilion\/ui\/react\/editor$/, replacement: fileURLToPath(new URL('../src/react/editor.tsx', import.meta.url)) },
       { find: /^@malilion\/ui\/react$/, replacement: fileURLToPath(new URL('../src/react/index.ts', import.meta.url)) },
       { find: /^@malilion\/ui$/, replacement: fileURLToPath(new URL('../src/index.ts', import.meta.url)) },
     ],

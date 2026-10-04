@@ -36,13 +36,13 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 166 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
+- 174 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
 - 內建表單驗證：`MlForm` / `MlFormItem` 規則（必填、長度、格式、非同步檢查），錯誤會直接顯示在每個表單元件上
 - 台灣格式驗證：`twRules.nationalId()`／`residentId()`／`businessId()`／`mobile()`／`landline()`／`mobileBarcode()`／`citizenCert()`／`postalCode()` 直接放進 `MlForm` 與 React `<Form>`，錯誤訊息跟著語系；底層是不依賴框架的檢查函式（`isTwNationalId`、採財政部 2023 年「可被 5 整除」新制的 `isTwBusinessId`、依號碼計畫檢查區碼的 `isTwLandline`…）與 `formatTwPhone()` 等格式化工具
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 多語系：內建繁體中文與英文，`app.use(MalilionUI, { locale: en })` 或 `<MlConfigProvider>` 一行切換，也能自訂文案
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
-- 也支援 React：`@malilion/ui/react` 提供全部 166 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
+- 也支援 React：`@malilion/ui/react` 提供全部 174 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
 - 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
@@ -277,14 +277,14 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 
 | 分類 | 元件 |
 | --- | --- |
-| 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlTitle` / `MlText` / `MlLink` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` |
+| 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlTitle` / `MlText` / `MlLink` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` · `MlZhuyin` |
 | 版面 | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
-| 表單 | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` |
+| 表單 | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` · `MlRichTextEditor` (`@malilion/ui/editor`) · `MlInputMask` · `MlAmountInput` |
 | 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` · `MlInbox` |
-| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlAvatarGroup` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlBarcode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlLunarCalendar` · `MlComments` |
+| 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlAvatarGroup` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlBarcode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlLunarCalendar` · `MlComments` · `MlScheduler` · `MlVideoPlayer` · `MlAudioPlayer` |
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` · `MlGlobe` · `MlTreemap` · `MlSankey` · `MlGantt` · `MlCandlestick` |
 | 導覽 | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
-| 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` · `MlSwipeStack` |
+| 行動版 | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` · `MlSwipeStack` · `MlNumberKeyboard` · `MlIndexBar` |
 | 視覺特效 | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` · `MlLuckyWheel` · `MlTerminal` · `MlPuzzle` · `MlScratchCard` · `MlGridLottery` · `MlGacha` · `MlAurora` · `MlParticles` · `MlRadar` · `MlClock` |
 | 指令 | `v-paw-stamp` · `v-loading` |
 
@@ -378,6 +378,21 @@ export default function Page() {
 表單元件遵循 React 慣例：`value` + `onChange` 為受控，`defaultValue` 為非受控。多語系用 `<ConfigProvider locale={en}>`。
 
 每個 Vue 元件都有 React 版，名稱去掉 `Ml` 前綴（`MlDatePicker` → `DatePicker`）。`v-model` 對應 `value` / `defaultValue` / `onChange`，`v-model:open` 對應 `open` / `onOpenChange`，具名插槽改成 prop 或 render 函式，指令 `v-loading` / `v-paw-stamp` 改為 `<Loading>` / `usePawStamp()`。`<Form>` + `<FormItem>` 用和 Vue 版相同的規則驗證 React 欄位。
+
+## 富文字編輯器
+
+`MlRichTextEditor`（React：`RichTextEditor`）以 [Tiptap](https://tiptap.dev) 為核心，外面套上鋼鐵工具列：標題、粗斜體等格式、清單、引言、程式碼區塊、分隔線、連結（⌘K / Ctrl+K，`javascript:` 之類的網址一律拒絕）與復原。`v-model` 是 HTML（空白時是 `''`），能放進 `MlFormItem` 驗證，工具列是可用方向鍵操作的 `role="toolbar"`。Tiptap 是**選用**的 peer dependency，所以編輯器有自己的入口：
+
+```bash
+npm i @tiptap/core @tiptap/pm @tiptap/starter-kit @tiptap/extensions
+```
+
+```ts
+import { MlRichTextEditor } from '@malilion/ui/editor'        // Vue
+import { RichTextEditor } from '@malilion/ui/react/editor'    // React
+```
+
+樣式已包含在 `style.css`。要在別處顯示存下來的 HTML，先在伺服器端消毒，再放進 `.ml-prose`，外觀就和編輯器一致。裝了 Tiptap 之後，Nuxt 模組與 resolver 會自動匯入編輯器。
 
 ## 直接使用 CSS
 

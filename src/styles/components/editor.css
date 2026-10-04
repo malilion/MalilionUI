@@ -1,0 +1,492 @@
+/* Rich-text editor (MlRichTextEditor / RichTextEditor) — machined toolbar over a HUD writing area.
+   .ml-prose styles the saved HTML too: <div class="ml-prose" v-html="sanitized"> looks like the editor. */
+.ml-editor {
+  --_cut: var(--ml-cut-sm);
+  --_line: var(--ml-line-steel-strong);
+  --_energy: var(--ml-accent);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--_line), var(--ml-inset-shadow);
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  transition: box-shadow var(--ml-dur) var(--ml-ease);
+}
+
+/* The energy line under the writing area, like every other field. */
+.ml-editor::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--_energy) 30%, var(--_energy) 70%, transparent);
+  box-shadow: 0 0 10px var(--_energy);
+  transform: scaleX(0);
+  transition: transform var(--ml-dur-slow) var(--ml-ease-spring);
+  pointer-events: none;
+}
+
+.ml-editor:hover {
+  --_line: var(--ml-line-strong);
+}
+
+.ml-editor--focused,
+.ml-editor:focus-within {
+  --_line: var(--ml-accent);
+}
+
+.ml-editor--focused::after {
+  transform: scaleX(1);
+}
+
+.ml-editor--error,
+.ml-editor--error:hover,
+.ml-editor--error:focus-within {
+  --_line: var(--ml-danger);
+  --_energy: var(--ml-danger);
+}
+
+.ml-editor--disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* ── Toolbar ── */
+.ml-editor__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 6px 8px 6px calc(8px + var(--_cut) / 2);
+  border-bottom: 1px solid var(--ml-line-steel);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--ml-surface-2) 85%, transparent), var(--ml-surface-inset));
+}
+
+.ml-editor--readonly .ml-editor__toolbar {
+  display: none;
+}
+
+.ml-editor__sep {
+  width: 1px;
+  height: 18px;
+  margin: 0 5px;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-editor__tool {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ml-text-muted);
+  cursor: pointer;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: color var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-editor__tool svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ml-editor__glyph {
+  font-family: var(--ml-font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ml-editor__tool:hover:not([aria-disabled='true']) {
+  background: var(--ml-surface-3);
+  color: var(--ml-text);
+}
+
+/* Pressed: gold metal plate, like a selected MlSegmented item. */
+.ml-editor__tool--active,
+.ml-editor__tool--active:hover:not([aria-disabled='true']) {
+  background: var(--ml-metal-gold);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-editor__tool[aria-disabled='true'] {
+  color: var(--ml-text-dim);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+/* Clip-path would hide an outline, so focus is drawn inside. */
+.ml-editor__tool:focus-visible {
+  outline: 0;
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+/* ── Link bar ── */
+.ml-editor__linkbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--ml-line-steel);
+  background: var(--ml-tech-soft);
+}
+
+.ml-editor__link-input {
+  flex: 1 1 200px;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px;
+  border: 0;
+  outline: 0;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  caret-color: var(--ml-tech);
+}
+
+.ml-editor__link-input:focus {
+  box-shadow: inset 0 0 0 1px var(--ml-tech);
+}
+
+.ml-editor__link-input--error,
+.ml-editor__link-input--error:focus {
+  box-shadow: inset 0 0 0 1px var(--ml-danger);
+}
+
+.ml-editor__link-btn {
+  height: 32px;
+  padding: 0 12px;
+  border: 0;
+  background: var(--ml-surface-3);
+  color: var(--ml-text);
+  font-family: var(--ml-font-body);
+  font-size: var(--ml-text-sm);
+  cursor: pointer;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+}
+
+.ml-editor__link-btn--apply {
+  background: var(--ml-metal-gold);
+  color: var(--ml-text-on-metal);
+  font-weight: 600;
+}
+
+.ml-editor__link-btn:hover {
+  filter: brightness(1.1);
+}
+
+.ml-editor__link-close {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ml-text-muted);
+  cursor: pointer;
+}
+
+.ml-editor__link-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-editor__link-btn:focus-visible,
+.ml-editor__link-close:focus-visible {
+  outline: 0;
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-editor__link-error {
+  flex-basis: 100%;
+  margin: 0;
+  color: var(--ml-danger-text, var(--ml-danger));
+  font-size: var(--ml-text-xs);
+}
+
+/* ── Writing area ── */
+.ml-editor__body {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--ml-editor-min, 160px);
+  max-height: var(--ml-editor-max, none);
+  overflow-y: auto;
+  cursor: text;
+}
+
+.ml-editor--disabled .ml-editor__body {
+  cursor: not-allowed;
+}
+
+.ml-editor__content {
+  position: relative;
+  flex: 1;
+  padding: 12px 16px 14px;
+  outline: 0;
+  font-size: 0.9375rem;
+  caret-color: var(--ml-accent);
+  /* ProseMirror's base rules (injectCSS is off, so there is no runtime <style>). */
+  word-wrap: break-word;
+  white-space: pre-wrap;
+  white-space: break-spaces;
+  font-variant-ligatures: none;
+  font-feature-settings: 'liga' 0;
+}
+
+.ml-editor__content [contenteditable='false'] {
+  white-space: normal;
+}
+
+.ml-editor__content pre {
+  white-space: pre-wrap;
+}
+
+.ml-editor__content img.ProseMirror-separator {
+  display: inline !important;
+  width: 0 !important;
+  height: 0 !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+.ml-editor__content .ProseMirror-gapcursor {
+  display: none;
+  position: absolute;
+  margin: 0;
+  pointer-events: none;
+}
+
+.ml-editor__content.ProseMirror-focused .ProseMirror-gapcursor {
+  display: block;
+}
+
+.ml-editor__content .ProseMirror-gapcursor::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  display: block;
+  width: 20px;
+  border-top: 1px solid var(--ml-accent);
+  animation: ml-editor-caret 1.1s steps(2, start) infinite;
+}
+
+.ml-editor__content.ProseMirror-hideselection *::selection {
+  background: transparent;
+}
+
+.ml-editor__content.ProseMirror-hideselection {
+  caret-color: transparent;
+}
+
+.ml-editor__content ::selection {
+  background: color-mix(in srgb, var(--ml-accent) 30%, transparent);
+}
+
+/* Placeholder: Tiptap marks the empty first paragraph with data-placeholder. */
+.ml-editor__content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  color: var(--ml-text-dim);
+  pointer-events: none;
+}
+
+.ml-editor__content .ProseMirror-selectednode {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+.ml-editor__footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 12px 8px;
+}
+
+.ml-editor__count {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-editor__count--full {
+  color: var(--ml-warning-text);
+}
+
+@keyframes ml-editor-caret {
+  to {
+    visibility: hidden;
+  }
+}
+
+/* ── Prose: the editor's content, and saved HTML shown elsewhere ── */
+.ml-prose {
+  min-width: 0;
+  color: var(--ml-text);
+  font-family: var(--ml-font-body);
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+}
+
+.ml-prose > :first-child {
+  margin-top: 0;
+}
+
+.ml-prose > :last-child {
+  margin-bottom: 0;
+}
+
+.ml-prose p {
+  margin: 0 0 0.85em;
+}
+
+.ml-prose h1,
+.ml-prose h2,
+.ml-prose h3 {
+  margin: 1.4em 0 0.55em;
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  line-height: 1.35;
+}
+
+.ml-prose h1 {
+  font-size: var(--ml-text-xl, 1.5rem);
+}
+
+.ml-prose h2 {
+  font-size: var(--ml-text-lg);
+}
+
+.ml-prose h3 {
+  font-size: var(--ml-text-md);
+}
+
+/* The gold tick of the brand's headings. */
+.ml-prose h2::before {
+  content: '';
+  display: inline-block;
+  width: 4px;
+  height: 0.9em;
+  margin-right: 0.45em;
+  vertical-align: -0.08em;
+  background: var(--ml-metal-gold);
+}
+
+.ml-prose strong {
+  font-weight: 700;
+}
+
+.ml-prose s {
+  color: var(--ml-text-dim);
+}
+
+.ml-prose u {
+  text-decoration-color: var(--ml-accent);
+  text-underline-offset: 3px;
+}
+
+.ml-prose code {
+  padding: 0.1em 0.4em;
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.875em;
+}
+
+.ml-prose a {
+  color: var(--ml-tech-text);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+.ml-prose a:hover {
+  color: var(--ml-accent-text);
+  text-decoration-color: currentColor;
+}
+
+.ml-prose ul,
+.ml-prose ol {
+  margin: 0 0 0.85em;
+  padding-left: 1.6em;
+}
+
+.ml-prose li {
+  margin: 0.2em 0;
+}
+
+.ml-prose li > p {
+  margin: 0;
+}
+
+.ml-prose li::marker {
+  color: var(--ml-accent);
+  font-family: var(--ml-font-mono);
+  font-size: 0.9em;
+}
+
+.ml-prose blockquote {
+  margin: 0 0 0.85em;
+  padding: 6px 14px;
+  border-left: 3px solid var(--ml-accent);
+  background: linear-gradient(90deg, var(--ml-accent-soft), transparent 85%);
+  color: var(--ml-text-muted);
+}
+
+.ml-prose blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+.ml-prose pre {
+  margin: 0 0 0.85em;
+  padding: 12px 16px;
+  overflow-x: auto;
+  background: var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  border-left: 2px solid var(--ml-tech);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+.ml-prose pre code {
+  padding: 0;
+  background: none;
+  box-shadow: none;
+  color: inherit;
+  font-size: inherit;
+}
+
+.ml-prose hr {
+  height: 1px;
+  margin: 1.5em 0;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--ml-line-strong) 20%, var(--ml-line-strong) 80%, transparent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-editor::after {
+    transition: none;
+  }
+}

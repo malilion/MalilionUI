@@ -36,13 +36,13 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 166 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 174 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Taiwan validators: `twRules.nationalId()` / `residentId()` / `businessId()` / `mobile()` / `landline()` / `mobileBarcode()` / `citizenCert()` / `postalCode()` drop into `MlForm` and React `<Form>` with localized messages, backed by framework-free checkers (`isTwNationalId`, `isTwBusinessId` with the Ministry of Finance's 2023 divisible-by-5 rule, `isTwLandline` per the official numbering plan…) and formatters like `formatTwPhone()`
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has every component (all 166) with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 174) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -277,14 +277,14 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 
 | Category | Components |
 | --- | --- |
-| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlTitle` / `MlText` / `MlLink` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` |
+| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlTitle` / `MlText` / `MlLink` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` · `MlZhuyin` |
 | Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
-| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` |
+| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` · `MlRichTextEditor` (`@malilion/ui/editor`) · `MlInputMask` · `MlAmountInput` |
 | Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` · `MlInbox` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlAvatarGroup` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlBarcode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlLunarCalendar` · `MlComments` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlAvatarGroup` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlBarcode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlLunarCalendar` · `MlComments` · `MlScheduler` · `MlVideoPlayer` · `MlAudioPlayer` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` · `MlGlobe` · `MlTreemap` · `MlSankey` · `MlGantt` · `MlCandlestick` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
-| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` · `MlSwipeStack` |
+| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` · `MlSwipeStack` · `MlNumberKeyboard` · `MlIndexBar` |
 | Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` · `MlLuckyWheel` · `MlTerminal` · `MlPuzzle` · `MlScratchCard` · `MlGridLottery` · `MlGacha` · `MlAurora` · `MlParticles` · `MlRadar` · `MlClock` |
 | Directive | `v-paw-stamp` · `v-loading` |
 
@@ -378,6 +378,21 @@ export default function Page() {
 Form controls follow React conventions: `value` + `onChange` is controlled, `defaultValue` is uncontrolled. For i18n wrap with `<ConfigProvider locale={en}>`.
 
 Every Vue component has a React twin named without the `Ml` prefix (`MlDatePicker` → `DatePicker`). `v-model` maps to `value` / `defaultValue` / `onChange`, `v-model:open` to `open` / `onOpenChange`, named slots to props or render functions, and the directives `v-loading` / `v-paw-stamp` to `<Loading>` / `usePawStamp()`. `<Form>` + `<FormItem>` validate React fields with the same rules as the Vue version.
+
+## Rich-text Editor
+
+`MlRichTextEditor` (React: `RichTextEditor`) wraps [Tiptap](https://tiptap.dev) in a machined toolbar: headings, marks, lists, quote, code block, divider, links (⌘K / Ctrl+K, script URLs refused) and undo. `v-model` is HTML (`''` when empty), it validates inside `MlFormItem`, and the toolbar is a keyboard-navigable `role="toolbar"`. Tiptap is an **optional** peer dependency, so it lives in its own entry:
+
+```bash
+npm i @tiptap/core @tiptap/pm @tiptap/starter-kit @tiptap/extensions
+```
+
+```ts
+import { MlRichTextEditor } from '@malilion/ui/editor'        // Vue
+import { RichTextEditor } from '@malilion/ui/react/editor'    // React
+```
+
+Its styles are part of `style.css`. To show saved HTML elsewhere with the same look, sanitize it on the server and render it inside `.ml-prose`. The Nuxt module and the resolver pick the editor up automatically once Tiptap is installed.
 
 ## Using the CSS Directly
 

@@ -4,9 +4,66 @@
     {
       "name": "playground",
       "runtimeExecutable": "npm",
-      "runtimeArgs": ["run", "dev", "--", "--host", "127.0.0.1", "--port", "5287", "--strictPort"],
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5287",
+        "--strictPort"
+      ],
       "port": 5287,
       "url": "http://127.0.0.1:5287"
+    },
+    {
+      "name": "playground-alt",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5291",
+        "--strictPort"
+      ],
+      "port": 5291,
+      "url": "http://127.0.0.1:5291"
+    },
+    {
+      "name": "playground-3",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5293",
+        "--strictPort"
+      ],
+      "port": 5293,
+      "url": "http://127.0.0.1:5293"
+    },
+    {
+      "name": "playground-4",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": [
+        "run",
+        "dev",
+        "--",
+        "--host",
+        "127.0.0.1",
+        "--port",
+        "5295",
+        "--strictPort"
+      ],
+      "port": 5295,
+      "url": "http://127.0.0.1:5295"
     }
   ]
 }

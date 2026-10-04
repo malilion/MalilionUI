@@ -188,6 +188,37 @@ export interface MlLocale {
     empty: string
   }
   markdown: { streaming: string }
+  /** MlRichTextEditor (@malilion/ui/editor). */
+  editor: {
+    toolbar: string
+    content: string
+    placeholder: string
+    tools: {
+      paragraph: string
+      h1: string
+      h2: string
+      h3: string
+      bold: string
+      italic: string
+      underline: string
+      strike: string
+      code: string
+      link: string
+      bulletList: string
+      orderedList: string
+      blockquote: string
+      codeBlock: string
+      horizontalRule: string
+      clear: string
+      undo: string
+      redo: string
+    }
+    linkUrl: string
+    linkApply: string
+    linkRemove: string
+    linkInvalid: string
+    count: (characters: number, max?: number) => string
+  }
   diff: {
     label: string
     added: string
@@ -279,6 +310,45 @@ export interface MlLocale {
   qrcode: { tooLong: string; label: (value: string) => string }
   barcode: { invalid: string; label: (value: string) => string }
   avatarGroup: { label: string; more: (count: number) => string; showAll: (count: number) => string; collapse: string }
+  amount: { capital: string }
+  numberKeyboard: { label: string; delete: string; close: string; collapse: string }
+  indexBar: { label: string; jump: (index: string) => string; empty: string }
+  scheduler: {
+    label: string
+    today: string
+    prev: string
+    next: string
+    week: string
+    day: string
+    allDay: string
+    /** Keyboard help for editable schedulers. */
+    hint: string
+    moved: (title: string, when: string) => string
+  }
+  player: {
+    video: string
+    audio: string
+    play: string
+    pause: string
+    replay: string
+    mute: string
+    unmute: string
+    volume: string
+    seek: string
+    speed: string
+    normal: string
+    captions: string
+    captionsOff: string
+    fullscreen: string
+    exitFullscreen: string
+    pip: string
+    back: (seconds: number) => string
+    forward: (seconds: number) => string
+    loading: string
+    error: string
+    /** Spoken value of the seek bar. */
+    time: (current: string, duration: string) => string
+  }
   link: { external: string }
   signature: { label: string; placeholder: string; hint: string; undo: string; clear: string; empty: string; signed: (strokes: number) => string; cleared: string }
   cropper: {
@@ -666,6 +736,36 @@ export const zhTW: MlLocale = {
     empty: '沒有符合的內容',
   },
   markdown: { streaming: '正在產生回覆…' },
+  editor: {
+    toolbar: '文字格式',
+    content: '編輯區',
+    placeholder: '開始輸入內容…',
+    tools: {
+      paragraph: '內文',
+      h1: '標題 1',
+      h2: '標題 2',
+      h3: '標題 3',
+      bold: '粗體',
+      italic: '斜體',
+      underline: '底線',
+      strike: '刪除線',
+      code: '行內程式碼',
+      link: '連結',
+      bulletList: '項目清單',
+      orderedList: '編號清單',
+      blockquote: '引言',
+      codeBlock: '程式碼區塊',
+      horizontalRule: '分隔線',
+      clear: '清除格式',
+      undo: '復原',
+      redo: '重做',
+    },
+    linkUrl: '連結網址',
+    linkApply: '套用',
+    linkRemove: '移除連結',
+    linkInvalid: '網址格式不正確',
+    count: (n, max) => (max ? `${n} / ${max} 字` : `${n} 字`),
+  },
   diff: {
     label: '程式碼差異',
     added: '新增',
@@ -791,6 +891,43 @@ export const zhTW: MlLocale = {
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
   barcode: { invalid: '這個格式無法編碼此內容', label: (v) => `條碼：${v}` },
   avatarGroup: { label: '成員', more: (n) => `還有 ${n} 位`, showAll: (n) => `顯示其他 ${n} 位`, collapse: '收合成員' },
+  amount: { capital: '新臺幣' },
+  numberKeyboard: { label: '數字鍵盤', delete: '刪除', close: '完成', collapse: '收起鍵盤' },
+  indexBar: { label: '索引', jump: (i) => `跳到 ${i}`, empty: '沒有資料' },
+  scheduler: {
+    label: '行程表',
+    today: '今天',
+    prev: '上一頁',
+    next: '下一頁',
+    week: '週',
+    day: '日',
+    allDay: '全天',
+    hint: '方向鍵上下移動一格、左右換日，Shift + 上下調整結束時間；在空白處拖曳可以新增行程。',
+    moved: (title, when) => `${title} 改到 ${when}`,
+  },
+  player: {
+    video: '影片播放器',
+    audio: '音訊播放器',
+    play: '播放',
+    pause: '暫停',
+    replay: '重播',
+    mute: '靜音',
+    unmute: '取消靜音',
+    volume: '音量',
+    seek: '播放進度',
+    speed: '播放速度',
+    normal: '正常',
+    captions: '字幕',
+    captionsOff: '關閉',
+    fullscreen: '全螢幕',
+    exitFullscreen: '離開全螢幕',
+    pip: '子母畫面',
+    back: (s) => `倒退 ${s} 秒`,
+    forward: (s) => `快轉 ${s} 秒`,
+    loading: '載入中',
+    error: '無法播放這個媒體',
+    time: (c, d) => `${c}，總長 ${d}`,
+  },
   link: { external: '（另開新視窗）' },
   signature: {
     label: '簽名板',
@@ -1236,6 +1373,36 @@ export const en: MlLocale = {
     empty: 'Nothing matches',
   },
   markdown: { streaming: 'Generating…' },
+  editor: {
+    toolbar: 'Formatting',
+    content: 'Editor',
+    placeholder: 'Start writing…',
+    tools: {
+      paragraph: 'Paragraph',
+      h1: 'Heading 1',
+      h2: 'Heading 2',
+      h3: 'Heading 3',
+      bold: 'Bold',
+      italic: 'Italic',
+      underline: 'Underline',
+      strike: 'Strikethrough',
+      code: 'Inline code',
+      link: 'Link',
+      bulletList: 'Bullet list',
+      orderedList: 'Numbered list',
+      blockquote: 'Quote',
+      codeBlock: 'Code block',
+      horizontalRule: 'Divider',
+      clear: 'Clear formatting',
+      undo: 'Undo',
+      redo: 'Redo',
+    },
+    linkUrl: 'Link URL',
+    linkApply: 'Apply',
+    linkRemove: 'Remove link',
+    linkInvalid: 'That URL is not valid',
+    count: (n, max) => (max ? `${n} / ${max} characters` : `${n} characters`),
+  },
   diff: {
     label: 'Code diff',
     added: 'Added',
@@ -1361,6 +1528,43 @@ export const en: MlLocale = {
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },
   barcode: { invalid: "This format can't encode that value", label: (v) => `Barcode: ${v}` },
   avatarGroup: { label: 'Members', more: (n) => `${n} more`, showAll: (n) => `Show ${n} more`, collapse: 'Show fewer' },
+  amount: { capital: 'In words (NT$)' },
+  numberKeyboard: { label: 'Number keyboard', delete: 'Delete', close: 'Done', collapse: 'Hide keyboard' },
+  indexBar: { label: 'Index', jump: (i) => `Jump to ${i}`, empty: 'Nothing here' },
+  scheduler: {
+    label: 'Schedule',
+    today: 'Today',
+    prev: 'Previous',
+    next: 'Next',
+    week: 'Week',
+    day: 'Day',
+    allDay: 'All day',
+    hint: 'Arrow up/down moves by one slot, left/right by a day; Shift + up/down changes the end. Drag on an empty slot to add an event.',
+    moved: (title, when) => `${title} moved to ${when}`,
+  },
+  player: {
+    video: 'Video player',
+    audio: 'Audio player',
+    play: 'Play',
+    pause: 'Pause',
+    replay: 'Replay',
+    mute: 'Mute',
+    unmute: 'Unmute',
+    volume: 'Volume',
+    seek: 'Seek',
+    speed: 'Playback speed',
+    normal: 'Normal',
+    captions: 'Captions',
+    captionsOff: 'Off',
+    fullscreen: 'Full screen',
+    exitFullscreen: 'Exit full screen',
+    pip: 'Picture in picture',
+    back: (s) => `Back ${s} seconds`,
+    forward: (s) => `Forward ${s} seconds`,
+    loading: 'Loading',
+    error: 'This media can’t be played',
+    time: (c, d) => `${c} of ${d}`,
+  },
   link: { external: '(opens in a new tab)' },
   signature: {
     label: 'Signature pad',

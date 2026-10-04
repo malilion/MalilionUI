@@ -12,7 +12,9 @@
     "typescript",
     "malilion",
     "lion",
-    "dark-theme"
+    "dark-theme",
+    "rich-text-editor",
+    "tiptap"
   ],
   "type": "module",
   "license": "MIT",
@@ -41,6 +43,14 @@
     "./react": {
       "types": "./dist/types/react/index.d.ts",
       "import": "./dist/react.js"
+    },
+    "./react/editor": {
+      "types": "./dist/types/react/editor.d.ts",
+      "import": "./dist/react-editor.js"
+    },
+    "./editor": {
+      "types": "./dist/types/editor.d.ts",
+      "import": "./dist/editor.js"
     },
     "./nuxt": {
       "types": "./dist/types/nuxt.d.ts",
@@ -75,12 +85,28 @@
   },
   "peerDependencies": {
     "@nuxt/kit": "^3.0.0 || ^4.0.0",
+    "@tiptap/core": "^3.0.0",
+    "@tiptap/extensions": "^3.0.0",
+    "@tiptap/pm": "^3.0.0",
+    "@tiptap/starter-kit": "^3.0.0",
     "react": "^18.0.0 || ^19.0.0",
     "react-dom": "^18.0.0 || ^19.0.0",
     "vue": "^3.5.0"
   },
   "peerDependenciesMeta": {
     "@nuxt/kit": {
+      "optional": true
+    },
+    "@tiptap/core": {
+      "optional": true
+    },
+    "@tiptap/extensions": {
+      "optional": true
+    },
+    "@tiptap/pm": {
+      "optional": true
+    },
+    "@tiptap/starter-kit": {
       "optional": true
     },
     "react": {
@@ -96,6 +122,10 @@
   "devDependencies": {
     "@nuxt/kit": "^4.5.2",
     "@nuxt/schema": "^4.5.2",
+    "@tiptap/core": "^3.31.4",
+    "@tiptap/extensions": "^3.31.4",
+    "@tiptap/pm": "^3.31.4",
+    "@tiptap/starter-kit": "^3.31.4",
     "@types/node": "^26.6.3",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",

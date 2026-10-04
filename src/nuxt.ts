@@ -4,7 +4,10 @@
 // the components each page actually uses.
 import { addComponent, addImports, addPluginTemplate, addVitePlugin, defineNuxtModule } from '@nuxt/kit'
 import type { Nuxt } from '@nuxt/schema'
+import { createRequire } from 'node:module'
+import { join } from 'node:path'
 import map from './styles/on-demand/map.json'
+import { componentSubpaths } from './subpaths'
 import { themeInitScript, type MlThemeOptions } from './theme'
 
 export interface ModuleOptions {
@@ -47,7 +50,7 @@ function onDemandStyles() {
         if (known.has(pascal)) used.add(pascal)
       }
       // Nuxt writes either the bare specifier or the resolved file path of the package entry.
-      for (const m of code.matchAll(/import\s*\{([^}]*)\}\s*from\s*["']([^"']*@malilion\/ui(?:\/dist\/malilion-ui\.js)?)["']/g)) {
+      for (const m of code.matchAll(/import\s*\{([^}]*)\}\s*from\s*["']([^"']*@malilion\/ui(?:\/dist\/malilion-ui\.js|\/editor|\/dist\/editor\.js)?)["']/g)) {
         for (const part of m[1].split(',')) {
           const name = part.trim().split(/\s+as\s+/)[0]
           if (known.has(name)) used.add(name)
@@ -59,6 +62,15 @@ function onDemandStyles() {
       const imports = [...used].map((name) => `import '${PKG}/on-demand/${name}';`).join('\n')
       return { code: `${imports}\n${code}`, map: null }
     },
+  }
+}
+
+function hasPackage(rootDir: string, name: string) {
+  try {
+    createRequire(join(rootDir, 'package.json')).resolve(name)
+    return true
+  } catch {
+    return false
   }
 }
 
@@ -74,8 +86,13 @@ export default defineNuxtModule<ModuleOptions>({
   setup(options: ModuleOptions, nuxt: Nuxt) {
     // Components: <MlButton> etc. resolve to named exports of the package.
     const prefix = options.prefix ?? 'Ml'
+    // Sub-path components (the Tiptap editor) only when their peer dependency is installed,
+    // so an app without Tiptap never resolves @malilion/ui/editor.
+    const tiptap = hasPackage(nuxt.options.rootDir, '@tiptap/core')
     for (const name of components) {
-      addComponent({ name: name.replace(/^Ml/, prefix), export: name, filePath: PKG })
+      const sub = componentSubpaths[name]
+      if (sub && !tiptap) continue
+      addComponent({ name: name.replace(/^Ml/, prefix), export: name, filePath: sub ? `${PKG}/${sub}` : PKG })
     }
 
     // Composables. confirm()/toast() keep their names only via the use* forms,

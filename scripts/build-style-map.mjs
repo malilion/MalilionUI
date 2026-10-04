@@ -90,9 +90,11 @@ function sheetsFor(path) {
   return sheets.filter((f) => all.has(f))
 }
 
-// Public components = the ones index.ts registers.
-const index = readFileSync(join(root, 'src/index.ts'), 'utf8')
-const components = [...index.matchAll(/^import (Ml\w+) from '\.\/components\/(Ml\w+)\.vue'/gm)].map((m) => m[1])
+// Public components = the ones index.ts registers, plus those of the sub-path
+// entries (editor.ts: needs the optional Tiptap peer dependency).
+const components = ['index.ts', 'editor.ts'].flatMap((file) =>
+  [...readFileSync(join(root, 'src', file), 'utf8').matchAll(/^import (Ml\w+) from '\.\/components\/(Ml\w+)\.vue'/gm)].map((m) => m[1]),
+)
 const directives = { 'v-paw-stamp': join(root, 'src/pawStamp.ts'), 'v-loading': join(root, 'src/loading.ts') }
 
 // Each entry is a tiny JS module of CSS imports rather than a CSS file of

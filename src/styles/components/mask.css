@@ -1,0 +1,51 @@
+/* InputMask & AmountInput — formatted text in the regular input shell */
+
+.ml-mask__control,
+.ml-amount__control {
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.ml-mask__control::placeholder {
+  letter-spacing: 0.08em;
+}
+
+/* Money lines up on the right, like a ledger */
+.ml-amount__control {
+  text-align: right;
+}
+
+.ml-amount__currency {
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: var(--ml-tracking-hud);
+}
+
+.ml-amount__capital {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 6px 0 0;
+  padding: 6px 10px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 2px 0 0 var(--ml-accent);
+  color: var(--ml-text);
+  font-size: 0.875rem;
+  letter-spacing: 0.08em;
+}
+
+.ml-amount__capital-label {
+  flex: none;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-display);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+}
+
+.ml-amount__words {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
