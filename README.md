@@ -52,7 +52,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
-## Unreleased
+## What's New in 0.13
 
 - **`MlCuteIcon`**: 52 sticker-style icons with blinking faces — animals, bubble tea and sweets, weather, everyday things and a tech workshop set (cyber lion, robot, chip, terminal, shield, database, bug…); `color`, brand `metal`, `mono` (currentColor) and `line` variants, six looping animations that can play on hover only
 - **`MlPuzzle`**: a real jigsaw with interlocking tabs — drag a piece onto another or tap two to swap, placed pieces snap and lock, paw confetti and a `complete` event when solved; fully playable from the keyboard and announced to screen readers; works with any picture or as numbered tiles, `seed` for repeatable levels
