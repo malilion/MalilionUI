@@ -36,7 +36,7 @@ describe('CuteIcon', () => {
     render(<CuteIcon name="panda" size={32} animate="blink" />)
     const svg = $('svg')
     expect(svg.getAttribute('class')).toBe('ml-cute ml-cute--color ml-cute--blink')
-    expect((svg as SVGElement).style.getPropertyValue('--_size')).toBe('32px')
+    expect((svg as SVGElement).style.getPropertyValue('--_cute')).toBe('32px')
     expect(svg.querySelectorAll('path').length).toBeGreaterThan(5)
   })
 })

@@ -1,0 +1,96 @@
+/* ScratchCard — scratch the metal coating off */
+.ml-scratch {
+  --_w: 300px;
+  --_ratio: 2;
+  --_cover: var(--ml-metal-gold);
+  --_ink: #4f320a;
+
+  position: relative;
+  width: min(100%, var(--_w));
+  aspect-ratio: var(--_ratio);
+  overflow: hidden;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius);
+  background: var(--ml-surface);
+  box-shadow: var(--ml-shadow-1);
+  user-select: none;
+  -webkit-user-select: none;
+}
+.ml-scratch--steel { --_cover: var(--ml-metal-steel); --_ink: #1c2029; }
+.ml-scratch--bean { --_cover: var(--ml-metal-bean); --_ink: #4a1424; }
+.ml-scratch--tech { --_cover: var(--ml-metal-cyan); --_ink: #06302a; }
+
+.ml-scratch__prize {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 12px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at 50% 45%, color-mix(in oklab, var(--ml-accent) 22%, transparent), transparent 70%),
+    repeating-linear-gradient(135deg, transparent 0 10px, rgb(255 255 255 / 0.025) 10px 20px),
+    var(--ml-surface);
+}
+.ml-scratch--revealed .ml-scratch__prize { animation: ml-scratch-pop 520ms var(--ml-ease-spring) both; }
+
+/* Until the canvas is painted (and during SSR) a CSS coating hides the prize */
+.ml-scratch__cover {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--_cover);
+  color: var(--_ink);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-lg);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+}
+.ml-scratch--ready .ml-scratch__cover,
+.ml-scratch--revealed .ml-scratch__cover { visibility: hidden; }
+
+.ml-scratch__canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  transition: opacity 500ms var(--ml-ease);
+}
+.ml-scratch--scratching .ml-scratch__canvas { cursor: grabbing; }
+.ml-scratch--revealed .ml-scratch__canvas { opacity: 0; pointer-events: none; }
+.ml-scratch--disabled .ml-scratch__canvas { cursor: not-allowed; }
+
+.ml-scratch__reveal {
+  position: absolute;
+  right: 6px;
+  bottom: 6px;
+  padding: 3px 9px;
+  border: 0;
+  border-radius: var(--ml-radius-full);
+  background: rgb(0 0 0 / 0.45);
+  color: #fff;
+  font: inherit;
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-scratch__reveal:hover:not(:disabled),
+.ml-scratch__reveal:focus-visible { opacity: 1; background: rgb(0 0 0 / 0.7); }
+.ml-scratch__reveal:focus-visible { outline: 2px solid var(--ml-focus); outline-offset: 2px; }
+.ml-scratch__reveal:disabled { display: none; }
+
+@keyframes ml-scratch-pop {
+  0% { scale: 0.92; }
+  60% { scale: 1.05; }
+  100% { scale: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-scratch--revealed .ml-scratch__prize { animation: none; }
+  .ml-scratch__canvas { transition: none; }
+}

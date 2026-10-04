@@ -54,7 +54,9 @@ import MlForm from './components/MlForm.vue'
 import MlFormItem from './components/MlFormItem.vue'
 import MlFunnelChart from './components/MlFunnelChart.vue'
 import MlGauge from './components/MlGauge.vue'
+import MlGacha from './components/MlGacha.vue'
 import MlGlobe from './components/MlGlobe.vue'
+import MlGridLottery from './components/MlGridLottery.vue'
 import MlGrid from './components/MlGrid.vue'
 import MlGridItem from './components/MlGridItem.vue'
 import MlHeatmap from './components/MlHeatmap.vue'
@@ -103,6 +105,7 @@ import MlRate from './components/MlRate.vue'
 import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
+import MlScratchCard from './components/MlScratchCard.vue'
 import MlScatterChart from './components/MlScatterChart.vue'
 import MlScrollbar from './components/MlScrollbar.vue'
 import MlSegmented from './components/MlSegmented.vue'
@@ -110,6 +113,7 @@ import MlSelect from './components/MlSelect.vue'
 import MlSignaturePad from './components/MlSignaturePad.vue'
 import MlSkeleton from './components/MlSkeleton.vue'
 import MlSkeletonItem from './components/MlSkeletonItem.vue'
+import MlSliderCaptcha from './components/MlSliderCaptcha.vue'
 import MlSlider from './components/MlSlider.vue'
 import MlSortable from './components/MlSortable.vue'
 import MlSpace from './components/MlSpace.vue'
@@ -202,7 +206,9 @@ const components = {
   MlFormItem,
   MlFunnelChart,
   MlGauge,
+  MlGacha,
   MlGlobe,
+  MlGridLottery,
   MlGrid,
   MlGridItem,
   MlHeatmap,
@@ -251,6 +257,7 @@ const components = {
   MlResult,
   MlReveal,
   MlRing,
+  MlScratchCard,
   MlScatterChart,
   MlScrollbar,
   MlSegmented,
@@ -258,6 +265,7 @@ const components = {
   MlSignaturePad,
   MlSkeleton,
   MlSkeletonItem,
+  MlSliderCaptcha,
   MlSlider,
   MlSortable,
   MlSpace,
@@ -373,7 +381,9 @@ export {
   MlFormItem,
   MlFunnelChart,
   MlGauge,
+  MlGacha,
   MlGlobe,
+  MlGridLottery,
   MlGrid,
   MlGridItem,
   MlHeatmap,
@@ -422,6 +432,7 @@ export {
   MlResult,
   MlReveal,
   MlRing,
+  MlScratchCard,
   MlScatterChart,
   MlScrollbar,
   MlSegmented,
@@ -429,6 +440,7 @@ export {
   MlSignaturePad,
   MlSkeleton,
   MlSkeletonItem,
+  MlSliderCaptcha,
   MlSlider,
   MlSortable,
   MlSpace,
@@ -594,6 +606,11 @@ export {
   globeFormatPoint,
   globeProject,
 } from './components/globe'
+export { lotteryTone, gridSchedule, gachaCapsules } from './components/lottery'
+export type { MlLotteryPrize, MlLotteryTone, MlLotteryDecision, GachaPhase } from './components/lottery'
+export { captchaHit, captchaPiecePath, captchaTarget } from './components/captcha'
+export type { MlCaptchaAttempt, MlCaptchaTarget, MlCaptchaTone, CaptchaState } from './components/captcha'
+export type { MlScratchTone } from './components/scratch'
 export type { MlGlobeArc, MlGlobeMarker, MlGlobePoint, MlGlobeTone, GlobeView, GlobeProjected } from './components/globe'
 
 declare module 'vue' {
@@ -652,7 +669,9 @@ declare module 'vue' {
     MlFormItem: typeof MlFormItem
     MlFunnelChart: typeof MlFunnelChart
     MlGauge: typeof MlGauge
+    MlGacha: typeof MlGacha
     MlGlobe: typeof MlGlobe
+    MlGridLottery: typeof MlGridLottery
     MlGrid: typeof MlGrid
     MlGridItem: typeof MlGridItem
     MlHeatmap: typeof MlHeatmap
@@ -701,6 +720,7 @@ declare module 'vue' {
     MlResult: typeof MlResult
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
+    MlScratchCard: typeof MlScratchCard
     MlScatterChart: typeof MlScatterChart
     MlScrollbar: typeof MlScrollbar
     MlSegmented: typeof MlSegmented
@@ -708,6 +728,7 @@ declare module 'vue' {
     MlSignaturePad: typeof MlSignaturePad
     MlSkeleton: typeof MlSkeleton
     MlSkeletonItem: typeof MlSkeletonItem
+    MlSliderCaptcha: typeof MlSliderCaptcha
     MlSlider: typeof MlSlider
     MlSortable: typeof MlSortable
     MlSpace: typeof MlSpace

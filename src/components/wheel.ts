@@ -88,10 +88,16 @@ export function pointerKick(rotation: number, count: number, max = 24) {
 
 /* ── Picking ──────────────────────────────────────────────── */
 
-export const prizeWeight = (p: MlWheelPrize) => (p.disabled ? 0 : Math.max(0, Number.isFinite(p.weight) ? (p.weight as number) : 1))
+/** Anything with odds: wheel slices, grid-lottery cells, gacha capsules. */
+export interface WeightedPrize {
+  weight?: number
+  disabled?: boolean
+}
+
+export const prizeWeight = (p: WeightedPrize) => (p.disabled ? 0 : Math.max(0, Number.isFinite(p.weight) ? (p.weight as number) : 1))
 
 /** Pick an index by weight; disabled / zero-weight prizes never win. -1 when nothing can. */
-export function pickWeighted(prizes: readonly MlWheelPrize[], random: () => number = Math.random) {
+export function pickWeighted<P extends WeightedPrize>(prizes: readonly P[], random: () => number = Math.random) {
   const weights = prizes.map(prizeWeight)
   const total = weights.reduce((s, w) => s + w, 0)
   if (total <= 0) return -1
@@ -107,7 +113,7 @@ export function pickWeighted(prizes: readonly MlWheelPrize[], random: () => numb
 }
 
 /** Win chance per prize, 0–1. */
-export function prizeOdds(prizes: readonly MlWheelPrize[]) {
+export function prizeOdds<P extends WeightedPrize>(prizes: readonly P[]) {
   const weights = prizes.map(prizeWeight)
   const total = weights.reduce((s, w) => s + w, 0)
   return weights.map((w) => (total ? w / total : 0))

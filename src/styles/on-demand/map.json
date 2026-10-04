@@ -234,8 +234,20 @@
     "components/paw.css",
     "components/charts.css"
   ],
+  "MlGacha": [
+    "components/paw.css",
+    "components/effects.css",
+    "components/cute-icon.css",
+    "components/gacha.css"
+  ],
   "MlGlobe": [
     "components/globe.css"
+  ],
+  "MlGridLottery": [
+    "components/paw.css",
+    "components/effects.css",
+    "components/cute-icon.css",
+    "components/grid-lottery.css"
   ],
   "MlGrid": [
     "components/layout.css"
@@ -428,6 +440,11 @@
     "components/paw.css",
     "components/charts.css"
   ],
+  "MlScratchCard": [
+    "components/paw.css",
+    "components/effects.css",
+    "components/scratch.css"
+  ],
   "MlScatterChart": [
     "components/paw.css",
     "components/charts-extra.css"
@@ -452,6 +469,9 @@
   ],
   "MlSkeletonItem": [
     "components/skeleton.css"
+  ],
+  "MlSliderCaptcha": [
+    "components/captcha.css"
   ],
   "MlSlider": [
     "components/controls.css"

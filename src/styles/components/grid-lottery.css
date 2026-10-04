@@ -1,0 +1,131 @@
+/* GridLottery — 九宮格: a light runs round eight prizes and stops on one */
+.ml-grid-lottery {
+  --_size: 330px;
+  position: relative;
+  width: min(100%, var(--_size));
+  aspect-ratio: 1;
+  padding: calc(var(--_size) * 0.055);
+  border-radius: calc(var(--_size) * 0.07);
+  background:
+    radial-gradient(circle, #fff6d6 0 2.5px, rgb(255 214 106 / 0.6) 3.5px, transparent 5px) 0 0 / calc(100% / 9) calc(100% / 9) round,
+    var(--ml-metal-gold);
+  box-shadow: 0 0 0 1px rgb(0 0 0 / 0.35), 0 10px 26px rgb(0 0 0 / 0.45), inset 0 2px 0 rgb(255 255 255 / 0.4);
+  container-type: inline-size;
+  user-select: none;
+  -webkit-user-select: none;
+}
+/* Bulbs in the frame chase while it runs */
+.ml-grid-lottery::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(circle, #fff 0 2.5px, transparent 4px) calc(100% / 18) calc(100% / 18) / calc(100% / 9) calc(100% / 9) round;
+  mix-blend-mode: overlay;
+  opacity: 0;
+  pointer-events: none;
+}
+.ml-grid-lottery--running::before { animation: ml-grid-bulbs 0.5s steps(2) infinite; }
+
+.ml-grid-lottery__board {
+  position: relative;
+  display: grid;
+  grid-template: repeat(3, 1fr) / repeat(3, 1fr);
+  gap: 3.5cqi;
+  height: 100%;
+  padding: 3.5cqi;
+  border-radius: 4cqi;
+  background: var(--ml-metal-gunmetal);
+  box-shadow: inset 0 2px 8px rgb(0 0 0 / 0.6);
+}
+
+.ml-grid-lottery__cell {
+  --_c: var(--ml-gold-300);
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 1.5cqi;
+  min-width: 0;
+  padding: 2cqi;
+  border-radius: 3cqi;
+  background: linear-gradient(180deg, #2a3140, #1a1f29);
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.08), 0 2px 0 rgb(0 0 0 / 0.4);
+  color: var(--ml-text);
+  transition: background 120ms, box-shadow 120ms, scale 120ms;
+}
+.ml-grid-lottery__cell--bean { --_c: var(--ml-bean-300); }
+.ml-grid-lottery__cell--tech { --_c: var(--ml-cyan-300); }
+.ml-grid-lottery__cell--steel { --_c: var(--ml-steel-200); }
+.ml-grid-lottery__cell--success { --_c: var(--ml-green-300); }
+.ml-grid-lottery__cell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--_c) 40%, transparent);
+  pointer-events: none;
+}
+.ml-grid-lottery__cell--active {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--_c) 55%, #fff), var(--_c));
+  box-shadow: 0 0 18px color-mix(in oklab, var(--_c) 80%, transparent), inset 0 0 0 2px #fff;
+  color: var(--ml-text-on-metal);
+  scale: 1.04;
+}
+.ml-grid-lottery__cell--won { animation: ml-grid-won 0.9s var(--ml-ease) 3; }
+.ml-grid-lottery__cell--disabled { opacity: 0.45; filter: grayscale(0.7); }
+.ml-grid-lottery__cell--empty { opacity: 0.4; }
+
+.ml-grid-lottery__icon { font-size: 11cqi; }
+.ml-grid-lottery__img { width: 13cqi; height: 13cqi; object-fit: contain; }
+.ml-grid-lottery__label {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: max(11px, 3.7cqi);
+  font-weight: 600;
+  line-height: 1.2;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ml-grid-lottery__go {
+  position: relative;
+  display: grid;
+  place-content: center;
+  gap: 1cqi;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: var(--ml-metal-red);
+  box-shadow: 0 0 0 1.4cqi rgb(0 0 0 / 0.35), 0 1.6cqi 0 #7a1a10, inset 0 1cqi 0 rgb(255 255 255 / 0.45);
+  color: #fff;
+  font-family: var(--ml-font-display);
+  cursor: pointer;
+  translate: 0 -1cqi;
+  transition: translate 90ms var(--ml-ease), box-shadow 90ms var(--ml-ease), filter 90ms;
+  aspect-ratio: 1;
+  margin: auto;
+  width: 92%;
+}
+.ml-grid-lottery__go:hover:not(:disabled) { filter: brightness(1.08); }
+.ml-grid-lottery__go:active:not(:disabled) { translate: 0 0.4cqi; box-shadow: 0 0 0 1.4cqi rgb(0 0 0 / 0.35), 0 0.2cqi 0 #7a1a10, inset 0 1cqi 0 rgb(255 255 255 / 0.45); }
+.ml-grid-lottery__go:focus-visible { outline: 3px solid var(--ml-focus); outline-offset: 3px; }
+.ml-grid-lottery__go:disabled { cursor: not-allowed; filter: grayscale(0.6) brightness(0.8); }
+.ml-grid-lottery--running .ml-grid-lottery__go:disabled { filter: none; cursor: progress; }
+.ml-grid-lottery__go-text { font-size: 6.4cqi; font-weight: 800; letter-spacing: 0.06em; text-shadow: 0 2px 0 rgb(0 0 0 / 0.3); }
+.ml-grid-lottery__chances { font-size: 3.4cqi; opacity: 0.85; }
+
+@keyframes ml-grid-bulbs {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes ml-grid-won {
+  0%, 100% { scale: 1.04; }
+  50% { scale: 1.12; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-grid-lottery--running::before,
+  .ml-grid-lottery__cell--won { animation: none; }
+}
