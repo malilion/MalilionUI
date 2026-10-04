@@ -85,5 +85,8 @@
 @import './components/scratch.css';
 @import './components/grid-lottery.css';
 @import './components/gacha.css';
+@import './components/bank-picker.css';
+@import './components/lunar-calendar.css';
+@import './components/invoice.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';
