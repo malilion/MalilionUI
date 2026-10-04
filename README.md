@@ -36,13 +36,13 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 146 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 161 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Taiwan validators: `twRules.nationalId()` / `residentId()` / `businessId()` / `mobile()` / `landline()` / `mobileBarcode()` / `citizenCert()` / `postalCode()` drop into `MlForm` and React `<Form>` with localized messages, backed by framework-free checkers (`isTwNationalId`, `isTwBusinessId` with the Ministry of Finance's 2023 divisible-by-5 rule, `isTwLandline` per the official numbering plan…) and formatters like `formatTwPhone()`
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has every component (all 146) with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 161) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -60,7 +60,11 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - **`MlSliderCaptcha`**: slide-the-jigsaw-piece check with the puzzle's tab shape, drag or keyboard, a recorded drag track and duration, `verify` for server-side judging, shake-and-retry and a fresh picture after too many misses
 - **`MlScratchCard`**: brushed-metal scratch-off coating on a canvas with paw prints and a sheen; reveals past a threshold with paw confetti; SSR-safe CSS coating so nothing peeks; a reveal button for keyboard users
 - **`MlGridLottery`** and **`MlGacha`**: the 九宮格 running light and a gacha machine (knob turns, capsules shake, one drops out and pops open) sharing one prize model — cute icons or images, weights, `draw(i)`, and `beforeDraw` Promises for server draws
-- 146 components, every one in Vue and React
+- **Charts**: `MlTreemap` (squarified, nested groups, keyboard tiles), `MlSankey` (flows with gradient ribbons, hover tracing), `MlGantt` (day / week / month scales, dependencies, today line, drag or keyboard to move and resize) and `MlCandlestick` (Taiwan red-up by default, volume, moving averages, crosshair, zoom and pan)
+- **Content**: `MlStickerPicker` (the cute icons with zh-TW search and recents, inline or as a popover beside a chat input), `MlComments` (threaded replies, paw likes, relative times, sorting), `MlSwipeStack` (swipe cards with stamps, undo and keyboard) and `MlInbox` (bell + notification centre with tabs, day groups, mark-all-read)
+- **Taiwan**: `MlBankPicker` (every 財金資訊 member code with aliases, plus an account field), `MlLunarCalendar` (農曆, 24 節氣 and the statutory holidays of the 2025 紀念日及節日實施條例; feed official 補假 via `holidays`) and `MlInvoiceChecker` (統一發票 last-three quick check and full numbers, with your draw numbers)
+- **Effects**: `MlAurora` (pure-CSS aurora backdrop), `MlParticles` (canvas constellation with paw particles and pointer play), `MlRadar` (HUD sweep with blips) and `MlClock` (brushed-metal analog clock with time zones and the lion crest)
+- 161 components, every one in Vue and React
 
 ## What's New in 0.12.2
 
@@ -273,13 +277,13 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | --- | --- |
 | Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` |
 | Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
-| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` |
-| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` |
-| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` · `MlGlobe` |
+| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` |
+| Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` · `MlInbox` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlLunarCalendar` · `MlComments` |
+| Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` · `MlGlobe` · `MlTreemap` · `MlSankey` · `MlGantt` · `MlCandlestick` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
-| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` |
-| Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` · `MlLuckyWheel` · `MlTerminal` · `MlPuzzle` · `MlScratchCard` · `MlGridLottery` · `MlGacha` |
+| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` · `MlSwipeStack` |
+| Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` · `MlLuckyWheel` · `MlTerminal` · `MlPuzzle` · `MlScratchCard` · `MlGridLottery` · `MlGacha` · `MlAurora` · `MlParticles` · `MlRadar` · `MlClock` |
 | Directive | `v-paw-stamp` · `v-loading` |
 
 ## Component Props
