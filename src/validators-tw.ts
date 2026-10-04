@@ -21,6 +21,9 @@
 //   https://www.einvoice.nat.gov.tw/static/ptl/ein_upload/download/5440.pdf — 手機條碼:
 //   「必須以 / 為起始…總長度共為 8 碼，除第 1 碼外只會有 0-9 A-Z + - . 這 39 個字元」(Code 39);
 //   自然人憑證條碼: 2 位大寫字母 + 14 位數字.
+// • 金融機構代號 — 財金資訊公司「金融機構業務別代號」 https://www.fisc.com.tw/TC/OPENDATA/Comm1_MEMBER.csv
+//   (see src/tw-banks.ts). Account numbers have no public shape rule beyond digits: 10–16 is the
+//   usual range, so the default check is deliberately loose.
 // • 電話 — 數位發展部「公眾電信網路號碼計畫」 https://www-api.moda.gov.tw/File/Get/moda/zh-tw/GvvKwygqxJeenqO
 //   (area codes, the first digit and length of local numbers, 09 mobile numbers; see LANDLINE).
 // • 郵遞區號 — 中華郵政 3 碼、3+2 碼 (5 digits) and 3+3 碼 (6 digits, since 2020).
@@ -28,6 +31,7 @@
 import { isEmptyValue, type MlFormRule } from './form-rules'
 import type { MlLocale } from './locale-data'
 import { findTaiwanDistrictsByZip } from './taiwan-regions'
+import { isKnownTwBankCode, type TwBankOptions } from './tw-banks'
 
 /* ── shared helpers ───────────────────────────────────── */
 
@@ -282,6 +286,22 @@ export function isKnownTwPostalCode(value: string, options: TwPostalCodeOptions 
   return isTwPostalCode(value, options) && findTaiwanDistrictsByZip(normalizeTwPostalCode(value).slice(0, 3)).length > 0
 }
 
+/* ── 銀行帳號 ─────────────────────────────────────────── */
+
+export interface TwBankAccountOptions {
+  /** Fewest digits. Default 10. */
+  min?: number
+  /** Most digits. Default 16. */
+  max?: number
+}
+
+/** Digits only, `min`–`max` long (default 10–16) after dropping spaces / dashes. No checksum: banks don't publish one. */
+export function isTwBankAccount(value: string, options: TwBankAccountOptions = {}): boolean {
+  const v = halfWidth(str(value)).replace(SEPARATORS, '')
+  const { min = 10, max = 16 } = options
+  return /^\d+$/.test(v) && v.length >= min && v.length <= max
+}
+
 /* ── form rules ───────────────────────────────────────── */
 
 export interface TwRuleOptions {
@@ -329,6 +349,9 @@ export const twRules = {
   /** 郵遞區號格式 (3 / 5 / 6 digits) */
   postalCode: (options: TwRuleOptions & TwPostalCodeOptions = {}) =>
     twRule((v) => isTwPostalCode(v, options), 'postalCode', options.message),
+  /** 銀行帳號: digits only, 10–16 long by default */
+  bankAccount: (options: TwRuleOptions & TwBankAccountOptions = {}) =>
+    twRule((v) => isTwBankAccount(v, options), 'bankAccount', options.message),
 }
 
 /**
@@ -338,4 +361,12 @@ export const twRules = {
  */
 export function twKnownPostalCodeRule(options: TwRuleOptions & TwPostalCodeOptions = {}): MlFormRule {
   return twRule((v) => isKnownTwPostalCode(v, options), 'postalCodeUnknown', options.message)
+}
+
+/**
+ * 銀行代碼 that must be a known 3-digit 總代號 (財金資訊公司 list; message 「查無此銀行代碼」).
+ * Kept out of `twRules` so the bank table is only bundled by apps that use this rule.
+ */
+export function twBankCodeRule(options: TwRuleOptions & TwBankOptions = {}): MlFormRule {
+  return twRule((v) => isKnownTwBankCode(halfWidth(v).trim(), options), 'bankCode', options.message)
 }
