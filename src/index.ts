@@ -19,6 +19,7 @@ import MlBottomSheet from './components/MlBottomSheet.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
 import MlButton from './components/MlButton.vue'
 import MlCalendar from './components/MlCalendar.vue'
+import MlCandlestick from './components/MlCandlestick.vue'
 import MlCard from './components/MlCard.vue'
 import MlCarousel from './components/MlCarousel.vue'
 import MlCascader from './components/MlCascader.vue'
@@ -58,6 +59,7 @@ import MlFormItem from './components/MlFormItem.vue'
 import MlFunnelChart from './components/MlFunnelChart.vue'
 import MlGauge from './components/MlGauge.vue'
 import MlGacha from './components/MlGacha.vue'
+import MlGantt from './components/MlGantt.vue'
 import MlGlobe from './components/MlGlobe.vue'
 import MlGridLottery from './components/MlGridLottery.vue'
 import MlGrid from './components/MlGrid.vue'
@@ -113,6 +115,7 @@ import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
 import MlScratchCard from './components/MlScratchCard.vue'
+import MlSankey from './components/MlSankey.vue'
 import MlScatterChart from './components/MlScatterChart.vue'
 import MlScrollbar from './components/MlScrollbar.vue'
 import MlSegmented from './components/MlSegmented.vue'
@@ -150,6 +153,7 @@ import MlTour from './components/MlTour.vue'
 import MlTransfer from './components/MlTransfer.vue'
 import MlTree from './components/MlTree.vue'
 import MlTreeSelect from './components/MlTreeSelect.vue'
+import MlTreemap from './components/MlTreemap.vue'
 import MlUpload from './components/MlUpload.vue'
 import MlVirtualList from './components/MlVirtualList.vue'
 import MlWatermark from './components/MlWatermark.vue'
@@ -178,6 +182,7 @@ const components = {
   MlBreadcrumb,
   MlButton,
   MlCalendar,
+  MlCandlestick,
   MlCard,
   MlCarousel,
   MlCascader,
@@ -217,6 +222,7 @@ const components = {
   MlFunnelChart,
   MlGauge,
   MlGacha,
+  MlGantt,
   MlGlobe,
   MlGridLottery,
   MlGrid,
@@ -272,6 +278,7 @@ const components = {
   MlReveal,
   MlRing,
   MlScratchCard,
+  MlSankey,
   MlScatterChart,
   MlScrollbar,
   MlSegmented,
@@ -309,6 +316,7 @@ const components = {
   MlTransfer,
   MlTree,
   MlTreeSelect,
+  MlTreemap,
   MlUpload,
   MlVirtualList,
   MlWatermark,
@@ -360,6 +368,7 @@ export {
   MlBreadcrumb,
   MlButton,
   MlCalendar,
+  MlCandlestick,
   MlCard,
   MlCarousel,
   MlCascader,
@@ -399,6 +408,7 @@ export {
   MlFunnelChart,
   MlGauge,
   MlGacha,
+  MlGantt,
   MlGlobe,
   MlGridLottery,
   MlGrid,
@@ -454,6 +464,7 @@ export {
   MlReveal,
   MlRing,
   MlScratchCard,
+  MlSankey,
   MlScatterChart,
   MlScrollbar,
   MlSegmented,
@@ -491,6 +502,7 @@ export {
   MlTransfer,
   MlTree,
   MlTreeSelect,
+  MlTreemap,
   MlUpload,
   MlVirtualList,
   MlWatermark,
@@ -695,6 +707,14 @@ export { radarBearing, radarGlow, radarPolar, radarPosition } from './components
 export type { MlRadarBlip, MlRadarTone } from './components/radar'
 export { clockAngles, clockDigital, clockFormatOffset, clockOffset, clockTime } from './components/clock'
 export type { ClockAngles, ClockTime, MlClockInput, MlClockMotion, MlClockNumerals, MlClockTone } from './components/clock'
+export { squarify, treemapLayout } from './components/treemap'
+export type { MlTreemapDatum, TreemapRect, TreemapTile, TreemapGroup, TreemapLayout } from './components/treemap'
+export { sankeyLayout, sankeyRibbon } from './components/sankey'
+export type { MlSankeyNode, MlSankeyLink, SankeyLayout, SankeyNodeBox, SankeyRibbon } from './components/sankey'
+export { ganttDay, ganttDate, ganttFormat, ganttISO, ganttSpans, ganttRange, ganttTicks } from './components/gantt'
+export type { MlGanttTask, MlGanttDate, MlGanttScale, GanttSpan, GanttTick } from './components/gantt'
+export { movingAverage, candleChange, candleTime, zoomRange, panRange, clampRange } from './components/candlestick'
+export type { MlCandle, MlCandleUpColor, CandleRange } from './components/candlestick'
 
 declare module 'vue' {
   export interface GlobalComponents {
@@ -717,6 +737,7 @@ declare module 'vue' {
     MlBreadcrumb: typeof MlBreadcrumb
     MlButton: typeof MlButton
     MlCalendar: typeof MlCalendar
+    MlCandlestick: typeof MlCandlestick
     MlCard: typeof MlCard
     MlCarousel: typeof MlCarousel
     MlCascader: typeof MlCascader
@@ -756,6 +777,7 @@ declare module 'vue' {
     MlFunnelChart: typeof MlFunnelChart
     MlGauge: typeof MlGauge
     MlGacha: typeof MlGacha
+    MlGantt: typeof MlGantt
     MlGlobe: typeof MlGlobe
     MlGridLottery: typeof MlGridLottery
     MlGrid: typeof MlGrid
@@ -811,6 +833,7 @@ declare module 'vue' {
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
     MlScratchCard: typeof MlScratchCard
+    MlSankey: typeof MlSankey
     MlScatterChart: typeof MlScatterChart
     MlScrollbar: typeof MlScrollbar
     MlSegmented: typeof MlSegmented
@@ -848,6 +871,7 @@ declare module 'vue' {
     MlTransfer: typeof MlTransfer
     MlTree: typeof MlTree
     MlTreeSelect: typeof MlTreeSelect
+    MlTreemap: typeof MlTreemap
     MlUpload: typeof MlUpload
     MlVirtualList: typeof MlVirtualList
     MlWatermark: typeof MlWatermark

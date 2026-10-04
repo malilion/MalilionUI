@@ -10,6 +10,9 @@ export const chartStops: Record<MlChartTone, [string, string]> = {
   steel: ['#e3e7ed', '#77818f'],
 }
 
+/** Tones in the order charts hand them out to items without their own. */
+export const tonePalette: MlChartTone[] = ['gold', 'tech', 'bean', 'steel', 'success', 'danger']
+
 /** Default colours for multi-series charts, in order. */
 export const seriesColors = ['#f0ad2f', '#3eeed0', '#ff8fa8', '#9ea7b5', '#52e38a', '#cd7631', '#ff5c48']
 

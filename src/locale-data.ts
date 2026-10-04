@@ -212,6 +212,60 @@ export interface MlLocale {
   heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
   scatter: { summary: (series: number, points: number) => string; table: string; series: string; point: string; x: string; y: string; size: string; trend: (name: string) => string; toggle: (name: string) => string }
   funnel: { summary: (stages: number, rate: string) => string; value: string; fromPrev: string; fromFirst: string; drop: string; start: string }
+  treemap: { summary: (items: number, total: string) => string; hint: string; table: string; group: string; item: string; value: string; share: string; ofGroup: string; selected: string }
+  sankey: {
+    summary: (nodes: number, links: number) => string
+    hint: string
+    table: string
+    source: string
+    target: string
+    value: string
+    incoming: string
+    outgoing: string
+    flow: (source: string, target: string) => string
+    ofSource: string
+  }
+  gantt: {
+    summary: (tasks: number) => string
+    hint: string
+    editHint: string
+    table: string
+    task: string
+    group: string
+    start: string
+    end: string
+    duration: string
+    days: (n: number) => string
+    progress: string
+    milestone: string
+    today: string
+    /** Short month names, January first. */
+    months: string[]
+    /** Short weekday names, Sunday first. */
+    weekdays: string[]
+    monthTitle: (year: number, month: number) => string
+    year: (year: number) => string
+    expand: (group: string) => string
+    collapse: (group: string) => string
+    moved: (task: string, start: string, end: string) => string
+  }
+  candle: {
+    summary: (candles: number) => string
+    hint: string
+    table: string
+    time: string
+    open: string
+    high: string
+    low: string
+    close: string
+    volume: string
+    change: string
+    ma: (period: number) => string
+    zoomIn: string
+    zoomOut: string
+    reset: string
+    range: (from: string, to: string) => string
+  }
   taiwanMap: { summary: (counties: number, min: string, max: string) => string; cell: (county: string, value: string) => string; table: string; county: string; value: string; noData: string; less: string; more: string }
   bars: { summary: (mode: 'grouped' | 'stacked' | 'percent', series: number, categories: number) => string; table: string; category: string; total: string; share: string; toggle: (name: string) => string }
   rate: string
@@ -581,6 +635,68 @@ export const zhTW: MlLocale = {
     toggle: (n) => `顯示或隱藏「${n}」`,
   },
   funnel: { summary: (n, r) => `漏斗圖：${n} 個階段，整體轉換率 ${r}`, value: '數量', fromPrev: '較上一階段', fromFirst: '整體轉換', drop: '流失', start: '起點' },
+  treemap: {
+    summary: (n, t) => `矩形樹圖：${n} 個項目，合計 ${t}`,
+    hint: '方向鍵在區塊間移動，Enter 選取，Esc 取消選取',
+    table: '矩形樹圖資料',
+    group: '分組',
+    item: '項目',
+    value: '數值',
+    share: '占總計',
+    ofGroup: '占分組',
+    selected: '已選取',
+  },
+  sankey: {
+    summary: (n, l) => `桑基圖：${n} 個節點、${l} 條流向`,
+    hint: '方向鍵在節點間移動，查看相連的流向',
+    table: '桑基圖流向資料',
+    source: '來源',
+    target: '去向',
+    value: '流量',
+    incoming: '流入',
+    outgoing: '流出',
+    flow: (a, b) => `${a} → ${b}`,
+    ofSource: '占來源流出',
+  },
+  gantt: {
+    summary: (n) => `甘特圖：${n} 項工作`,
+    hint: '↑ ↓ 在工作間移動',
+    editHint: '← → 移動一天，Shift + ← → 調整結束日',
+    table: '甘特圖工作資料',
+    task: '工作',
+    group: '分組',
+    start: '開始',
+    end: '結束',
+    duration: '天數',
+    days: (n) => `${n} 天`,
+    progress: '進度',
+    milestone: '里程碑',
+    today: '今天',
+    months: ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'],
+    weekdays: ['週日', '週一', '週二', '週三', '週四', '週五', '週六'],
+    monthTitle: (y, m) => `${y} 年 ${m + 1} 月`,
+    year: (y) => `${y} 年`,
+    expand: (g) => `展開「${g}」`,
+    collapse: (g) => `收合「${g}」`,
+    moved: (t, a, b) => `${t}：${a} – ${b}`,
+  },
+  candle: {
+    summary: (n) => `K 線圖：${n} 根 K 棒`,
+    hint: '← → 移動十字線，+ − 縮放，Home／End 跳到頭尾，拖曳可平移',
+    table: 'K 線資料',
+    time: '時間',
+    open: '開',
+    high: '高',
+    low: '低',
+    close: '收',
+    volume: '量',
+    change: '漲跌',
+    ma: (n) => `MA${n}`,
+    zoomIn: '放大',
+    zoomOut: '縮小',
+    reset: '重設範圍',
+    range: (a, b) => `顯示 ${a} 至 ${b}`,
+  },
   taiwanMap: {
     summary: (n, lo, hi) => (n ? `臺灣縣市地圖：${n} 個縣市有資料，最低 ${lo}，最高 ${hi}` : '臺灣縣市地圖'),
     cell: (c, v) => `${c}：${v}`,
@@ -1017,6 +1133,68 @@ export const en: MlLocale = {
     toggle: (n) => `Show or hide “${n}”`,
   },
   funnel: { summary: (n, r) => `Funnel chart: ${n} stages, ${r} overall conversion`, value: 'Count', fromPrev: 'From previous', fromFirst: 'Overall', drop: 'Dropped', start: 'Start' },
+  treemap: {
+    summary: (n, t) => `Treemap: ${n} ${n === 1 ? 'item' : 'items'}, ${t} in total`,
+    hint: 'Arrow keys move between tiles, Enter selects, Escape clears',
+    table: 'Treemap data',
+    group: 'Group',
+    item: 'Item',
+    value: 'Value',
+    share: 'Of total',
+    ofGroup: 'Of group',
+    selected: 'selected',
+  },
+  sankey: {
+    summary: (n, l) => `Sankey diagram: ${n} nodes, ${l} ${l === 1 ? 'flow' : 'flows'}`,
+    hint: 'Arrow keys move between nodes and show their flows',
+    table: 'Sankey flows',
+    source: 'From',
+    target: 'To',
+    value: 'Value',
+    incoming: 'In',
+    outgoing: 'Out',
+    flow: (a, b) => `${a} → ${b}`,
+    ofSource: 'Of source',
+  },
+  gantt: {
+    summary: (n) => `Gantt chart: ${n} ${n === 1 ? 'task' : 'tasks'}`,
+    hint: 'Up and down arrows move between tasks',
+    editHint: 'Left / right move a day, Shift + left / right change the end',
+    table: 'Gantt tasks',
+    task: 'Task',
+    group: 'Group',
+    start: 'Start',
+    end: 'End',
+    duration: 'Days',
+    days: (n) => `${n} ${n === 1 ? 'day' : 'days'}`,
+    progress: 'Progress',
+    milestone: 'Milestone',
+    today: 'Today',
+    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    weekdays: ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'],
+    monthTitle: (y, m) => `${['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][m]} ${y}`,
+    year: (y) => `${y}`,
+    expand: (g) => `Expand ${g}`,
+    collapse: (g) => `Collapse ${g}`,
+    moved: (t, a, b) => `${t}: ${a} – ${b}`,
+  },
+  candle: {
+    summary: (n) => `Candlestick chart: ${n} ${n === 1 ? 'candle' : 'candles'}`,
+    hint: 'Left / right move the crosshair, + / − zoom, Home / End jump, drag to pan',
+    table: 'Price data',
+    time: 'Time',
+    open: 'O',
+    high: 'H',
+    low: 'L',
+    close: 'C',
+    volume: 'Vol',
+    change: 'Chg',
+    ma: (n) => `MA${n}`,
+    zoomIn: 'Zoom in',
+    zoomOut: 'Zoom out',
+    reset: 'Reset range',
+    range: (a, b) => `Showing ${a} to ${b}`,
+  },
   taiwanMap: {
     summary: (n, lo, hi) => (n ? `Map of Taiwan: ${n} ${n === 1 ? 'county' : 'counties'} with data, from ${lo} to ${hi}` : 'Map of Taiwan'),
     cell: (c, v) => `${c}: ${v}`,

@@ -92,5 +92,9 @@
 @import './components/bank-picker.css';
 @import './components/lunar-calendar.css';
 @import './components/invoice.css';
+@import './components/treemap.css';
+@import './components/sankey.css';
+@import './components/gantt.css';
+@import './components/candlestick.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';

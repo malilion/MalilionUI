@@ -1,0 +1,257 @@
+/* Candlestick (K-line) chart */
+.ml-candle {
+  --_cd-h: 384px;
+  --_cd-red: #ff5c48;
+  --_cd-green: #2fd479;
+  --_cd-flat: var(--ml-steel-400);
+  --_cd-up: var(--_cd-red);
+  --_cd-down: var(--_cd-green);
+
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin: 0;
+}
+
+/* US / Europe convention */
+.ml-candle--up-green {
+  --_cd-up: var(--_cd-green);
+  --_cd-down: var(--_cd-red);
+}
+
+.ml-candle__bar {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ml-candle__legend {
+  display: flex;
+  flex: 1;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  min-width: 0;
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-candle__legend small {
+  margin-right: 4px;
+  color: var(--ml-text-dim);
+  font-size: inherit;
+}
+
+.ml-candle__legend b {
+  color: var(--ml-text);
+  font-weight: 600;
+}
+
+.ml-candle__time {
+  color: var(--ml-accent-text);
+  letter-spacing: 0.04em;
+}
+
+.ml-candle__change--up { color: var(--_cd-up); }
+.ml-candle__change--down { color: var(--_cd-down); }
+.ml-candle__change--flat { color: var(--_cd-flat); }
+
+.ml-candle__ma-key {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.ml-candle__ma-key i {
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+}
+
+.ml-candle__ma-key b {
+  margin-left: 2px;
+}
+
+.ml-candle__tools {
+  display: flex;
+  flex: none;
+  gap: 4px;
+}
+
+.ml-candle__tool {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  background: var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  color: var(--ml-text-muted);
+  cursor: pointer;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: color var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-candle__tool svg {
+  width: 13px;
+  height: 13px;
+}
+
+.ml-candle__tool:hover:not(:disabled) {
+  background: var(--ml-surface-3);
+  color: var(--ml-accent-text);
+}
+
+.ml-candle__tool:focus-visible {
+  outline: none;
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-candle__tool:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.ml-candle__plot {
+  position: relative;
+  height: var(--_cd-h);
+  outline: none;
+  cursor: crosshair;
+  touch-action: pan-y;
+  user-select: none;
+}
+
+.ml-candle--dragging .ml-candle__plot {
+  cursor: grabbing;
+}
+
+.ml-candle__plot:focus-visible {
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-candle__plot svg {
+  display: block;
+  overflow: visible;
+}
+
+.ml-candle__grid line {
+  stroke: var(--ml-line-steel);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+}
+
+.ml-candle__grid .ml-candle__divider {
+  stroke: var(--ml-line-strong);
+  stroke-dasharray: none;
+}
+
+.ml-candle__axis text {
+  fill: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 10.5px;
+  dominant-baseline: central;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-candle__axis .ml-candle__tick {
+  text-anchor: middle;
+  dominant-baseline: auto;
+}
+
+.ml-candle__k line {
+  stroke: var(--_cd-c);
+  stroke-width: 1;
+}
+
+.ml-candle__k rect {
+  fill: var(--_cd-c);
+  stroke: var(--_cd-c);
+  stroke-width: 0.5;
+}
+
+.ml-candle__k--up { --_cd-c: var(--_cd-up); }
+.ml-candle__k--down { --_cd-c: var(--_cd-down); }
+.ml-candle__k--flat { --_cd-c: var(--_cd-flat); }
+
+.ml-candle__vol {
+  fill-opacity: 0.45;
+}
+
+.ml-candle__vol--up { fill: var(--_cd-up); }
+.ml-candle__vol--down { fill: var(--_cd-down); }
+.ml-candle__vol--flat { fill: var(--_cd-flat); }
+
+/* Candles rise from their middles and volume grows from the floor, left to right — first paint only. */
+.ml-candle--intro .ml-candle__k,
+.ml-candle--intro .ml-candle__vol {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-candle-rise 520ms var(--ml-ease) backwards;
+  animation-delay: min(calc(var(--_cd-k, 0) * 12ms), 720ms);
+}
+
+.ml-candle--intro .ml-candle__vol {
+  transform-origin: bottom;
+}
+
+@keyframes ml-candle-rise {
+  from { opacity: 0; scale: 1 0; }
+}
+
+.ml-candle__ma {
+  fill: none;
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.ml-candle--intro .ml-candle__ma {
+  animation: ml-fade-in var(--ml-dur-chart) var(--ml-ease) backwards;
+  animation-delay: 600ms;
+}
+
+.ml-candle__cross line {
+  stroke: var(--ml-text-muted);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+  pointer-events: none;
+}
+
+.ml-candle__tag {
+  fill: var(--ml-surface-3);
+  stroke: var(--ml-line-strong);
+}
+
+.ml-candle__tag-text {
+  fill: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 10.5px;
+  dominant-baseline: central;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-candle__tag-text--time {
+  text-anchor: middle;
+}
+
+[data-ml-theme='light'] .ml-candle {
+  --_cd-red: #e5402d;
+  --_cd-green: #17a456;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-candle--intro .ml-candle__k,
+  .ml-candle--intro .ml-candle__vol,
+  .ml-candle--intro .ml-candle__ma {
+    animation: none;
+  }
+
+  .ml-candle__tool {
+    transition: none;
+  }
+}
