@@ -25,7 +25,7 @@ export function CuteIcon({ name, size, variant = 'color', animate, hover = false
   return (
     <svg
       className={cx('ml-cute', `ml-cute--${variant}`, animate && `ml-cute--${animate}`, { 'ml-cute--hover': animate && hover }, className)}
-      style={length ? ({ '--_size': length } as CSSProperties) : undefined}
+      style={length ? ({ '--_cute': length } as CSSProperties) : undefined}
       viewBox="0 0 32 32"
       role={title ? 'img' : undefined}
       aria-label={title}

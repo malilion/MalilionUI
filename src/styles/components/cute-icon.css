@@ -25,8 +25,8 @@
 
   display: inline-block;
   flex: none;
-  width: var(--_size, 1em);
-  height: var(--_size, 1em);
+  width: var(--_cute, 1em);
+  height: var(--_cute, 1em);
   vertical-align: -0.15em;
   overflow: visible;
 }

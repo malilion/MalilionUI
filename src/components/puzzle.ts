@@ -80,7 +80,7 @@ const f = (v: number) => +v.toFixed(2)
  * bulges outward (`sign` 1), inward (-1) or none (0). `size` is the tab scale.
  * The knob is symmetric, so the neighbour tracing the edge backwards meets it exactly.
  */
-function edge(x0: number, y0: number, x1: number, y1: number, sign: number, size: number): string {
+export function puzzleEdgePath(x0: number, y0: number, x1: number, y1: number, sign: number, size: number): string {
   if (!sign) return `L${f(x1)} ${f(y1)}`
   const len = Math.hypot(x1 - x0, y1 - y0)
   const dx = (x1 - x0) / len
@@ -115,10 +115,10 @@ export function puzzlePiecePath(cell: number, cols: number, rows: number, edges:
   const left = c > 0 ? -edges.v[r][c - 1] : 0
   return (
     `M${f(x)} ${f(y)}` +
-    edge(x, y, x + w, y, top, size) +
-    edge(x + w, y, x + w, y + h, right, size) +
-    edge(x + w, y + h, x, y + h, bottom, size) +
-    edge(x, y + h, x, y, left, size) +
+    puzzleEdgePath(x, y, x + w, y, top, size) +
+    puzzleEdgePath(x + w, y, x + w, y + h, right, size) +
+    puzzleEdgePath(x + w, y + h, x, y + h, bottom, size) +
+    puzzleEdgePath(x, y + h, x, y, left, size) +
     'z'
   )
 }

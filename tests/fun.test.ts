@@ -87,7 +87,7 @@ describe('MlCuteIcon', () => {
     wrapper = mount(MlCuteIcon, { props: { name: 'heart', size: 48, variant: 'mono', animate: 'beat', hover: true, title: '愛心' } })
     const svg = wrapper.get('svg')
     expect(svg.classes()).toEqual(['ml-cute', 'ml-cute--mono', 'ml-cute--beat', 'ml-cute--hover'])
-    expect(svg.attributes('style')).toContain('--_size: 48px')
+    expect(svg.attributes('style')).toContain('--_cute: 48px')
     expect(svg.attributes('role')).toBe('img')
     expect(svg.attributes('aria-label')).toBe('愛心')
     expect(svg.attributes('aria-hidden')).toBeUndefined()
@@ -102,7 +102,7 @@ describe('MlCuteIcon', () => {
   it('hover without an animation does nothing', () => {
     wrapper = mount(MlCuteIcon, { props: { name: 'cat', size: '2rem', hover: true } })
     expect(wrapper.get('svg').classes()).toEqual(['ml-cute', 'ml-cute--color'])
-    expect(wrapper.get('svg').attributes('style')).toContain('--_size: 2rem')
+    expect(wrapper.get('svg').attributes('style')).toContain('--_cute: 2rem')
   })
 })
 

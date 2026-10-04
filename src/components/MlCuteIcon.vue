@@ -25,7 +25,7 @@ const length = computed(() => (props.size === undefined ? undefined : typeof pro
 <template>
   <svg
     :class="['ml-cute', `ml-cute--${variant}`, animate && `ml-cute--${animate}`, { 'ml-cute--hover': animate && hover }]"
-    :style="length ? { '--_size': length } : undefined"
+    :style="length ? { '--_cute': length } : undefined"
     viewBox="0 0 32 32"
     :role="title ? 'img' : undefined"
     :aria-label="title"

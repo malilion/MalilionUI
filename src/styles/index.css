@@ -81,5 +81,9 @@
 @import './components/cute-icon.css';
 @import './components/puzzle.css';
 @import './components/globe.css';
+@import './components/captcha.css';
+@import './components/scratch.css';
+@import './components/grid-lottery.css';
+@import './components/gacha.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';

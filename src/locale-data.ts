@@ -251,6 +251,9 @@ export interface MlLocale {
     shuffle: string
   }
   globe: { label: string; summary: (markers: number) => string; hint: string; marker: (label: string, place: string) => string }
+  captcha: { label: string; hint: string; slider: string; checking: string; success: string; fail: string; refresh: string; locked: string }
+  scratch: { cover: string; label: string; hint: string; revealed: string; revealNow: string }
+  lottery: { grid: string; gacha: string; draw: string; turn: string; drawing: string; result: (prize: string) => string; again: string; none: string }
   password: {
     show: string
     hide: string
@@ -602,6 +605,27 @@ export const zhTW: MlLocale = {
     summary: (n) => (n ? `地球，${n} 個標記` : '地球'),
     hint: '方向鍵旋轉，Home 回到起點',
     marker: (l, p) => `${l}（${p}）`,
+  },
+  captcha: {
+    label: '安全驗證',
+    hint: '向右拖動滑塊，完成拼圖',
+    slider: '拼圖滑塊：用方向鍵移動，按 Enter 確認',
+    checking: '驗證中…',
+    success: '驗證成功',
+    fail: '沒有對準，再試一次',
+    refresh: '換一張',
+    locked: '失敗太多次，已換一張新的',
+  },
+  scratch: { cover: '刮開這裡', label: '刮刮卡', hint: '用滑鼠或手指刮開塗層，或按 Enter 直接揭曉', revealed: '已刮開', revealNow: '直接刮開' },
+  lottery: {
+    grid: '九宮格抽獎',
+    gacha: '扭蛋機',
+    draw: '抽獎',
+    turn: '轉一下',
+    drawing: '抽獎中…',
+    result: (p) => `恭喜！抽中：${p}`,
+    again: '再抽一次',
+    none: '這次沒有抽中',
   },
   password: {
     show: '顯示密碼',
@@ -959,6 +983,27 @@ export const en: MlLocale = {
     summary: (n) => (n ? `Globe with ${n} ${n === 1 ? 'marker' : 'markers'}` : 'Globe'),
     hint: 'Arrow keys rotate, Home goes back',
     marker: (l, p) => `${l} (${p})`,
+  },
+  captcha: {
+    label: 'Security check',
+    hint: 'Slide to complete the puzzle',
+    slider: 'Puzzle slider: arrow keys move it, Enter checks',
+    checking: 'Checking…',
+    success: 'Verified',
+    fail: 'Not quite — try again',
+    refresh: 'New puzzle',
+    locked: 'Too many tries — here is a new one',
+  },
+  scratch: { cover: 'Scratch here', label: 'Scratch card', hint: 'Scratch the coating off, or press Enter to reveal', revealed: 'Revealed', revealNow: 'Reveal' },
+  lottery: {
+    grid: 'Prize grid',
+    gacha: 'Gacha machine',
+    draw: 'Draw',
+    turn: 'Turn',
+    drawing: 'Drawing…',
+    result: (p) => `You won: ${p}`,
+    again: 'Again',
+    none: 'No prize this time',
   },
   password: {
     show: 'Show password',
