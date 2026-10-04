@@ -24,6 +24,8 @@
 
 <p align="center">
   <a href="https://malilion.github.io/MalilionUI/"><b>📖 文件站與線上範例</b></a>
+  &nbsp;·&nbsp;
+  <a href="https://www.youtube.com/watch?v=ElXvObJbIFY"><b>▶️ 觀看宣傳影片</b></a>
 </p>
 
 <p align="center">
