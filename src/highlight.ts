@@ -53,3 +53,33 @@ export function highlightLines(code: string, lang = ''): string[] {
 export function highlight(code: string, lang = ''): string {
   return highlightLines(code, lang).join('\n')
 }
+
+/** One coloured run of a line: `cls` is a `tok-*` class, or '' for plain text. */
+export interface HighlightToken {
+  text: string
+  cls: string
+}
+
+/**
+ * The same colouring as `highlightLines`, as raw tokens per source line
+ * (nothing escaped), for renderers that build real elements instead of HTML.
+ */
+export function highlightTokens(code: string, lang = ''): HighlightToken[][] {
+  const lines: HighlightToken[][] = [[]]
+  const push = (text: string, cls = '') => {
+    text.split('\n').forEach((part, i) => {
+      if (i > 0) lines.push([])
+      if (part) lines[lines.length - 1].push({ text: part, cls })
+    })
+  }
+  let last = 0
+  for (const match of code.matchAll(SHELL.has(lang.toLowerCase()) ? SHELL_TOKEN : TOKEN)) {
+    const index = match.index ?? 0
+    push(code.slice(last, index))
+    const group = match.findIndex((value, i) => i > 0 && value !== undefined)
+    push(match[0], CLASSES[group])
+    last = index + match[0].length
+  }
+  push(code.slice(last))
+  return lines
+}

@@ -1,0 +1,280 @@
+/*
+ * Terminal — a faux shell window: brushed-metal title bar with three rivets
+ * (or paw prints), a scanlined mono screen and a blinking gold caret.
+ */
+:root {
+  --ml-term-gold: var(--ml-accent-text);
+  --ml-term-green: var(--ml-success-text);
+  --ml-term-red: var(--ml-danger-text);
+  --ml-term-yellow: var(--ml-gold-200);
+  --ml-term-cyan: var(--ml-tech-text);
+  --ml-term-pink: var(--ml-bean-300);
+}
+
+[data-ml-theme='light'] {
+  --ml-term-yellow: var(--ml-bronze-500);
+  --ml-term-pink: var(--ml-bean-600);
+}
+
+.ml-terminal {
+  --_cut: var(--ml-cut);
+
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  margin: 0;
+  padding: 1px;
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  filter: var(--ml-drop-2);
+}
+
+.ml-terminal::before,
+.ml-terminal::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+}
+
+.ml-terminal::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+
+.ml-terminal::after {
+  inset: 1px;
+  background:
+    radial-gradient(90% 70% at 0% 0%, var(--ml-accent-soft), transparent 60%),
+    var(--ml-surface-inset);
+}
+
+/* ── Title bar ── */
+.ml-terminal__head {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 12px;
+  min-height: 38px;
+  padding: 6px 10px 6px 16px;
+  border-bottom: 1px solid var(--ml-line-strong);
+  background: var(--ml-brushed), var(--ml-plate-fill);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  clip-path: polygon(calc(var(--_cut) - 1px) 0, 100% 0, 100% 100%, 0 100%, 0 calc(var(--_cut) - 1px));
+}
+
+.ml-terminal__dots {
+  display: flex;
+  gap: 8px;
+}
+
+.ml-terminal__dot {
+  display: grid;
+  place-items: center;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 35% 30%, rgb(255 255 255 / 0.75) 0 1px, transparent 3px),
+    var(--_metal);
+  box-shadow:
+    inset 0 0 0 1px rgb(0 0 0 / 0.35),
+    0 1px 0 rgb(255 255 255 / 0.08);
+}
+
+.ml-terminal__dot--close { --_metal: var(--ml-metal-red); color: var(--ml-red-400); }
+.ml-terminal__dot--min { --_metal: var(--ml-metal-gold); color: var(--ml-gold-400); }
+.ml-terminal__dot--max { --_metal: var(--ml-metal-green); color: var(--ml-green-400); }
+
+.ml-terminal--paws .ml-terminal__dot {
+  width: 14px;
+  height: 14px;
+  background: none;
+  box-shadow: none;
+}
+
+.ml-terminal--paws .ml-terminal__dot .ml-paw {
+  width: 14px;
+  height: 14px;
+  filter: drop-shadow(0 1px 0 rgb(0 0 0 / 0.35));
+}
+
+.ml-terminal__title {
+  overflow: hidden;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ml-terminal__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.ml-terminal__action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--ml-line);
+  background: transparent;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    color var(--ml-dur-fast) var(--ml-ease),
+    border-color var(--ml-dur-fast) var(--ml-ease),
+    background-color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-terminal__action:hover {
+  border-color: var(--ml-line-strong);
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+}
+
+.ml-terminal__action:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+
+.ml-terminal__action svg {
+  width: 12px;
+  height: 12px;
+  flex: none;
+}
+
+/* ── Screen ── */
+.ml-terminal__body {
+  overflow: auto;
+  padding: 14px 18px 18px;
+  background: var(--ml-scanlines);
+  color: var(--ml-text-muted);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ml-line-strong) transparent;
+}
+
+.ml-terminal__line {
+  display: flex;
+  align-items: baseline;
+  gap: 1ch;
+  min-height: 1.7em;
+}
+
+.ml-terminal__text {
+  min-width: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.ml-terminal__prompt {
+  flex: none;
+  color: var(--ml-accent-text);
+  font-weight: 700;
+}
+
+.ml-terminal__line--input .ml-terminal__text {
+  color: var(--ml-text);
+}
+
+.ml-terminal__line--comment .ml-terminal__text {
+  color: var(--ml-text-dim);
+  font-style: italic;
+}
+
+.ml-terminal__line--success .ml-terminal__text { color: var(--ml-success-text); }
+.ml-terminal__line--warning .ml-terminal__text { color: var(--ml-warning-text); }
+.ml-terminal__line--danger .ml-terminal__text { color: var(--ml-danger-text); }
+.ml-terminal__line--info .ml-terminal__text { color: var(--ml-info-text); }
+.ml-terminal__line--accent .ml-terminal__text { color: var(--ml-accent-text); }
+.ml-terminal__line--dim .ml-terminal__text { color: var(--ml-text-dim); }
+
+.ml-terminal__spinner {
+  flex: none;
+  color: var(--ml-accent-text);
+}
+
+.ml-terminal__mark {
+  flex: none;
+  color: var(--ml-success-text);
+}
+
+.ml-terminal__line--warning .ml-terminal__mark { color: var(--ml-warning-text); }
+.ml-terminal__line--danger .ml-terminal__mark { color: var(--ml-danger-text); }
+
+.ml-terminal__meter {
+  flex: none;
+  white-space: pre;
+  letter-spacing: -0.02em;
+}
+
+/* The filled part is cast in gold: the metal gradient shows through the glyphs. */
+.ml-terminal__fill {
+  background: var(--ml-metal-gold);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.ml-terminal__rest {
+  color: var(--ml-line-strong);
+}
+
+.ml-terminal__pct {
+  flex: none;
+  color: var(--ml-accent-text);
+  font-variant-numeric: tabular-nums;
+  white-space: pre;
+}
+
+.ml-terminal__caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.15em;
+  margin-left: 1px;
+  vertical-align: text-bottom;
+  background: var(--ml-accent);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.55);
+  animation: ml-terminal-blink 1.05s steps(1, end) infinite;
+}
+
+/* Solid while keys are landing; it only blinks while the shell waits. */
+.ml-terminal__line--active:has(.ml-terminal__seg) .ml-terminal__caret {
+  animation: none;
+}
+
+@keyframes ml-terminal-blink {
+  50% { opacity: 0; }
+}
+
+/* ── Inline markup: {green}…{/} ── */
+.ml-terminal__seg--b { color: var(--ml-text); font-weight: 700; }
+.ml-terminal__seg--i { font-style: italic; }
+.ml-terminal__seg--u { text-decoration: underline; text-underline-offset: 3px; }
+.ml-terminal__seg--dim { color: var(--ml-text-dim); }
+.ml-terminal__seg--gold { color: var(--ml-term-gold); }
+.ml-terminal__seg--green { color: var(--ml-term-green); }
+.ml-terminal__seg--red { color: var(--ml-term-red); }
+.ml-terminal__seg--yellow { color: var(--ml-term-yellow); }
+.ml-terminal__seg--cyan { color: var(--ml-term-cyan); }
+.ml-terminal__seg--pink { color: var(--ml-term-pink); }
+
+[data-ml-theme='light'] .ml-terminal__caret {
+  box-shadow: none;
+}
+
+[data-ml-theme='light'] .ml-terminal__head {
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.8);
+}

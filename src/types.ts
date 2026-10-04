@@ -328,3 +328,18 @@ export interface MlCheckboxOption {
   hint?: string
   disabled?: boolean
 }
+
+/** MlCopyButton look: ghost icon button, icon + text button, or text with a small button after it. */
+export type MlCopyButtonVariant = 'icon' | 'button' | 'inline'
+
+/** MlJsonViewer path format: `$.users[3].name` or `users.3.name`. */
+export type MlJsonPathStyle = 'jsonpath' | 'dot'
+
+/** What MlJsonViewer emits / calls back with when something is copied. */
+export interface MlJsonCopyEvent {
+  kind: 'path' | 'value'
+  /** What went on the clipboard. */
+  text: string
+  /** The node's path segments (root = []). */
+  path: (string | number)[]
+}

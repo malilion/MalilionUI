@@ -1,0 +1,364 @@
+/* JsonViewer — a machined readout for API payloads: collapsible, searchable, copyable */
+.ml-json {
+  /* Same palette as MlCodeBlock (--ml-code-*); fallbacks keep it coloured when loaded alone */
+  --_key: var(--ml-code-attr, var(--ml-cyan-300));
+  --_string: var(--ml-code-string, var(--ml-green-300));
+  --_number: var(--ml-code-number, var(--ml-bronze-300));
+  --_keyword: var(--ml-code-keyword, var(--ml-bean-300));
+  --_punct: var(--ml-code-punct, var(--ml-gold-500));
+  --_dim: var(--ml-code-comment, var(--ml-text-dim));
+  --_indent: 18px;
+
+  min-width: 0;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+}
+
+[data-ml-theme='light'] .ml-json {
+  --_key: var(--ml-code-attr, var(--ml-cyan-700));
+  --_string: var(--ml-code-string, var(--ml-green-600));
+  --_number: var(--ml-code-number, var(--ml-bronze-500));
+  --_keyword: var(--ml-code-keyword, var(--ml-bean-600));
+  --_punct: var(--ml-code-punct, var(--ml-gold-600));
+}
+
+/* ── Toolbar ──────────────────────────────────────────────── */
+.ml-json__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 8px 10px;
+  border-bottom: 1px dashed var(--ml-line);
+}
+
+.ml-json__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 200px;
+  min-width: 0;
+}
+
+.ml-json .ml-json__search-icon {
+  position: absolute;
+  z-index: 1;
+  left: 10px;
+  width: 15px;
+  height: 15px;
+  color: var(--ml-text-dim);
+  pointer-events: none;
+}
+
+.ml-json__search-input {
+  width: 100%;
+  min-width: 0;
+  height: 32px;
+  padding: 0 10px 0 32px;
+  border: 0;
+  background: var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong);
+  color: var(--ml-text);
+  font: inherit;
+  font-family: var(--ml-font-mono);
+  font-size: 0.8125rem;
+  outline: none;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: box-shadow var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-json__search-input::placeholder {
+  color: var(--ml-text-dim);
+}
+
+.ml-json__search-input:focus {
+  box-shadow: inset 0 0 0 1px var(--ml-accent), 0 0 0 3px var(--ml-accent-soft);
+}
+
+.ml-json__matches {
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  white-space: nowrap;
+}
+
+.ml-json__tools {
+  display: flex;
+  gap: 4px;
+  margin-left: auto;
+}
+
+/* ── Tree ─────────────────────────────────────────────────── */
+.ml-json__tree {
+  margin: 0;
+  padding: 10px 0;
+  overflow: auto;
+  list-style: none;
+  font-family: var(--ml-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+}
+
+.ml-json__row {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 4px;
+  min-height: 26px;
+  padding: 1px 12px 1px calc((var(--_level) - 1) * var(--_indent) + 6px);
+  outline: none;
+  cursor: default;
+  /* One faint guide rail per ancestor level */
+  background:
+    repeating-linear-gradient(90deg,
+      transparent 0 14px, var(--ml-line) 14px 15px, transparent 15px var(--_indent))
+    0 0 / calc((var(--_level) - 1) * var(--_indent)) 100% no-repeat;
+  transition: background-color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-json__row[aria-expanded] {
+  cursor: pointer;
+}
+
+.ml-json__row:hover {
+  background-color: var(--ml-surface-2);
+}
+
+.ml-json__row:focus-visible {
+  box-shadow: inset 0 0 0 1px var(--ml-focus);
+}
+
+.ml-json__row--match {
+  background-color: var(--ml-accent-soft);
+}
+
+.ml-json__row--copied {
+  animation: ml-json-flash 900ms var(--ml-ease);
+}
+
+@keyframes ml-json-flash {
+  0% { background-color: rgb(240 173 47 / 0.32); box-shadow: inset 2px 0 0 var(--ml-accent); }
+  100% { background-color: transparent; box-shadow: inset 2px 0 0 transparent; }
+}
+
+.ml-json__twisty {
+  display: inline-grid;
+  align-self: center;
+  place-items: center;
+  width: 16px;
+  height: 16px;
+  flex: none;
+  color: var(--ml-text-dim);
+}
+
+.ml-json__twisty svg {
+  width: 12px;
+  height: 12px;
+  transition: rotate var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-json__row[aria-expanded='true'] > .ml-json__twisty svg {
+  rotate: 90deg;
+  color: var(--ml-accent-text);
+}
+
+.ml-json__key {
+  color: var(--_key);
+  white-space: nowrap;
+}
+
+.ml-json__key--index {
+  color: var(--_dim);
+}
+
+.ml-json__colon,
+.ml-json__comma,
+.ml-json__brace {
+  color: var(--_punct);
+}
+
+.ml-json__colon {
+  margin-left: -4px;
+}
+
+.ml-json__comma {
+  margin-left: -4px;
+}
+
+.ml-json__value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ml-json__value--string { color: var(--_string); }
+.ml-json__value--number,
+.ml-json__value--bigint { color: var(--_number); }
+.ml-json__value--boolean,
+.ml-json__value--null,
+.ml-json__value--undefined { color: var(--_keyword); }
+.ml-json__value--function,
+.ml-json__value--symbol { color: var(--_dim); font-style: italic; }
+.ml-json__value--collapsed { color: var(--_punct); cursor: pointer; }
+
+.ml-json__value--circular {
+  color: var(--ml-danger-text);
+  font-style: italic;
+}
+
+.ml-json__count {
+  color: var(--_dim);
+  font-size: 0.75rem;
+}
+
+.ml-json__row--array > .ml-json__count::before,
+.ml-json__row--object > .ml-json__count::before {
+  content: '· ';
+}
+
+/* Copy affordances: keys copy their path, values copy themselves */
+.ml-json--copyable .ml-json__key,
+.ml-json--copyable .ml-json__value:not(.ml-json__value--circular) {
+  cursor: copy;
+  border-radius: 2px;
+  transition: background-color var(--ml-dur-fast) var(--ml-ease), box-shadow var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-json--copyable .ml-json__value--collapsed {
+  cursor: pointer;
+}
+
+.ml-json--copyable .ml-json__key:hover,
+.ml-json--copyable .ml-json__value:not(.ml-json__value--circular, .ml-json__value--collapsed):hover {
+  background: var(--ml-accent-soft);
+  box-shadow: 0 1px 0 var(--ml-accent);
+}
+
+.ml-json__link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 45%, transparent);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.ml-json__link:hover {
+  color: var(--ml-accent-text);
+  text-decoration-color: currentColor;
+}
+
+.ml-json__link:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+
+.ml-json__date {
+  text-decoration: underline dotted;
+  text-decoration-color: color-mix(in srgb, currentColor 55%, transparent);
+  text-underline-offset: 3px;
+}
+
+.ml-json__hit {
+  padding: 0 1px;
+  background: rgb(240 173 47 / 0.35);
+  box-shadow: 0 0 0 1px rgb(240 173 47 / 0.55);
+  color: var(--ml-text);
+  border-radius: 2px;
+}
+
+.ml-json__toggle-text {
+  margin: 0 0 0 4px;
+  padding: 0 6px;
+  border: 0;
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+  font: inherit;
+  font-size: 0.6875rem;
+  line-height: 1.6;
+  cursor: pointer;
+  clip-path: polygon(3px 0, 100% 0, 100% calc(100% - 3px), calc(100% - 3px) 100%, 0 100%, 0 3px);
+}
+
+.ml-json__toggle-text:hover {
+  background: var(--ml-accent);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-json__row--more {
+  cursor: pointer;
+}
+
+.ml-json__more {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+  color: var(--ml-accent-text);
+  font-size: 0.75rem;
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.ml-json__row--more:hover .ml-json__more,
+.ml-json__row--more:focus-visible .ml-json__more {
+  background: var(--ml-accent-soft);
+}
+
+.ml-json__more .ml-paw {
+  width: 11px;
+  height: 11px;
+}
+
+.ml-json__empty {
+  margin: 0;
+  padding: 4px 16px 14px;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-sm);
+}
+
+/* ── Parse error ──────────────────────────────────────────── */
+.ml-json--error {
+  box-shadow: inset 0 0 0 1px var(--ml-danger), inset 3px 0 0 var(--ml-danger);
+}
+
+.ml-json__error {
+  padding: 14px 16px;
+}
+
+.ml-json__error-title {
+  margin: 0;
+  color: var(--ml-danger-text);
+  font-weight: 700;
+}
+
+.ml-json__error-detail {
+  margin: 4px 0 10px;
+  color: var(--ml-text-muted);
+}
+
+.ml-json__error-snippet {
+  margin: 0;
+  padding: 10px 12px;
+  overflow: auto;
+  background: var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  font-family: var(--ml-font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.ml-json__error-line {
+  color: var(--ml-text);
+}
+
+.ml-json__error-caret {
+  color: var(--ml-danger-text);
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-json__row--copied { animation: none; background-color: var(--ml-accent-soft); }
+}

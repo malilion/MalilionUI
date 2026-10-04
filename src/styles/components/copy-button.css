@@ -1,0 +1,214 @@
+/* CopyButton — a copy key that swaps to a check and leaves a paw print */
+.ml-copy {
+  --_tip-gap: 8px;
+
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  vertical-align: middle;
+}
+
+.ml-copy__icon {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 1.25em;
+  height: 1.25em;
+  flex: none;
+}
+
+.ml-copy .ml-copy__glyph {
+  width: 100%;
+  height: 100%;
+}
+
+.ml-copy--copied .ml-copy__glyph {
+  color: var(--ml-success-text);
+  animation: ml-paw-pop 360ms var(--ml-ease-spring);
+}
+
+.ml-copy--failed .ml-copy__glyph {
+  color: var(--ml-danger-text);
+}
+
+/* The little paw that pops on the corner of the icon */
+.ml-copy .ml-copy__paw {
+  position: absolute;
+  top: -0.5em;
+  right: -0.6em;
+  width: 0.85em;
+  height: 0.85em;
+  filter: drop-shadow(0 0 4px rgb(240 173 47 / 0.6));
+  animation: ml-paw-pop 420ms var(--ml-ease-spring);
+  pointer-events: none;
+}
+
+.ml-copy__label {
+  display: inline-flex;
+  align-items: center;
+}
+
+.ml-copy--copied .ml-copy__btn.ml-btn--outline {
+  --_rim: var(--ml-metal-gold);
+  --_fg: var(--ml-success-text);
+}
+
+/* ── Inline: monospace text with a small key after it ─────── */
+.ml-copy__text {
+  min-width: 0;
+  overflow: hidden;
+  padding: 2px 8px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.875em;
+  font-weight: 400;
+  line-height: 1.6;
+  letter-spacing: normal;
+  text-overflow: ellipsis;
+  text-transform: none;
+  white-space: nowrap;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+.ml-copy--inline {
+  gap: 4px;
+}
+
+.ml-copy--inline .ml-copy__btn {
+  --_s: 26px;
+
+  display: inline-grid;
+  place-items: center;
+  width: var(--_s);
+  height: var(--_s);
+  flex: none;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ml-text-dim);
+  font-size: 0.875rem;
+  cursor: pointer;
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+  transition: color var(--ml-dur-fast) var(--ml-ease), background-color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-copy--inline.ml-copy--sm .ml-copy__btn { --_s: 22px; font-size: 0.75rem; }
+.ml-copy--inline.ml-copy--lg .ml-copy__btn { --_s: 32px; font-size: 1rem; }
+
+.ml-copy--inline .ml-copy__btn:hover:not(:disabled) {
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+}
+
+.ml-copy--inline .ml-copy__btn:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+  clip-path: none;
+}
+
+.ml-copy--inline .ml-copy__btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.ml-copy--inline.ml-copy--copied .ml-copy__btn {
+  color: var(--ml-success-text);
+}
+
+/* ── Tooltip: a small HUD readout, like MlTooltip ─────────── */
+.ml-copy__tip {
+  position: absolute;
+  z-index: var(--ml-z-tooltip);
+  left: 50%;
+  width: max-content;
+  max-width: 220px;
+  padding: 5px 9px;
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-brushed), var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-1);
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.75rem;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--ml-dur-fast) var(--ml-ease),
+    translate var(--ml-dur) var(--ml-ease-spring),
+    visibility 0s linear var(--ml-dur-fast);
+}
+
+.ml-copy__tip::before {
+  content: '';
+  position: absolute;
+  left: 8px;
+  right: 8px;
+  height: 2px;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.6);
+}
+
+.ml-copy--tip-top .ml-copy__tip {
+  bottom: calc(100% + var(--_tip-gap));
+  translate: -50% 4px;
+}
+
+.ml-copy--tip-top .ml-copy__tip::before { bottom: 0; }
+
+.ml-copy--tip-bottom .ml-copy__tip {
+  top: calc(100% + var(--_tip-gap));
+  translate: -50% -4px;
+}
+
+.ml-copy--tip-bottom .ml-copy__tip::before { top: 0; }
+
+/* The inline variant's tip sits over its key, not the whole text */
+.ml-copy--inline .ml-copy__tip {
+  left: auto;
+  right: 0;
+  translate: 0 4px;
+}
+
+.ml-copy--inline.ml-copy--tip-bottom .ml-copy__tip { translate: 0 -4px; }
+
+.ml-copy__btn:hover:not(:disabled) ~ .ml-copy__tip,
+.ml-copy__btn:focus-visible ~ .ml-copy__tip,
+.ml-copy--copied .ml-copy__tip,
+.ml-copy--failed .ml-copy__tip {
+  opacity: 1;
+  visibility: visible;
+  translate: -50% 0;
+  transition-delay: 0s;
+}
+
+.ml-copy--inline .ml-copy__btn:hover:not(:disabled) ~ .ml-copy__tip,
+.ml-copy--inline .ml-copy__btn:focus-visible ~ .ml-copy__tip,
+.ml-copy--inline.ml-copy--copied .ml-copy__tip,
+.ml-copy--inline.ml-copy--failed .ml-copy__tip {
+  translate: 0 0;
+}
+
+.ml-copy--copied .ml-copy__tip {
+  color: var(--ml-success-text);
+}
+
+.ml-copy--failed .ml-copy__tip {
+  color: var(--ml-danger-text);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-copy--copied .ml-copy__glyph,
+  .ml-copy .ml-copy__paw {
+    animation: none;
+  }
+}

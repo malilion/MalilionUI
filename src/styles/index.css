@@ -57,6 +57,7 @@
 @import './components/result.css';
 @import './components/misc.css';
 @import './components/code.css';
+@import './components/diff.css';
 @import './components/tour.css';
 @import './components/chat.css';
 @import './components/sortable.css';
@@ -73,3 +74,6 @@
 @import './components/theme-toggle.css';
 @import './components/checkbox-group.css';
 @import './components/password.css';
+@import './components/copy-button.css';
+@import './components/json-viewer.css';
+@import './components/terminal.css';

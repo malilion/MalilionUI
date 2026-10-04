@@ -4,6 +4,7 @@ import MlButton from './MlButton.vue'
 import MlPaw from './MlPaw.vue'
 import { highlightLines } from '../highlight'
 import { toast } from '../toast'
+import { copyText } from '../clipboard'
 import { useLocale } from '../locale'
 
 const loc = useLocale()
@@ -48,20 +49,8 @@ const marked = computed(() => new Set(props.highlight ?? []))
 let resetTimer: ReturnType<typeof setTimeout> | undefined
 
 async function copy() {
-  try {
-    await navigator.clipboard.writeText(source.value)
-  } catch {
-    // Clipboard API needs a secure context; fall back to a hidden textarea.
-    const area = document.createElement('textarea')
-    area.value = source.value
-    area.setAttribute('readonly', '')
-    area.style.position = 'fixed'
-    area.style.opacity = '0'
-    document.body.appendChild(area)
-    area.select()
-    document.execCommand('copy')
-    area.remove()
-  }
+  // Clipboard API first, hidden-textarea fallback for non-secure contexts.
+  if (!(await copyText(source.value))) return
   copied.value = true
   clearTimeout(resetTimer)
   resetTimer = setTimeout(() => (copied.value = false), 1600)

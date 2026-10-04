@@ -41,6 +41,11 @@ describe('nuxt module: theme', () => {
     )
   })
 
+  it('auto-imports useClipboard as useMlClipboard', async () => {
+    await setup({})
+    expect(calls.imports).toEqual(expect.arrayContaining([{ name: 'useClipboard', as: 'useMlClipboard', from: '@malilion/ui' }]))
+  })
+
   it('puts the no-flash script in <head> and configures the store when asked', async () => {
     const nuxt = await setup({ theme: { storageKey: 'site-theme', defaultMode: 'system' }, locale: 'en' })
     const script = nuxt.options.app.head.script![0]

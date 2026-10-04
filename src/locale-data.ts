@@ -157,7 +157,54 @@ export interface MlLocale {
   chat: { log: string; latest: string; typing: string; placeholder: string; send: string; stop: string; status: { sending: string; sent: string; error: string } }
   tour: { step: (n: number, total: number) => string; prev: string; next: string; finish: string; skip: string }
   code: { copy: string; copied: string; expand: string; collapse: string; copiedToast: (file?: string) => string }
+  terminal: { label: (title: string) => string; copy: string; copied: string; replay: string }
+  copy: { copy: string; copied: string; failed: string }
+  json: {
+    label: string
+    search: string
+    matches: (n: number) => string
+    expandAll: string
+    collapseAll: string
+    keys: (n: number) => string
+    items: (n: number) => string
+    more: (n: number, rest: number) => string
+    expandString: (hidden: number) => string
+    collapseString: string
+    circular: string
+    parseError: (line: number, column: number) => string
+    unexpected: (char: string) => string
+    unexpectedEnd: string
+    copiedPath: (path: string) => string
+    copiedValue: string
+    copyPath: string
+    copyValue: string
+    empty: string
+  }
   markdown: { streaming: string }
+  diff: {
+    label: string
+    added: string
+    removed: string
+    stats: (added: number, removed: number) => string
+    files: (n: number) => string
+    expand: (n: number) => string
+    prev: string
+    next: string
+    position: (current: number, total: number) => string
+    view: string
+    split: string
+    unified: string
+    noChanges: string
+    noNewline: string
+    binary: string
+    table: (name: string) => string
+    oldLine: string
+    newLine: string
+    oldCode: string
+    newCode: string
+    code: string
+    status: { added: string; deleted: string; renamed: string; modified: string }
+  }
   heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
   scatter: { summary: (series: number, points: number) => string; table: string; series: string; point: string; x: string; y: string; size: string; trend: (name: string) => string; toggle: (name: string) => string }
   funnel: { summary: (stages: number, rate: string) => string; value: string; fromPrev: string; fromFirst: string; drop: string; start: string }
@@ -399,7 +446,54 @@ export const zhTW: MlLocale = {
   chat: { log: '對話紀錄', latest: '最新訊息', typing: '正在輸入…', placeholder: '輸入訊息，Enter 送出，Shift + Enter 換行', send: '送出', stop: '停止產生', status: { sending: '傳送中…', sent: '已送出', error: '傳送失敗' } },
   tour: { step: (n, t) => `第 ${n} / ${t} 步`, prev: '上一步', next: '下一步', finish: '完成', skip: '略過導覽' },
   code: { copy: '複製', copied: '已複製', expand: '展開程式碼', collapse: '收起', copiedToast: (f) => `已複製 ${f ?? '程式碼'}` },
+  terminal: { label: (t) => `終端機：${t}`, copy: '複製指令', copied: '已複製', replay: '重播' },
+  copy: { copy: '複製', copied: '已複製！', failed: '複製失敗，請手動選取' },
+  json: {
+    label: 'JSON 檢視器',
+    search: '搜尋鍵或值…',
+    matches: (n) => (n ? `${n} 筆相符` : '沒有相符'),
+    expandAll: '全部展開',
+    collapseAll: '全部收合',
+    keys: (n) => `${n} 個鍵`,
+    items: (n) => `${n} 項`,
+    more: (n, rest) => `再顯示 ${n} 項（還有 ${rest} 項）`,
+    expandString: (h) => `展開（還有 ${h} 字）`,
+    collapseString: '收起',
+    circular: '循環參照',
+    parseError: (l, c) => `JSON 格式錯誤：第 ${l} 行第 ${c} 欄`,
+    unexpected: (ch) => `這裡出現了意外的「${ch}」`,
+    unexpectedEnd: '內容提早結束，可能少了括號或引號',
+    copiedPath: (p) => `已複製路徑 ${p}`,
+    copiedValue: '已複製值',
+    copyPath: '點擊複製路徑',
+    copyValue: '點擊複製值',
+    empty: '沒有符合的內容',
+  },
   markdown: { streaming: '正在產生回覆…' },
+  diff: {
+    label: '程式碼差異',
+    added: '新增',
+    removed: '刪除',
+    stats: (a, r) => `新增 ${a} 行、刪除 ${r} 行`,
+    files: (n) => `${n} 個檔案`,
+    expand: (n) => `展開 ${n} 行`,
+    prev: '上一處變更',
+    next: '下一處變更',
+    position: (c, t) => (c ? `${c} / ${t}` : `${t} 處變更`),
+    view: '檢視方式',
+    split: '並排',
+    unified: '單欄',
+    noChanges: '沒有差異',
+    noNewline: '檔案結尾沒有換行',
+    binary: '二進位檔案已變更',
+    table: (n) => (n ? `${n} 的差異` : '程式碼差異'),
+    oldLine: '舊行號',
+    newLine: '新行號',
+    oldCode: '舊版本',
+    newCode: '新版本',
+    code: '內容',
+    status: { added: '新檔案', deleted: '已刪除', renamed: '已更名', modified: '已修改' },
+  },
   heatmap: { cell: (n, d) => `${d}：${n} 次`, summary: (t) => `一年內共 ${t.toLocaleString()} 次貢獻`, less: '少', more: '多' },
   scatter: {
     summary: (s, p) => `散佈圖：${s} 個數列，共 ${p} 個資料點`,
@@ -689,7 +783,54 @@ export const en: MlLocale = {
   chat: { log: 'Conversation', latest: 'Latest', typing: 'Typing…', placeholder: 'Message — Enter to send, Shift + Enter for a new line', send: 'Send', stop: 'Stop generating', status: { sending: 'Sending…', sent: 'Sent', error: 'Failed to send' } },
   tour: { step: (n, t) => `Step ${n} of ${t}`, prev: 'Back', next: 'Next', finish: 'Done', skip: 'Skip tour' },
   code: { copy: 'Copy', copied: 'Copied', expand: 'Show code', collapse: 'Hide', copiedToast: (f) => `Copied ${f ?? 'code'}` },
+  terminal: { label: (t) => `Terminal: ${t}`, copy: 'Copy commands', copied: 'Copied', replay: 'Replay' },
+  copy: { copy: 'Copy', copied: 'Copied!', failed: 'Copy failed — select it manually' },
+  json: {
+    label: 'JSON viewer',
+    search: 'Search keys or values…',
+    matches: (n) => (n ? `${n} match${n === 1 ? '' : 'es'}` : 'No matches'),
+    expandAll: 'Expand all',
+    collapseAll: 'Collapse all',
+    keys: (n) => `${n} key${n === 1 ? '' : 's'}`,
+    items: (n) => `${n} item${n === 1 ? '' : 's'}`,
+    more: (n, rest) => `Show ${n} more (${rest} left)`,
+    expandString: (h) => `Show ${h} more chars`,
+    collapseString: 'Show less',
+    circular: 'Circular',
+    parseError: (l, c) => `Invalid JSON at line ${l}, column ${c}`,
+    unexpected: (ch) => `Unexpected “${ch}” here`,
+    unexpectedEnd: 'Unexpected end of input — a bracket or quote may be missing',
+    copiedPath: (p) => `Copied path ${p}`,
+    copiedValue: 'Copied value',
+    copyPath: 'Click to copy the path',
+    copyValue: 'Click to copy the value',
+    empty: 'Nothing matches',
+  },
   markdown: { streaming: 'Generating…' },
+  diff: {
+    label: 'Code diff',
+    added: 'Added',
+    removed: 'Removed',
+    stats: (a, r) => `${a} ${a === 1 ? 'line' : 'lines'} added, ${r} removed`,
+    files: (n) => `${n} ${n === 1 ? 'file' : 'files'}`,
+    expand: (n) => `Expand ${n} ${n === 1 ? 'line' : 'lines'}`,
+    prev: 'Previous change',
+    next: 'Next change',
+    position: (c, t) => (c ? `${c} / ${t}` : `${t} ${t === 1 ? 'change' : 'changes'}`),
+    view: 'View',
+    split: 'Split',
+    unified: 'Unified',
+    noChanges: 'No changes',
+    noNewline: 'No newline at end of file',
+    binary: 'Binary file changed',
+    table: (n) => (n ? `Changes in ${n}` : 'Code diff'),
+    oldLine: 'Old line',
+    newLine: 'New line',
+    oldCode: 'Before',
+    newCode: 'After',
+    code: 'Content',
+    status: { added: 'New', deleted: 'Deleted', renamed: 'Renamed', modified: 'Modified' },
+  },
   heatmap: { cell: (n, d) => `${n === 1 ? '1 contribution' : `${n} contributions`} on ${d}`, summary: (t) => `${t.toLocaleString()} contributions in the last year`, less: 'Less', more: 'More' },
   scatter: {
     summary: (s, p) => `Scatter chart: ${s} series, ${p} ${p === 1 ? 'point' : 'points'}`,
