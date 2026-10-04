@@ -3,6 +3,14 @@
     "components/paw.css",
     "components/accordion.css"
   ],
+  "MlActionSheet": [
+    "components/paw.css",
+    "components/sheet.css"
+  ],
+  "MlActionSheetHost": [
+    "components/paw.css",
+    "components/sheet.css"
+  ],
   "MlAffix": [
     "components/utilities.css"
   ],
@@ -40,6 +48,10 @@
   ],
   "MlBorderBeam": [
     "components/effects.css"
+  ],
+  "MlBottomSheet": [
+    "components/paw.css",
+    "components/sheet.css"
   ],
   "MlBreadcrumb": [
     "components/navigation.css"
@@ -349,6 +361,9 @@
   "MlPhone": [
     "components/mobile.css"
   ],
+  "MlPickerView": [
+    "components/picker-view.css"
+  ],
   "MlPinInput": [
     "components/field.css",
     "components/form.css",
@@ -366,6 +381,10 @@
   "MlProgress": [
     "components/progress.css",
     "components/paw.css"
+  ],
+  "MlPullRefresh": [
+    "components/paw.css",
+    "components/pull-swipe.css"
   ],
   "MlQRCode": [
     "components/misc.css"
@@ -451,6 +470,10 @@
   ],
   "MlSwitch": [
     "components/switch.css"
+  ],
+  "MlSwipeCell": [
+    "components/mobile.css",
+    "components/pull-swipe.css"
   ],
   "MlTabBar": [
     "components/paw.css",

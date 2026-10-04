@@ -83,6 +83,7 @@ export default defineNuxtModule<ModuleOptions>({
     addImports([
       { name: 'useToast', from: PKG },
       { name: 'useConfirm', from: PKG },
+      { name: 'useActionSheet', from: PKG },
       { name: 'useLocale', as: 'useMlLocale', from: PKG },
       { name: 'setLocale', as: 'setMlLocale', from: PKG },
       { name: 'useTheme', as: 'useMlTheme', from: PKG },

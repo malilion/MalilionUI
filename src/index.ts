@@ -1,6 +1,8 @@
 import type { App, Plugin } from 'vue'
 
 import MlAccordion from './components/MlAccordion.vue'
+import MlActionSheet from './components/MlActionSheet.vue'
+import MlActionSheetHost from './components/MlActionSheetHost.vue'
 import MlAffix from './components/MlAffix.vue'
 import MlAlert from './components/MlAlert.vue'
 import MlAnchor from './components/MlAnchor.vue'
@@ -11,6 +13,7 @@ import MlBadge from './components/MlBadge.vue'
 import MlBanner from './components/MlBanner.vue'
 import MlBarChart from './components/MlBarChart.vue'
 import MlBorderBeam from './components/MlBorderBeam.vue'
+import MlBottomSheet from './components/MlBottomSheet.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
 import MlButton from './components/MlButton.vue'
 import MlCalendar from './components/MlCalendar.vue'
@@ -83,10 +86,12 @@ import MlPasswordInput from './components/MlPasswordInput.vue'
 import MlPaw from './components/MlPaw.vue'
 import MlPawBurst from './components/MlPawBurst.vue'
 import MlPhone from './components/MlPhone.vue'
+import MlPickerView from './components/MlPickerView.vue'
 import MlPinInput from './components/MlPinInput.vue'
 import MlPopconfirm from './components/MlPopconfirm.vue'
 import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
+import MlPullRefresh from './components/MlPullRefresh.vue'
 import MlQRCode from './components/MlQRCode.vue'
 import MlRadarChart from './components/MlRadarChart.vue'
 import MlRadio from './components/MlRadio.vue'
@@ -111,6 +116,7 @@ import MlSpotlight from './components/MlSpotlight.vue'
 import MlStat from './components/MlStat.vue'
 import MlSteps from './components/MlSteps.vue'
 import MlSwitch from './components/MlSwitch.vue'
+import MlSwipeCell from './components/MlSwipeCell.vue'
 import MlTabBar from './components/MlTabBar.vue'
 import MlTable from './components/MlTable.vue'
 import MlTabs from './components/MlTabs.vue'
@@ -140,6 +146,8 @@ import { configureTheme, type MlThemeOptions } from './theme'
 
 const components = {
   MlAccordion,
+  MlActionSheet,
+  MlActionSheetHost,
   MlAffix,
   MlAlert,
   MlAnchor,
@@ -150,6 +158,7 @@ const components = {
   MlBanner,
   MlBarChart,
   MlBorderBeam,
+  MlBottomSheet,
   MlBreadcrumb,
   MlButton,
   MlCalendar,
@@ -222,10 +231,12 @@ const components = {
   MlPaw,
   MlPawBurst,
   MlPhone,
+  MlPickerView,
   MlPinInput,
   MlPopconfirm,
   MlPopover,
   MlProgress,
+  MlPullRefresh,
   MlQRCode,
   MlRadarChart,
   MlRadio,
@@ -250,6 +261,7 @@ const components = {
   MlStat,
   MlSteps,
   MlSwitch,
+  MlSwipeCell,
   MlTabBar,
   MlTable,
   MlTabs,
@@ -302,6 +314,8 @@ export default MalilionUI
 
 export {
   MlAccordion,
+  MlActionSheet,
+  MlActionSheetHost,
   MlAffix,
   MlAlert,
   MlAnchor,
@@ -312,6 +326,7 @@ export {
   MlBanner,
   MlBarChart,
   MlBorderBeam,
+  MlBottomSheet,
   MlBreadcrumb,
   MlButton,
   MlCalendar,
@@ -384,10 +399,12 @@ export {
   MlPaw,
   MlPawBurst,
   MlPhone,
+  MlPickerView,
   MlPinInput,
   MlPopconfirm,
   MlPopover,
   MlProgress,
+  MlPullRefresh,
   MlQRCode,
   MlRadarChart,
   MlRadio,
@@ -412,6 +429,7 @@ export {
   MlStat,
   MlSteps,
   MlSwitch,
+  MlSwipeCell,
   MlTabBar,
   MlTable,
   MlTabs,
@@ -439,6 +457,9 @@ export {
 
 export { toast, useToast } from './toast'
 export { confirm, useConfirm } from './dialog'
+export { actionSheet, useActionSheet } from './action-sheet'
+export { parseSnapPoint, resolveSnapPoints, rubberBand, sheetPosition, releaseSnap, nearestSnap } from './components/sheet'
+export type { SheetSnapPoint, SheetPosition, SheetReleaseOptions } from './components/sheet'
 export { zhTW, en, setLocale, getLocale, useLocale } from './locale'
 export type { MlLocale } from './locale'
 export { configureTheme, getThemeState, setTheme, toggleTheme, subscribeTheme, themeInitScript } from './theme'
@@ -487,6 +508,16 @@ export type { SignatureStroke, SignaturePoint } from './components/signature'
 export type { MlCropData, MlCropOutput } from './components/cropper'
 export type { MlWheelPrize } from './components/wheel'
 export { pickWeighted as pickWheelPrize } from './components/wheel'
+export {
+  datePickerColumns,
+  timePickerColumns,
+  dateToPickerValue,
+  pickerValueToDate,
+  daysInMonth,
+  isLeapYear,
+  resolvePicker as resolvePickerView,
+} from './components/picker-wheel'
+export type { MlPickerOption, MlPickerValue, MlPickerColumns, PickerDateOptions, PickerTimeOptions } from './components/picker-wheel'
 export { parseTerminalMarkup, terminalPlainText, terminalTranscript, normalizeTerminalLines } from './components/terminal'
 export type { MlTerminalLine, MlTerminalLineType, MlTerminalTone, MlTerminalScript, MlTerminalStyle, TerminalSegment } from './components/terminal'
 export { scorePassword, checkPasswordRules } from './components/password'
@@ -539,6 +570,8 @@ export type { IconName } from './components/icons'
 declare module 'vue' {
   export interface GlobalComponents {
     MlAccordion: typeof MlAccordion
+    MlActionSheet: typeof MlActionSheet
+    MlActionSheetHost: typeof MlActionSheetHost
     MlAffix: typeof MlAffix
     MlAlert: typeof MlAlert
     MlAnchor: typeof MlAnchor
@@ -549,6 +582,7 @@ declare module 'vue' {
     MlBanner: typeof MlBanner
     MlBarChart: typeof MlBarChart
     MlBorderBeam: typeof MlBorderBeam
+    MlBottomSheet: typeof MlBottomSheet
     MlBreadcrumb: typeof MlBreadcrumb
     MlButton: typeof MlButton
     MlCalendar: typeof MlCalendar
@@ -621,10 +655,12 @@ declare module 'vue' {
     MlPaw: typeof MlPaw
     MlPawBurst: typeof MlPawBurst
     MlPhone: typeof MlPhone
+    MlPickerView: typeof MlPickerView
     MlPinInput: typeof MlPinInput
     MlPopconfirm: typeof MlPopconfirm
     MlPopover: typeof MlPopover
     MlProgress: typeof MlProgress
+    MlPullRefresh: typeof MlPullRefresh
     MlQRCode: typeof MlQRCode
     MlRadarChart: typeof MlRadarChart
     MlRadio: typeof MlRadio
@@ -649,6 +685,7 @@ declare module 'vue' {
     MlStat: typeof MlStat
     MlSteps: typeof MlSteps
     MlSwitch: typeof MlSwitch
+    MlSwipeCell: typeof MlSwipeCell
     MlTabBar: typeof MlTabBar
     MlTable: typeof MlTable
     MlTabs: typeof MlTabs

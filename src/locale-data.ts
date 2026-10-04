@@ -158,6 +158,10 @@ export interface MlLocale {
   tour: { step: (n: number, total: number) => string; prev: string; next: string; finish: string; skip: string }
   code: { copy: string; copied: string; expand: string; collapse: string; copiedToast: (file?: string) => string }
   terminal: { label: (title: string) => string; copy: string; copied: string; replay: string }
+  /** MlPullRefresh: the head text for each state, and the keyboard / screen-reader button. */
+  pullRefresh: { pulling: string; loosing: string; refreshing: string; success: string; fail: string; button: string }
+  /** MlSwipeCell: the keyboard button that reveals the actions, and the action groups. */
+  swipeCell: { more: string; moreFor: (title: string) => string; left: string; right: string }
   copy: { copy: string; copied: string; failed: string }
   json: {
     label: string
@@ -212,6 +216,7 @@ export interface MlLocale {
   bars: { summary: (mode: 'grouped' | 'stacked' | 'percent', series: number, categories: number) => string; table: string; category: string; total: string; share: string; toggle: (name: string) => string }
   rate: string
   wheel: { label: string; summary: (label: string, prizes: string[]) => string; spin: string; spinning: string; result: (prize: string) => string }
+  pickerView: { label: string; column: (n: number) => string; cancel: string; confirm: string; selected: (labels: string[]) => string }
   toast: { region: string; close: string }
   theme: { label: string; switch: string; dark: string; light: string; system: string; toDark: string; toLight: string }
   qrcode: { tooLong: string; label: (value: string) => string }
@@ -233,6 +238,8 @@ export interface MlLocale {
   }
   result: Record<'success' | 'info' | 'warning' | 'error' | '403' | '404' | '500', { title: string; subtitle: string }>
   checkboxGroup: { all: string }
+  /** MlBottomSheet / MlActionSheet. */
+  sheet: { handle: string; position: (n: number, total: number) => string; actions: string }
   password: {
     show: string
     hide: string
@@ -447,6 +454,8 @@ export const zhTW: MlLocale = {
   tour: { step: (n, t) => `第 ${n} / ${t} 步`, prev: '上一步', next: '下一步', finish: '完成', skip: '略過導覽' },
   code: { copy: '複製', copied: '已複製', expand: '展開程式碼', collapse: '收起', copiedToast: (f) => `已複製 ${f ?? '程式碼'}` },
   terminal: { label: (t) => `終端機：${t}`, copy: '複製指令', copied: '已複製', replay: '重播' },
+  pullRefresh: { pulling: '下拉即可重新整理', loosing: '放開以重新整理', refreshing: '重新整理中…', success: '已更新', fail: '更新失敗', button: '重新整理' },
+  swipeCell: { more: '更多動作', moreFor: (t) => `${t}：更多動作`, left: '左側動作', right: '右側動作' },
   copy: { copy: '複製', copied: '已複製！', failed: '複製失敗，請手動選取' },
   json: {
     label: 'JSON 檢視器',
@@ -527,6 +536,7 @@ export const zhTW: MlLocale = {
   },
   rate: '評分',
   wheel: { label: '幸運轉盤', summary: (l, p) => `${l}：${p.join('、')}`, spin: '開始抽獎', spinning: '轉盤轉動中…', result: (p) => `恭喜！抽中：${p}` },
+  pickerView: { label: '滾輪選擇器', column: (n) => `第 ${n} 欄`, cancel: '取消', confirm: '確定', selected: (l) => `已選擇：${l.join('，')}` },
   toast: { region: '通知', close: '關閉通知' },
   theme: { label: '佈景主題', switch: '日光模式', dark: '夜間', light: '日光', system: '系統', toDark: '切換為夜間模式', toLight: '切換為日光模式' },
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
@@ -565,6 +575,7 @@ export const zhTW: MlLocale = {
     '500': { title: '伺服器打了個盹', subtitle: '我們的工程獅正在搶修，請稍後再回來。' },
   },
   checkboxGroup: { all: '全選' },
+  sheet: { handle: '調整面板高度', position: (n, total) => `第 ${n} 段，共 ${total} 段`, actions: '動作選單' },
   password: {
     show: '顯示密碼',
     hide: '隱藏密碼',
@@ -784,6 +795,8 @@ export const en: MlLocale = {
   tour: { step: (n, t) => `Step ${n} of ${t}`, prev: 'Back', next: 'Next', finish: 'Done', skip: 'Skip tour' },
   code: { copy: 'Copy', copied: 'Copied', expand: 'Show code', collapse: 'Hide', copiedToast: (f) => `Copied ${f ?? 'code'}` },
   terminal: { label: (t) => `Terminal: ${t}`, copy: 'Copy commands', copied: 'Copied', replay: 'Replay' },
+  pullRefresh: { pulling: 'Pull down to refresh', loosing: 'Release to refresh', refreshing: 'Refreshing…', success: 'Updated', fail: 'Update failed', button: 'Refresh' },
+  swipeCell: { more: 'More actions', moreFor: (t) => `More actions: ${t}`, left: 'Left actions', right: 'Right actions' },
   copy: { copy: 'Copy', copied: 'Copied!', failed: 'Copy failed — select it manually' },
   json: {
     label: 'JSON viewer',
@@ -864,6 +877,7 @@ export const en: MlLocale = {
   },
   rate: 'Rating',
   wheel: { label: 'Prize wheel', summary: (l, p) => `${l}: ${p.join(', ')}`, spin: 'Spin the wheel', spinning: 'Spinning…', result: (p) => `You won: ${p}` },
+  pickerView: { label: 'Wheel picker', column: (n) => `Column ${n}`, cancel: 'Cancel', confirm: 'Done', selected: (l) => `Selected: ${l.join(', ')}` },
   toast: { region: 'Notifications', close: 'Dismiss notification' },
   theme: { label: 'Theme', switch: 'Light mode', dark: 'Dark', light: 'Light', system: 'System', toDark: 'Switch to dark theme', toLight: 'Switch to light theme' },
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },
@@ -902,6 +916,7 @@ export const en: MlLocale = {
     '500': { title: 'The server took a nap', subtitle: 'Our engineer lions are on it. Please come back soon.' },
   },
   checkboxGroup: { all: 'Select all' },
+  sheet: { handle: 'Resize sheet', position: (n, total) => `Position ${n} of ${total}`, actions: 'Actions' },
   password: {
     show: 'Show password',
     hide: 'Hide password',

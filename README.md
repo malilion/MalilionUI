@@ -34,13 +34,13 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 133 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 139 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Taiwan validators: `twRules.nationalId()` / `residentId()` / `businessId()` / `mobile()` / `landline()` / `mobileBarcode()` / `citizenCert()` / `postalCode()` drop into `MlForm` and React `<Form>` with localized messages, backed by framework-free checkers (`isTwNationalId`, `isTwBusinessId` with the Ministry of Finance's 2023 divisible-by-5 rule, `isTwLandline` per the official numbering plan…) and formatters like `formatTwPhone()`
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has every component (all 133) with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 139) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -49,6 +49,14 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
+
+## What's New in 0.12
+
+- **Taiwan validators**: `twRules` for national / resident IDs, business IDs (the 2023 divisible-by-5 rule), mobile and landline numbers per the MODA numbering plan, e-invoice mobile-barcode and citizen-certificate carriers and postal codes — with formatters, for both Vue and React forms
+- **`MlTaiwanMap`**: 22-county choropleth from 內政部國土測繪中心 open data, island insets, legend, keyboard neighbours, linked selection with `MlTaiwanRegion`; geometry loads only when used
+- **Developer tools**: `MlTerminal` (typed-out commands, progress bars and spinners, SSR-friendly transcript), `MlCodeDiff` (split / unified diff with word-level marks, folding, git patches), `MlCopyButton` + `useClipboard()` (paw stamp on copy) and `MlJsonViewer` (searchable tree, path and value copy)
+- **Mobile**: `MlBottomSheet` (snap points, flick to dismiss, modal or peek), `MlActionSheet` + `await actionSheet()`, `MlPullRefresh`, `MlSwipeCell` (full swipe, one open per group, keyboard menu) and `MlPickerView` (3D momentum wheels, cascading columns, date / time helpers)
+- 139 components, every one in Vue and React
 
 ## What's New in 0.11
 
@@ -243,7 +251,7 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 | Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
-| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` |
+| Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` |
 | Effects | `MlCountUp` · `MlDecryptText` · `MlTilt` · `MlBorderBeam` · `MlMarquee` · `MlReveal` · `MlSpotlight` · `MlPawBurst` / `pawBurst()` · `MlCountdown` · `MlLuckyWheel` · `MlTerminal` |
 | Directive | `v-paw-stamp` · `v-loading` |
 
@@ -312,7 +320,7 @@ export default defineNuxtConfig({
 })
 ```
 
-The module auto-imports every component plus `useToast` / `useConfirm`, registers `v-paw-stamp` and `v-loading`, and by default loads only the styles of the components each page uses. Every component passes server-side rendering and hydration tests.
+The module auto-imports every component plus `useToast` / `useConfirm` / `useActionSheet`, registers `v-paw-stamp` and `v-loading`, and by default loads only the styles of the components each page uses. Every component passes server-side rendering and hydration tests.
 
 ## React / Next.js
 

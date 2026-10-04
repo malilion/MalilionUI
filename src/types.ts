@@ -343,3 +343,44 @@ export interface MlJsonCopyEvent {
   /** The node's path segments (root = []). */
   path: (string | number)[]
 }
+
+/** One row of MlActionSheet / actionSheet(). */
+export interface MlActionSheetAction {
+  label: string
+  /** What actionSheet() resolves with (and `select` carries). Defaults to the label. */
+  value?: string | number
+  icon?: IconName
+  /** 'danger' paints it red (delete, sign out…); 'accent' gold. */
+  tone?: 'default' | 'accent' | 'danger'
+  /** Smaller second line. */
+  description?: string
+  disabled?: boolean
+}
+
+/** Options of the promise API `actionSheet({ … })`. */
+export interface MlActionSheetOptions {
+  actions: MlActionSheetAction[]
+  title?: string
+  description?: string
+  /** Cancel button text; false hides the button. */
+  cancelText?: string | false
+}
+
+/** MlBottomSheet snap point: px number, "320px" or "60%" of the screen. */
+export type MlSheetSnapPoint = number | string
+
+/** MlPullRefresh state: dragging (pulling / past the threshold), loading, and the result flash. */
+export type MlPullRefreshStatus = 'idle' | 'pulling' | 'loosing' | 'refreshing' | 'success' | 'fail'
+
+/** Which side of an MlSwipeCell is open: 'left' actions (swiped right) or 'right' actions (swiped left). */
+export type MlSwipeSide = 'left' | 'right'
+
+/** A button revealed by swiping an MlSwipeCell. */
+export interface MlSwipeAction {
+  label: string
+  /** Sent back with the `action` event. Defaults to the label. */
+  value?: string | number
+  icon?: IconName
+  /** 'danger' red (delete), 'warning' amber (flag), 'accent' gold; default steel. */
+  tone?: 'default' | 'accent' | 'warning' | 'danger'
+}

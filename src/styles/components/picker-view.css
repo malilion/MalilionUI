@@ -1,0 +1,200 @@
+/* ── PickerView (滾輪選擇器) ──
+ * iOS-style wheels: each column is a 3D cylinder of rows (rotateX + translateZ
+ * under perspective) that fades out at the top and bottom, with a brushed
+ * gold selection band across the middle. Motion is written as one transform
+ * per frame by src/components/picker-wheel.ts. */
+.ml-picker-view {
+  --_band-fill: linear-gradient(180deg, rgb(255 214 106 / 0.16), rgb(240 173 47 / 0.07) 50%, rgb(201 139 26 / 0.16));
+  --_band-edge-hi: rgb(255 230 163 / 0.5);
+  --_band-edge-lo: rgb(201 139 26 / 0.55);
+  --_band-glow: rgb(240 173 47 / 0.14);
+  --_row: var(--ml-text-dim);
+  --_row-on: var(--ml-accent-strong);
+
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  color: var(--ml-text);
+  font-family: var(--ml-font-body);
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-ml-theme='light'] .ml-picker-view,
+.ml-picker-view[data-ml-theme='light'] {
+  --_band-fill: linear-gradient(180deg, rgb(255 236 186 / 0.75), rgb(240 199 120 / 0.38) 50%, rgb(212 143 23 / 0.28));
+  --_band-edge-hi: rgb(255 255 255 / 0.9);
+  --_band-edge-lo: rgb(166 106 14 / 0.45);
+  --_band-glow: rgb(212 143 23 / 0.12);
+  --_row: var(--ml-text-dim);
+  --_row-on: var(--ml-accent-text);
+}
+
+/* Toolbar: 取消 · title · 確定 */
+.ml-picker-view__toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(0, 1fr) minmax(0, auto);
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+  border-bottom: 1px dashed var(--ml-line);
+}
+
+.ml-picker-view__title {
+  overflow: hidden;
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ml-picker-view__action {
+  min-height: 44px;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition: color var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-picker-view__action:hover:not(:disabled) {
+  background: var(--ml-surface-3);
+  color: var(--ml-text);
+}
+
+.ml-picker-view__action--confirm {
+  color: var(--ml-accent-text);
+}
+
+.ml-picker-view__action--confirm:hover:not(:disabled) {
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+}
+
+.ml-picker-view__action:focus-visible {
+  outline: 1px solid var(--ml-focus);
+  outline-offset: -3px;
+}
+
+.ml-picker-view__action:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+/* Wheels */
+.ml-picker-view__wheels {
+  position: relative;
+  display: flex;
+  height: calc(var(--_item, 44px) * var(--_rows, 5));
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 66%, transparent 100%);
+  mask-image: linear-gradient(180deg, transparent 0%, #000 34%, #000 66%, transparent 100%);
+}
+
+/* Brushed-gold selection band behind the centre row */
+.ml-picker-view__band {
+  position: absolute;
+  top: 50%;
+  right: 4px;
+  left: 4px;
+  height: var(--_item, 44px);
+  margin-top: calc(var(--_item, 44px) / -2);
+  background: var(--ml-brushed), var(--_band-fill);
+  box-shadow:
+    inset 0 1px 0 var(--_band-edge-hi),
+    inset 0 -1px 0 var(--_band-edge-lo),
+    0 0 18px var(--_band-glow);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px), 0 6px);
+  pointer-events: none;
+}
+
+.ml-picker-view__column {
+  position: relative;
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  perspective: 1000px;
+  touch-action: none;
+  overscroll-behavior: contain;
+  outline: none;
+  cursor: grab;
+}
+
+.ml-picker-view__column:active {
+  cursor: grabbing;
+}
+
+/* Focus: a cyan target box around this column's slice of the band */
+.ml-picker-view__column:focus-visible::after {
+  position: absolute;
+  inset: calc(50% - var(--_item, 44px) / 2) 3px;
+  border: 1px solid var(--ml-focus);
+  content: '';
+  pointer-events: none;
+}
+
+.ml-picker-view__track {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 0;
+  height: var(--_item, 44px);
+  margin: calc(var(--_item, 44px) / -2) 0 0;
+  padding: 0;
+  list-style: none;
+  transform-style: preserve-3d;
+  will-change: transform;
+}
+
+.ml-picker-view__item {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  padding: 0 6px;
+  color: var(--_row);
+  font-size: var(--ml-text-md);
+  font-variant-numeric: tabular-nums;
+  line-height: var(--_item, 44px);
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  transition: color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-picker-view__item--selected {
+  color: var(--_row-on);
+  font-weight: 700;
+}
+
+.ml-picker-view__item--disabled {
+  opacity: 0.35;
+}
+
+.ml-picker-view--disabled .ml-picker-view__wheels {
+  opacity: 0.55;
+}
+
+.ml-picker-view--disabled .ml-picker-view__column {
+  cursor: not-allowed;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-picker-view__item,
+  .ml-picker-view__action {
+    transition: none;
+  }
+}
