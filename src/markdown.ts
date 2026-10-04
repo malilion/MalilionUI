@@ -471,9 +471,19 @@ const unescape = (s: string) => decodeEntities(s.replace(/\\([!-/:-@[-`{-~])/g, 
 
 const AUTOLINK = /^<([a-zA-Z][a-zA-Z0-9+.-]{1,31}:[^\s<>]*)>/
 const EMAIL_AUTOLINK = /^<([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/
+// Full-width punctuation never appears unencoded in a real URL, but CJK prose
+// puts it right after one with no space (`見 https://x.y/。下一句`): a bare URL
+// ends there. It may also start right after one (`網址：https://x.y`).
+// Full-width parens stay in only as a balanced pair (`獅子（動物）`), so
+// `（見 https://x.y）` ends before the `）`.
+const CJK_STOPS = '。，、；：！？「」『』【】《》〈〉…‥'
+const URL_CHAR = `[^\\s<${CJK_STOPS}（）]`
 // The lookaheads reject `http:///` or a lone `www.` before the run is scanned:
 // a rejected match must not cost the length of the rest of the line.
-const BARE_URL = /^(?:https?:\/\/(?=[^\s</])|www\.(?=[^\s<.]+\.))[^\s<]*/i
+const BARE_URL = new RegExp(
+  `^(?:https?:\\/\\/(?=[^\\s</${CJK_STOPS}（）])|www\\.(?=${URL_CHAR.replace('<', '<.')}+\\.))(?:${URL_CHAR}|（${URL_CHAR}*）)*`,
+  'i',
+)
 const BR_TAG = /^<br\s*\/?>/i
 
 /** End of `s` once trailing characters in `set` are dropped (a loop, not `/[…]+$/`, which backtracks quadratically). */
@@ -561,7 +571,7 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
 
   let i = 0
   // Whether a bare URL may start here (not mid-word).
-  const atWordStart = () => i === 0 || /[\s*_~(]/.test(text[i - 1])
+  const atWordStart = () => i === 0 || /[\s*_~(（]/.test(text[i - 1]) || CJK_STOPS.includes(text[i - 1])
   while (i < text.length) {
     const c = text[i]
 
