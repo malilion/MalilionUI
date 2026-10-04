@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { MlGanttTask } from '@malilion/ui/react'
 import {
   Badge,
   Button,
@@ -8,6 +9,7 @@ import {
   ConfigProvider,
   DatePicker,
   DialogHost,
+  Gantt,
   Rate,
   Slider,
   Table,
@@ -33,6 +35,19 @@ const pride = [
 ]
 const stacks = ['Vue', 'React', 'Nuxt', 'Next.js', 'Vite'].map((s) => ({ value: s, label: s }))
 
+// A small sprint plan relative to today, so the today line always lands inside it.
+const day = (offset: number) => {
+  const d = new Date()
+  d.setDate(d.getDate() + offset)
+  return d
+}
+const sprint: MlGanttTask[] = [
+  { id: 'design', label: 'Design', start: day(-6), end: day(1), progress: 1, group: 'Sprint', tone: 'bean' },
+  { id: 'api', label: 'API', start: day(-2), end: day(6), progress: 0.5, group: 'Sprint', tone: 'tech', deps: ['design'] },
+  { id: 'ui', label: 'React UI', start: day(2), end: day(10), progress: 0.1, group: 'Sprint', tone: 'gold', deps: ['design'] },
+  { id: 'ship', label: 'Ship 🦁', start: day(12), end: day(12), milestone: true, tone: 'danger', deps: ['api', 'ui'] },
+]
+
 const today = new Date()
 const commits = Array.from({ length: 120 }, (_, i) => ({
   date: new Date(today.getFullYear(), today.getMonth(), today.getDate() - i),
@@ -43,6 +58,7 @@ export function Demo() {
   const [lang, setLang] = useState<string | number>('zh')
   const [cpu, setCpu] = useState(64)
   const [open, setOpen] = useState(false)
+  const [plan, setPlan] = useState(sprint)
   return (
     <ConfigProvider locale={lang === 'en' ? en : zhTW}>
       <div style={{ display: 'grid', gap: 16 }}>
@@ -63,8 +79,20 @@ export function Demo() {
           </div>
         </Card>
         <Tabs
-          items={[{ value: 'heat', label: 'Heatmap' }, { value: 'form', label: 'Form' }, { value: 'table', label: 'Table' }]}
+          items={[{ value: 'gantt', label: 'Gantt' }, { value: 'heat', label: 'Heatmap' }, { value: 'form', label: 'Form' }, { value: 'table', label: 'Table' }]}
           panels={{
+            gantt: (
+              <Gantt
+                tasks={plan}
+                scale="day"
+                sideWidth={120}
+                editable
+                onChange={(task, { start, end }) => {
+                  setPlan((list) => list.map((t) => (t.id === task.id ? { ...t, start, end } : t)))
+                  toast.success({ title: task.label, message: `${start.toLocaleDateString()} → ${end.toLocaleDateString()}` })
+                }}
+              />
+            ),
             heat: <Heatmap data={commits} weeks={18} cell="paw" />,
             form: (
               <div style={{ display: 'grid', gap: 16, gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>

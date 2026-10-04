@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import {
+  ganttTipLeft,
   GANTT_DAY_WIDTH,
   ganttArrow,
   ganttDate,
@@ -176,6 +177,12 @@ function onPointerUp(event: PointerEvent) {
 onBeforeUnmount(stopListening)
 
 const hovered = ref<string | null>(null)
+/** The visible slice of the timeline, for keeping the tooltip on screen. */
+const view = ref<{ scroll: number; width: number } | null>(null)
+function onScroll(event: Event) {
+  const el = event.currentTarget as HTMLElement
+  view.value = { scroll: el.scrollLeft, width: el.clientWidth }
+}
 const focused = ref<string | null>(null)
 const current = computed(() => (focused.value && bars.value.some((b) => b.id === focused.value) ? focused.value : bars.value[0]?.id))
 const items = ref<HTMLElement[]>([])
@@ -210,7 +217,7 @@ const tip = computed(() => {
   if (dragging.value) return null
   const b = bars.value.find((x) => x.id === (hovered.value ?? focused.value))
   if (!b) return null
-  return { b, below: b.r < 2, left: b.milestone ? b.left + dayW.value / 2 : b.left + Math.min(b.width, 240) / 2 }
+  return { b, below: b.r < 2, left: ganttTipLeft(b.milestone ? b.left + dayW.value / 2 : b.left + Math.min(b.width, 240) / 2, view.value) }
 })
 
 function toggle(group: string) {
@@ -244,7 +251,7 @@ const summary = computed(() => `${props.label ?? loc.value.gantt.summary(spans.v
           </div>
         </template>
       </div>
-      <div class="ml-gantt__scroll">
+      <div class="ml-gantt__scroll" @scroll.passive="onScroll" @pointerenter="onScroll" @focusin="onScroll">
         <div class="ml-gantt__canvas" :style="{ width: `${canvasWidth}px` }">
           <div class="ml-gantt__header" aria-hidden="true">
             <div class="ml-gantt__scale">

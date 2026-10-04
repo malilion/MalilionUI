@@ -21,6 +21,7 @@ import {
   ganttTicks,
   ganttWeekends,
   type MlGanttTask,
+  ganttTipLeft,
 } from '../src/components/gantt'
 import {
   candleChange,
@@ -698,5 +699,17 @@ describe('MlCandlestick', { timeout: 30_000 }, () => {
     wrapper = mount(MlCandlestick, { props: { data: data.slice(0, 100), visible: 30 } })
     await wrapper.setProps({ data: data.slice(0, 101) })
     expect(wrapper.find('.ml-candle__legend').text()).toContain(String(data[100].close))
+  })
+})
+
+describe('ganttTipLeft', () => {
+  it('keeps the tooltip inside the visible timeline', () => {
+    expect(ganttTipLeft(300, null)).toBe(300)
+    expect(ganttTipLeft(300, { scroll: 0, width: 400 })).toBe(300)
+    expect(ganttTipLeft(390, { scroll: 0, width: 400 })).toBe(308)
+    expect(ganttTipLeft(20, { scroll: 0, width: 400 })).toBe(92)
+    expect(ganttTipLeft(20, { scroll: 200, width: 400 })).toBe(292)
+    // Too narrow to clamp: leave it centred on the bar.
+    expect(ganttTipLeft(50, { scroll: 0, width: 150 })).toBe(50)
   })
 })
