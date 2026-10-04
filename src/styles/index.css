@@ -29,6 +29,7 @@
 @import './components/controls.css';
 @import './components/empty-upload.css';
 @import './components/charts.css';
+@import './components/charts-extra.css';
 @import './components/calendar.css';
 @import './components/mobile.css';
 @import './components/combobox.css';
@@ -66,3 +67,5 @@
 @import './components/markdown.css';
 @import './components/signature.css';
 @import './components/cropper.css';
+@import './components/wheel.css';
+@import './components/region.css';

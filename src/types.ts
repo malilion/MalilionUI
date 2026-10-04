@@ -278,3 +278,31 @@ export interface MlFloatAction {
   icon: IconName
   danger?: boolean
 }
+
+export interface MlScatterPoint {
+  x: number
+  y: number
+  /** Bubble size; points are drawn with area proportional to it. */
+  size?: number
+  /** Name shown as the tooltip title and in the data table. */
+  label?: string
+}
+
+export interface MlScatterSeries {
+  name: string
+  points: MlScatterPoint[]
+  tone?: MlChartTone
+  /** Override the point colour. */
+  color?: string
+  /** Draw a least-squares trend line for this series (overrides the chart's `trend`). */
+  trend?: boolean
+}
+
+export type MlScatterShape = 'circle' | 'paw' | 'diamond'
+
+export interface MlFunnelDatum {
+  label: string
+  value: number
+  /** Override the chart's tone for this stage. */
+  tone?: MlChartTone
+}
