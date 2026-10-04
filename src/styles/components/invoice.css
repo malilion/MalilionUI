@@ -1,0 +1,393 @@
+/* InvoiceChecker — 統一發票對獎: period + mode bar, PIN-style entry, verdict, number board, log */
+.ml-invoice {
+  --_inv-win: var(--ml-gold-300);
+
+  display: grid;
+  gap: 16px;
+  width: 100%;
+  max-width: 560px;
+  padding: 18px;
+  background: var(--ml-plate-fill);
+  box-shadow: inset 0 0 0 1px var(--ml-line), var(--ml-shadow-1);
+  clip-path: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
+  container-type: inline-size;
+}
+
+.ml-invoice--disabled {
+  opacity: 0.6;
+}
+
+.ml-invoice__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.ml-invoice__period {
+  flex: 1 1 160px;
+  max-width: 220px;
+}
+
+.ml-invoice__period select {
+  appearance: none;
+  -webkit-appearance: none;
+  cursor: pointer;
+}
+
+/* 末三碼 / 完整號碼 — a two-way metal switch */
+.ml-invoice__modes {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  clip-path: polygon(7px 0, 100% 0, 100% calc(100% - 7px), calc(100% - 7px) 100%, 0 100%, 0 7px);
+}
+
+.ml-invoice__mode {
+  padding: 6px 14px;
+  border: 0;
+  background: none;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  cursor: pointer;
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-invoice__mode:hover:not(:disabled) {
+  color: var(--ml-accent-text);
+}
+
+.ml-invoice__mode:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+
+.ml-invoice__mode--active,
+.ml-invoice__mode--active:hover:not(:disabled) {
+  background: var(--ml-metal-gold-soft);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-invoice__mode:disabled {
+  cursor: not-allowed;
+}
+
+/* The PIN boxes: big for 3 digits, fitted to the width for 8 */
+.ml-invoice--quick .ml-invoice__input .ml-pin {
+  --_box: 60px;
+}
+
+.ml-invoice--full .ml-invoice__input .ml-pin {
+  --_box: clamp(30px, calc((100cqi - 96px) / 8), 50px);
+  gap: 6px;
+}
+
+.ml-invoice__input .ml-pin {
+  justify-content: center;
+}
+
+.ml-invoice__input .ml-field__label {
+  justify-content: center;
+}
+
+/* Verdict */
+.ml-invoice__result {
+  position: relative;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: 4px 14px;
+  min-height: 64px;
+  padding: 12px 16px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
+}
+
+.ml-invoice__text {
+  grid-column: 1 / -1;
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ml-invoice__badge + .ml-invoice__text {
+  grid-column: 2;
+}
+
+.ml-invoice__text p {
+  margin: 0;
+}
+
+.ml-invoice__checked {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.18em;
+}
+
+.ml-invoice__message {
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-md);
+  font-weight: 600;
+}
+
+.ml-invoice__detail {
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-invoice__result--none .ml-invoice__message {
+  color: var(--ml-text-muted);
+}
+
+.ml-invoice__result--maybe {
+  background: linear-gradient(90deg, var(--ml-warning-soft), transparent 70%), var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong);
+}
+
+.ml-invoice__result--maybe .ml-invoice__message {
+  color: var(--ml-warning-text);
+}
+
+/* A win: gold plate, glow and a little pop */
+.ml-invoice__result--win {
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.25) inset, 0 0 26px rgb(240 173 47 / 0.55);
+  animation: ml-invoice-win 700ms var(--ml-ease-spring);
+}
+
+.ml-invoice__result--win .ml-invoice__message {
+  color: var(--ml-text-on-metal);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-lg);
+  font-weight: 800;
+}
+
+.ml-invoice__result--win .ml-invoice__checked {
+  color: rgb(26 17 4 / 0.7);
+}
+
+.ml-invoice__badge {
+  font-size: 40px;
+}
+
+@keyframes ml-invoice-win {
+  0% { scale: 0.92; }
+  45% { scale: 1.04; }
+  100% { scale: 1; }
+}
+
+.ml-invoice__check {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  font-size: var(--ml-text-sm);
+}
+
+.ml-invoice__check-title {
+  color: var(--ml-text-muted);
+}
+
+.ml-invoice__candidate {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  padding: 2px 8px;
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+}
+
+.ml-invoice__candidate-tier {
+  font-family: var(--ml-font-body);
+  font-size: var(--ml-text-xs);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+/* Winning numbers */
+.ml-invoice__numbers {
+  display: grid;
+  gap: 8px;
+}
+
+.ml-invoice__numbers-title {
+  margin: 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-invoice__table {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+}
+
+.ml-invoice__row {
+  display: grid;
+  grid-template-columns: minmax(84px, auto) 1fr;
+  align-items: baseline;
+  gap: 2px 12px;
+  padding: 8px 12px;
+  background: var(--ml-surface-2);
+  box-shadow: inset 3px 0 0 var(--ml-line-strong);
+}
+
+.ml-invoice__row--special { box-shadow: inset 3px 0 0 var(--ml-red-400); }
+.ml-invoice__row--grand { box-shadow: inset 3px 0 0 var(--ml-gold-400); }
+.ml-invoice__row--first { box-shadow: inset 3px 0 0 var(--ml-cyan-400); }
+.ml-invoice__row--extraSixth { box-shadow: inset 3px 0 0 var(--ml-bean-400); }
+
+.ml-invoice__tier {
+  display: grid;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.ml-invoice__amount {
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+  font-weight: 500;
+  text-transform: none;
+}
+
+.ml-invoice__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  margin: 0;
+}
+
+.ml-invoice__number {
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-lg);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.08em;
+}
+
+.ml-invoice__hit {
+  padding: 0 1px;
+  background: var(--ml-metal-gold-soft);
+  color: var(--ml-text-on-metal);
+  font-weight: 800;
+}
+
+.ml-invoice__rule {
+  grid-column: 2;
+  margin: 0;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+
+/* History */
+.ml-invoice__history {
+  display: grid;
+  gap: 6px;
+}
+
+.ml-invoice__history-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.ml-invoice__history-title {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+
+.ml-invoice__clear {
+  padding: 2px 6px;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  font: inherit;
+  font-size: var(--ml-text-xs);
+  cursor: pointer;
+}
+
+.ml-invoice__clear:hover {
+  color: var(--ml-danger-text);
+}
+
+.ml-invoice__clear:focus-visible {
+  outline: 2px solid var(--ml-focus);
+}
+
+.ml-invoice__log {
+  display: grid;
+  gap: 2px;
+  max-height: 220px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.ml-invoice__log-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 10px;
+  background: var(--ml-surface-2);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-invoice__log-number {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  letter-spacing: 0.08em;
+}
+
+.ml-invoice__log-period {
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-invoice__log-verdict {
+  color: var(--ml-text-dim);
+  font-weight: 600;
+}
+
+.ml-invoice__log-item--win .ml-invoice__log-verdict { color: var(--ml-accent-text); }
+.ml-invoice__log-item--maybe .ml-invoice__log-verdict { color: var(--ml-warning-text); }
+
+.ml-invoice__empty {
+  margin: 0;
+  padding: 18px;
+  color: var(--ml-text-dim);
+  text-align: center;
+}
+
+[data-ml-theme='light'] .ml-invoice__result--win {
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.5) inset, 0 6px 22px rgb(212 143 23 / 0.4);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-invoice__result--win {
+    animation: none;
+  }
+}

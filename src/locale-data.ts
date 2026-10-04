@@ -258,6 +258,51 @@ export interface MlLocale {
   radar: { label: string; summary: (blips: number) => string; blip: (label: string | undefined, bearing: string, distance: string) => string }
   /** MlClock: spoken time, announced once a minute. */
   clock: { label: string; time: (place: string | undefined, h: number, m: number) => string }
+  /** MlBankPicker / BankPicker. */
+  bank: {
+    label: string
+    search: string
+    account: string
+    accountPlaceholder: string
+    /** Under the account field: digit count and the usual 10–16 range. */
+    accountHint: (digits: number) => string
+  }
+  /** MlLunarCalendar / LunarCalendar. */
+  lunar: {
+    label: string
+    /** Header: lunar year(s) of the month shown, e.g. 「丙午年（馬）」. */
+    year: (ganZhi: string, zodiac: number) => string
+    /** Day-cell description added after the date: lunar date, then holiday / 節氣 names. */
+    day: (lunar: string, names: string[], off: boolean, workday: boolean) => string
+  }
+  /** MlInvoiceChecker / InvoiceChecker. */
+  invoice: {
+    label: string
+    period: string
+    modes: string
+    quick: string
+    full: string
+    quickLabel: string
+    fullLabel: string
+    none: string
+    maybe: string
+    /** Short verdicts for the history list. */
+    noneShort: string
+    maybeShort: string
+    atLeast: (amount: string) => string
+    win: (prize: string, amount: string) => string
+    check: string
+    prizes: Record<'special' | 'grand' | 'first' | 'second' | 'third' | 'fourth' | 'fifth' | 'sixth' | 'extraSixth', string>
+    /** NT$ amount as words, e.g. 「1,000 萬元」. */
+    amount: (n: number) => string
+    numbers: string
+    /** Under the 頭獎 row. */
+    firstRule: string
+    history: string
+    clearHistory: string
+    noDraws: string
+    waiting: string
+  }
   password: {
     show: string
     hide: string
@@ -301,6 +346,8 @@ export interface MlLocale {
     citizenCert: string
     postalCode: string
     postalCodeUnknown: string
+    bankCode: string
+    bankAccount: string
   }
 }
 
@@ -640,6 +687,53 @@ export const zhTW: MlLocale = {
     label: '時鐘',
     time: (p, h, m) => `${p ? `${p} ` : ''}${h < 12 ? '上午' : '下午'} ${h % 12 || 12}:${String(m).padStart(2, '0')}`,
   },
+  bank: {
+    label: '銀行',
+    search: '輸入代碼或銀行名稱',
+    account: '帳號',
+    accountPlaceholder: '請輸入帳號（只填數字）',
+    accountHint: (n) => (n ? `已輸入 ${n} 位數字・帳號通常為 10–16 位` : '帳號通常為 10–16 位數字'),
+  },
+  lunar: {
+    label: '農曆月曆',
+    year: (gz, z) => `${gz}年（${'鼠牛虎兔龍蛇馬羊猴雞狗豬'[z]}）`,
+    day: (lunar, names, off, workday) =>
+      `農曆${lunar}${names.length ? `，${names.join('、')}` : ''}${off ? '（放假）' : workday ? '（上班日）' : ''}`,
+  },
+  invoice: {
+    label: '統一發票對獎',
+    period: '期別',
+    modes: '對獎方式',
+    quick: '末三碼',
+    full: '完整號碼',
+    quickLabel: '輸入發票末三碼',
+    fullLabel: '輸入發票號碼（8 碼）',
+    none: '沒中，下次再接再厲',
+    maybe: '可能中獎，請核對完整號碼',
+    noneShort: '沒中',
+    maybeShort: '待核對',
+    atLeast: (amount) => `末三碼和頭獎相同，至少有六獎 ${amount}`,
+    win: (prize, amount) => `恭喜中${prize}！獎金 ${amount}`,
+    check: '請核對這些號碼：',
+    prizes: {
+      special: '特別獎',
+      grand: '特獎',
+      first: '頭獎',
+      second: '二獎',
+      third: '三獎',
+      fourth: '四獎',
+      fifth: '五獎',
+      sixth: '六獎',
+      extraSixth: '增開六獎',
+    },
+    amount: (n) => (n >= 10000 && n % 10000 === 0 ? `${(n / 10000).toLocaleString('zh-TW')} 萬元` : `${n.toLocaleString('zh-TW')} 元`),
+    numbers: '本期中獎號碼',
+    firstRule: '末 7 至 3 碼相同：二獎 4 萬・三獎 1 萬・四獎 4 千・五獎 1 千・六獎 2 百',
+    history: '對獎紀錄',
+    clearHistory: '清除紀錄',
+    noDraws: '尚未提供中獎號碼',
+    waiting: '輸入號碼後馬上對獎',
+  },
   password: {
     show: '顯示密碼',
     hide: '隱藏密碼',
@@ -681,6 +775,8 @@ export const zhTW: MlLocale = {
     citizenCert: '自然人憑證條碼格式不正確',
     postalCode: '郵遞區號格式不正確',
     postalCodeUnknown: '查無此郵遞區號',
+    bankCode: '查無此銀行代碼',
+    bankAccount: '帳號格式不正確',
   },
 }
 
@@ -1027,6 +1123,53 @@ export const en: MlLocale = {
     label: 'Clock',
     time: (p, h, m) => `${p ? `${p}, ` : ''}${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`,
   },
+  bank: {
+    label: 'Bank',
+    search: 'Bank code or name',
+    account: 'Account number',
+    accountPlaceholder: 'Digits only',
+    accountHint: (n) => (n ? `${n} digits · accounts usually have 10–16` : 'Accounts usually have 10–16 digits'),
+  },
+  lunar: {
+    label: 'Lunar calendar',
+    year: (gz, z) => `${gz} · Year of the ${['Rat', 'Ox', 'Tiger', 'Rabbit', 'Dragon', 'Snake', 'Horse', 'Goat', 'Monkey', 'Rooster', 'Dog', 'Pig'][z]}`,
+    day: (lunar, names, off, workday) =>
+      `lunar ${lunar}${names.length ? `, ${names.join(', ')}` : ''}${off ? ' (day off)' : workday ? ' (working day)' : ''}`,
+  },
+  invoice: {
+    label: 'Receipt lottery checker',
+    period: 'Period',
+    modes: 'Check by',
+    quick: 'Last 3 digits',
+    full: 'Full number',
+    quickLabel: 'Last 3 digits of the receipt',
+    fullLabel: 'Receipt number (8 digits)',
+    none: 'No prize this time',
+    maybe: 'Possible win — check the full number',
+    noneShort: 'No prize',
+    maybeShort: 'Check',
+    atLeast: (amount) => `The last 3 digits match a first-prize number: at least ${amount}`,
+    win: (prize, amount) => `You won the ${prize}: ${amount}!`,
+    check: 'Check against:',
+    prizes: {
+      special: 'special prize',
+      grand: 'grand prize',
+      first: 'first prize',
+      second: 'second prize',
+      third: 'third prize',
+      fourth: 'fourth prize',
+      fifth: 'fifth prize',
+      sixth: 'sixth prize',
+      extraSixth: 'extra sixth prize',
+    },
+    amount: (n) => `NT$${n.toLocaleString('en-US')}`,
+    numbers: 'Winning numbers',
+    firstRule: 'Last 7 to 3 digits: 2nd NT$40,000 · 3rd 10,000 · 4th 4,000 · 5th 1,000 · 6th 200',
+    history: 'Checked',
+    clearHistory: 'Clear',
+    noDraws: 'No winning numbers yet',
+    waiting: 'Type a number to check it',
+  },
   password: {
     show: 'Show password',
     hide: 'Hide password',
@@ -1068,5 +1211,7 @@ export const en: MlLocale = {
     citizenCert: 'Invalid citizen certificate barcode',
     postalCode: 'Invalid postal code',
     postalCodeUnknown: 'Unknown postal code',
+    bankCode: 'Unknown bank code',
+    bankAccount: 'Invalid account number',
   },
 }
