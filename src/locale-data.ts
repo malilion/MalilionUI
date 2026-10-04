@@ -161,6 +161,7 @@ export interface MlLocale {
   heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
   scatter: { summary: (series: number, points: number) => string; table: string; series: string; point: string; x: string; y: string; size: string; trend: (name: string) => string; toggle: (name: string) => string }
   funnel: { summary: (stages: number, rate: string) => string; value: string; fromPrev: string; fromFirst: string; drop: string; start: string }
+  taiwanMap: { summary: (counties: number, min: string, max: string) => string; cell: (county: string, value: string) => string; table: string; county: string; value: string; noData: string; less: string; more: string }
   bars: { summary: (mode: 'grouped' | 'stacked' | 'percent', series: number, categories: number) => string; table: string; category: string; total: string; share: string; toggle: (name: string) => string }
   rate: string
   wheel: { label: string; summary: (label: string, prizes: string[]) => string; spin: string; spinning: string; result: (prize: string) => string }
@@ -214,6 +215,20 @@ export interface MlLocale {
     maxChars: (n: number) => string
     maxItems: (n: number) => string
     maxValue: (n: number) => string
+  }
+  /** Messages of the Taiwan validators (`twRules`, src/validators-tw.ts). */
+  twValidate: {
+    nationalId: string
+    residentId: string
+    personalId: string
+    businessId: string
+    mobile: string
+    landline: string
+    phone: string
+    mobileBarcode: string
+    citizenCert: string
+    postalCode: string
+    postalCodeUnknown: string
   }
 }
 
@@ -398,6 +413,16 @@ export const zhTW: MlLocale = {
     toggle: (n) => `顯示或隱藏「${n}」`,
   },
   funnel: { summary: (n, r) => `漏斗圖：${n} 個階段，整體轉換率 ${r}`, value: '數量', fromPrev: '較上一階段', fromFirst: '整體轉換', drop: '流失', start: '起點' },
+  taiwanMap: {
+    summary: (n, lo, hi) => (n ? `臺灣縣市地圖：${n} 個縣市有資料，最低 ${lo}，最高 ${hi}` : '臺灣縣市地圖'),
+    cell: (c, v) => `${c}：${v}`,
+    table: '各縣市數值',
+    county: '縣市',
+    value: '數值',
+    noData: '無資料',
+    less: '低',
+    more: '高',
+  },
   bars: {
     summary: (m, s, c) => `${{ grouped: '分組', stacked: '堆疊', percent: '百分比堆疊' }[m]}長條圖：${s} 個數列、${c} 個類別`,
     table: '長條圖資料',
@@ -474,6 +499,19 @@ export const zhTW: MlLocale = {
     maxChars: (n) => `最多 ${n} 個字元`,
     maxItems: (n) => `最多選擇 ${n} 項`,
     maxValue: (n) => `不能大於 ${n}`,
+  },
+  twValidate: {
+    nationalId: '身分證字號格式不正確',
+    residentId: '居留證號（統一證號）格式不正確',
+    personalId: '身分證字號或居留證號格式不正確',
+    businessId: '統一編號格式不正確',
+    mobile: '手機號碼格式不正確',
+    landline: '市話號碼格式不正確',
+    phone: '電話號碼格式不正確',
+    mobileBarcode: '手機條碼格式不正確',
+    citizenCert: '自然人憑證條碼格式不正確',
+    postalCode: '郵遞區號格式不正確',
+    postalCodeUnknown: '查無此郵遞區號',
   },
 }
 
@@ -665,6 +703,16 @@ export const en: MlLocale = {
     toggle: (n) => `Show or hide “${n}”`,
   },
   funnel: { summary: (n, r) => `Funnel chart: ${n} stages, ${r} overall conversion`, value: 'Count', fromPrev: 'From previous', fromFirst: 'Overall', drop: 'Dropped', start: 'Start' },
+  taiwanMap: {
+    summary: (n, lo, hi) => (n ? `Map of Taiwan: ${n} ${n === 1 ? 'county' : 'counties'} with data, from ${lo} to ${hi}` : 'Map of Taiwan'),
+    cell: (c, v) => `${c}: ${v}`,
+    table: 'Values by county',
+    county: 'City / County',
+    value: 'Value',
+    noData: 'No data',
+    less: 'Low',
+    more: 'High',
+  },
   bars: {
     summary: (m, s, c) => `${{ grouped: 'Grouped', stacked: 'Stacked', percent: '100% stacked' }[m]} bar chart: ${s} series, ${c} categories`,
     table: 'Bar chart data',
@@ -741,5 +789,18 @@ export const en: MlLocale = {
     maxChars: (n) => `At most ${n} characters`,
     maxItems: (n) => `Choose at most ${n}`,
     maxValue: (n) => `Must be at most ${n}`,
+  },
+  twValidate: {
+    nationalId: 'Invalid Taiwan ID number',
+    residentId: 'Invalid resident certificate (UI) number',
+    personalId: 'Invalid ID or resident certificate number',
+    businessId: 'Invalid business ID (UBN)',
+    mobile: 'Invalid mobile number',
+    landline: 'Invalid landline number',
+    phone: 'Invalid phone number',
+    mobileBarcode: 'Invalid mobile barcode',
+    citizenCert: 'Invalid citizen certificate barcode',
+    postalCode: 'Invalid postal code',
+    postalCodeUnknown: 'Unknown postal code',
   },
 }

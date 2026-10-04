@@ -1,0 +1,245 @@
+/* TaiwanMap — choropleth of the 22 縣市 */
+.ml-twmap {
+  --_h: 480px;
+  --_ratio: 641 / 826;
+  /* Shade ramp: --_lo (t = 0) → --_hi (t = 1), mixed in OKLab per 縣市 */
+  --_lo: #45391f;
+  --_hi: var(--ml-gold-300);
+  --_glow: rgb(240 173 47 / 0.55);
+  --_empty: #222935;
+  --_edge: var(--ml-bg);
+
+  position: relative;
+  display: grid;
+  gap: 10px;
+  /* A definite width (the container query below zeroes the intrinsic one) that still shrinks */
+  width: min(100%, calc(var(--_h) * var(--_ratio)));
+  min-width: 0;
+  margin: 0;
+  container-type: inline-size;
+}
+
+.ml-twmap--tech { --_lo: #12302c; --_hi: var(--ml-cyan-300); --_glow: rgb(62 238 208 / 0.5); }
+.ml-twmap--bean { --_lo: #3a2128; --_hi: var(--ml-bean-300); --_glow: rgb(255 143 168 / 0.5); }
+.ml-twmap--success { --_lo: #15301f; --_hi: var(--ml-green-300); --_glow: rgb(82 227 138 / 0.5); }
+
+[data-ml-theme='light'] .ml-twmap { --_lo: #f3e2b8; --_hi: var(--ml-gold-600); --_glow: rgb(169 108 14 / 0.4); --_empty: var(--ml-surface-3); --_edge: var(--ml-surface); }
+[data-ml-theme='light'] .ml-twmap--tech { --_lo: #d8f3ee; --_hi: var(--ml-cyan-700); --_glow: rgb(10 159 137 / 0.4); }
+[data-ml-theme='light'] .ml-twmap--bean { --_lo: #fbe3e9; --_hi: var(--ml-bean-600); --_glow: rgb(201 77 108 / 0.4); }
+[data-ml-theme='light'] .ml-twmap--success { --_lo: #dcf5e5; --_hi: var(--ml-green-600); --_glow: rgb(22 138 71 / 0.4); }
+
+.ml-twmap__stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: var(--_ratio);
+}
+
+.ml-twmap__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+.ml-twmap__frame {
+  fill: none;
+  stroke: var(--ml-line-steel-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 4;
+}
+
+.ml-twmap__county {
+  fill: color-mix(in oklab, var(--_hi) calc(var(--_t, 0) * 100%), var(--_lo));
+  stroke: var(--_edge);
+  stroke-width: 1.1;
+  stroke-linejoin: round;
+  outline: none;
+  transition: fill var(--ml-dur-slow) var(--ml-ease), filter var(--ml-dur-fast) var(--ml-ease), opacity var(--ml-dur) var(--ml-ease);
+  animation: ml-twmap-in 600ms var(--ml-ease) backwards;
+  animation-delay: calc(var(--_i, 0) * 28ms);
+}
+
+@keyframes ml-twmap-in {
+  from { opacity: 0; }
+}
+
+.ml-twmap__county--empty {
+  fill: var(--_empty);
+}
+
+.ml-twmap--selectable .ml-twmap__county {
+  cursor: pointer;
+}
+
+.ml-twmap__county--hover {
+  filter: brightness(1.18) drop-shadow(0 0 6px var(--_glow));
+}
+
+[data-ml-theme='light'] .ml-twmap__county--hover {
+  filter: brightness(0.94) drop-shadow(0 0 4px var(--_glow));
+}
+
+.ml-twmap__county--disabled {
+  opacity: 0.4;
+  cursor: not-allowed !important;
+}
+
+/* Outlines and the focus ring are drawn on top, so a shared border never hides them */
+.ml-twmap__outlines path {
+  fill: none;
+  pointer-events: none;
+  stroke-linejoin: round;
+}
+
+.ml-twmap__outline--selected {
+  stroke: var(--ml-text);
+  stroke-width: 2.4;
+  filter: drop-shadow(0 0 5px var(--_glow));
+}
+
+.ml-twmap__outline--highlight {
+  stroke: var(--ml-accent);
+  stroke-width: 1.6;
+  stroke-dasharray: 4 3;
+}
+
+.ml-twmap__ring {
+  stroke: var(--ml-focus);
+  stroke-width: 3;
+}
+
+.ml-twmap__label {
+  fill: var(--ml-text);
+  font-family: var(--ml-font-body);
+  font-weight: 600;
+  text-anchor: middle;
+  dominant-baseline: central;
+  paint-order: stroke;
+  stroke: color-mix(in oklab, var(--ml-bg) 70%, transparent);
+  stroke-width: 0.24em;
+  pointer-events: none;
+}
+
+.ml-twmap__label--on {
+  fill: var(--ml-text-on-metal);
+  stroke: color-mix(in oklab, var(--_hi) 60%, transparent);
+}
+
+[data-ml-theme='light'] .ml-twmap__label--on {
+  fill: #fff;
+  stroke: color-mix(in oklab, var(--_hi) 70%, transparent);
+}
+
+/* Inset labels (連江・金門・澎湖) sit at a frame corner, not on the islands */
+.ml-twmap__label--inset {
+  fill: var(--ml-text-muted);
+  stroke: none;
+  font-size: 0.9em;
+  text-anchor: start;
+  dominant-baseline: hanging;
+}
+
+.ml-twmap__tip {
+  position: absolute;
+  z-index: 1;
+  min-width: 128px;
+  padding: 8px 10px;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-2);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  pointer-events: none;
+  animation: ml-fade-in var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-twmap__tip--right { translate: 14px -50%; }
+.ml-twmap__tip--left { translate: calc(-100% - 14px) -50%; }
+
+.ml-twmap__tip p {
+  margin: 0;
+}
+
+.ml-twmap__tip-title {
+  margin-bottom: 4px !important;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+.ml-twmap__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+  line-height: 1.8;
+}
+
+.ml-twmap__tip-row span {
+  flex: 1;
+}
+
+.ml-twmap__tip-row b {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Legend: in the empty sea south-west of the main island when there is room, below the map otherwise */
+.ml-twmap__legend {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+@container (min-width: 300px) {
+  .ml-twmap__legend {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    max-width: 36%;
+  }
+}
+
+.ml-twmap__range {
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+  gap: 4px 10px;
+  width: min(160px, 100%);
+}
+
+.ml-twmap__ramp {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  height: 8px;
+  border-radius: 2px;
+  background: linear-gradient(90deg in oklab, var(--_lo), var(--_hi));
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+}
+
+.ml-twmap__step {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  white-space: nowrap;
+}
+
+.ml-twmap__swatch {
+  width: 12px;
+  height: 10px;
+  border-radius: 2px;
+  flex: none;
+  background: color-mix(in oklab, var(--_hi) calc(var(--_t, 0) * 100%), var(--_lo));
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+}
+
+.ml-twmap__swatch--empty {
+  background: var(--_empty);
+}
