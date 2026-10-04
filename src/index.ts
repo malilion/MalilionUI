@@ -30,6 +30,7 @@ import MlCodeDiff from './components/MlCodeDiff.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
 import MlCommandPalette from './components/MlCommandPalette.vue'
+import MlComments from './components/MlComments.vue'
 import MlConfigProvider from './components/MlConfigProvider.vue'
 import MlContextMenu from './components/MlContextMenu.vue'
 import MlCopyButton from './components/MlCopyButton.vue'
@@ -64,6 +65,7 @@ import MlIcon from './components/MlIcon.vue'
 import MlImage from './components/MlImage.vue'
 import MlImageCropper from './components/MlImageCropper.vue'
 import MlImagePreview from './components/MlImagePreview.vue'
+import MlInbox from './components/MlInbox.vue'
 import MlInfiniteScroll from './components/MlInfiniteScroll.vue'
 import MlInput from './components/MlInput.vue'
 import MlJsonViewer from './components/MlJsonViewer.vue'
@@ -122,8 +124,10 @@ import MlSplitter from './components/MlSplitter.vue'
 import MlSpotlight from './components/MlSpotlight.vue'
 import MlStat from './components/MlStat.vue'
 import MlSteps from './components/MlSteps.vue'
+import MlStickerPicker from './components/MlStickerPicker.vue'
 import MlSwitch from './components/MlSwitch.vue'
 import MlSwipeCell from './components/MlSwipeCell.vue'
+import MlSwipeStack from './components/MlSwipeStack.vue'
 import MlTabBar from './components/MlTabBar.vue'
 import MlTable from './components/MlTable.vue'
 import MlTabs from './components/MlTabs.vue'
@@ -182,6 +186,7 @@ const components = {
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
+  MlComments,
   MlConfigProvider,
   MlContextMenu,
   MlCopyButton,
@@ -216,6 +221,7 @@ const components = {
   MlImage,
   MlImageCropper,
   MlImagePreview,
+  MlInbox,
   MlInfiniteScroll,
   MlInput,
   MlJsonViewer,
@@ -274,8 +280,10 @@ const components = {
   MlSpotlight,
   MlStat,
   MlSteps,
+  MlStickerPicker,
   MlSwitch,
   MlSwipeCell,
+  MlSwipeStack,
   MlTabBar,
   MlTable,
   MlTabs,
@@ -357,6 +365,7 @@ export {
   MlColorPicker,
   MlCombobox,
   MlCommandPalette,
+  MlComments,
   MlConfigProvider,
   MlContextMenu,
   MlCopyButton,
@@ -391,6 +400,7 @@ export {
   MlImage,
   MlImageCropper,
   MlImagePreview,
+  MlInbox,
   MlInfiniteScroll,
   MlInput,
   MlJsonViewer,
@@ -449,8 +459,10 @@ export {
   MlSpotlight,
   MlStat,
   MlSteps,
+  MlStickerPicker,
   MlSwitch,
   MlSwipeCell,
+  MlSwipeStack,
   MlTabBar,
   MlTable,
   MlTabs,
@@ -612,6 +624,16 @@ export { captchaHit, captchaPiecePath, captchaTarget } from './components/captch
 export type { MlCaptchaAttempt, MlCaptchaTarget, MlCaptchaTone, CaptchaState } from './components/captcha'
 export type { MlScratchTone } from './components/scratch'
 export type { MlGlobeArc, MlGlobeMarker, MlGlobePoint, MlGlobeTone, GlobeView, GlobeProjected } from './components/globe'
+export { relativeTime, daysAgo } from './components/relative-time'
+export type { MlTimeInput } from './components/relative-time'
+export { STICKER_KEYWORDS, searchStickers, stickerMatches } from './components/stickers'
+export type { StickerGroupId } from './components/stickers'
+export { commentTree, countComments, sortComments, toggleCommentLike, addComment } from './components/comments'
+export type { MlComment, MlCommentAuthor, MlCommentSort, MlCommentNode } from './components/comments'
+export { swipeDecision, dragRotation, stampStrength, flyOut } from './components/swipe-stack'
+export type { MlSwipeDirection } from './components/swipe-stack'
+export { inboxGroups, inboxCounts, inboxFilter } from './components/inbox'
+export type { MlInboxItem, MlInboxTab, MlInboxType, MlInboxGroupId } from './components/inbox'
 
 declare module 'vue' {
   export interface GlobalComponents {
@@ -645,6 +667,7 @@ declare module 'vue' {
     MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
     MlCommandPalette: typeof MlCommandPalette
+    MlComments: typeof MlComments
     MlConfigProvider: typeof MlConfigProvider
     MlContextMenu: typeof MlContextMenu
     MlCopyButton: typeof MlCopyButton
@@ -679,6 +702,7 @@ declare module 'vue' {
     MlImage: typeof MlImage
     MlImageCropper: typeof MlImageCropper
     MlImagePreview: typeof MlImagePreview
+    MlInbox: typeof MlInbox
     MlInfiniteScroll: typeof MlInfiniteScroll
     MlInput: typeof MlInput
     MlJsonViewer: typeof MlJsonViewer
@@ -737,8 +761,10 @@ declare module 'vue' {
     MlSpotlight: typeof MlSpotlight
     MlStat: typeof MlStat
     MlSteps: typeof MlSteps
+    MlStickerPicker: typeof MlStickerPicker
     MlSwitch: typeof MlSwitch
     MlSwipeCell: typeof MlSwipeCell
+    MlSwipeStack: typeof MlSwipeStack
     MlTabBar: typeof MlTabBar
     MlTable: typeof MlTable
     MlTabs: typeof MlTabs
