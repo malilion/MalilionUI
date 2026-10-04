@@ -62,8 +62,10 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - **`MlGridLottery`** and **`MlGacha`**: the 九宮格 running light and a gacha machine (knob turns, capsules shake, one drops out and pops open) sharing one prize model — cute icons or images, weights, `draw(i)`, and `beforeDraw` Promises for server draws
 - **Charts**: `MlTreemap` (squarified, nested groups, keyboard tiles), `MlSankey` (flows with gradient ribbons, hover tracing), `MlGantt` (day / week / month scales, dependencies, today line, drag or keyboard to move and resize) and `MlCandlestick` (Taiwan red-up by default, volume, moving averages, crosshair, zoom and pan)
 - **Content**: `MlStickerPicker` (the cute icons with zh-TW search and recents, inline or as a popover beside a chat input), `MlComments` (threaded replies, paw likes, relative times, sorting), `MlSwipeStack` (swipe cards with stamps, undo and keyboard) and `MlInbox` (bell + notification centre with tabs, day groups, mark-all-read)
-- **Taiwan**: `MlBankPicker` (every 財金資訊 member code with aliases, plus an account field), `MlLunarCalendar` (農曆, 24 節氣 and the statutory holidays of the 2025 紀念日及節日實施條例; feed official 補假 via `holidays`) and `MlInvoiceChecker` (統一發票 last-three quick check and full numbers, with your draw numbers)
+- **Taiwan**: `MlBankPicker` (every 財金資訊 member code with aliases, plus an account field), `MlLunarCalendar` (農曆, 24 節氣 and the statutory holidays of the 2025 紀念日及節日實施條例; with 人事行政總處's official 2024–2027 calendars — 補假, 調整放假, 補行上班 — built in; add later years or company days via `holidays`) and `MlInvoiceChecker` (統一發票 last-three quick check and full numbers, with your draw numbers)
 - **Effects**: `MlAurora` (pure-CSS aurora backdrop), `MlParticles` (canvas constellation with paw particles and pointer play), `MlRadar` (HUD sweep with blips) and `MlClock` (brushed-metal analog clock with time zones and the lion crest)
+- Custom locales only need the strings you change: anything missing (including strings added by newer components) is filled in from the built-in locale, via `completeLocale()`
+- `MlRadar` uses the `ml-radar-scope` class block (`ml-radar` belongs to `MlRadarChart`); `MlInvoiceChecker` handles 雲端發票專屬獎 numbers; `registerTwBanks()` adds 農會 / 漁會 codes
 - 161 components, every one in Vue and React
 
 ## What's New in 0.12.2

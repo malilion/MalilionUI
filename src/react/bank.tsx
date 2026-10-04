@@ -17,9 +17,10 @@ export {
   formatTwBank,
   formatTwBankAccount,
   normalizeTwBankAccount,
+  registerTwBanks,
   TW_BANK_KINDS_DEFAULT,
 } from '../tw-banks'
-export type { TwBank, TwBankKind, TwBankOptions } from '../tw-banks'
+export type { TwBank, TwBankInput, TwBankKind, TwBankOptions } from '../tw-banks'
 export type { BankLang } from '../components/bank'
 
 export interface BankPickerProps {

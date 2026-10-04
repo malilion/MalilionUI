@@ -7,6 +7,7 @@ import {
   OFFSCREEN,
   gridMove,
   popupPosition,
+  inheritedTheme,
   loadRecent,
   pushRecent,
   saveRecent,
@@ -95,6 +96,8 @@ export const StickerPicker = forwardRef<StickerPickerHandle, StickerPickerProps>
   const panel = useRef<HTMLDivElement>(null)
   const [pos, setPos] = useState<{ left: string; top: string } | undefined>()
   const [side, setSide] = useState<'top' | 'bottom'>(placement)
+  /** The theme around the trigger, carried onto the portalled panel. */
+  const [panelTheme, setPanelTheme] = useState<string>()
 
   const [tab, setTab] = useState<StickerGroupId>('animals')
   const [query, setQuery] = useState('')
@@ -211,6 +214,7 @@ export const StickerPicker = forwardRef<StickerPickerHandle, StickerPickerProps>
     const t = triggerEl.current
     const p = panel.current
     if (!t || !p) return
+    setPanelTheme(inheritedTheme(t))
     const at = popupPosition(t.getBoundingClientRect(), { width: p.offsetWidth, height: p.offsetHeight }, { width: window.innerWidth, height: window.innerHeight }, placement, align)
     setSide(at.placement)
     setPos({ left: `${at.left}px`, top: `${at.top}px` })
@@ -277,6 +281,7 @@ export const StickerPicker = forwardRef<StickerPickerHandle, StickerPickerProps>
           ref={panel}
           className={cx('ml-sticker-picker__panel', trigger && 'ml-sticker-picker__panel--popup', trigger && `ml-sticker-picker__panel--${side}`)}
           style={{ ...({ '--_sp-cols': columns, '--_sp-size': `${size}px` } as CSSProperties), ...(trigger ? (pos ?? OFFSCREEN) : undefined) }}
+          data-ml-theme={trigger ? panelTheme : undefined}
           role={trigger ? 'dialog' : 'group'}
           aria-label={label ?? loc.sticker.label}
           onKeyDown={onRootKeydown}

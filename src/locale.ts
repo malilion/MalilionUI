@@ -1,8 +1,8 @@
 import { computed, inject, shallowRef, type ComputedRef, type InjectionKey, type Ref } from 'vue'
-import { zhTW, type MlLocale } from './locale-data'
+import { completeLocale, zhTW, type MlLocale, type MlLocaleInput } from './locale-data'
 
-export { zhTW, en } from './locale-data'
-export type { MlLocale } from './locale-data'
+export { zhTW, en, completeLocale } from './locale-data'
+export type { MlLocale, MlLocaleInput } from './locale-data'
 
 /* ── Plumbing ─────────────────────────────────────────────── */
 
@@ -13,8 +13,8 @@ const globalLocale = shallowRef<MlLocale>(zhTW)
 export const localeKey: InjectionKey<Ref<MlLocale>> = Symbol('ml-locale')
 
 /** Change the app-wide default locale (components outside any <MlConfigProvider>). */
-export function setLocale(locale: MlLocale) {
-  globalLocale.value = locale
+export function setLocale(locale: MlLocaleInput) {
+  globalLocale.value = completeLocale(locale)
 }
 
 /** Read-only access to the app-wide default locale (e.g. for plain modules like form validation). */

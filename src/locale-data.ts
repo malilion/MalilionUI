@@ -408,7 +408,7 @@ export interface MlLocale {
     atLeast: (amount: string) => string
     win: (prize: string, amount: string) => string
     check: string
-    prizes: Record<'special' | 'grand' | 'first' | 'second' | 'third' | 'fourth' | 'fifth' | 'sixth' | 'extraSixth', string>
+    prizes: Record<'special' | 'grand' | 'first' | 'second' | 'third' | 'fourth' | 'fifth' | 'sixth' | 'extraSixth' | 'cloud', string>
     /** NT$ amount as words, e.g. 「1,000 萬元」. */
     amount: (n: number) => string
     numbers: string
@@ -970,6 +970,7 @@ export const zhTW: MlLocale = {
       fifth: '五獎',
       sixth: '六獎',
       extraSixth: '增開六獎',
+      cloud: '雲端發票專屬獎',
     },
     amount: (n) => (n >= 10000 && n % 10000 === 0 ? `${(n / 10000).toLocaleString('zh-TW')} 萬元` : `${n.toLocaleString('zh-TW')} 元`),
     numbers: '本期中獎號碼',
@@ -1535,6 +1536,7 @@ export const en: MlLocale = {
       fifth: 'fifth prize',
       sixth: 'sixth prize',
       extraSixth: 'extra sixth prize',
+      cloud: 'cloud invoice prize',
     },
     amount: (n) => `NT$${n.toLocaleString('en-US')}`,
     numbers: 'Winning numbers',
@@ -1588,4 +1590,42 @@ export const en: MlLocale = {
     bankCode: 'Unknown bank code',
     bankAccount: 'Invalid account number',
   },
+}
+
+/* ── Partial locales ──────────────────────────────────────── */
+
+type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends (...args: never[]) => unknown ? T[K] : T[K] extends readonly unknown[] ? T[K] : T[K] extends object ? DeepPartial<T[K]> : T[K]
+}
+
+/**
+ * A locale you ship yourself. Only `name` is required: anything missing — for
+ * example strings added by a newer MalilionUI — is filled in from `en` when the
+ * name starts with "en", otherwise from `zhTW`.
+ */
+export type MlLocaleInput = { name: string } & DeepPartial<Omit<MlLocale, 'name'>>
+
+const isPlain = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
+
+function fill(base: Record<string, unknown>, own: Record<string, unknown>): Record<string, unknown> {
+  const out: Record<string, unknown> = { ...base }
+  for (const [key, value] of Object.entries(own)) {
+    if (value === undefined) continue
+    out[key] = isPlain(value) && isPlain(base[key]) ? fill(base[key], value) : value
+  }
+  return out
+}
+
+const completed = new WeakMap<object, MlLocale>()
+
+/** A full locale from a partial one (cached, so it is cheap to call on every render). */
+export function completeLocale(locale: MlLocaleInput): MlLocale {
+  if (locale === zhTW || locale === en) return locale as MlLocale
+  let full = completed.get(locale)
+  if (!full) {
+    const base = /^en\b/i.test(locale.name) ? en : zhTW
+    full = fill(base as unknown as Record<string, unknown>, locale) as unknown as MlLocale
+    completed.set(locale, full)
+  }
+  return full
 }

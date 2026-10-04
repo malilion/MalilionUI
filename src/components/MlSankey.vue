@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, nextTick, ref, useId } from 'vue'
+import { computed, nextTick, onMounted, ref, useId, watch } from 'vue'
 import { chartStops, percentText } from './charts'
 import { sankeyLayout, sankeyNeighbour, type MlSankeyLink, type MlSankeyNode, type SankeyDirection } from './sankey'
 import { useLocale } from '../locale'
@@ -42,6 +42,18 @@ const layout = computed(() =>
   }),
 )
 const color = (i: number) => chartStops[layout.value.nodes[i].tone][0]
+
+const emit = defineEmits<{ ignored: [links: MlSankeyLink[]] }>()
+// Tell the app about links left out (cycles, unknown ids, values ≤ 0), once per change.
+let reported = ''
+function report() {
+  const key = JSON.stringify(layout.value.ignored)
+  if (key === reported) return
+  reported = key
+  if (layout.value.ignored.length) emit('ignored', layout.value.ignored)
+}
+onMounted(report)
+watch(layout, report)
 
 type Active = { kind: 'node' | 'link'; i: number }
 const hovered = ref<Active | null>(null)

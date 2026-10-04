@@ -10,6 +10,7 @@ import {
   OFFSCREEN,
   gridMove,
   popupPosition,
+  inheritedTheme,
   loadRecent,
   pushRecent,
   saveRecent,
@@ -141,10 +142,14 @@ function onSearchKeydown(event: KeyboardEvent) {
 }
 
 /* ── Trigger mode: the panel is portalled to <body> and placed with fixed coordinates ── */
+/** The theme around the trigger, carried onto the portalled panel. */
+const panelTheme = ref<string>()
+
 function place() {
   const t = triggerEl.value
   const p = panel.value
   if (!t || !p) return
+  panelTheme.value = inheritedTheme(t)
   const at = popupPosition(
     t.getBoundingClientRect(),
     { width: p.offsetWidth, height: p.offsetHeight },
@@ -241,6 +246,7 @@ defineExpose({ show, close, focus: () => (props.trigger ? triggerEl.value?.focus
       ref="panel"
       :class="['ml-sticker-picker__panel', trigger && 'ml-sticker-picker__panel--popup', trigger && `ml-sticker-picker__panel--${side}`]"
       :style="[{ '--_sp-cols': columns, '--_sp-size': `${size}px` }, trigger ? (pos ?? OFFSCREEN) : undefined]"
+      :data-ml-theme="trigger ? panelTheme : undefined"
       :role="trigger ? 'dialog' : 'group'"
       :aria-label="label ?? loc.sticker.label"
       @keydown="onRootKeydown"

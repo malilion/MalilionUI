@@ -17,6 +17,9 @@ export {
   solarTerms,
   solarTermOn,
   twHolidays,
+  twOfficialDays,
+  TW_OFFICIAL_YEARS,
+  TW_HOLIDAY_VERIFIED_FROM,
   SOLAR_TERMS,
   ZODIAC,
   ZODIAC_EN,
@@ -26,7 +29,7 @@ export {
   LUNAR_MAX_YEAR,
   TW_HOLIDAY_ACT_DATE,
 } from '../tw-calendar'
-export type { LunarDate, SolarTerm, SolarTermName, TwHoliday, TwHolidayOptions } from '../tw-calendar'
+export type { LunarDate, SolarTerm, SolarTermName, TwHoliday, TwHolidayOptions, TwOfficialDay } from '../tw-calendar'
 export { lunarHolidayMap } from '../components/lunar-calendar'
 export type { MlLunarHoliday, MlLunarHolidays, LunarCell, LunarDayInfo } from '../components/lunar-calendar'
 
@@ -59,6 +62,8 @@ export interface LunarCalendarProps {
   showHolidays?: boolean
   /** The built-in statutory list (twHolidays). Default true. */
   builtinHolidays?: boolean
+  /** Apply the official 人事行政總處 calendar (補假, 調整放假, 補行上班) for the years shipped (2024–2027). Default true. */
+  official?: boolean
   /** Built-in named days that aren't days off (元宵、中元、母親節…). Default true. */
   observances?: boolean
   /** Extra / overriding days, e.g. 人事行政總處's 補假 and 調整放假. */
@@ -83,6 +88,7 @@ export const LunarCalendar = forwardRef<LunarCalendarHandle, LunarCalendarProps>
     showSolarTerms = true,
     showHolidays = true,
     builtinHolidays = true,
+    official = true,
     observances = true,
     holidays,
     className,
@@ -104,8 +110,8 @@ export const LunarCalendar = forwardRef<LunarCalendarHandle, LunarCalendarProps>
   const titleId = `ml-lunar-cal-${useId().replace(/[^\w-]/g, '')}`
 
   const cells = useMemo(
-    () => lunarCells(view.year, view.month, { weekStartsOn, showLunar, showSolarTerms, showHolidays, builtinHolidays, observances, holidays }),
-    [view.year, view.month, weekStartsOn, showLunar, showSolarTerms, showHolidays, builtinHolidays, observances, holidays],
+    () => lunarCells(view.year, view.month, { weekStartsOn, showLunar, showSolarTerms, showHolidays, builtinHolidays, official, observances, holidays }),
+    [view.year, view.month, weekStartsOn, showLunar, showSolarTerms, showHolidays, builtinHolidays, official, observances, holidays],
   )
   const weeks = Array.from({ length: 6 }, (_, w) => cells.slice(w * 7, w * 7 + 7))
   const lang = locale ?? loc.name

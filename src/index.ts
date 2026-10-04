@@ -163,7 +163,7 @@ import MlVirtualList from './components/MlVirtualList.vue'
 import MlWatermark from './components/MlWatermark.vue'
 import { vPawStamp } from './pawStamp'
 import { vLoading } from './loading'
-import { setLocale, type MlLocale } from './locale'
+import { setLocale, type MlLocaleInput } from './locale'
 import { configureTheme, type MlThemeOptions } from './theme'
 
 const components = {
@@ -333,7 +333,7 @@ const components = {
 
 export interface MalilionUIOptions {
   /** App-wide UI language, e.g. `en`. Defaults to Traditional Chinese (`zhTW`). */
-  locale?: MlLocale
+  locale?: MlLocaleInput
   /** Theme store options (storage key, default mode…), see `configureTheme`. */
   theme?: MlThemeOptions
 }
@@ -526,8 +526,8 @@ export { confirm, useConfirm } from './dialog'
 export { actionSheet, useActionSheet } from './action-sheet'
 export { parseSnapPoint, resolveSnapPoints, rubberBand, sheetPosition, releaseSnap, nearestSnap } from './components/sheet'
 export type { SheetSnapPoint, SheetPosition, SheetReleaseOptions } from './components/sheet'
-export { zhTW, en, setLocale, getLocale, useLocale } from './locale'
-export type { MlLocale } from './locale'
+export { zhTW, en, setLocale, getLocale, useLocale, completeLocale } from './locale'
+export type { MlLocale, MlLocaleInput } from './locale'
 export { configureTheme, getThemeState, setTheme, toggleTheme, subscribeTheme, themeInitScript } from './theme'
 export type { MlThemeMode, MlResolvedTheme, MlThemeState, MlThemeOptions, MlThemeOrigin, MlSetThemeOptions } from './theme'
 export { useTheme } from './useTheme'
@@ -640,9 +640,10 @@ export {
   formatTwBank,
   formatTwBankAccount,
   normalizeTwBankAccount,
+  registerTwBanks,
   TW_BANK_KINDS_DEFAULT,
 } from './tw-banks'
-export type { TwBank, TwBankKind, TwBankOptions } from './tw-banks'
+export type { TwBank, TwBankInput, TwBankKind, TwBankOptions } from './tw-banks'
 export {
   toLunar,
   fromLunar,
@@ -655,6 +656,9 @@ export {
   solarTerms,
   solarTermOn,
   twHolidays,
+  twOfficialDays,
+  TW_OFFICIAL_YEARS,
+  TW_HOLIDAY_VERIFIED_FROM,
   SOLAR_TERMS,
   ZODIAC,
   ZODIAC_EN,
@@ -664,7 +668,7 @@ export {
   LUNAR_MAX_YEAR,
   TW_HOLIDAY_ACT_DATE,
 } from './tw-calendar'
-export type { LunarDate, SolarTerm, SolarTermName, TwHoliday, TwHolidayOptions } from './tw-calendar'
+export type { LunarDate, SolarTerm, SolarTermName, TwHoliday, TwHolidayOptions, TwOfficialDay } from './tw-calendar'
 export { lunarHolidayMap } from './components/lunar-calendar'
 export type { MlLunarHoliday, MlLunarHolidays, LunarCell, LunarDayInfo } from './components/lunar-calendar'
 export {
@@ -677,6 +681,7 @@ export {
 } from './invoice'
 export type {
   MlInvoiceDraw,
+  MlInvoiceCloudPrize,
   MlInvoiceResult,
   InvoicePrize,
   InvoicePrizeTier,

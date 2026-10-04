@@ -58,9 +58,11 @@ export function invoiceRows(draw: MlInvoiceDraw, checked: string): InvoiceRow[] 
   for (const c of invoiceDrawNumbers(draw)) {
     let row = rows.find((r) => r.tier === c.tier)
     if (!row) {
-      row = { tier: c.tier, amount: INVOICE_PRIZES[c.tier].amount, numbers: [] }
+      row = { tier: c.tier, amount: c.amount ?? INVOICE_PRIZES[c.tier].amount, numbers: [] }
       rows.push(row)
     }
+    // 雲端發票專屬獎 numbers can carry different prizes: show the largest.
+    if (c.amount !== undefined) row.amount = Math.max(row.amount, c.amount)
     const k = invoiceHighlight(c, checked)
     row.numbers.push({ number: c.number, head: c.number.slice(0, c.number.length - k), hit: k ? c.number.slice(-k) : '' })
   }

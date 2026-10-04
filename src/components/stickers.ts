@@ -193,3 +193,11 @@ export function popupPosition(
   const left = Math.max(margin, Math.min(rawLeft, viewport.width - size.width - margin))
   return { left, top: side === 'top' ? above : below, placement: side }
 }
+
+/**
+ * The theme in effect where the trigger sits (e.g. inside <MlConfigProvider theme="light">),
+ * so the panel — portalled to <body> — can carry it along.
+ */
+export function inheritedTheme(el: Element | null | undefined): string | undefined {
+  return el?.closest('[data-ml-theme]')?.getAttribute('data-ml-theme') ?? undefined
+}
