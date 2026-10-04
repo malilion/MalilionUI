@@ -166,6 +166,77 @@
   background: linear-gradient(90deg, var(--ml-accent-soft) 50%, transparent 50%);
 }
 
+/* Month / quarter / year panels (MlDatePicker `type`) */
+.ml-calendar__grid--period {
+  border-spacing: 0 6px;
+}
+
+.ml-calendar__period {
+  display: inline-grid;
+  place-items: center;
+  width: calc(100% - 8px);
+  height: 44px;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-calendar--quarter .ml-calendar__period {
+  height: 56px;
+}
+
+.ml-calendar__period:hover:not(:disabled) {
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+}
+
+.ml-calendar__period:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+
+.ml-calendar__period--outside {
+  color: var(--ml-text-dim);
+  opacity: 0.55;
+}
+
+.ml-calendar__period--today {
+  box-shadow: inset 0 0 0 1.5px var(--ml-line-strong);
+  color: var(--ml-accent-text);
+}
+
+.ml-calendar__period--selected,
+.ml-calendar__period--selected:hover:not(:disabled) {
+  background: var(--ml-metal-gold-soft);
+  box-shadow: 0 0 12px rgb(240 173 47 / 0.45);
+  color: var(--ml-text-on-metal);
+  font-weight: 700;
+  opacity: 1;
+}
+
+.ml-calendar__period:disabled {
+  color: var(--ml-text-dim);
+  text-decoration: line-through;
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.ml-calendar__body--next .ml-calendar__period,
+.ml-calendar__body--prev .ml-calendar__period {
+  animation: ml-slide-in-x var(--ml-dur) var(--ml-ease);
+}
+
+.ml-calendar__body--next .ml-calendar__period { --_from-x: 14px; }
+.ml-calendar__body--prev .ml-calendar__period { --_from-x: -14px; }
+
 /* ── DatePicker ── */
 .ml-datepicker {
   position: relative;

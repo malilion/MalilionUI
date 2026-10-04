@@ -34,12 +34,12 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 125 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 128 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has every component (all 125) with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 128) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -48,6 +48,15 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - Accessible: keyboard navigation, focus trapping, ARIA wiring and `prefers-reduced-motion`
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
+
+## What's New in 0.11
+
+- **`MlCheckboxGroup`**: options or slotted `MlCheckbox` children, select-all with an indeterminate state, `min` / `max`, card layout, `MlForm` validation
+- **`MlPasswordInput`**: show / hide, a strength meter (common passwords, sequences and keyboard walks score low), a live rules checklist and a Caps Lock warning; `scorePassword()` is exported
+- **Month, quarter and year pickers**: `MlDatePicker type="month" | "quarter" | "year"` and month / year ranges in `MlDateRangePicker`, fully keyboard-driven
+- **`MlThemeToggle` + `useTheme()`**: dark / light / system, remembered across visits and tabs, no flash on load (`themeInitScript()`, injected automatically by the Nuxt module), and a circular View Transition reveal from the toggle
+- **`MlBarChart` series**: grouped, stacked and 100% stacked bars with totals, a legend that toggles series and a tooltip per category
+- 128 components, every one in Vue and React
 
 ## What's New in 0.10
 
@@ -136,6 +145,8 @@ createApp(App).use(MalilionUI).mount('#app')
 
 Built-in UI text defaults to Traditional Chinese. For English: `import MalilionUI, { en } from '@malilion/ui'` and `app.use(MalilionUI, { locale: en })`, or wrap part of the page in `<MlConfigProvider :locale="en">`.
 
+Night Pride (dark) / Daylight (light) / follow-the-OS: drop in `<MlThemeToggle />` (or call `useTheme()`); the choice is remembered in localStorage. Put `themeInitScript()` in an inline `<script>` in `<head>` so returning visitors never see a flash of the wrong theme — the Nuxt module does this for you and auto-imports `useMlTheme()`.
+
 ```vue
 <template>
   <MlCard eyebrow="Pride / 01" title="Pride dashboard" rivets>
@@ -221,9 +232,9 @@ Every component has its own page on the [docs site](https://malilion.github.io/M
 
 | Category | Components |
 | --- | --- |
-| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlConfigProvider` |
+| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlConfigProvider` · `MlThemeToggle` |
 | Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
-| Form | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` |
+| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` |
 | Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` |
 | Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` |
@@ -253,7 +264,7 @@ Every component accepts the usual attributes (`class`, `style`, `aria-*`, listen
 | MlReveal | effect / stagger | `'fade-up' \| 'zoom' \| 'blur' \| …` / ms | `'fade-up'` / `0` | Animate in when scrolled into view; `stagger` plays children one by one |
 | MlDropdown | selectable | boolean | `false` | Single-choice menu; v-model holds the value, marked with a paw |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | The Malilion lion, as a portrait or full body |
-| MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | Bars with round-number ticks; the peak lights up |
+| MlBarChart | data / highlight / series / labels / mode / showTotal | `{ label, value }[]` / `'max' \| number \| null` / `MlBarSeries[]` / `string[]` / `'grouped' \| 'stacked' \| 'percent'` / `boolean` | — / `'max'` / — / — / `'grouped'` / `false` | Bars with round-number ticks; the peak lights up. Pass `series` for grouped, stacked or 100% stacked bars with a toggleable legend |
 | MlPaw | tone | `'gold' \| 'bean' \| 'steel' \| 'tech' \| 'current'` | `'gold'` | `current` follows the text colour |
 
 The full list for every component lives on the [docs site](https://malilion.github.io/MalilionUI/).

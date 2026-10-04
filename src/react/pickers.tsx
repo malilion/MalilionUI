@@ -12,14 +12,15 @@ import {
   type Ref,
 } from 'react'
 import { hexToHsva, hsvaToHex, parseHex, type HSVA } from '../components/color'
-import { addDays, addMonths, dayKey, monthGrid, sameDay, startOfDay } from '../components/dates'
+import { addDays, addMonths, comparePeriods, dayKey, formatPeriod, monthGrid, sameDay, startOfDay } from '../components/dates'
 import { formatTime, padTime, parseTime, range as steps, toSeconds, type TimeParts } from '../components/time'
 import type { MlLocale } from '../locale-data'
-import type { MlDateRange, MlRangePreset } from '../types'
+import type { MlDatePickerType, MlDateRange, MlRangePreset } from '../types'
 import { Button, Icon, Paw } from './basic'
 import { Field } from './form'
 import { useLocale } from './locale'
 import { useTransition } from './overlay'
+import { PeriodPanel } from './period'
 import { cx, describedBy, useControllable } from './utils'
 import { useFormField } from './validation'
 
@@ -395,17 +396,32 @@ export interface DatePickerProps extends PickerBase, CalendarBits {
   onChange?: (date: Date | null) => void
   /** Intl options used to display the chosen date. */
   format?: Intl.DateTimeFormatOptions
+  /**
+   * What to pick. For 'month' / 'quarter' / 'year' the value is the first day
+   * of the chosen period (2026 Q4 → 2026-10-01).
+   */
+  type?: MlDatePickerType
 }
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }
 
-export function DatePicker({ value, defaultValue = null, onChange, format = DATE_FORMAT, placeholder, min, max, disabledDate, markers, locale, weekStartsOn = 0, ...base }: DatePickerProps) {
+export function DatePicker({ value, defaultValue = null, onChange, format, placeholder, min, max, disabledDate, markers, locale, weekStartsOn = 0, type = 'date', ...base }: DatePickerProps) {
   const loc = useLocale()
   const controlId = base.id ?? `ml-datepicker-${cleanId(useId())}`
   const [model, setModel] = useControllable(value, defaultValue, onChange)
   const calendar = useRef<FocusHandle>(null)
   const pop = usePopup(base.disabled, () => calendar.current?.focus())
-  const display = model ? new Intl.DateTimeFormat(locale ?? loc.name, format).format(model) : ''
+  // Periods use the locale's wording unless an explicit Intl format is given (quarters always do).
+  const display = !model
+    ? ''
+    : type === 'date' || (format && type !== 'quarter')
+      ? new Intl.DateTimeFormat(locale ?? loc.name, format ?? DATE_FORMAT).format(model)
+      : formatPeriod(model, type, loc.date.period)
+  const pickLabel = type === 'date' ? loc.date.pick : loc.date.period.pick[type]
+  const pick = (d: Date | null) => {
+    setModel(d)
+    pop.hide()
+  }
   return (
     <PickerFrame
       {...base}
@@ -413,29 +429,30 @@ export function DatePicker({ value, defaultValue = null, onChange, format = DATE
       controlId={controlId}
       rootClass=""
       affix={dateAffix}
-      trigger={display ? <span>{display}</span> : <span className="ml-datepicker__placeholder">{placeholder ?? loc.date.pick}</span>}
-      clearLabel={loc.date.clear}
+      trigger={display ? <span>{display}</span> : <span className="ml-datepicker__placeholder">{placeholder ?? pickLabel}</span>}
+      clearLabel={type === 'date' ? loc.date.clear : loc.date.period.clear[type]}
       showClear={!!model}
       onClear={() => {
         setModel(null)
         pop.trigger.current?.focus()
       }}
-      panelLabel={loc.date.pick}
+      panelLabel={pickLabel}
       panel={
-        <Calendar
-          ref={calendar}
-          value={model}
-          min={min}
-          max={max}
-          disabledDate={disabledDate}
-          markers={markers}
-          locale={locale}
-          weekStartsOn={weekStartsOn}
-          onChange={(d) => {
-            setModel(d)
-            pop.hide()
-          }}
-        />
+        type === 'date' ? (
+          <Calendar
+            ref={calendar}
+            value={model}
+            min={min}
+            max={max}
+            disabledDate={disabledDate}
+            markers={markers}
+            locale={locale}
+            weekStartsOn={weekStartsOn}
+            onChange={pick}
+          />
+        ) : (
+          <PeriodPanel ref={calendar} type={type} value={model} min={min} max={max} disabledDate={disabledDate} locale={locale} onChange={pick} />
+        )
       }
     />
   )
@@ -453,6 +470,11 @@ export interface DateRangePickerProps extends Omit<PickerBase, 'placeholder'>, C
   format?: Intl.DateTimeFormatOptions
   /** Quick picks beside the calendar. Pass [] to hide them. */
   presets?: MlRangePreset[]
+  /**
+   * Pick days, months or years. For 'month' / 'year' both ends are the first
+   * day of their period, and there are no default presets.
+   */
+  type?: 'date' | 'month' | 'year'
 }
 
 const RANGE_FORMAT: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' }
@@ -484,8 +506,9 @@ export function DateRangePicker({
   onChange,
   startPlaceholder,
   endPlaceholder,
-  format = RANGE_FORMAT,
+  format,
   presets,
+  type = 'date',
   min,
   max,
   disabledDate,
@@ -501,10 +524,33 @@ export function DateRangePicker({
   const [draft, setDraft] = useState<MlDateRange>(NO_RANGE)
   const calendar = useRef<FocusHandle>(null)
   const pop = usePopup(base.disabled, () => calendar.current?.focus())
-  const presetList = presets ?? defaultPresets(loc)
-  const fmt = (d: Date | null) => (d ? new Intl.DateTimeFormat(locale ?? loc.name, format).format(d) : '')
+  const presetList = presets ?? (type === 'date' ? defaultPresets(loc) : [])
+  const fmt = (d: Date | null) =>
+    !d
+      ? ''
+      : type === 'date' || format
+        ? new Intl.DateTimeFormat(locale ?? loc.name, format ?? RANGE_FORMAT).format(d)
+        : formatPeriod(d, type, loc.date.period)
   const [a, b] = model
-  const days = a && b ? Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / 86_400_000) + 1 : 0
+  /** Length of the range in days (or months / years). */
+  const days = !a || !b ? 0 : type !== 'date' ? comparePeriods(b, a, type) + 1 : Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / 86_400_000) + 1
+  const t = loc.date
+  const text =
+    type === 'date'
+      ? { start: t.rangeStart, end: t.rangeEnd, pick: t.pickRange, clear: t.clearRange, first: t.pickStart, next: t.pickEnd, count: t.days }
+      : {
+          start: t.period.rangeStart[type],
+          end: t.period.rangeEnd[type],
+          pick: t.period.pickRange[type],
+          clear: t.period.clearRange[type],
+          first: t.period.pickStart[type],
+          next: t.period.pickEnd,
+          count: (n: number) => t.period.count(n, type),
+        }
+  const onDraft = (r: MlDateRange) => {
+    setDraft(r)
+    if (r[0] && r[1]) commit(r)
+  }
 
   function commit(range: MlDateRange) {
     setModel(range)
@@ -527,25 +573,25 @@ export function DateRangePicker({
       triggerClass="ml-daterange__trigger"
       trigger={
         <>
-          <span className={cx({ 'ml-datepicker__placeholder': !a })}>{fmt(a) || (startPlaceholder ?? loc.date.rangeStart)}</span>
+          <span className={cx({ 'ml-datepicker__placeholder': !a })}>{fmt(a) || (startPlaceholder ?? text.start)}</span>
           <Icon name="arrowRight" className="ml-daterange__arrow" />
-          <span className={cx({ 'ml-datepicker__placeholder': !b })}>{fmt(b) || (endPlaceholder ?? loc.date.rangeEnd)}</span>
+          <span className={cx({ 'ml-datepicker__placeholder': !b })}>{fmt(b) || (endPlaceholder ?? text.end)}</span>
         </>
       }
       after={
         !!days && (
           <span className="ml-daterange__days" aria-hidden="true">
-            {loc.date.days(days)}
+            {text.count(days)}
           </span>
         )
       }
-      clearLabel={loc.date.clearRange}
+      clearLabel={text.clear}
       showClear={!!(a || b)}
       onClear={() => {
         setModel([null, null])
         pop.trigger.current?.focus()
       }}
-      panelLabel={loc.date.pickRange}
+      panelLabel={text.pick}
       panelClass="ml-daterange__panel"
       panel={
         <>
@@ -561,23 +607,24 @@ export function DateRangePicker({
             </ul>
           )}
           <div className="ml-daterange__cal">
-            <Calendar
-              ref={calendar}
-              mode="range"
-              range={draft}
-              min={min}
-              max={max}
-              disabledDate={disabledDate}
-              markers={markers}
-              locale={locale}
-              weekStartsOn={weekStartsOn}
-              onRangeChange={(r) => {
-                setDraft(r)
-                if (r[0] && r[1]) commit(r)
-              }}
-            />
+            {type === 'date' ? (
+              <Calendar
+                ref={calendar}
+                mode="range"
+                range={draft}
+                min={min}
+                max={max}
+                disabledDate={disabledDate}
+                markers={markers}
+                locale={locale}
+                weekStartsOn={weekStartsOn}
+                onRangeChange={onDraft}
+              />
+            ) : (
+              <PeriodPanel ref={calendar} type={type} mode="range" range={draft} min={min} max={max} disabledDate={disabledDate} locale={locale} onRangeChange={onDraft} />
+            )}
             <p className="ml-daterange__status" aria-live="polite">
-              {draft[0] && !draft[1] ? loc.date.pickEnd(fmt(draft[0])) : loc.date.pickStart}
+              {draft[0] && !draft[1] ? text.next(fmt(draft[0])) : text.first}
             </p>
           </div>
         </>

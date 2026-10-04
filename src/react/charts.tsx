@@ -1,11 +1,11 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
-import { bubbleRadius, chartStops, diamondPath, funnelStages, linearFit, nearestIndex, niceScale, niceStep, percentText, seriesColors, smoothPath } from '../components/charts'
+import { barLayout, bubbleRadius, chartStops, diamondPath, funnelStages, linearFit, nearestIndex, niceScale, niceStep, percentText, seriesColors, smoothPath, type BarSegment } from '../components/charts'
 import { addDays, dayKey, startOfDay } from '../components/dates'
 import { createPawPath } from '../components/paw'
 import { highlightLines } from '../highlight'
 import { mascotImages } from '../mascot'
 import { encodeQr, qrEyePath, qrLayout, type QrLevel } from '../qrcode'
-import type { MlChartDatum, MlChartTone, MlFunnelDatum, MlHeatmapDatum, MlLineSeries, MlScatterSeries, MlScatterShape } from '../types'
+import type { MlBarMode, MlBarSeries, MlChartDatum, MlChartTone, MlFunnelDatum, MlHeatmapDatum, MlLineSeries, MlScatterSeries, MlScatterShape } from '../types'
 import { Button, Paw, useSvgId } from './basic'
 import { toast } from './overlay'
 import { useLocale } from './locale'
@@ -117,17 +117,31 @@ export function Sparkline({ data, width = 120, height = 36, tone = 'gold', area 
 /* ── BarChart & Donut ──────────────────────────────────── */
 
 export interface BarChartProps {
-  data: MlChartDatum[]
+  /** Single-series bars. */
+  data?: MlChartDatum[]
+  /** Several series, one value per label — switches to the multi-series chart. */
+  series?: MlBarSeries[]
+  /** Category (x-axis) labels for `series`. */
+  labels?: string[]
+  /** How several series are drawn. */
+  mode?: MlBarMode
+  /** Total above each stacked bar (stacked / percent modes). */
+  showTotal?: boolean
+  /** Show the series legend (on by default with more than one series). Click a key to hide that series. */
+  legend?: boolean
   height?: number
   tone?: MlChartTone
   highlight?: 'max' | number | null
   ticks?: number
   format?: (value: number) => string
   label?: string
+  /** A legend key was clicked. */
+  onToggle?: (name: string, visible: boolean) => void
 }
 
-export function BarChart({ data, height = 200, tone = 'gold', highlight = 'max', ticks = 4, format, label }: BarChartProps) {
+export function BarChart({ data = [], series, height = 200, tone = 'gold', highlight = 'max', ticks = 4, format, label, ...multi }: BarChartProps) {
   const fmt = (v: number) => (format ? format(v) : v.toLocaleString())
+  if (series) return <MultiBarChart series={series} height={height} ticks={ticks} format={format} label={label} {...multi} />
   const max = Math.max(0, ...data.map((d) => d.value))
   const top = max === 0 ? ticks : niceStep(max, ticks) * ticks
   const tickValues = Array.from({ length: ticks + 1 }, (_, i) => (top / ticks) * (ticks - i))
@@ -158,6 +172,157 @@ export function BarChart({ data, height = 200, tone = 'gold', highlight = 'max',
           </div>
         ))}
       </div>
+    </figure>
+  )
+}
+
+type MultiBarProps = Omit<BarChartProps, 'data' | 'tone' | 'highlight' | 'series'> & { series: MlBarSeries[]; height: number; ticks: number }
+
+// Hooks live here so the single-series BarChart stays hook-free.
+function MultiBarChart({ series, labels, mode = 'grouped', showTotal = false, legend, height, ticks, format, label, onToggle }: MultiBarProps) {
+  const loc = useLocale()
+  const fmt = (v: number) => (format ? format(v) : v.toLocaleString())
+  const [hidden, setHidden] = useState<number[]>([])
+  const [hover, setHover] = useState<number | null>(null)
+  const count = Math.max(labels?.length ?? 0, ...series.map((s) => s.data.length))
+  const layout = barLayout(
+    series.map((s) => s.data),
+    count,
+    mode,
+    series.map((_, i) => !hidden.includes(i)),
+    ticks,
+  )
+  const pos = (v: number) => ((v - layout.lo) / (layout.hi - layout.lo || 1)) * 100
+  const colors = series.map((s, i) => s.color ?? (s.tone ? chartStops[s.tone][0] : seriesColors[i % seriesColors.length]))
+  const axis = [...layout.values].reverse()
+  const tickText = (t: number) => (mode === 'percent' ? percentText(t) : fmt(t))
+  const totals = showTotal && mode !== 'grouped'
+  const showLegend = legend ?? series.length > 1
+  const catLabel = (i: number) => labels?.[i] ?? `#${i + 1}`
+  const valueText = (s: BarSegment) => (mode === 'percent' ? `${fmt(s.value)} · ${percentText(s.share)}` : fmt(s.value))
+  const tipSide = (i: number) => (i + 0.5 > count * 0.6 ? 'left' : 'right')
+  const summary = label ?? loc.bars.summary(mode, series.length, count)
+
+  const toggle = (i: number) => {
+    const on = hidden.includes(i)
+    setHidden(on ? hidden.filter((h) => h !== i) : [...hidden, i])
+    onToggle?.(series[i].name, on)
+  }
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!count) return
+    const moves: Record<string, number> = { ArrowLeft: -1, ArrowRight: 1 }
+    if (event.key === 'Home') setHover(0)
+    else if (event.key === 'End') setHover(count - 1)
+    else if (event.key in moves) setHover(Math.min(count - 1, Math.max(0, (hover ?? -1) + moves[event.key])))
+    else if (event.key === 'Escape') setHover(null)
+    else return
+    event.preventDefault()
+  }
+
+  return (
+    <figure className={cx('ml-bars', 'ml-bars--multi', `ml-bars--${mode}`, { 'ml-bars--totals': totals })} style={{ '--_h': `${height}px` } as CSSProperties}>
+      {showLegend && (
+        <div className="ml-bars__legend">
+          {series.map((s, i) => (
+            <button
+              key={s.name}
+              type="button"
+              className={cx('ml-bars__key', { 'ml-bars__key--off': hidden.includes(i) })}
+              aria-pressed={!hidden.includes(i)}
+              aria-label={loc.bars.toggle(s.name)}
+              onClick={() => toggle(i)}
+            >
+              <i style={{ background: colors[i], color: colors[i] }} />
+              {s.name}
+            </button>
+          ))}
+        </div>
+      )}
+      <div className="ml-bars__body">
+        <div className="ml-bars__axis" aria-hidden="true">
+          {axis.map((t) => (
+            <span key={t}>{tickText(t)}</span>
+          ))}
+        </div>
+        <div className="ml-bars__plot" role="img" tabIndex={0} aria-label={summary} onPointerLeave={() => setHover(null)} onKeyDown={onKeyDown} onBlur={() => setHover(null)}>
+          <div className="ml-bars__grid">
+            {axis.map((t) => (
+              <i key={t} className={t === 0 ? 'ml-bars__zero' : undefined} />
+            ))}
+          </div>
+          {layout.categories.map((c, i) => {
+            // Grouped bars get one slot per visible series; stacked ones share a single slot.
+            const slots = mode === 'grouped' ? c.segments.map((s) => ({ key: `s${s.series}`, segments: [s] })) : [{ key: 'stack', segments: c.segments.filter((s) => s.to !== s.from) }]
+            return (
+              <div key={i} className={cx('ml-bars__col', { 'ml-bars__col--on': i === hover })} onPointerEnter={() => setHover(i)}>
+                <div className="ml-bars__track">
+                  {slots.map((slot) => (
+                    <div key={slot.key} className="ml-bars__slot">
+                      {slot.segments.map((s) => (
+                        <div
+                          key={s.series}
+                          className={cx('ml-bars__seg', { 'ml-bars__seg--neg': s.to < s.from })}
+                          style={{ bottom: `${pos(Math.min(s.from, s.to))}%`, height: `${Math.abs(pos(s.to) - pos(s.from))}%`, '--_c': colors[s.series], '--_i': i } as CSSProperties}
+                        />
+                      ))}
+                    </div>
+                  ))}
+                  {totals && c.segments.length > 0 && (
+                    <span className="ml-bars__total" style={{ bottom: `${pos(c.top)}%` }}>
+                      {fmt(c.total)}
+                    </span>
+                  )}
+                </div>
+                <span className="ml-bars__x">{catLabel(i)}</span>
+                {i === hover && (
+                  <div className={cx('ml-bars__pop', `ml-bars__pop--${tipSide(i)}`)} aria-live="polite">
+                    <p className="ml-bars__pop-title">{catLabel(i)}</p>
+                    {c.segments.map((s) => (
+                      <p key={s.series} className="ml-bars__pop-row">
+                        <i style={{ background: colors[s.series] }} />
+                        <span>{series[s.series].name}</span>
+                        <b>{valueText(s)}</b>
+                      </p>
+                    ))}
+                    {mode !== 'grouped' && c.segments.length > 0 && (
+                      <p className="ml-bars__pop-row ml-bars__pop-row--total">
+                        <span>{loc.bars.total}</span>
+                        <b>{fmt(c.total)}</b>
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
+      </div>
+      <table className="ml-visually-hidden">
+        <caption>{loc.bars.table}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{loc.bars.category}</th>
+            {series.map((s) => (
+              <th key={s.name} scope="col">
+                {s.name}
+              </th>
+            ))}
+            {mode !== 'grouped' && <th scope="col">{loc.bars.total}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {Array.from({ length: count }, (_, i) => (
+            <tr key={i}>
+              <th scope="row">{catLabel(i)}</th>
+              {series.map((s) => (
+                <td key={s.name}>{s.data[i] !== undefined ? fmt(s.data[i]) : '—'}</td>
+              ))}
+              {mode !== 'grouped' && <td>{fmt(series.reduce((sum, s) => sum + (s.data[i] ?? 0), 0))}</td>}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </figure>
   )
 }

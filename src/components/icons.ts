@@ -36,6 +36,8 @@ export const icons = {
   pause: 'M8 5v14M16 5v14',
   up: 'M12 4l8 14H4z',
   down: 'M12 20L4 6h16z',
+  eye: 'M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12zM12 15a3 3 0 100-6 3 3 0 000 6z',
+  eyeOff: 'M3 3l18 18M10.6 5.1A10 10 0 0112 5c6.4 0 10 7 10 7a17.6 17.6 0 01-3.2 4.1M6.6 6.6C3.8 8.3 2 12 2 12s3.6 7 10 7a9.7 9.7 0 005.4-1.6M9.9 9.9a3 3 0 004.2 4.2',
 } as const
 
 export type IconName = keyof typeof icons

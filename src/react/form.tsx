@@ -16,6 +16,7 @@ import { Icon, Paw } from './basic'
 import { useLocale } from './locale'
 import { cx, describedBy, useControllable } from './utils'
 import { useFormField } from './validation'
+import { CheckboxGroupCtx } from './checkbox-context'
 
 // useLayoutEffect warns during SSR; fall back to useEffect there.
 const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -151,21 +152,39 @@ export interface CheckboxProps {
   paw?: boolean
   indeterminate?: boolean
   name?: string
-  value?: string
+  /** Inside <CheckboxGroup>: this box's value in the group's array. Also the native value attribute. */
+  value?: string | number
   className?: string
   'aria-label'?: string
 }
 
-export function Checkbox({ checked, defaultChecked = false, onChange, label, hint, disabled, paw, indeterminate = false, className, ...inputProps }: CheckboxProps) {
-  const [on, set] = useControllable(checked, defaultChecked, onChange)
+export function Checkbox({ checked, defaultChecked = false, onChange, label, hint, disabled, paw, indeterminate = false, className, name, value, ...inputProps }: CheckboxProps) {
+  const [standaloneOn, set] = useControllable(checked, defaultChecked, onChange)
+  // Inside a group (and given a value) the group owns the checked state.
+  const injected = useContext(CheckboxGroupCtx)
+  const group = value !== undefined ? injected : null
+  const register = group?.register
+  useEffect(() => (register && value !== undefined ? register(value, !!disabled) : undefined), [register, value, disabled])
+  const on = group ? group.isChecked(value!) : standaloneOn
+  const isDisabled = disabled || (group?.isLocked(value!) ?? false)
   const input = useRef<HTMLInputElement>(null)
   // `indeterminate` is a DOM property with no HTML attribute.
   useEffect(() => {
     if (input.current) input.current.indeterminate = indeterminate
   }, [indeterminate])
   return (
-    <label className={cx('ml-check', className, { 'ml-check--disabled': disabled })}>
-      <input ref={input} type="checkbox" className="ml-check__input" checked={on} disabled={disabled} onChange={(e) => set(e.target.checked)} {...inputProps} />
+    <label className={cx('ml-check', className, { 'ml-check--disabled': isDisabled })}>
+      <input
+        ref={input}
+        type="checkbox"
+        className="ml-check__input"
+        name={group?.name ?? name}
+        value={value}
+        checked={on}
+        disabled={isDisabled}
+        onChange={(e) => (group ? group.toggle(value!, e.target.checked) : set(e.target.checked))}
+        {...inputProps}
+      />
       <span className="ml-check__box" aria-hidden="true">
         {paw ? (
           <Paw tone="current" className="ml-check__paw" />

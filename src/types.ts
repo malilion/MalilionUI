@@ -112,6 +112,9 @@ export interface MlChartDatum {
 /** A [start, end] date range; either end may still be unset. */
 export type MlDateRange = [Date | null, Date | null]
 
+/** What MlDatePicker / MlDateRangePicker pick; non-date values are the period's first day. */
+export type MlDatePickerType = 'date' | 'month' | 'quarter' | 'year'
+
 export interface MlTabBarItem {
   value: string
   label: string
@@ -183,6 +186,18 @@ export interface MlLineSeries {
   data: number[]
   tone?: MlChartTone
   /** Override the stroke colour. */
+  color?: string
+}
+
+/** How MlBarChart draws several series: side by side, stacked, or stacked to 100%. */
+export type MlBarMode = 'grouped' | 'stacked' | 'percent'
+
+export interface MlBarSeries {
+  name: string
+  /** One value per category (`labels`). */
+  data: number[]
+  tone?: MlChartTone
+  /** Override the bar colour. */
   color?: string
 }
 
@@ -305,4 +320,11 @@ export interface MlFunnelDatum {
   value: number
   /** Override the chart's tone for this stage. */
   tone?: MlChartTone
+}
+
+export interface MlCheckboxOption {
+  value: string | number
+  label: string
+  hint?: string
+  disabled?: boolean
 }

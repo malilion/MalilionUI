@@ -21,6 +21,7 @@ import MlChat from './components/MlChat.vue'
 import MlChatInput from './components/MlChatInput.vue'
 import MlChatMessage from './components/MlChatMessage.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
+import MlCheckboxGroup from './components/MlCheckboxGroup.vue'
 import MlCodeBlock from './components/MlCodeBlock.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
 import MlCombobox from './components/MlCombobox.vue'
@@ -75,6 +76,7 @@ import MlModal from './components/MlModal.vue'
 import MlNavBar from './components/MlNavBar.vue'
 import MlNumberInput from './components/MlNumberInput.vue'
 import MlPagination from './components/MlPagination.vue'
+import MlPasswordInput from './components/MlPasswordInput.vue'
 import MlPaw from './components/MlPaw.vue'
 import MlPawBurst from './components/MlPawBurst.vue'
 import MlPhone from './components/MlPhone.vue'
@@ -113,6 +115,7 @@ import MlTag from './components/MlTag.vue'
 import MlTagInput from './components/MlTagInput.vue'
 import MlTaiwanRegion from './components/MlTaiwanRegion.vue'
 import MlTextarea from './components/MlTextarea.vue'
+import MlThemeToggle from './components/MlThemeToggle.vue'
 import MlTilt from './components/MlTilt.vue'
 import MlTimePicker from './components/MlTimePicker.vue'
 import MlTimeline from './components/MlTimeline.vue'
@@ -128,6 +131,7 @@ import MlWatermark from './components/MlWatermark.vue'
 import { vPawStamp } from './pawStamp'
 import { vLoading } from './loading'
 import { setLocale, type MlLocale } from './locale'
+import { configureTheme, type MlThemeOptions } from './theme'
 
 const components = {
   MlAccordion,
@@ -151,6 +155,7 @@ const components = {
   MlChatInput,
   MlChatMessage,
   MlCheckbox,
+  MlCheckboxGroup,
   MlCodeBlock,
   MlColorPicker,
   MlCombobox,
@@ -205,6 +210,7 @@ const components = {
   MlNavBar,
   MlNumberInput,
   MlPagination,
+  MlPasswordInput,
   MlPaw,
   MlPawBurst,
   MlPhone,
@@ -243,6 +249,7 @@ const components = {
   MlTagInput,
   MlTaiwanRegion,
   MlTextarea,
+  MlThemeToggle,
   MlTilt,
   MlTimePicker,
   MlTimeline,
@@ -261,6 +268,8 @@ const components = {
 export interface MalilionUIOptions {
   /** App-wide UI language, e.g. `en`. Defaults to Traditional Chinese (`zhTW`). */
   locale?: MlLocale
+  /** Theme store options (storage key, default mode…), see `configureTheme`. */
+  theme?: MlThemeOptions
 }
 
 /**
@@ -270,6 +279,7 @@ export interface MalilionUIOptions {
 export const MalilionUI: Plugin<[MalilionUIOptions?]> = {
   install(app: App, options?: MalilionUIOptions) {
     if (options?.locale) setLocale(options.locale)
+    if (options?.theme) configureTheme(options.theme)
     for (const [name, component] of Object.entries(components)) {
       app.component(name, component)
     }
@@ -302,6 +312,7 @@ export {
   MlChatInput,
   MlChatMessage,
   MlCheckbox,
+  MlCheckboxGroup,
   MlCodeBlock,
   MlColorPicker,
   MlCombobox,
@@ -356,6 +367,7 @@ export {
   MlNavBar,
   MlNumberInput,
   MlPagination,
+  MlPasswordInput,
   MlPaw,
   MlPawBurst,
   MlPhone,
@@ -394,6 +406,7 @@ export {
   MlTagInput,
   MlTaiwanRegion,
   MlTextarea,
+  MlThemeToggle,
   MlTilt,
   MlTimePicker,
   MlTimeline,
@@ -413,6 +426,10 @@ export { toast, useToast } from './toast'
 export { confirm, useConfirm } from './dialog'
 export { zhTW, en, setLocale, getLocale, useLocale } from './locale'
 export type { MlLocale } from './locale'
+export { configureTheme, getThemeState, setTheme, toggleTheme, subscribeTheme, themeInitScript } from './theme'
+export type { MlThemeMode, MlResolvedTheme, MlThemeState, MlThemeOptions, MlThemeOrigin, MlSetThemeOptions } from './theme'
+export { useTheme } from './useTheme'
+export type { UseThemeReturn } from './useTheme'
 export { encodeQr } from './qrcode'
 export { highlight, highlightLines } from './highlight'
 export { parseMarkdown, parseInline, createMarkdownParser, sanitizeUrl, slugify, headingIds } from './markdown'
@@ -422,6 +439,8 @@ export type { SignatureStroke, SignaturePoint } from './components/signature'
 export type { MlCropData, MlCropOutput } from './components/cropper'
 export type { MlWheelPrize } from './components/wheel'
 export { pickWeighted as pickWheelPrize } from './components/wheel'
+export { scorePassword, checkPasswordRules } from './components/password'
+export type { MlPasswordScore, MlPasswordRules, MlPasswordRuleKey, MlPasswordRuleResult } from './components/password'
 export type { MlToastItem } from './toast'
 export { vPawStamp, pawStamp, pawBurst } from './pawStamp'
 export { vLoading } from './loading'
@@ -468,6 +487,7 @@ declare module 'vue' {
     MlChatInput: typeof MlChatInput
     MlChatMessage: typeof MlChatMessage
     MlCheckbox: typeof MlCheckbox
+    MlCheckboxGroup: typeof MlCheckboxGroup
     MlCodeBlock: typeof MlCodeBlock
     MlColorPicker: typeof MlColorPicker
     MlCombobox: typeof MlCombobox
@@ -522,6 +542,7 @@ declare module 'vue' {
     MlNavBar: typeof MlNavBar
     MlNumberInput: typeof MlNumberInput
     MlPagination: typeof MlPagination
+    MlPasswordInput: typeof MlPasswordInput
     MlPaw: typeof MlPaw
     MlPawBurst: typeof MlPawBurst
     MlPhone: typeof MlPhone
@@ -560,6 +581,7 @@ declare module 'vue' {
     MlTagInput: typeof MlTagInput
     MlTaiwanRegion: typeof MlTaiwanRegion
     MlTextarea: typeof MlTextarea
+    MlThemeToggle: typeof MlThemeToggle
     MlTilt: typeof MlTilt
     MlTimePicker: typeof MlTimePicker
     MlTimeline: typeof MlTimeline

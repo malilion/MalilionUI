@@ -5,6 +5,7 @@
 import { addComponent, addImports, addPluginTemplate, addVitePlugin, defineNuxtModule } from '@nuxt/kit'
 import type { Nuxt } from '@nuxt/schema'
 import map from './styles/on-demand/map.json'
+import { themeInitScript, type MlThemeOptions } from './theme'
 
 export interface ModuleOptions {
   /**
@@ -16,6 +17,12 @@ export interface ModuleOptions {
   locale?: 'zhTW' | 'en'
   /** Register components globally under this prefix instead of "Ml" (e.g. "Lion" → <LionButton>). */
   prefix?: string
+  /**
+   * Theme store (useMlTheme / <MlThemeToggle>): storage key, default mode…
+   * A tiny script in <head> applies the stored theme before first paint.
+   * false: no head script and no configuration.
+   */
+  theme?: Pick<MlThemeOptions, 'storageKey' | 'defaultMode' | 'attribute' | 'smooth' | 'duration'> | false
 }
 
 const PKG = '@malilion/ui'
@@ -78,6 +85,7 @@ export default defineNuxtModule<ModuleOptions>({
       { name: 'useConfirm', from: PKG },
       { name: 'useLocale', as: 'useMlLocale', from: PKG },
       { name: 'setLocale', as: 'setMlLocale', from: PKG },
+      { name: 'useTheme', as: 'useMlTheme', from: PKG },
     ])
 
     // Styles.
@@ -88,16 +96,24 @@ export default defineNuxtModule<ModuleOptions>({
       addVitePlugin(onDemandStyles())
     }
 
-    // Directives + locale, on both server and client.
+    // Theme: apply the stored choice before first paint (no flash of the wrong theme).
+    const theme = options.theme === false ? undefined : (options.theme ?? {})
+    if (theme) {
+      const head = (nuxt.options.app.head ??= {})
+      ;(head.script ??= []).push({ key: 'malilion-theme', innerHTML: themeInitScript(theme), tagPosition: 'head' })
+    }
+    const themeConfig = theme && Object.keys(theme).length ? JSON.stringify(theme) : ''
+
+    // Directives + locale (+ theme options), on both server and client.
     addPluginTemplate({
       filename: 'malilion-ui.mjs',
       getContents: () => `import { defineNuxtPlugin } from '#app'
-import { vPawStamp, vLoading${options.locale ? `, setLocale, ${options.locale}` : ''} } from '${PKG}'
+import { vPawStamp, vLoading${options.locale ? `, setLocale, ${options.locale}` : ''}${themeConfig ? ', configureTheme' : ''} } from '${PKG}'
 
 export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.vueApp.directive('paw-stamp', vPawStamp)
   nuxtApp.vueApp.directive('loading', vLoading)
-${options.locale ? `  setLocale(${options.locale})\n` : ''}})
+${options.locale ? `  setLocale(${options.locale})\n` : ''}${themeConfig ? `  configureTheme(${themeConfig})\n` : ''}})
 `,
     })
 
