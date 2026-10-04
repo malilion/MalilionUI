@@ -1,0 +1,258 @@
+/* Comments — threaded discussion: steel composer, gold paw likes, replies hung on a cyan rail */
+.ml-comments {
+  display: grid;
+  gap: 16px;
+  min-width: 0;
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-comments__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+.ml-comments__title {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-lg);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+.ml-comments__total {
+  color: var(--ml-accent-text);
+  font-size: var(--ml-text-sm);
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-comments__sort {
+  display: inline-flex;
+  padding: 2px;
+  border-radius: var(--ml-radius-full);
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+}
+.ml-comments__sort-btn {
+  padding: 4px 12px;
+  border: 0;
+  border-radius: var(--ml-radius-full);
+  background: none;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: var(--ml-text-xs);
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-comments__sort-btn:hover { color: var(--ml-text); }
+.ml-comments__sort-btn--active {
+  background: var(--ml-metal-gold);
+  color: var(--ml-text-on-metal);
+  font-weight: 600;
+}
+.ml-comments__sort-btn:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+
+/* ── Composer / reply box ── */
+.ml-comments__composer {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ml-comments__editor {
+  display: grid;
+  flex: 1;
+  gap: 6px;
+  min-width: 0;
+}
+.ml-comments__editor--reply { margin-top: 8px; }
+.ml-comments__textarea {
+  width: 100%;
+  min-height: 64px;
+  padding: 8px 10px;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-surface-inset);
+  color: var(--ml-text);
+  font: inherit;
+  line-height: 1.6;
+  resize: vertical;
+  outline: none;
+}
+.ml-comments__textarea::placeholder { color: var(--ml-text-dim); }
+.ml-comments__textarea:focus-visible {
+  border-color: var(--ml-focus);
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+.ml-comments__editor-foot {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+}
+.ml-comments__hint {
+  margin-right: auto;
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+.ml-comments__submit,
+.ml-comments__cancel {
+  padding: 5px 14px;
+  border: 0;
+  font: inherit;
+  font-size: var(--ml-text-xs);
+  font-weight: 600;
+  cursor: pointer;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+.ml-comments__submit {
+  background: var(--ml-metal-gold);
+  color: var(--ml-text-on-metal);
+}
+.ml-comments__submit:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.ml-comments__cancel {
+  background: var(--ml-surface-inset);
+  color: var(--ml-text-muted);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+}
+.ml-comments__submit:focus-visible,
+.ml-comments__cancel:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+/* ── Threads ── */
+.ml-comments__list,
+.ml-comments__replies {
+  display: grid;
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.ml-comments__replies {
+  margin-top: 12px;
+  margin-left: 17px;
+  padding-left: 18px;
+  border-left: 2px solid color-mix(in oklab, var(--ml-tech) 35%, transparent);
+}
+.ml-comments__item { min-width: 0; }
+
+.ml-comments__comment {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  animation: ml-comments-in 280ms var(--ml-ease);
+}
+@keyframes ml-comments-in {
+  from { opacity: 0; translate: 0 6px; }
+}
+.ml-comments__avatar { flex: none; }
+.ml-comments__main {
+  display: grid;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+}
+.ml-comments__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.ml-comments__author {
+  margin: 0;
+  font-size: var(--ml-text-sm);
+  font-weight: 700;
+}
+.ml-comments__time {
+  color: var(--ml-text-dim);
+  font-size: var(--ml-text-xs);
+}
+.ml-comments__reply-to {
+  margin: 0;
+  color: var(--ml-tech-text);
+  font-size: var(--ml-text-xs);
+}
+.ml-comments__content {
+  margin: 0;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.ml-comments__actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: -8px;
+}
+.ml-comments__like,
+.ml-comments__reply-btn,
+.ml-comments__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: var(--ml-radius-full);
+  background: none;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: var(--ml-text-xs);
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-comments__like:hover:not(:disabled),
+.ml-comments__reply-btn:hover,
+.ml-comments__toggle:hover {
+  background: var(--ml-accent-soft);
+  color: var(--ml-text);
+}
+.ml-comments__like:disabled { cursor: default; }
+.ml-comments__like:focus-visible,
+.ml-comments__reply-btn:focus-visible,
+.ml-comments__toggle:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+.ml-comments__paw {
+  width: 15px;
+  height: 15px;
+  transition: scale var(--ml-dur-fast) var(--ml-ease-spring);
+}
+.ml-comments__like-count { font-variant-numeric: tabular-nums; }
+.ml-comments__like--on { color: var(--ml-accent-text); }
+.ml-comments__like--on .ml-comments__paw {
+  filter: drop-shadow(0 0 4px rgb(240 173 47 / 0.55));
+  animation: ml-comments-like 420ms var(--ml-ease-spring);
+}
+@keyframes ml-comments-like {
+  0% { scale: 0.6; rotate: -18deg; }
+  60% { scale: 1.35; rotate: 8deg; }
+  100% { scale: 1; rotate: 0deg; }
+}
+
+.ml-comments__toggle {
+  margin: 10px 0 0 45px;
+  color: var(--ml-tech-text);
+  font-weight: 600;
+}
+.ml-comments__item--flat > .ml-comments__toggle { margin-left: 45px; }
+
+[data-ml-theme='light'] .ml-comments__like--on .ml-comments__paw { filter: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-comments__comment,
+  .ml-comments__like--on .ml-comments__paw { animation: none; }
+  .ml-comments__paw { transition: none; }
+}

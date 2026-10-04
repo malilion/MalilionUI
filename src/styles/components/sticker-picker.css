@@ -1,0 +1,229 @@
+/* StickerPicker — a chamfered steel tray of cute stickers: search, group tabs and a grid */
+.ml-sticker-picker {
+  --_sp-cols: 6;
+  --_sp-size: 32px;
+  --_sp-cut: var(--ml-cut-sm);
+  display: inline-block;
+  max-width: 100%;
+  color: var(--ml-text);
+}
+
+.ml-sticker-picker--trigger {
+  position: relative;
+  display: inline-flex;
+}
+
+.ml-sticker-picker__trigger {
+  display: inline-grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--ml-radius-full);
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), scale var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-sticker-picker__trigger:hover:not(:disabled),
+.ml-sticker-picker--open .ml-sticker-picker__trigger {
+  background: var(--ml-accent-soft);
+  scale: 1.08;
+}
+.ml-sticker-picker__trigger:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+.ml-sticker-picker__trigger:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ml-sticker-picker__panel {
+  position: relative;
+  isolation: isolate;
+  display: grid;
+  gap: 10px;
+  width: calc(var(--_sp-cols) * (var(--_sp-size) + 16px) + (var(--_sp-cols) - 1) * 4px + 28px);
+  max-width: min(100%, calc(100vw - 32px));
+  padding: 12px 14px 14px;
+}
+.ml-sticker-picker__panel::before,
+.ml-sticker-picker__panel::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_sp-cut) 0, 100% 0, 100% calc(100% - var(--_sp-cut)), calc(100% - var(--_sp-cut)) 100%, 0 100%, 0 var(--_sp-cut));
+}
+.ml-sticker-picker__panel::before {
+  inset: 0;
+  background: var(--ml-plate-border);
+}
+.ml-sticker-picker__panel::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-surface-2);
+}
+
+/* Trigger mode: portalled to <body>, placed with fixed coordinates next to the button */
+.ml-sticker-picker__panel--popup {
+  position: fixed;
+  z-index: var(--ml-z-tooltip);
+  max-width: calc(100vw - 16px);
+  color: var(--ml-text);
+  font-family: var(--ml-font-body);
+  font-size: var(--ml-text-md);
+  line-height: 1.5;
+  filter: var(--ml-drop-2);
+  animation: ml-sticker-pop var(--ml-dur) var(--ml-ease-spring);
+}
+.ml-sticker-picker__panel--top { transform-origin: bottom center; }
+.ml-sticker-picker__panel--bottom { transform-origin: top center; }
+
+@keyframes ml-sticker-pop {
+  from { opacity: 0; scale: 0.94; }
+}
+
+.ml-sticker-picker__search {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+.ml-sticker-picker__search-icon {
+  position: absolute;
+  left: 10px;
+  width: 16px;
+  height: 16px;
+  color: var(--ml-text-dim);
+  pointer-events: none;
+}
+.ml-sticker-picker__input {
+  width: 100%;
+  min-width: 0;
+  height: 34px;
+  padding: 0 10px 0 32px;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-surface-inset);
+  color: var(--ml-text);
+  font: inherit;
+  font-size: var(--ml-text-sm);
+  outline: none;
+}
+.ml-sticker-picker__input::placeholder { color: var(--ml-text-dim); }
+.ml-sticker-picker__input:focus-visible {
+  border-color: var(--ml-focus);
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-sticker-picker__tabs {
+  display: flex;
+  gap: 2px;
+  box-shadow: inset 0 -1px 0 var(--ml-line);
+}
+.ml-sticker-picker__tab {
+  position: relative;
+  display: inline-grid;
+  flex: 1;
+  place-items: center;
+  height: 34px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  font-size: 20px;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+.ml-sticker-picker__tab:hover { opacity: 1; }
+.ml-sticker-picker__tab--active {
+  color: var(--ml-accent-text);
+  opacity: 1;
+}
+.ml-sticker-picker__tab--active::after {
+  content: '';
+  position: absolute;
+  inset: auto 18% 0;
+  height: 2px;
+  background: var(--ml-metal-gold);
+  box-shadow: 0 0 8px rgb(240 173 47 / 0.6);
+}
+.ml-sticker-picker__tab:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+.ml-sticker-picker__tab-icon {
+  width: 20px;
+  height: 20px;
+}
+
+.ml-sticker-picker__body {
+  display: grid;
+  gap: 6px;
+  min-height: calc(var(--_sp-size) * 3 + 56px);
+}
+.ml-sticker-picker__heading {
+  margin: 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-xs);
+  font-weight: 600;
+  letter-spacing: var(--ml-tracking-hud);
+  text-transform: uppercase;
+}
+.ml-sticker-picker__grid {
+  display: grid;
+  grid-template-columns: repeat(var(--_sp-cols), minmax(0, 1fr));
+  align-content: start;
+  gap: 4px;
+  max-height: calc((var(--_sp-size) + 16px) * 4 + 12px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+}
+.ml-sticker-picker__item {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 8px;
+  border: 0;
+  border-radius: var(--ml-radius);
+  background: transparent;
+  font-size: var(--_sp-size);
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), scale var(--ml-dur-fast) var(--ml-ease-spring);
+}
+.ml-sticker-picker__item:hover {
+  background: var(--ml-accent-soft);
+  scale: 1.12;
+}
+.ml-sticker-picker__item:active { scale: 0.94; }
+.ml-sticker-picker__item:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+  background: var(--ml-tech-soft);
+}
+.ml-sticker-picker__empty {
+  margin: 0;
+  padding: 24px 8px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-sm);
+  text-align: center;
+}
+
+[data-ml-theme='light'] .ml-sticker-picker__panel::after {
+  background: var(--ml-surface);
+}
+[data-ml-theme='light'] .ml-sticker-picker__tab--active::after {
+  box-shadow: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-sticker-picker__panel--popup { animation: none; }
+  .ml-sticker-picker__item,
+  .ml-sticker-picker__trigger { transition: none; }
+  .ml-sticker-picker__item:hover,
+  .ml-sticker-picker__trigger:hover:not(:disabled),
+  .ml-sticker-picker--open .ml-sticker-picker__trigger { scale: none; }
+}
