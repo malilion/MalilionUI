@@ -26,12 +26,14 @@ const props = withDefaults(
     showHolidays?: boolean
     /** The built-in statutory list (twHolidays). Turn off to rely on `holidays` alone. */
     builtinHolidays?: boolean
+    /** Apply the official 人事行政總處 calendar (補假, 調整放假, 補行上班) for the years shipped (2024–2027). */
+    official?: boolean
     /** Built-in named days that aren't days off (元宵、中元、母親節…). */
     observances?: boolean
     /** Extra / overriding days, e.g. 人事行政總處's 補假 and 調整放假: `{ '2026-02-20': '調整放假' }`. */
     holidays?: MlLunarHolidays
   }>(),
-  { weekStartsOn: 0, showLunar: true, showSolarTerms: true, showHolidays: true, builtinHolidays: true, observances: true },
+  { weekStartsOn: 0, showLunar: true, showSolarTerms: true, showHolidays: true, builtinHolidays: true, official: true, observances: true },
 )
 
 const emit = defineEmits<{
@@ -56,6 +58,7 @@ const cells = computed(() =>
     showSolarTerms: props.showSolarTerms,
     showHolidays: props.showHolidays,
     builtinHolidays: props.builtinHolidays,
+    official: props.official,
     observances: props.observances,
     holidays: props.holidays,
   }),

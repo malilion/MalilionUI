@@ -212,7 +212,8 @@
   text-align: center;
 }
 
-[data-ml-theme='light'] .ml-sticker-picker__panel::after {
+[data-ml-theme='light'] .ml-sticker-picker__panel::after,
+.ml-sticker-picker__panel[data-ml-theme='light']::after {
   background: var(--ml-surface);
 }
 [data-ml-theme='light'] .ml-sticker-picker__tab--active::after {

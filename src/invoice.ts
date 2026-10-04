@@ -14,7 +14,7 @@
 // The winning numbers change every two months (drawn on the 25th of odd months), so they are
 // always supplied by the app.
 
-export type InvoicePrizeTier = 'special' | 'grand' | 'first' | 'second' | 'third' | 'fourth' | 'fifth' | 'sixth' | 'extraSixth'
+export type InvoicePrizeTier = 'special' | 'grand' | 'first' | 'second' | 'third' | 'fourth' | 'fifth' | 'sixth' | 'extraSixth' | 'cloud'
 
 export interface MlInvoiceDraw {
   /** Shown in the period selector, e.g. 「115年 7–8月」. Must be unique. */
@@ -27,6 +27,18 @@ export interface MlInvoiceDraw {
   first: string[]
   /** 增開六獎, 3 digits each — only for older periods that had them. */
   extraSixth?: string[]
+  /**
+   * 雲端發票專屬獎: full 8-digit numbers with their prize (財政部 publishes the list and the
+   * amounts each period). Only invoices kept on a 載具 (cloud invoices) can claim them.
+   */
+  cloud?: MlInvoiceCloudPrize[]
+}
+
+export interface MlInvoiceCloudPrize {
+  /** 8 digits (a 字軌 prefix is ignored). */
+  number: string
+  /** NT$, as published for that period. */
+  amount: number
 }
 
 export interface InvoicePrize {
@@ -47,6 +59,8 @@ export const INVOICE_PRIZES: Record<InvoicePrizeTier, InvoicePrize> = {
   fifth: { tier: 'fifth', amount: 1_000, digits: 4 },
   sixth: { tier: 'sixth', amount: 200, digits: 3 },
   extraSixth: { tier: 'extraSixth', amount: 200, digits: 3 },
+  // The amount varies per number and period; the real one comes from `draw.cloud`.
+  cloud: { tier: 'cloud', amount: 0, digits: 8 },
 }
 
 /** 頭獎 suffix length → tier. */
@@ -84,9 +98,11 @@ export type InvoiceCheckStatus = 'win' | 'maybe' | 'none'
 
 export interface InvoiceCandidate {
   /** Which list the number is on. */
-  tier: 'special' | 'grand' | 'first' | 'extraSixth'
+  tier: 'special' | 'grand' | 'first' | 'extraSixth' | 'cloud'
   /** The winning number. */
   number: string
+  /** NT$ for a 雲端發票專屬獎 number. */
+  amount?: number
 }
 
 export interface MlInvoiceResult {
@@ -114,10 +130,12 @@ export function checkInvoice(number: string, draw: MlInvoiceDraw): MlInvoiceResu
   const result: MlInvoiceResult = { mode: 'full', period: draw.period, number: n, status: 'none', tier: null, amount: 0, candidates: [] }
   if (n.length !== 8) return result
   let best: InvoicePrize | null = null
-  const consider = (tier: InvoicePrizeTier, winning: string, candidate: InvoiceCandidate['tier']) => {
-    const prize = INVOICE_PRIZES[tier]
+  const consider = (tier: InvoicePrizeTier, winning: string, candidate: InvoiceCandidate['tier'], amount = INVOICE_PRIZES[tier].amount) => {
+    const prize = { ...INVOICE_PRIZES[tier], amount }
     if (!best || prize.amount > best.amount) best = prize
-    if (!result.candidates.some((c) => c.number === winning && c.tier === candidate)) result.candidates.push({ tier: candidate, number: winning })
+    if (!result.candidates.some((c) => c.number === winning && c.tier === candidate)) {
+      result.candidates.push(candidate === 'cloud' ? { tier: candidate, number: winning, amount } : { tier: candidate, number: winning })
+    }
   }
   if (digitsOf(draw.special) === n) consider('special', n, 'special')
   for (const g of grandsOf(draw)) if (digitsOf(g) === n) consider('grand', n, 'grand')
@@ -129,6 +147,10 @@ export function checkInvoice(number: string, draw: MlInvoiceDraw): MlInvoiceResu
   for (const e of draw.extraSixth ?? []) {
     const w = digitsOf(e)
     if (w.length === 3 && n.endsWith(w)) consider('extraSixth', w, 'extraSixth')
+  }
+  for (const c of draw.cloud ?? []) {
+    const w = digitsOf(c.number).slice(-8)
+    if (w === n && c.amount > 0) consider('cloud', w, 'cloud', c.amount)
   }
   const won = best as InvoicePrize | null
   if (won) Object.assign(result, { status: 'win', tier: won.tier, amount: won.amount })
@@ -149,6 +171,10 @@ export function quickCheckInvoice(last3: string, draw: MlInvoiceDraw): MlInvoice
   for (const f of draw.first) if (ends(f)) result.candidates.push({ tier: 'first', number: digitsOf(f) })
   const extra = (draw.extraSixth ?? []).map(digitsOf).filter((e) => e === n)
   for (const e of extra) result.candidates.push({ tier: 'extraSixth', number: e })
+  for (const c of draw.cloud ?? []) {
+    const w = digitsOf(c.number).slice(-8)
+    if (w.endsWith(n)) result.candidates.push({ tier: 'cloud', number: w, amount: c.amount })
+  }
   const firstHit = result.candidates.some((c) => c.tier === 'first')
   if (extra.length && !result.candidates.some((c) => c.tier !== 'extraSixth')) {
     Object.assign(result, { status: 'win', tier: 'extraSixth', amount: 200 })
@@ -158,13 +184,14 @@ export function quickCheckInvoice(last3: string, draw: MlInvoiceDraw): MlInvoice
   return result
 }
 
-/** The 特別獎, 特獎, 頭獎 and 增開六獎 numbers of a draw, in display order. */
+/** The 特別獎, 特獎, 頭獎, 增開六獎 and 雲端發票專屬獎 numbers of a draw, in display order. */
 export function invoiceDrawNumbers(draw: MlInvoiceDraw): InvoiceCandidate[] {
   return [
     { tier: 'special' as const, number: digitsOf(draw.special) },
     ...grandsOf(draw).map((g) => ({ tier: 'grand' as const, number: digitsOf(g) })),
     ...draw.first.map((f) => ({ tier: 'first' as const, number: digitsOf(f) })),
     ...(draw.extraSixth ?? []).map((e) => ({ tier: 'extraSixth' as const, number: digitsOf(e) })),
+    ...(draw.cloud ?? []).map((c) => ({ tier: 'cloud' as const, number: digitsOf(c.number).slice(-8), amount: c.amount })),
   ]
 }
 
@@ -175,6 +202,6 @@ export function invoiceDrawNumbers(draw: MlInvoiceDraw): InvoiceCandidate[] {
 export function invoiceHighlight(winning: InvoiceCandidate, checked: string): number {
   if (!checked) return 0
   const k = invoiceSuffixMatch(checked, winning.number)
-  if (winning.tier === 'special' || winning.tier === 'grand') return k === checked.length && k >= 3 ? k : 0
+  if (winning.tier === 'special' || winning.tier === 'grand' || winning.tier === 'cloud') return k === checked.length && k >= 3 ? k : 0
   return k >= 3 ? k : 0
 }

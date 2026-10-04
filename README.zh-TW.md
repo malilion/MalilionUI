@@ -62,8 +62,10 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - **`MlGridLottery`**、**`MlGacha`**：九宮格跑馬燈與扭蛋機（轉把手、膠囊搖晃、掉出來彈開），共用同一套獎品設定——可愛圖示或圖片、權重、`draw(i)`、`beforeDraw` 回傳 Promise 由伺服器決定
 - **圖表**：`MlTreemap`（矩形樹圖，可分組、鍵盤移動）、`MlSankey`（桑基圖，漸層流帶、滑過追蹤流向）、`MlGantt`（日／週／月刻度、相依箭頭、今日線，拖曳或鍵盤調整）、`MlCandlestick`（K 線，預設漲紅跌綠，成交量、均線、十字線、縮放平移）
 - **互動與內容**：`MlStickerPicker`（可愛圖示貼圖，中文搜尋、最近使用，可放在聊天輸入框旁）、`MlComments`（巢狀留言、肉球按讚、相對時間、排序）、`MlSwipeStack`（左右滑卡片，印章、復原、鍵盤）、`MlInbox`（鈴鐺加通知中心，分頁、依日期分組、全部已讀）
-- **台灣在地化**：`MlBankPicker`（財金資訊全體成員代號與別名，附帳號欄位）、`MlLunarCalendar`（農曆、二十四節氣與 2025 年《紀念日及節日實施條例》的國定假日，補假可用 `holidays` 餵入）、`MlInvoiceChecker`（統一發票末三碼快速對獎與完整號碼，中獎號碼由 App 提供）
+- **台灣在地化**：`MlBankPicker`（財金資訊全體成員代號與別名，附帳號欄位）、`MlLunarCalendar`（農曆、二十四節氣與 2025 年《紀念日及節日實施條例》的國定假日，內建人事行政總處 2024–2027 年辦公日曆表的補假、調整放假與補行上班，其他年份或公司假日用 `holidays` 加入）、`MlInvoiceChecker`（統一發票末三碼快速對獎與完整號碼，中獎號碼由 App 提供）
 - **視覺特效**：`MlAurora`（純 CSS 極光背景）、`MlParticles`（canvas 粒子星座，可用肉球粒子、游標互動）、`MlRadar`（HUD 雷達掃描與目標點）、`MlClock`（拉絲金屬指針時鐘，支援時區與獅子徽章）
+- 自訂語系只要寫想改的字串：缺少的欄位（包括新元件加入的字串）會自動由內建語系補上，也可呼叫 `completeLocale()`
+- `MlRadar` 的 CSS 類名為 `ml-radar-scope`（`ml-radar` 屬於 `MlRadarChart`）；`MlInvoiceChecker` 支援雲端發票專屬獎；`registerTwBanks()` 可加入農會、漁會代號
 - 共 161 個元件，Vue 與 React 都有
 
 ## 0.12.2 版

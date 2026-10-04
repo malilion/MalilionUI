@@ -1,5 +1,5 @@
 // View helpers shared by MlLunarCalendar (Vue) and LunarCalendar (React) — framework-free.
-import { solarTermOn, toLunar, twHolidays, type LunarDate, type TwHoliday } from '../tw-calendar'
+import { solarTermOn, toLunar, twHolidays, twOfficialDays, type LunarDate, type TwHoliday } from '../tw-calendar'
 import { dayKey, monthGrid } from './dates'
 
 /** One app-supplied day: a name, and whether it is a day off (default true). `off: false` on a weekend marks a 補行上班 day. */
@@ -44,6 +44,8 @@ export interface LunarCellOptions {
   showHolidays: boolean
   /** Use the built-in statutory list (twHolidays). */
   builtinHolidays: boolean
+  /** Apply the shipped official calendars (補假, 調整放假, 補行上班) for the years they cover. */
+  official?: boolean
   /** Built-in named days that are not days off (元宵、母親節…). */
   observances: boolean
   holidays?: MlLunarHolidays
@@ -52,7 +54,7 @@ export interface LunarCellOptions {
 type Entry = { names: string[]; off?: boolean }
 
 /** Merge the built-in list for the given years with the app's entries. */
-export function lunarHolidayMap(years: number[], options: Pick<LunarCellOptions, 'builtinHolidays' | 'observances' | 'holidays'>) {
+export function lunarHolidayMap(years: number[], options: Pick<LunarCellOptions, 'builtinHolidays' | 'observances' | 'holidays' | 'official'>) {
   const map = new Map<string, Entry>()
   if (options.builtinHolidays) {
     for (const y of years) {
@@ -61,6 +63,17 @@ export function lunarHolidayMap(years: number[], options: Pick<LunarCellOptions,
         e.names.push(h.short ?? h.name)
         if (h.off) e.off = true
         map.set(h.date, e)
+      }
+    }
+  }
+  if (options.official) {
+    for (const y of years) {
+      for (const d of twOfficialDays(y) ?? []) {
+        const e = map.get(d.date) ?? { names: [] }
+        // Built-in names are kept (they are shorter); official ones fill in 補假 / 補行上班.
+        if (d.name && !e.names.length) e.names.push(d.name)
+        e.off = d.off
+        map.set(d.date, e)
       }
     }
   }

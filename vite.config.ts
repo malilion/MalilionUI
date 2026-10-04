@@ -62,7 +62,7 @@ export default defineConfig({
                 ? 'globe'
                 : /\/src\/(tw-banks|components\/bank)\.ts$/.test(id)
                   ? 'tw-banks'
-                  : /\/src\/(tw-calendar|components\/lunar-calendar)\.ts$/.test(id)
+                  : /\/src\/(tw-calendar|tw-official-calendar|components\/lunar-calendar)\.ts$/.test(id)
                     ? 'tw-calendar'
                     : undefined,
       },

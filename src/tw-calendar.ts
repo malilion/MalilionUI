@@ -29,6 +29,8 @@
 // https://data.gov.tw/dataset/14718) for 2024–2027: every named day off there is in this list, except the
 // 小年夜 of 2024 and 2025, which were 調整放假 before the 條例 made 小年夜 statutory.
 
+import { TW_OFFICIAL_CALENDAR } from './tw-official-calendar'
+
 /* ── tables ───────────────────────────────────────────── */
 
 // <generated-data>
@@ -279,7 +281,15 @@ export interface TwHoliday {
 export interface TwHolidayOptions {
   /** Also list named days that are not days off (元宵、中元、重陽、母親節、父親節…). Default true. */
   observances?: boolean
+  /**
+   * Compute years before {@link TW_HOLIDAY_VERIFIED_FROM} too. The rules for them
+   * follow the old 辦法 but were not checked against official calendars. Default false.
+   */
+  unverified?: boolean
 }
+
+/** The first year whose computed holidays were checked against official calendars. */
+export const TW_HOLIDAY_VERIFIED_FROM = 2012
 
 /** The day 紀念日及節日實施條例 took effect. */
 export const TW_HOLIDAY_ACT_DATE = '2025-05-28'
@@ -290,9 +300,10 @@ const keyOf = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.
 /**
  * Taiwan's statutory 紀念日 / 節日 of a Gregorian year (no 補假 or 調整放假 — those are announced
  * by 人事行政總處 each year). Uses the 2025 條例 from 2025-05-28 and the earlier 辦法 before it;
- * years before 2012 follow the same old rules and are not verified.
+ * years before 2012 are left out unless `unverified` is set (same old rules, not checked).
  */
 export function twHolidays(year: number, options: TwHolidayOptions = {}): TwHoliday[] {
+  if (year < TW_HOLIDAY_VERIFIED_FROM && !options.unverified) return []
   const observances = options.observances ?? true
   const out: TwHoliday[] = []
   const add = (date: Date | null, name: string, off: boolean, kind: TwHoliday['kind'], short?: string) => {
@@ -355,4 +366,28 @@ export function twHolidays(year: number, options: TwHolidayOptions = {}): TwHoli
   add(constitution, '行憲紀念日', actIn(constitution), actIn(constitution) ? 'memorial' : 'observance', '行憲紀念')
 
   return out.sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0))
+}
+
+/* ── Official calendars (人事行政總處) ───────────────────── */
+
+
+/** One day of the official 政府行政機關辦公日曆表 that isn't a plain weekday / weekend. */
+export interface TwOfficialDay {
+  /** YYYY-MM-DD */
+  date: string
+  /** 備註 as published: 補假, 補行上班, 春節, 和平紀念日… (may be empty for a bare day off). */
+  name: string
+  off: boolean
+}
+
+/** Years shipped with the official calendar (2024–2027 at the time of writing). */
+export const TW_OFFICIAL_YEARS: readonly number[] = Object.keys(TW_OFFICIAL_CALENDAR).map(Number)
+
+/**
+ * The official 政府行政機關辦公日曆表 of a year — every holiday, 補假, 調整放假 and
+ * 補行上班 as announced by 行政院人事行政總處 — or undefined when the year isn't shipped.
+ */
+export function twOfficialDays(year: number): TwOfficialDay[] | undefined {
+  const days = TW_OFFICIAL_CALENDAR[year]
+  return days?.map((d) => ({ date: `${year}-${d.slice(0, 2)}-${d.slice(2, 4)}`, name: d.slice(5), off: d[4] === '+' }))
 }

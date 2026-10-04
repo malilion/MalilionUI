@@ -251,6 +251,7 @@
 .ml-invoice__row--grand { box-shadow: inset 3px 0 0 var(--ml-gold-400); }
 .ml-invoice__row--first { box-shadow: inset 3px 0 0 var(--ml-cyan-400); }
 .ml-invoice__row--extraSixth { box-shadow: inset 3px 0 0 var(--ml-bean-400); }
+.ml-invoice__row--cloud { box-shadow: inset 3px 0 0 var(--ml-cyan-400); }
 
 .ml-invoice__tier {
   display: grid;

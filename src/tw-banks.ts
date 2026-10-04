@@ -13,10 +13,10 @@
 // 農漁會, which is not a 3-digit 總代號. Short names and search aliases are the common usage, not
 // official; English names are the institutions' own and are left out where not certain.
 
-export type TwBankKind = 'bank' | 'foreign' | 'coop' | 'post' | 'epay'
+export type TwBankKind = 'bank' | 'foreign' | 'coop' | 'post' | 'farm' | 'epay'
 
 export interface TwBank {
-  /** 3-digit 總代號, e.g. '822'. */
+  /** 3-digit 總代號, e.g. '822' (institutions added with registerTwBanks may use 3–7 digits). */
   code: string
   /** Official name as registered with FISC, e.g. 中國信託商業銀行. */
   name: string
@@ -26,7 +26,7 @@ export interface TwBank {
   en?: string
   /**
    * `bank` 本國銀行 · `foreign` 外國銀行在台分行 · `coop` 信用合作社 · `post` 中華郵政 ·
-   * `epay` 電子支付機構 (opt-in).
+   * `farm` 農會 / 漁會 (only those you add with registerTwBanks) · `epay` 電子支付機構 (opt-in).
    */
   kind: TwBankKind
   /** Extra search words: abbreviations, former / brand names, English short forms. */
@@ -38,7 +38,7 @@ export interface TwBankOptions {
   kinds?: TwBankKind[]
 }
 
-export const TW_BANK_KINDS_DEFAULT: TwBankKind[] = ['bank', 'foreign', 'coop', 'post']
+export const TW_BANK_KINDS_DEFAULT: TwBankKind[] = ['bank', 'foreign', 'coop', 'post', 'farm']
 
 // code, kind, official name, short name, English, aliases (space-separated)
 const DATA: [string, TwBankKind, string, string, string, string][] = [
@@ -128,15 +128,48 @@ const DATA: [string, TwBankKind, string, string, string, string][] = [
 ]
 
 let table: TwBank[] | undefined
+let added: TwBank[] = []
 
 function all(): TwBank[] {
   if (table) return table
-  table = DATA.map(([code, kind, name, short, en, aliases]) => {
+  const own = DATA.map(([code, kind, name, short, en, aliases]) => {
     const bank: TwBank = { code, name, short, kind, aliases: aliases ? aliases.split(' ') : [] }
     if (en) bank.en = en
     return bank
   })
+  const codes = new Set(added.map((b) => b.code))
+  table = [...own.filter((b) => !codes.has(b.code)), ...added].sort((a, b) => a.code.localeCompare(b.code))
   return table
+}
+
+/** An institution you add yourself: a 農會 / 漁會 (7-digit 農金 codes), or a fix to a built-in one. */
+export interface TwBankInput {
+  /** 3–7 digits. */
+  code: string
+  name: string
+  short?: string
+  en?: string
+  /** Default `farm`. */
+  kind?: TwBankKind
+  aliases?: string[]
+}
+
+/**
+ * Add institutions app-wide — typically the 農會 / 漁會 your users bank with, which use 7-digit
+ * codes through 農金資訊 (600) and aren't shipped. A code that already exists is replaced.
+ * Call once at start-up; MlBankPicker / BankPicker, searchTwBanks and twBankCodeRule all see them.
+ */
+export function registerTwBanks(banks: TwBankInput[]) {
+  const next = new Map(added.map((b) => [b.code, b]))
+  for (const b of banks) {
+    const code = squash(String(b.code))
+    if (!/^\d{3,7}$/.test(code)) throw new Error(`registerTwBanks: "${b.code}" is not a 3–7 digit code`)
+    const bank: TwBank = { code, name: b.name, short: b.short ?? b.name, kind: b.kind ?? 'farm', aliases: b.aliases ?? [] }
+    if (b.en) bank.en = b.en
+    next.set(code, bank)
+  }
+  added = [...next.values()]
+  table = undefined
 }
 
 /** 台 → 臺, full-width → half-width, lower-case, drop spaces and punctuation — for matching only. */
@@ -164,7 +197,7 @@ export function getTwBank(code: string | number): TwBank | undefined {
 
 /** Is this a known 3-digit 總代號 (of the given kinds; default all kinds)? Strings must have 3 digits. */
 export function isKnownTwBankCode(code: string | number, options: TwBankOptions = {}): boolean {
-  if (typeof code === 'string' && !/^\d{3}$/.test(squash(code))) return false
+  if (typeof code === 'string' && !/^\d{3,7}$/.test(squash(code))) return false
   const bank = getTwBank(code)
   return !!bank && (!options.kinds || options.kinds.includes(bank.kind))
 }

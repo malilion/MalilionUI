@@ -1,4 +1,4 @@
-import { useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent } from 'react'
+import { useEffect, useRef, useState, type CSSProperties, type FocusEvent, type KeyboardEvent } from 'react'
 import { chartStops, percentText } from '../components/charts'
 import { sankeyLayout, sankeyNeighbour, type MlSankeyLink, type MlSankeyNode, type SankeyDirection } from '../components/sankey'
 import type { MlChartTone } from '../types'
@@ -28,6 +28,8 @@ export interface SankeyProps {
   tooltip?: boolean
   /** Accessible summary of the chart. */
   label?: string
+  /** Links left out of the drawing: back-links that would close a cycle, unknown ids, values ≤ 0. */
+  onIgnored?: (links: MlSankeyLink[]) => void
   className?: string
 }
 
@@ -46,6 +48,7 @@ export function Sankey({
   labels = true,
   tooltip = true,
   label,
+  onIgnored,
   className,
 }: SankeyProps) {
   const loc = useLocale()
@@ -63,6 +66,18 @@ export function Sankey({
     palette: tone === undefined ? undefined : Array.isArray(tone) ? tone : [tone],
   })
   const color = (i: number) => chartStops[layout.nodes[i].tone][0]
+
+  // Tell the app about links left out (cycles, unknown ids, values ≤ 0), once per change.
+  const ignoredKey = JSON.stringify(layout.ignored)
+  const reported = useRef('')
+  const ignoredRef = useRef(layout.ignored)
+  ignoredRef.current = layout.ignored
+  useEffect(() => {
+    if (ignoredKey === reported.current) return
+    reported.current = ignoredKey
+    if (ignoredRef.current.length) onIgnored?.(ignoredRef.current)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ignoredKey])
   const active: Active | null = hovered ?? (focused === null ? null : { kind: 'node', i: focused })
 
   let lit: { links: Set<number>; nodes: Set<number> } | null = null

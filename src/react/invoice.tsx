@@ -29,6 +29,7 @@ export {
 } from '../invoice'
 export type {
   MlInvoiceDraw,
+  MlInvoiceCloudPrize,
   MlInvoiceResult,
   InvoicePrize,
   InvoicePrizeTier,
