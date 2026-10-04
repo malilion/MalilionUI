@@ -114,6 +114,7 @@ import MlTabs from './components/MlTabs.vue'
 import MlTag from './components/MlTag.vue'
 import MlTagInput from './components/MlTagInput.vue'
 import MlTaiwanRegion from './components/MlTaiwanRegion.vue'
+import MlTaiwanMap from './components/MlTaiwanMap.vue'
 import MlTextarea from './components/MlTextarea.vue'
 import MlThemeToggle from './components/MlThemeToggle.vue'
 import MlTilt from './components/MlTilt.vue'
@@ -248,6 +249,7 @@ const components = {
   MlTag,
   MlTagInput,
   MlTaiwanRegion,
+  MlTaiwanMap,
   MlTextarea,
   MlThemeToggle,
   MlTilt,
@@ -405,6 +407,7 @@ export {
   MlTag,
   MlTagInput,
   MlTaiwanRegion,
+  MlTaiwanMap,
   MlTextarea,
   MlThemeToggle,
   MlTilt,
@@ -461,6 +464,28 @@ export {
   normalizeTaiwanName,
 } from './taiwan-regions'
 export type { MlTaiwanRegionValue, TaiwanCounty, TaiwanDistrict, TaiwanRegionOptions, TaiwanAddressParts } from './taiwan-regions'
+export {
+  TAIWAN_MAP_SHAPES,
+  TAIWAN_MAP_FRAMES,
+  TAIWAN_MAP_SIZE,
+  taiwanMapCounty,
+  taiwanMapNeighbour,
+  taiwanMapScale,
+  taiwanMapValues,
+} from './components/taiwan-map'
+export type {
+  MlTaiwanMapData,
+  MlTaiwanMapDatum,
+  MlTaiwanMapTone,
+  MlTaiwanMapScale,
+  MlTaiwanMapLang,
+  MlTaiwanMapBucket,
+  TaiwanMapShape,
+  TaiwanMapFrame,
+  TaiwanMapDirection,
+  TaiwanMapScaleResult,
+} from './components/taiwan-map'
+export * from './validators-tw'
 export type { MlFormRule, MlFormRules, MlFormErrors, MlValidatorResult } from './form'
 export type { IconName } from './components/icons'
 
@@ -580,6 +605,7 @@ declare module 'vue' {
     MlTag: typeof MlTag
     MlTagInput: typeof MlTagInput
     MlTaiwanRegion: typeof MlTaiwanRegion
+    MlTaiwanMap: typeof MlTaiwanMap
     MlTextarea: typeof MlTextarea
     MlThemeToggle: typeof MlThemeToggle
     MlTilt: typeof MlTilt

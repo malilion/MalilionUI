@@ -14,8 +14,11 @@ export interface MlFormRule {
   type?: 'email' | 'url' | 'number' | 'integer'
   /** Return `true`/nothing to pass, `false` or a message to fail. May be async. */
   validator?: (value: unknown, model: Record<string, unknown>) => MlValidatorResult | Promise<MlValidatorResult>
-  /** Overrides the built-in message for this rule. */
-  message?: string
+  /**
+   * Overrides the built-in message for this rule. A function receives the active
+   * locale, so ready-made rules (e.g. `twRules`) can follow MlConfigProvider.
+   */
+  message?: string | ((locale: MlLocale) => string)
 }
 
 export type MlFormRules = Record<string, MlFormRule | MlFormRule[]>
@@ -52,11 +55,13 @@ export async function validateValue(
   locale: MlLocale = zhTW,
 ): Promise<string | undefined> {
   const t = locale.form
+  const msg = (rule: MlFormRule, fallback: string) =>
+    rule.message === undefined ? fallback : typeof rule.message === 'function' ? rule.message(locale) : rule.message
   const minMessages = { chars: t.minChars, items: t.minItems, value: t.minValue }
   const maxMessages = { chars: t.maxChars, items: t.maxItems, value: t.maxValue }
   for (const rule of rules) {
     const empty = isEmptyValue(value)
-    if (rule.required && empty) return rule.message ?? t.required
+    if (rule.required && empty) return msg(rule, t.required)
     // Optional fields that are empty skip every other check.
     if (empty && !rule.validator) continue
 
@@ -67,19 +72,19 @@ export async function validateValue(
         rule.type === 'number' ? typeof value === 'number' ? !Number.isNaN(value) : value !== '' && !Number.isNaN(Number(value)) :
         Number.isInteger(typeof value === 'number' ? value : Number(value))
       if (!ok) {
-        return rule.message ?? t[rule.type]
+        return msg(rule, t[rule.type])
       }
     }
 
     const size = empty ? null : sizeOf(value)
-    if (size && rule.min !== undefined && size.size < rule.min) return rule.message ?? minMessages[size.unit](rule.min)
-    if (size && rule.max !== undefined && size.size > rule.max) return rule.message ?? maxMessages[size.unit](rule.max)
+    if (size && rule.min !== undefined && size.size < rule.min) return msg(rule, minMessages[size.unit](rule.min))
+    if (size && rule.max !== undefined && size.size > rule.max) return msg(rule, maxMessages[size.unit](rule.max))
 
-    if (rule.pattern && !empty && !rule.pattern.test(String(value))) return rule.message ?? t.pattern
+    if (rule.pattern && !empty && !rule.pattern.test(String(value))) return msg(rule, t.pattern)
 
     if (rule.validator) {
       const result = await rule.validator(value, model)
-      if (result === false) return rule.message ?? t.pattern
+      if (result === false) return msg(rule, t.pattern)
       if (typeof result === 'string' && result) return result
     }
   }

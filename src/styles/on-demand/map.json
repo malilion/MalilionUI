@@ -470,6 +470,9 @@
     "components/form.css",
     "components/region.css"
   ],
+  "MlTaiwanMap": [
+    "components/taiwan-map.css"
+  ],
   "MlTextarea": [
     "components/field.css",
     "components/form.css"
