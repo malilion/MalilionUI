@@ -247,45 +247,84 @@ function toNodes(toks: Tok[]): MdInline[] {
   return out
 }
 
-/** CommonMark's "process emphasis" over toks[bottom..]; mutates toks. */
+/**
+ * Deepest inline nesting kept (`*_*_…` or links in emphasis). Anything deeper
+ * is flattened to text, so hostile input can't build a tree that overflows
+ * the stack of whatever walks it.
+ */
+const MAX_INLINE_DEPTH = 32
+// Nesting depth of the container nodes made by the current parseInline call.
+let depths = new Map<MdInline, number>()
+
+/** A container node; past MAX_INLINE_DEPTH its children collapse to plain text. */
+function wrap<T extends 'strong' | 'em' | 'del'>(type: T, children: MdInline[]): MdInline {
+  let deepest = 0
+  for (const c of children) deepest = Math.max(deepest, depths.get(c) ?? 0)
+  if (deepest + 1 > MAX_INLINE_DEPTH) children = [{ type: 'text', text: inlineText(children) }]
+  const node: MdInline = { type, children }
+  depths.set(node, deepest + 1 > MAX_INLINE_DEPTH ? 1 : deepest + 1)
+  return node
+}
+
+/** Replace toks[from..] with `items` (no spread, so huge arrays can't blow the call stack). */
+function replaceTail(toks: Tok[], from: number, items: Tok[]) {
+  toks.length = from
+  for (const t of items) toks.push(t)
+}
+
+/**
+ * CommonMark's "process emphasis" over toks[bottom..]; mutates toks.
+ * One left-to-right pass with an opener stack and the spec's openers_bottom
+ * table, so it stays linear however many delimiter runs there are.
+ */
 function processEmphasis(toks: Tok[], bottom: number) {
-  let i = bottom
-  while (i < toks.length) {
-    const closer = toks[i]
-    if (closer.kind !== 'delim' || !closer.canClose || closer.count === 0) {
-      i++
+  type Delim = Extract<Tok, { kind: 'delim' }>
+  const out: Tok[] = []
+  // Indexes into `out` of delimiters that may still open.
+  const openers: number[] = []
+  // Per closer kind: below this many openers, searching again is pointless.
+  const floor = new Map<string, number>()
+  for (let k = bottom; k < toks.length; k++) {
+    const closer = toks[k]
+    if (closer.kind !== 'delim' || closer.count === 0) {
+      out.push(closer)
       continue
     }
-    let j = i - 1
-    for (; j >= bottom; j--) {
-      const o = toks[j]
-      if (o.kind !== 'delim' || o.char !== closer.char || !o.canOpen || o.count === 0) continue
-      if (closer.char === '~') {
-        if (o.count === closer.count && o.count <= 2) break
-        continue
+    const key = closer.char === '~' ? `~${closer.count}` : `${closer.char}${closer.canOpen ? 1 : 0}${closer.orig % 3}`
+    while (closer.canClose && closer.count > 0) {
+      let s = openers.length - 1
+      const stop = Math.min(floor.get(key) ?? 0, openers.length)
+      for (; s >= stop; s--) {
+        const o = out[openers[s]] as Delim
+        if (o.char !== closer.char) continue
+        if (closer.char === '~') {
+          if (o.count === closer.count && o.count <= 2) break
+          continue
+        }
+        // The "rule of 3" for runs that can both open and close.
+        if ((o.canClose || closer.canOpen) && (o.orig + closer.orig) % 3 === 0 && !(o.orig % 3 === 0 && closer.orig % 3 === 0)) continue
+        break
       }
-      // The "rule of 3" for runs that can both open and close.
-      if ((o.canClose || closer.canOpen) && (o.orig + closer.orig) % 3 === 0 && !(o.orig % 3 === 0 && closer.orig % 3 === 0)) continue
-      break
+      if (s < stop) {
+        floor.set(key, openers.length)
+        break
+      }
+      const at = openers[s]
+      const opener = out[at] as Delim
+      const use = closer.char === '~' ? closer.count : opener.count >= 2 && closer.count >= 2 ? 2 : 1
+      const node = wrap(closer.char === '~' ? 'del' : use === 2 ? 'strong' : 'em', toNodes(out.slice(at + 1)))
+      opener.count -= use
+      closer.count -= use
+      // Delimiters between the pair can't match anything any more.
+      openers.length = opener.count ? s + 1 : s
+      out.length = opener.count ? at + 1 : at
+      out.push({ kind: 'node', node })
     }
-    if (j < bottom) {
-      i++
-      continue
-    }
-    const opener = toks[j] as Extract<Tok, { kind: 'delim' }>
-    const use = closer.char === '~' ? closer.count : opener.count >= 2 && closer.count >= 2 ? 2 : 1
-    const type = closer.char === '~' ? 'del' : use === 2 ? 'strong' : 'em'
-    const node: MdInline = { type, children: toNodes(toks.slice(j + 1, i)) }
-    opener.count -= use
-    closer.count -= use
-    toks.splice(j + 1, i - j - 1, { kind: 'node', node })
-    i = j + 2
-    if (opener.count === 0) {
-      toks.splice(j, 1)
-      i--
-    }
-    if (closer.count === 0) toks.splice(i, 1)
+    if (closer.count === 0) continue
+    if (closer.canOpen) openers.push(out.length)
+    out.push(closer)
   }
+  replaceTail(toks, bottom, out)
 }
 
 /** Streaming: close every opener still waiting, innermost first. */
@@ -295,56 +334,134 @@ function autoClose(toks: Tok[], bottom: number) {
     if (t.kind !== 'delim' || !t.canOpen || t.count === 0) continue
     let node: MdInline
     const children = toNodes(toks.slice(i + 1))
-    if (t.char === '~') node = { type: 'del', children }
-    else if (t.count >= 3) node = { type: 'em', children: [{ type: 'strong', children }] }
-    else node = { type: t.count === 2 ? 'strong' : 'em', children }
-    toks.splice(i, toks.length - i, { kind: 'node', node })
+    if (t.char === '~') node = wrap('del', children)
+    else if (t.count >= 3) node = wrap('em', [wrap('strong', children)])
+    else node = wrap(t.count === 2 ? 'strong' : 'em', children)
+    replaceTail(toks, i, [{ kind: 'node', node }])
+  }
+}
+
+/**
+ * Memoised look-aheads over one inline source. A `](`, `<` or backtick run
+ * that never finds its closer would otherwise rescan to the end of the text
+ * every time — quadratic on input like `[a](` × 10 000. Each scan here is
+ * answered from the previous one whenever the answer can't have changed.
+ */
+class Lookahead {
+  private memo = new Map<string, { from: number; at: number }>()
+  private stops?: Int32Array
+
+  readonly src: string
+
+  constructor(src: string) {
+    this.src = src
+  }
+
+  /**
+   * First result of `scan(from)`, reusing the last answer for `key`: valid
+   * when `scan` returns the first position ≥ from that matches something
+   * independent of `from` (or -1 for "none").
+   */
+  private find(key: string, from: number, scan: (from: number) => number): number {
+    const hit = this.memo.get(key)
+    if (hit && from >= hit.from && (hit.at === -1 || from <= hit.at)) return hit.at
+    const at = scan(from)
+    // An immediate answer was cheap; keep the remembered (costly) one instead.
+    if (at !== from) this.memo.set(key, { from, at })
+    return at
+  }
+
+  indexOf(needle: string, from: number): number {
+    return this.find(`i${needle}`, from, (f) => this.src.indexOf(needle, f))
+  }
+
+  /** First position ≥ from that isn't a space, tab or newline. */
+  skipSpace(from: number): number {
+    return this.find('s', from, (f) => {
+      let i = f
+      while (i < this.src.length && (this.src[i] === ' ' || this.src[i] === '\t' || this.src[i] === '\n')) i++
+      return i
+    })
+  }
+
+  /** A run of exactly n backticks starting at or after `from`, or -1. */
+  backticks(n: number, from: number): number {
+    return this.find(`b${n}`, from, (f) => {
+      const src = this.src
+      const fence = '`'.repeat(n)
+      let k = f
+      while ((k = src.indexOf(fence, k)) !== -1) {
+        if (src[k + n] !== '`' && src[k - 1] !== '`') return k
+        while (src[k] === '`') k++
+      }
+      return -1
+    })
+  }
+
+  /** The unescaped `end` closing a link title that opened just before `from`, or -1. */
+  titleEnd(end: string, from: number): number {
+    return this.find(`t${end}`, from, (f) => {
+      let k = f
+      while (k < this.src.length && this.src[k] !== end) k += this.src[k] === '\\' ? 2 : 1
+      return k < this.src.length ? k : -1
+    })
+  }
+
+  /**
+   * Where a bare link destination starting at `from` stops: the first space or
+   * control character, or the first `)` that would unbalance its parentheses.
+   * Worked out for every start at once (prefix paren balance, read right to
+   * left), so each lookup is O(1).
+   */
+  destinationEnd(from: number): number {
+    if (!this.stops) {
+      const src = this.src
+      const n = src.length
+      const esc = new Uint8Array(n + 1)
+      for (let k = 0; k + 1 < n; k++) if (!esc[k] && src[k] === '\\' && ESCAPABLE.test(src[k + 1])) esc[k + 1] = 1
+      const bal = new Int32Array(n + 1)
+      for (let k = 0; k < n; k++) bal[k + 1] = bal[k] + (esc[k] ? 0 : src[k] === '(' ? 1 : src[k] === ')' ? -1 : 0)
+      const stops = new Int32Array(n + 1)
+      stops[n] = n
+      // Nearest unescaped `)` to the right, per paren balance before it.
+      const closeAt = new Map<number, number>()
+      let space = n
+      for (let k = n - 1; k >= 0; k--) {
+        if (!esc[k] && src[k] === ')') closeAt.set(bal[k], k)
+        if (src.charCodeAt(k) <= 0x20) space = k
+        stops[k] = Math.min(space, closeAt.get(bal[k]) ?? n)
+      }
+      this.stops = stops
+    }
+    return this.stops[from]
   }
 }
 
 /** Link destination and optional title after `](`. Returns the index after `)`. */
-function linkTail(src: string, start: number): { href: string; title?: string; end: number } | null {
-  let i = start
-  const skip = () => {
-    while (i < src.length && (src[i] === ' ' || src[i] === '\t' || src[i] === '\n')) i++
-  }
-  skip()
+function linkTail(la: Lookahead, start: number): { href: string; title?: string; end: number } | null {
+  const src = la.src
+  let i = la.skipSpace(start)
   let href = ''
   if (src[i] === '<') {
-    const close = src.indexOf('>', i + 1)
-    if (close < 0 || src.slice(i + 1, close).includes('\n')) return null
+    const close = la.indexOf('>', i + 1)
+    if (close < 0) return null
+    const nl = la.indexOf('\n', i + 1)
+    if (nl !== -1 && nl < close) return null
     href = src.slice(i + 1, close)
     i = close + 1
   } else {
-    let depth = 0
     const from = i
-    while (i < src.length) {
-      const c = src[i]
-      if (c === '\\' && i + 1 < src.length && ESCAPABLE.test(src[i + 1])) {
-        i += 2
-        continue
-      }
-      if (c === ' ' || c === '\t' || c === '\n' || c.charCodeAt(0) < 0x20) break
-      if (c === '(') depth++
-      else if (c === ')') {
-        if (depth === 0) break
-        depth--
-      }
-      i++
-    }
+    i = la.destinationEnd(from)
     href = src.slice(from, i)
   }
-  skip()
+  i = la.skipSpace(i)
   let title: string | undefined
   const q = src[i]
   if (q === '"' || q === "'" || q === '(') {
-    const end = q === '(' ? ')' : q
-    let k = i + 1
-    while (k < src.length && src[k] !== end) k += src[k] === '\\' ? 2 : 1
-    if (k >= src.length) return null
+    const k = la.titleEnd(q === '(' ? ')' : q, i + 1)
+    if (k === -1) return null
     title = unescape(src.slice(i + 1, k))
-    i = k + 1
-    skip()
+    i = la.skipSpace(k + 1)
   }
   if (src[i] !== ')') return null
   return { href: unescape(href), title, end: i + 1 }
@@ -354,20 +471,45 @@ const unescape = (s: string) => decodeEntities(s.replace(/\\([!-/:-@[-`{-~])/g, 
 
 const AUTOLINK = /^<([a-zA-Z][a-zA-Z0-9+.-]{1,31}:[^\s<>]*)>/
 const EMAIL_AUTOLINK = /^<([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)>/
-const BARE_URL = /^(?:https?:\/\/|www\.)[^\s<]*/i
+// The lookaheads reject `http:///` or a lone `www.` before the run is scanned:
+// a rejected match must not cost the length of the rest of the line.
+const BARE_URL = /^(?:https?:\/\/(?=[^\s</])|www\.(?=[^\s<.]+\.))[^\s<]*/i
 const BR_TAG = /^<br\s*\/?>/i
+
+/** End of `s` once trailing characters in `set` are dropped (a loop, not `/[…]+$/`, which backtracks quadratically). */
+function trimEndIndex(s: string, set: string, end = s.length): number {
+  while (end > 0 && set.includes(s[end - 1])) end--
+  return end
+}
+
+const URL_TRAIL = `?!.,:*_~'"`
 
 /** Trim the trailing punctuation GFM leaves out of bare URLs. */
 function trimUrl(url: string): string {
-  let out = url.replace(/[?!.,:*_~'"]+$/, '')
+  let end = trimEndIndex(url, URL_TRAIL)
+  let open = 0
+  let close = 0
+  for (let k = 0; k < end; k++) {
+    if (url[k] === '(') open++
+    else if (url[k] === ')') close++
+  }
   // Unbalanced closing parens are punctuation too.
-  while (out.endsWith(')') && (out.match(/\(/g)?.length ?? 0) < (out.match(/\)/g)?.length ?? 0)) out = out.slice(0, -1).replace(/[?!.,:*_~'"]+$/, '')
-  return out
+  while (url[end - 1] === ')' && open < close) {
+    close--
+    end = trimEndIndex(url, URL_TRAIL, end - 1)
+  }
+  return url.slice(0, end)
 }
 
 /** Links can't nest: a bare URL inside link text stays text. */
 function unlink(nodes: MdInline[]): MdInline[] {
-  return nodes.flatMap((n): MdInline[] => (n.type === 'link' ? unlink(n.children) : 'children' in n ? [{ ...n, children: unlink(n.children) }] : [n]))
+  return nodes.flatMap((n): MdInline[] => {
+    if (n.type === 'link') return unlink(n.children)
+    if (!('children' in n)) return [n]
+    const copy = { ...n, children: unlink(n.children) }
+    depths.set(copy, depths.get(n) ?? 0)
+    return [copy]
+  })
 }
 
 function linkNode(href: string, children: MdInline[], title?: string): MdInline[] {
@@ -389,12 +531,26 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
   if (opts.tail) {
     // A delimiter run still being typed (`**`, a half closer `*`, `~~`) is
     // dropped instead of flashing on screen as a literal.
-    text = text.replace(/(?<!\\)[*_~]+$/, '')
+    let end = trimEndIndex(text, '*_~')
+    // `\*` at the end is a literal star: keep it.
+    if (end < text.length && text[end - 1] === '\\') end++
+    text = text.slice(0, end)
   }
+  const la = new Lookahead(text)
+  depths = new Map()
   const toks: Tok[] = []
   const brackets: number[] = []
   let buf = ''
+  // Spaces not yet added to buf: a newline drops them without touching buf,
+  // which is built by concatenation and costs O(length) to inspect.
+  let spaces = 0
+  const add = (s: string) => {
+    if (spaces) buf += ' '.repeat(spaces)
+    spaces = 0
+    buf += s
+  }
   const flush = () => {
+    add('')
     if (buf) toks.push({ kind: 'text', text: decodeEntities(buf) })
     buf = ''
   }
@@ -424,17 +580,17 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
         i += 2
         continue
       }
-      buf += c
+      add(c)
       i++
       continue
     }
 
     if (c === '\n') {
       // Two or more trailing spaces make a hard break.
-      const hard = / {2,}$/.test(buf)
-      buf = buf.replace(/ +$/, '')
+      const hard = spaces >= 2
+      spaces = 0
       if (hard || opts.breaks) node({ type: 'br' })
-      else buf += '\n'
+      else add('\n')
       i++
       while (text[i] === ' ') i++
       continue
@@ -444,17 +600,9 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
       let n = 1
       while (text[i + n] === '`') n++
       const fence = '`'.repeat(n)
-      let k = i + n
-      let close = -1
-      while ((k = text.indexOf(fence, k)) !== -1) {
-        if (text[k + n] !== '`' && text[k - 1] !== '`') {
-          close = k
-          break
-        }
-        while (text[k] === '`') k++
-      }
+      const close = la.backticks(n, i + n)
       if (close === -1 && !opts.tail) {
-        buf += fence
+        add(fence)
         i += n
         continue
       }
@@ -476,7 +624,7 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
       if (m) {
         flush()
         const safe = sanitizeUrl(m[1])
-        if (safe === null) buf += m[0]
+        if (safe === null) add(m[0])
         else toks.push({ kind: 'node', node: { type: 'link', href: safe, external: isExternalUrl(safe), children: [{ type: 'text', text: m[1] }] } })
         i += m[0].length
         continue
@@ -494,7 +642,7 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
         continue
       }
       // Any other HTML is just text.
-      buf += c
+      add(c)
       i++
       continue
     }
@@ -531,7 +679,7 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
         canClose = right && (!left || PUNCT.test(after))
       }
       if (c === '~' && n > 2) {
-        buf += text.slice(i, i + n)
+        add(text.slice(i, i + n))
         i += n
         continue
       }
@@ -564,23 +712,23 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
       if (!opener.active || text[i + 1] !== '(') {
         // Not a link: the brackets are just text.
         toks[at] = { kind: 'text', text: opener.image ? '![' : '[' }
-        buf += ']'
+        add(']')
         i++
         continue
       }
-      const tail = linkTail(text, i + 2)
+      const tail = linkTail(la, i + 2)
       if (!tail) {
-        if (opts.tail && !text.slice(i + 2).includes(')')) {
+        if (opts.tail && la.indexOf(')', i + 2) === -1) {
           // Streaming a half-typed `[text](http…`: show the text alone.
           processEmphasis(toks, at + 1)
           const inner = toNodes(toks.slice(at + 1))
-          toks.splice(at, toks.length - at, ...(opener.image ? [] : inner.map((n): Tok => ({ kind: 'node', node: n }))))
+          replaceTail(toks, at, opener.image ? [] : inner.map((n): Tok => ({ kind: 'node', node: n })))
           i = text.length
           brackets.length = 0
           continue
         }
         toks[at] = { kind: 'text', text: opener.image ? '![' : '[' }
-        buf += ']'
+        add(']')
         i++
         continue
       }
@@ -599,21 +747,23 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
           if (t.kind === 'bracket' && !t.image) t.active = false
         }
       }
-      toks.splice(at, toks.length - at, ...made.map((n): Tok => ({ kind: 'node', node: n })))
+      replaceTail(toks, at, made.map((n): Tok => ({ kind: 'node', node: n })))
       i = tail.end
       continue
     }
 
-    buf += c
+    if (c === ' ') spaces++
+    else add(c)
     i++
   }
   flush()
   processEmphasis(toks, 0)
   if (opts.tail) autoClose(toks, 0)
   const out = toNodes(toks)
+  depths = new Map()
   // Soft line break at the very end / start never matters.
   const last = out[out.length - 1]
-  if (last?.type === 'text') last.text = last.text.replace(/\s+$/, '')
+  if (last?.type === 'text') last.text = last.text.trimEnd()
   if (last?.type === 'text' && !last.text) out.pop()
   return out
 }
@@ -622,7 +772,8 @@ export function parseInline(src: string, opts: InlineOptions = {}): MdInline[] {
 
 const RE_BLANK = /^[ \t]*$/
 const RE_FENCE = /^( {0,3})(`{3,}|~{3,})(.*)$/
-const RE_ATX = /^ {0,3}(#{1,6})(?:[ \t]+(.*?))?[ \t]*$/
+// Content is taken whole and trimmed in code: `(.*?)[ \t]*$` backtracks quadratically on long runs of spaces.
+const RE_ATX = /^ {0,3}(#{1,6})(?:[ \t]+(.*))?$/
 const RE_HR = /^ {0,3}(?:(?:\*[ \t]*){3,}|(?:-[ \t]*){3,}|(?:_[ \t]*){3,})$/
 const RE_QUOTE = /^ {0,3}> ?/
 const RE_BULLET = /^( {0,3})([-+*])(?:([ \t]+)(.*)|$)/
@@ -664,6 +815,15 @@ function splitRow(line: string): string[] {
   }
   cells.push(cur.trim())
   return cells
+}
+
+/** ATX heading content without trailing blanks or a closing `###` sequence. */
+function stripClosingHashes(content: string): string {
+  const end = trimEndIndex(content, ' \t')
+  const hashes = trimEndIndex(content, '#', end)
+  if (hashes === end) return content.slice(0, end)
+  if (hashes > 0 && content[hashes - 1] !== ' ' && content[hashes - 1] !== '\t') return content.slice(0, end)
+  return content.slice(0, trimEndIndex(content, ' \t', hashes))
 }
 
 function parseAlign(row: string): MdAlign[] {
@@ -713,7 +873,12 @@ interface Ctx {
   tail: boolean
   breaks: boolean
   streaming: boolean
+  /** How many quotes / lists this container sits in. */
+  depth: number
 }
+
+/** Deeper quotes and lists are read as plain paragraphs, so nesting can't overflow the stack. */
+const MAX_BLOCK_DEPTH = 32
 
 /** Does this line start a block that can interrupt a paragraph? */
 function interrupts(line: string): boolean {
@@ -846,7 +1011,7 @@ function buildList(ls: string[], ctx: Ctx): MdList {
       body[0] = body[0].slice(t[0].length)
     }
     const isLast = n >= ls.length
-    const { blocks, gaps } = parseBlocks(body, { ...ctx, tail: ctx.tail && isLast })
+    const { blocks, gaps } = parseBlocks(body, { ...ctx, tail: ctx.tail && isLast, depth: ctx.depth + 1 })
     if (gaps.slice(1).some(Boolean)) loose = true
     items.push({ task, checked, children: blocks })
     k = n
@@ -953,7 +1118,7 @@ function spanAt(lines: string[], i: number, ctx: Ctx): Span {
       kind: 'atx',
       build: (ls, c) => {
         const a = RE_ATX.exec(ls[0]) as RegExpExecArray
-        const raw = (a[2] ?? '').replace(/(?:^|[ \t]+)#+[ \t]*$/, '')
+        const raw = stripClosingHashes(a[2] ?? '')
         const children = parseInline(raw, { tail: c.tail })
         return { type: 'heading', level: a[1].length as MdHeading['level'], slug: slugify(inlineText(children)), children }
       },
@@ -962,7 +1127,8 @@ function spanAt(lines: string[], i: number, ctx: Ctx): Span {
 
   if (RE_HR.test(line)) return { end: i + 1, kind: 'hr', build: () => ({ type: 'hr' }) }
 
-  if (RE_QUOTE.test(line)) {
+  const nest = ctx.depth < MAX_BLOCK_DEPTH
+  if (nest && RE_QUOTE.test(line)) {
     let j = i + 1
     let prevText = !isBlank(line.replace(RE_QUOTE, ''))
     for (; j < lines.length; j++) {
@@ -978,11 +1144,11 @@ function spanAt(lines: string[], i: number, ctx: Ctx): Span {
     return {
       end: j,
       kind: 'quote',
-      build: (ls, c) => ({ type: 'blockquote', children: parseBlocks(ls.map((l) => l.replace(RE_QUOTE, '')), c).blocks }),
+      build: (ls, c) => ({ type: 'blockquote', children: parseBlocks(ls.map((l) => l.replace(RE_QUOTE, '')), { ...c, depth: c.depth + 1 }).blocks }),
     }
   }
 
-  const marker = listMarker(line)
+  const marker = nest ? listMarker(line) : null
   if (marker) return listSpan(lines, i, marker)
 
   if (tableAt(lines, i)) return tableSpan(lines, i, false)
@@ -1046,7 +1212,7 @@ function prepare(src: string): string[] {
     .map(expandTabs)
 }
 
-const ctxOf = (o: MdParseOptions): Ctx => ({ tail: !!o.streaming, streaming: !!o.streaming, breaks: !!o.breaks })
+const ctxOf = (o: MdParseOptions): Ctx => ({ tail: !!o.streaming, streaming: !!o.streaming, breaks: !!o.breaks, depth: 0 })
 
 /** Parse a Markdown document into blocks. */
 export function parseMarkdown(src: string, options: MdParseOptions = {}): MdBlock[] {

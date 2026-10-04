@@ -20,6 +20,7 @@ import { useLocale } from './locale'
 import { cx } from './utils'
 
 export { parseMarkdown, parseInline, createMarkdownParser, sanitizeUrl, slugify, headingIds } from '../markdown'
+export { safeHref } from '../url'
 export type { MdBlock, MdInline, MdHeading, MdCode, MdList, MdListItem, MdTable, MdAlign, MdParseOptions, MlMarkdownCodeSlot, MlMarkdownLinkSlot, MlMarkdownImageSlot } from '../markdown'
 
 export interface MarkdownComponents {

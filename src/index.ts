@@ -502,6 +502,7 @@ export type {
   MlCodeDiffView,
 } from './diff'
 export { parseMarkdown, parseInline, createMarkdownParser, sanitizeUrl, slugify, headingIds } from './markdown'
+export { safeHref } from './url'
 export type { MdBlock, MdInline, MdHeading, MdCode, MdList, MdListItem, MdTable, MdAlign, MdParseOptions, MlMarkdownCodeSlot, MlMarkdownLinkSlot, MlMarkdownImageSlot } from './markdown'
 export type { QrLevel, QrMatrix } from './qrcode'
 export type { SignatureStroke, SignaturePoint } from './components/signature'

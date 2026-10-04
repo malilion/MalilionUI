@@ -18,6 +18,7 @@ import {
 import { createPortal } from 'react-dom'
 import type { IconName } from '../components/icons'
 import type { MlAccordionItem, MlAnchorItem, MlDropdownItem, MlFloatAction, MlMenuItem, MlTabBarItem, MlTourStep } from '../types'
+import { safeHref } from '../url'
 import { Button, Icon, Mascot, Paw } from './basic'
 import { useLocale } from './locale'
 import { lockScroll, unlockScroll, useTransition } from './overlay'
@@ -248,7 +249,7 @@ function MenuEntry({ item, depth }: { item: MlMenuItem; depth: number }) {
     >
       <Tag
         type={link ? undefined : 'button'}
-        href={item.disabled ? undefined : item.href}
+        href={item.disabled ? undefined : safeHref(item.href)}
         className={cx('ml-menu__link', { 'ml-menu__link--active': active, 'ml-menu__link--parent': parent })}
         style={menu.inline && depth ? ({ '--_depth': depth } as CSSProperties) : undefined}
         aria-current={active ? 'page' : undefined}

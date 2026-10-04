@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MlIcon from './MlIcon.vue'
+import { safeHref } from '../url'
 
 const props = defineProps<{
   title: string
@@ -24,7 +25,7 @@ const tag = props.href ? 'a' : props.clickable ? 'button' : 'div'
   <li class="ml-list-item">
     <component
       :is="tag"
-      :href="href"
+      :href="safeHref(href)"
       :type="tag === 'button' ? 'button' : undefined"
       :aria-current="active ? 'page' : undefined"
       :class="['ml-list-item__row', { 'ml-list-item__row--interactive': tag !== 'div', 'ml-list-item__row--active': active }]"

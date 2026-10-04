@@ -3,6 +3,7 @@ import { inject, nextTick, onBeforeUnmount } from 'vue'
 import MlIcon from './MlIcon.vue'
 import { menuKey } from './menu'
 import type { MlMenuItem } from '../types'
+import { safeHref } from '../url'
 
 const props = defineProps<{
   items: MlMenuItem[]
@@ -89,7 +90,7 @@ function onClick(event: MouseEvent, item: MlMenuItem) {
         <component
           :is="item.href && !hasChildren(item) ? 'a' : 'button'"
           :type="item.href && !hasChildren(item) ? undefined : 'button'"
-          :href="item.disabled ? undefined : item.href"
+          :href="item.disabled ? undefined : safeHref(item.href)"
           :class="[
             'ml-menu__link',
             {

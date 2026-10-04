@@ -52,6 +52,17 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
+## What's New in 0.12.1 — security release
+
+A security pass over everything that renders untrusted text. Upgrading is recommended if you show Markdown or code from users or an LLM.
+
+- **No more hangs on crafted input**: `MlMarkdown` / `parseMarkdown` and the syntax colouring behind `MlCodeBlock` and `MlCodeDiff` now run in linear time. Before, about 20 KB of crafted text (long runs of spaces, thousands of `[a](`, `**a` or unclosed `/*`) could freeze a tab for seconds to minutes; the same input now takes milliseconds
+- **No more crashes on deep nesting**: quotes and lists deeper than 32 levels read as plain paragraphs, and emphasis deeper than 32 levels collapses to text, so `> > > …` ten thousand times can't overflow the stack
+- **`MlCodeBlock` without `v-html`**: code is rendered as real elements (React: no `dangerouslySetInnerHTML`), so it works on sites that enforce Trusted Types
+- **`safeHref()`**: `MlButton`, `MlListItem`, `MlBreadcrumb` and `MlMenuList` (and their React twins) drop `javascript:`, `vbscript:` and `data:` links; ordinary paths, http(s), `mailto:`, `tel:` and app schemes pass untouched. The helper is exported for your own links
+- Highlighting is a little more accurate too: an apostrophe (`don't`) no longer opens a string, and a shell glob (`dist/*`) no longer turns the rest of the snippet into a comment
+- CI actions are pinned to commit SHAs, and the npm publish job only runs from a version tag
+
 ## What's New in 0.12
 
 - **Taiwan validators**: `twRules` for national / resident IDs, business IDs (the 2023 divisible-by-5 rule), mobile and landline numbers per the MODA numbering plan, e-invoice mobile-barcode and citizen-certificate carriers and postal codes — with formatters, for both Vue and React forms
@@ -435,6 +446,15 @@ The `Publish` workflow checks that the tag matches `package.json`, runs the chec
 The build output is `dist/malilion-ui.js` (ESM), `dist/style.css` and `dist/types/` (type declarations). Vue is external and is not bundled.
 
 The docs site lives in `playground/`. Every example is a real `.vue` file in `playground/examples/` that is both rendered live and shown as copyable source, so the two can never drift apart. Every push to `main` runs the checks in GitHub Actions and deploys the site to GitHub Pages.
+
+## Security
+
+- Markdown, JSON, diffs and terminal output are rendered as real elements, never as HTML strings; raw HTML in Markdown shows as text and unsafe link schemes are removed
+- Parsers are linear-time and nesting is capped, so hostile input can't hang or crash the page; `tests/security.test.ts` guards this
+- Links passed as props go through `safeHref()`. Validate URLs from users yourself as well if you put them in other attributes
+- Releases are published from GitHub Actions with npm Trusted Publishing and provenance — no npm token exists
+
+Found a vulnerability? Please report it privately through [GitHub security advisories](https://github.com/malilion/MalilionUI/security/advisories/new) rather than a public issue.
 
 ## Browser Support
 

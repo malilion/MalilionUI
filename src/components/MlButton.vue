@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { vPawStamp } from '../pawStamp'
+import { safeHref } from '../url'
 import type { MlButtonVariant, MlPawTone, MlSize } from '../types'
 
 const props = withDefaults(
@@ -28,7 +29,7 @@ const inactive = computed(() => props.disabled || props.loading)
   <a
     v-if="href"
     v-paw-stamp="stamp ?? false"
-    :href="inactive ? undefined : href"
+    :href="inactive ? undefined : safeHref(href)"
     :aria-disabled="inactive || undefined"
     :aria-busy="loading || undefined"
     :class="[
