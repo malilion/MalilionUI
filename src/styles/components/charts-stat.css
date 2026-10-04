@@ -1,0 +1,467 @@
+/* Waterfall, box plot and bullet charts — the bar chart's axis, grid and pop-ups */
+
+/* ── Shared frame ── */
+.ml-waterfall,
+.ml-boxplot {
+  --_h: 220px;
+
+  margin: 0;
+  min-width: 0;
+}
+
+.ml-waterfall__body,
+.ml-boxplot__body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ml-waterfall--values .ml-waterfall__body {
+  padding-top: 18px;
+}
+
+.ml-waterfall__axis,
+.ml-boxplot__axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: var(--_h);
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.ml-waterfall__axis span,
+.ml-boxplot__axis span {
+  translate: 0 50%;
+}
+
+.ml-waterfall__axis span:first-child,
+.ml-boxplot__axis span:first-child {
+  translate: 0 -10%;
+}
+
+.ml-waterfall__plot,
+.ml-boxplot__plot {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  min-width: 0;
+  outline: none;
+  cursor: crosshair;
+}
+
+.ml-waterfall__plot:focus-visible,
+.ml-boxplot__plot:focus-visible {
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-waterfall__grid,
+.ml-boxplot__grid {
+  position: absolute;
+  inset: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: var(--_h);
+  pointer-events: none;
+}
+
+.ml-waterfall__grid i,
+.ml-boxplot__grid i {
+  display: block;
+  height: 1px;
+  background: var(--ml-line-steel);
+}
+
+.ml-boxplot__grid i:last-child,
+.ml-waterfall__grid .ml-waterfall__zero {
+  background: var(--ml-line-strong);
+}
+
+.ml-waterfall__col,
+.ml-boxplot__col {
+  position: relative;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.ml-waterfall__track,
+.ml-boxplot__track {
+  position: relative;
+  width: 100%;
+  height: var(--_h);
+  transition: background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-waterfall__col--on .ml-waterfall__track,
+.ml-boxplot__col--on .ml-boxplot__track {
+  background: linear-gradient(180deg, transparent, rgb(240 173 47 / 0.08));
+  box-shadow: inset 0 -1px 0 var(--ml-accent);
+}
+
+.ml-waterfall__x,
+.ml-boxplot__x {
+  overflow: hidden;
+  max-width: 100%;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ml-waterfall__col--on .ml-waterfall__x,
+.ml-boxplot__col--on .ml-boxplot__x {
+  color: var(--ml-accent-text);
+}
+
+.ml-waterfall__pop,
+.ml-boxplot__pop {
+  position: absolute;
+  top: 6px;
+  z-index: 2;
+  min-width: 150px;
+  padding: 8px 10px;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-2);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  pointer-events: none;
+}
+
+.ml-waterfall__pop--right,
+.ml-boxplot__pop--right { left: calc(100% + 6px); }
+.ml-waterfall__pop--left,
+.ml-boxplot__pop--left { right: calc(100% + 6px); }
+
+.ml-waterfall__pop p,
+.ml-boxplot__pop p {
+  margin: 0;
+}
+
+.ml-waterfall__pop-title,
+.ml-boxplot__pop-title {
+  margin-bottom: 4px !important;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.ml-waterfall__pop-row,
+.ml-boxplot__pop-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+  line-height: 1.8;
+  white-space: nowrap;
+}
+
+.ml-waterfall__pop-row i {
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  flex: none;
+}
+
+.ml-waterfall__pop-row span,
+.ml-boxplot__pop-row span {
+  flex: 1;
+}
+
+.ml-waterfall__pop-row b,
+.ml-boxplot__pop-row b {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-waterfall__pop-row--total,
+.ml-boxplot__pop-row--total {
+  margin-top: 4px !important;
+  padding-top: 4px;
+  border-top: 1px solid var(--ml-line-steel);
+}
+
+/* ── Waterfall ── */
+.ml-waterfall {
+  --_up: var(--ml-red-400);
+  --_down: var(--ml-green-400);
+  --_total: var(--ml-gold-400);
+}
+
+.ml-waterfall--up-green {
+  --_up: var(--ml-green-400);
+  --_down: var(--ml-red-400);
+}
+
+.ml-waterfall__bar {
+  --_c: var(--_up);
+
+  position: absolute;
+  left: 50%;
+  width: min(70%, 40px);
+  min-height: 2px;
+  translate: -50% 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--_c) 92%, #fff), color-mix(in srgb, var(--_c) 62%, transparent));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.35), 0 0 10px color-mix(in srgb, var(--_c) 30%, transparent);
+  transform-origin: bottom;
+  transition: bottom var(--ml-dur-chart) var(--ml-ease), height var(--ml-dur-chart) var(--ml-ease);
+  animation: ml-bar-rise var(--ml-dur-chart) var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * var(--ml-stagger));
+}
+
+.ml-waterfall__bar--down {
+  --_c: var(--_down);
+  transform-origin: top;
+}
+
+.ml-waterfall__bar--total {
+  --_c: var(--_total);
+  background: var(--ml-metal-gold);
+}
+
+.ml-waterfall__swatch--up { background: var(--_up); }
+.ml-waterfall__swatch--down { background: var(--_down); }
+.ml-waterfall__swatch--total { background: var(--_total); }
+
+/* Dashed step from one bar's end to the next bar */
+.ml-waterfall__link {
+  position: absolute;
+  left: calc(50% + min(35%, 20px));
+  width: calc(100% - min(70%, 40px) + 8px);
+  height: 0;
+  border-top: 1px dashed var(--ml-line-strong);
+  pointer-events: none;
+}
+
+.ml-waterfall__value {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  translate: -50% 0;
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  animation: ml-fade-in var(--ml-dur-chart) var(--ml-ease) backwards;
+  animation-delay: calc(300ms + var(--_i, 0) * var(--ml-stagger));
+}
+
+.ml-waterfall__value--below {
+  top: calc(100% + 4px);
+  bottom: auto;
+}
+
+/* ── Box plot ── */
+.ml-boxplot__col {
+  --_c: var(--ml-gold-400);
+}
+
+.ml-boxplot__whisker {
+  position: absolute;
+  left: 50%;
+  width: 1px;
+  translate: -50% 0;
+  background: color-mix(in srgb, var(--_c) 70%, var(--ml-text-dim));
+}
+
+.ml-boxplot__cap {
+  position: absolute;
+  left: 50%;
+  width: min(28%, 18px);
+  height: 1px;
+  translate: -50% 0.5px;
+  background: color-mix(in srgb, var(--_c) 70%, var(--ml-text-dim));
+}
+
+.ml-boxplot__box {
+  position: absolute;
+  left: 50%;
+  width: min(56%, 36px);
+  min-height: 2px;
+  translate: -50% 0;
+  background: linear-gradient(90deg, color-mix(in srgb, var(--_c) 34%, transparent), color-mix(in srgb, var(--_c) 14%, transparent));
+  box-shadow: inset 0 0 0 1px var(--_c), 0 0 12px color-mix(in srgb, var(--_c) 22%, transparent);
+  transform-origin: center;
+  animation: ml-boxplot-open var(--ml-dur-chart) var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * var(--ml-stagger));
+}
+
+@keyframes ml-boxplot-open {
+  from { scale: 1 0; }
+}
+
+.ml-boxplot__median {
+  position: absolute;
+  left: 50%;
+  width: min(56%, 36px);
+  height: 2px;
+  translate: -50% 1px;
+  background: var(--_c);
+  box-shadow: 0 0 6px var(--_c);
+}
+
+.ml-boxplot__mean {
+  position: absolute;
+  left: 50%;
+  width: 8px;
+  height: 8px;
+  translate: -50% 50%;
+  background: var(--ml-text);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+.ml-boxplot__outlier {
+  position: absolute;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  translate: -50% 50%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--_c);
+}
+
+/* ── Bullet ── */
+.ml-bullet {
+  display: grid;
+  gap: 14px;
+}
+
+.ml-bullet__row {
+  --_c: var(--ml-gold-400);
+
+  display: grid;
+  grid-template-columns: minmax(80px, 140px) minmax(0, 1fr) auto;
+  align-items: start;
+  gap: 14px;
+}
+
+.ml-bullet__head {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  padding-top: 1px;
+  text-align: right;
+}
+
+.ml-bullet__label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.ml-bullet__sub {
+  color: var(--ml-text-dim);
+  font-size: 0.6875rem;
+}
+
+.ml-bullet__track {
+  position: relative;
+  height: 22px;
+  overflow: hidden;
+  background: var(--ml-surface-inset);
+  clip-path: polygon(4px 0, 100% 0, 100% calc(100% - 4px), calc(100% - 4px) 100%, 0 100%, 0 4px);
+}
+
+/* Bands get lighter toward the good end */
+.ml-bullet__band {
+  position: absolute;
+  inset-block: 0;
+  background: color-mix(in srgb, var(--ml-steel-300) calc(16% + var(--_k) / max(var(--_n) - 1, 1) * 30%), transparent);
+  box-shadow: inset -1px 0 0 var(--ml-surface);
+}
+
+.ml-bullet__bar {
+  position: absolute;
+  inset-block: 7px;
+  left: 0;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--_c) 92%, #fff), var(--_c));
+  box-shadow: 0 0 10px color-mix(in srgb, var(--_c) 40%, transparent);
+  transform-origin: left;
+  animation: ml-bullet-grow var(--ml-dur-chart) var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * var(--ml-stagger));
+}
+
+@keyframes ml-bullet-grow {
+  from { scale: 0 1; }
+}
+
+.ml-bullet__target {
+  position: absolute;
+  inset-block: 3px;
+  width: 3px;
+  translate: -50% 0;
+  background: var(--ml-text);
+  box-shadow: 0 0 0 1px var(--ml-surface);
+}
+
+.ml-bullet__ticks {
+  position: relative;
+  height: 16px;
+  margin-top: 3px;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.625rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-bullet__ticks span {
+  position: absolute;
+  translate: -50% 0;
+  white-space: nowrap;
+}
+
+.ml-bullet__ticks span:first-child {
+  translate: 0 0;
+}
+
+.ml-bullet__ticks span:last-child {
+  translate: -100% 0;
+}
+
+.ml-bullet__value {
+  min-width: 64px;
+  padding-top: 1px;
+  font-family: var(--ml-font-mono);
+  font-size: 0.8125rem;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.ml-bullet__value small {
+  color: var(--ml-text-dim);
+  font-size: 0.6875rem;
+}
+
+@media (max-width: 520px) {
+  .ml-bullet__row {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .ml-bullet__head {
+    grid-column: 1 / -1;
+    flex-direction: row;
+    gap: 8px;
+    align-items: baseline;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-waterfall__bar,
+  .ml-waterfall__value,
+  .ml-boxplot__box,
+  .ml-bullet__bar {
+    animation: none;
+  }
+}

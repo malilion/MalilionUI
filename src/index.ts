@@ -20,7 +20,9 @@ import MlBarChart from './components/MlBarChart.vue'
 import MlBarcode from './components/MlBarcode.vue'
 import MlBorderBeam from './components/MlBorderBeam.vue'
 import MlBottomSheet from './components/MlBottomSheet.vue'
+import MlBoxPlot from './components/MlBoxPlot.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
+import MlBulletChart from './components/MlBulletChart.vue'
 import MlButton from './components/MlButton.vue'
 import MlCalendar from './components/MlCalendar.vue'
 import MlCandlestick from './components/MlCandlestick.vue'
@@ -58,6 +60,7 @@ import MlDropdown from './components/MlDropdown.vue'
 import MlEllipsis from './components/MlEllipsis.vue'
 import MlEmpty from './components/MlEmpty.vue'
 import MlField from './components/MlField.vue'
+import MlFilterBar from './components/MlFilterBar.vue'
 import MlFloatButton from './components/MlFloatButton.vue'
 import MlForm from './components/MlForm.vue'
 import MlFormItem from './components/MlFormItem.vue'
@@ -116,6 +119,7 @@ import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
 import MlPullRefresh from './components/MlPullRefresh.vue'
 import MlQRCode from './components/MlQRCode.vue'
+import MlQueryBuilder from './components/MlQueryBuilder.vue'
 import MlRadar from './components/MlRadar.vue'
 import MlRadarChart from './components/MlRadarChart.vue'
 import MlRadio from './components/MlRadio.vue'
@@ -172,6 +176,7 @@ import MlTreemap from './components/MlTreemap.vue'
 import MlUpload from './components/MlUpload.vue'
 import MlVideoPlayer from './components/MlVideoPlayer.vue'
 import MlVirtualList from './components/MlVirtualList.vue'
+import MlWaterfallChart from './components/MlWaterfallChart.vue'
 import MlWatermark from './components/MlWatermark.vue'
 import MlZhuyin from './components/MlZhuyin.vue'
 import { vPawStamp } from './pawStamp'
@@ -200,7 +205,9 @@ const components = {
   MlBarcode,
   MlBorderBeam,
   MlBottomSheet,
+  MlBoxPlot,
   MlBreadcrumb,
+  MlBulletChart,
   MlButton,
   MlCalendar,
   MlCandlestick,
@@ -238,6 +245,7 @@ const components = {
   MlEllipsis,
   MlEmpty,
   MlField,
+  MlFilterBar,
   MlFloatButton,
   MlForm,
   MlFormItem,
@@ -296,6 +304,7 @@ const components = {
   MlProgress,
   MlPullRefresh,
   MlQRCode,
+  MlQueryBuilder,
   MlRadar,
   MlRadarChart,
   MlRadio,
@@ -352,6 +361,7 @@ const components = {
   MlUpload,
   MlVideoPlayer,
   MlVirtualList,
+  MlWaterfallChart,
   MlWatermark,
   MlZhuyin,
 
@@ -403,7 +413,9 @@ export {
   MlBarcode,
   MlBorderBeam,
   MlBottomSheet,
+  MlBoxPlot,
   MlBreadcrumb,
+  MlBulletChart,
   MlButton,
   MlCalendar,
   MlCandlestick,
@@ -441,6 +453,7 @@ export {
   MlEllipsis,
   MlEmpty,
   MlField,
+  MlFilterBar,
   MlFloatButton,
   MlForm,
   MlFormItem,
@@ -499,6 +512,7 @@ export {
   MlProgress,
   MlPullRefresh,
   MlQRCode,
+  MlQueryBuilder,
   MlRadar,
   MlRadarChart,
   MlRadio,
@@ -555,6 +569,7 @@ export {
   MlUpload,
   MlVideoPlayer,
   MlVirtualList,
+  MlWaterfallChart,
   MlWatermark,
   MlZhuyin,
 
@@ -685,6 +700,10 @@ export { allDayBars, layoutColumns, moveEvent, resizeEvent, timedSegments, viewD
 export type { MlSchedulerEvent, MlSchedulerView, MlSchedulerDate, SchedulerRange, SchedulerSegment, AllDayBar } from './components/scheduler'
 export { PLAYBACK_RATES, formatMediaTime, playerKeyAction } from './components/player'
 export type { MlMediaSource, MlMediaTrack, PlayerAction } from './components/player'
+export { matchFilters, filterChips, filterText, isEmptyFilter, clearFilter, evaluateQuery, queryToText, createRule, createGroup, countRules, isQueryGroup, isRuleComplete, QUERY_OPERATORS } from './components/filter'
+export type { MlFilterField, MlFilterFieldType, MlFilterValue, FilterChip, MlQueryField, MlQueryFieldType, MlQueryOperator, MlQueryRule, MlQueryGroup, MlQueryNode } from './components/filter'
+export { waterfallLayout, boxStats, boxLayout, bulletRows, quantile } from './components/charts-stat'
+export type { MlWaterfallDatum, WaterfallBar, MlBoxDatum, MlBoxStats, MlBulletDatum, BulletRow } from './components/charts-stat'
 export type { MlNumberKeyboardTheme, NumberKeyboardKey } from './components/number-keyboard'
 export {
   getTwBanks,
@@ -820,7 +839,9 @@ declare module 'vue' {
     MlBarcode: typeof MlBarcode
     MlBorderBeam: typeof MlBorderBeam
     MlBottomSheet: typeof MlBottomSheet
+    MlBoxPlot: typeof MlBoxPlot
     MlBreadcrumb: typeof MlBreadcrumb
+    MlBulletChart: typeof MlBulletChart
     MlButton: typeof MlButton
     MlCalendar: typeof MlCalendar
     MlCandlestick: typeof MlCandlestick
@@ -858,6 +879,7 @@ declare module 'vue' {
     MlEllipsis: typeof MlEllipsis
     MlEmpty: typeof MlEmpty
     MlField: typeof MlField
+    MlFilterBar: typeof MlFilterBar
     MlFloatButton: typeof MlFloatButton
     MlForm: typeof MlForm
     MlFormItem: typeof MlFormItem
@@ -916,6 +938,7 @@ declare module 'vue' {
     MlProgress: typeof MlProgress
     MlPullRefresh: typeof MlPullRefresh
     MlQRCode: typeof MlQRCode
+    MlQueryBuilder: typeof MlQueryBuilder
     MlRadar: typeof MlRadar
     MlRadarChart: typeof MlRadarChart
     MlRadio: typeof MlRadio
@@ -972,6 +995,7 @@ declare module 'vue' {
     MlUpload: typeof MlUpload
     MlVideoPlayer: typeof MlVideoPlayer
     MlVirtualList: typeof MlVirtualList
+    MlWaterfallChart: typeof MlWaterfallChart
     MlWatermark: typeof MlWatermark
     MlZhuyin: typeof MlZhuyin
 
