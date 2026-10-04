@@ -73,6 +73,17 @@ describe('markdown: inline', () => {
     expect(inl('[https://a.dev](https://b.dev)')).toEqual([{ type: 'link', href: 'https://b.dev', title: undefined, external: true, children: [text('https://a.dev')] }])
   })
 
+  it('bare URLs end at full-width punctuation', () => {
+    const link = (href: string, shown = href) => ({ type: 'link', href, external: true, children: [text(shown)] })
+    expect(inl('自動連結 https://malilion.github.io/MalilionUI/。')).toEqual([text('自動連結 '), link('https://malilion.github.io/MalilionUI/'), text('。')])
+    expect(inl('網址：https://a.dev/x，下一句')).toEqual([text('網址：'), link('https://a.dev/x'), text('，下一句')])
+    expect(inl('（見 https://a.dev/x）之後')).toEqual([text('（見 '), link('https://a.dev/x'), text('）之後')])
+    expect(inl('「www.lion.dev」')).toEqual([text('「'), link('https://www.lion.dev', 'www.lion.dev'), text('」')])
+    // Balanced full-width parens and CJK path segments stay in the URL.
+    expect(inl('https://zh.wikipedia.org/wiki/獅子（動物）')).toEqual([link('https://zh.wikipedia.org/wiki/獅子（動物）')])
+    expect(inl('看 https://a.dev/獅子 喔')).toEqual([text('看 '), link('https://a.dev/獅子'), text(' 喔')])
+  })
+
   it('escapes, entities, hard breaks and <br>', () => {
     expect(inl('\\*not\\* \\[x\\]')).toEqual([text('*not* [x]')])
     expect(inl('&lt;b&gt; &amp; &#169; &#x1F43E;')).toEqual([text('<b> & © 🐾')])
