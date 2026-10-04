@@ -82,6 +82,13 @@
     "components/checkbox.css",
     "components/paw.css"
   ],
+  "MlCheckboxGroup": [
+    "components/field.css",
+    "components/checkbox.css",
+    "components/paw.css",
+    "components/form.css",
+    "components/checkbox-group.css"
+  ],
   "MlCodeBlock": [
     "components/button.css",
     "components/paw.css",
@@ -312,6 +319,11 @@
   "MlPagination": [
     "components/navigation.css"
   ],
+  "MlPasswordInput": [
+    "components/field.css",
+    "components/form.css",
+    "components/password.css"
+  ],
   "MlPaw": [
     "components/paw.css"
   ],
@@ -461,6 +473,10 @@
   "MlTextarea": [
     "components/field.css",
     "components/form.css"
+  ],
+  "MlThemeToggle": [
+    "components/segmented.css",
+    "components/theme-toggle.css"
   ],
   "MlTilt": [
     "components/effects.css"

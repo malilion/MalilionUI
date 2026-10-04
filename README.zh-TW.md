@@ -34,12 +34,12 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 
 ## 特色
 
-- 125 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
+- 128 個元件，涵蓋基礎、版面、表單、回饋、資料展示、圖表、導覽、行動版與視覺特效，另附現成的版型範例
 - 內建表單驗證：`MlForm` / `MlFormItem` 規則（必填、長度、格式、非同步檢查），錯誤會直接顯示在每個表單元件上
 - 完整的選擇器與浮層：可搜尋 / 多選的下拉選擇、自動完成、時間、日期時間與取色器，以及抽屜、彈出框、氣泡確認
 - 多語系：內建繁體中文與英文，`app.use(MalilionUI, { locale: en })` 或 `<MlConfigProvider>` 一行切換，也能自訂文案
 - 以 TypeScript 撰寫，props、插槽與模板裡的全域元件都有完整型別
-- 也支援 React：`@malilion/ui/react` 提供全部 125 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
+- 也支援 React：`@malilion/ui/react` 提供全部 128 個元件的 React 版（HTML 結構與 Vue 版一致），Next.js App Router 可直接使用
 - 樣式與框架無關：所有外觀都在 `.ml-*` class 與 `--ml-*` CSS 變數裡，React 或原生網頁也能用
 - 兩套主題：深色 **Night Pride** 與淺色 **Daylight Titanium**，可整頁或局部切換
 - 內建碼力獅吉祥物：`MlMascot`、`<MlAvatar lion>`，空狀態還有睡著的小獅子
@@ -48,6 +48,15 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 無障礙：鍵盤操作、焦點鎖定、ARIA 關聯，並支援 `prefers-reduced-motion`
 - 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
 - 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
+
+## 0.11 版新功能
+
+- **`MlCheckboxGroup`**：用 options 或放入 `MlCheckbox`，全選與半選狀態、`min` / `max` 上下限、卡片樣式，可放進 `MlForm` 驗證
+- **`MlPasswordInput`**：顯示／隱藏密碼、強度條（常見密碼、連號與鍵盤順序都會被判為弱）、即時規則清單、大寫鍵提示；另外匯出 `scorePassword()`
+- **月／季／年選擇器**：`MlDatePicker type="month" | "quarter" | "year"`，`MlDateRangePicker` 也能選月份與年份區間，全程可用鍵盤操作
+- **`MlThemeToggle` + `useTheme()`**：深色／淺色／跟隨系統，跨分頁與重新整理都記得，載入時不閃爍（`themeInitScript()`，Nuxt 模組會自動加上），切換時從開關位置圓形展開
+- **`MlBarChart` 多組資料**：分組、堆疊與百分比堆疊，可顯示總計，圖例可切換數列，滑過顯示該類別所有數值
+- 共 128 個元件，Vue 與 React 都有
 
 ## 0.10 版新功能
 
@@ -136,6 +145,8 @@ createApp(App).use(MalilionUI).mount('#app')
 
 介面文字預設是繁體中文。要換成英文：`import MalilionUI, { en } from '@malilion/ui'`，然後 `app.use(MalilionUI, { locale: en })`；只換局部就用 `<MlConfigProvider :locale="en">` 包起來。
 
+夜間（Night Pride）／日光（Daylight）／跟隨系統：放一個 `<MlThemeToggle />`（或呼叫 `useTheme()`），選擇會記在 localStorage。把 `themeInitScript()` 放進 `<head>` 的行內 `<script>`，回訪者就不會先閃一下錯的主題；Nuxt 模組會自動加上，並自動匯入 `useMlTheme()`。
+
 ```vue
 <template>
   <MlCard eyebrow="Pride / 01" title="獅群儀表板" rivets>
@@ -221,9 +232,9 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 
 | 分類 | 元件 |
 | --- | --- |
-| 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlConfigProvider` |
+| 基礎 | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlConfigProvider` · `MlThemeToggle` |
 | 版面 | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
-| 表單 | `MlInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` |
+| 表單 | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` |
 | 回饋 | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` |
 | 資料展示 | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlCodeBlock` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` |
 | 圖表 | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` |
@@ -253,7 +264,7 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 | MlReveal | effect / stagger | `'fade-up' \| 'zoom' \| 'blur' \| …` / 毫秒 | `'fade-up'` / `0` | 捲進畫面時出場；`stagger` 讓子元素依序出場 |
 | MlDropdown | selectable | boolean | `false` | 單選選單；v-model 存選中的值，並用腳印標記 |
 | MlMascot | pose / frame | `'avatar' \| 'full'` / `'none' \| 'ring' \| 'hex'` | `'avatar'` / `'none'` | 碼力獅本獅，頭像或全身 |
-| MlBarChart | data / highlight | `{ label, value }[]` / `'max' \| number \| null` | — / `'max'` | 自動取整數刻度，最高的一根會亮起 |
+| MlBarChart | data / highlight / series / labels / mode / showTotal | `{ label, value }[]` / `'max' \| number \| null` / `MlBarSeries[]` / `string[]` / `'grouped' \| 'stacked' \| 'percent'` / `boolean` | — / `'max'` / — / — / `'grouped'` / `false` | 自動取整數刻度，最高的一根會亮起；傳 series 變成多數列（分組、堆疊、百分比堆疊），圖例可切換數列 |
 | MlPaw | tone | `'gold' \| 'bean' \| 'steel' \| 'tech' \| 'current'` | `'gold'` | `current` 會跟隨文字顏色 |
 
 每個元件的完整屬性都在[文件站](https://malilion.github.io/MalilionUI/)。

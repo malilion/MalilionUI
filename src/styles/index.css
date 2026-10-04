@@ -69,3 +69,6 @@
 @import './components/cropper.css';
 @import './components/wheel.css';
 @import './components/region.css';
+@import './components/theme-toggle.css';
+@import './components/checkbox-group.css';
+@import './components/password.css';

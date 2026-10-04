@@ -157,3 +157,87 @@ export function funnelStages(data: { label: string; value: number; tone?: MlChar
     width: max > 0 ? Math.max(minWidth, Math.max(0, d.value) / max) : minWidth,
   }))
 }
+
+/* ── Multi-series bar math (framework-free, shared by Vue and React) ── */
+
+export type BarMode = 'grouped' | 'stacked' | 'percent'
+
+export interface BarSegment {
+  /** Index into the series array. */
+  series: number
+  value: number
+  /** value ÷ the category's positive total (0 for negatives). */
+  share: number
+  /** Where the bar starts and ends on the value axis (a 0–1 ratio in percent mode). */
+  from: number
+  to: number
+}
+
+export interface BarCategory {
+  segments: BarSegment[]
+  /** Sum of the visible values. */
+  total: number
+  /** Axis value of the bar's top edge — where a total label sits. */
+  top: number
+}
+
+/**
+ * A zero-anchored axis with round steps: at least `ticks` steps, and zero is
+ * always a gridline so positive and negative bars share one baseline.
+ */
+export function zeroScale(min: number, max: number, ticks = 4) {
+  const lo0 = Math.min(0, Number.isFinite(min) ? min : 0)
+  const hi0 = Math.max(0, Number.isFinite(max) ? max : 0)
+  const step = niceStep(hi0 - lo0 || 1, Math.max(1, ticks))
+  const lo = +(Math.floor(lo0 / step + 1e-9) * step).toFixed(10)
+  const hi = +Math.max(lo + step * ticks, Math.ceil(hi0 / step - 1e-9) * step).toFixed(10)
+  const values: number[] = []
+  for (let v = lo; v <= hi + step / 2; v += step) values.push(+v.toFixed(10))
+  return { lo, hi, step, values }
+}
+
+/**
+ * Bar extents per category for grouped, stacked (positives up, negatives down
+ * from zero) and 100%-stacked bars, plus the axis that fits them. Hidden series
+ * are left out; with every series hidden the axis still covers all of them.
+ */
+export function barLayout(series: number[][], count: number, mode: BarMode, visible: boolean[] = [], ticks = 4) {
+  const on = series.map((_, i) => visible[i] !== false)
+  const build = (use: boolean[]) =>
+    Array.from({ length: count }, (_, c): BarCategory => {
+      const idx = series.map((_, i) => i).filter((i) => use[i])
+      const values = idx.map((i) => (Number.isFinite(series[i][c]) ? series[i][c] : 0))
+      const positive = values.reduce((s, v) => s + Math.max(0, v), 0)
+      const total = values.reduce((s, v) => s + v, 0)
+      let up = 0
+      let down = 0
+      const segments = idx.map((i, k): BarSegment => {
+        const value = values[k]
+        const share = positive > 0 ? Math.max(0, value) / positive : 0
+        if (mode === 'grouped') return { series: i, value, share, from: 0, to: value }
+        if (mode === 'percent') {
+          const from = up
+          up += share
+          return { series: i, value, share, from, to: up }
+        }
+        if (value >= 0) {
+          const from = up
+          up += value
+          return { series: i, value, share, from, to: up }
+        }
+        const from = down
+        down += value
+        return { series: i, value, share, from, to: down }
+      })
+      const top = mode === 'percent' ? (positive > 0 ? 1 : 0) : mode === 'stacked' ? up : Math.max(0, ...values)
+      return { segments, total, top }
+    })
+  const categories = build(on)
+  if (mode === 'percent') {
+    const step = 1 / Math.max(1, ticks)
+    const values = Array.from({ length: Math.max(1, ticks) + 1 }, (_, i) => +(i * step).toFixed(10))
+    return { categories, lo: 0, hi: 1, step, values }
+  }
+  const extent = (on.some(Boolean) ? categories : build(series.map(() => true))).flatMap((c) => c.segments.flatMap((s) => [s.from, s.to]))
+  return { categories, ...zeroScale(Math.min(0, ...extent), Math.max(0, ...extent), ticks) }
+}

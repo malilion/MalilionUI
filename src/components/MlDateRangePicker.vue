@@ -3,6 +3,7 @@ import { computed, nextTick, ref, useId } from 'vue'
 import MlCalendar from './MlCalendar.vue'
 import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
+import MlPeriodPanel from './MlPeriodPanel.vue'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
 import { useLocale } from '../locale'
@@ -32,34 +33,63 @@ const props = withDefaults(
     disabled?: boolean
     placement?: 'bottom-start' | 'bottom-end'
     id?: string
+    /**
+     * Pick days, months or years. For 'month' / 'year' both ends are the first
+     * day of their period, and there are no default presets.
+     */
+    type?: 'date' | 'month' | 'year'
   }>(),
   {
     weekStartsOn: 0,
-    format: () => ({ year: 'numeric', month: '2-digit', day: '2-digit' }),
     placement: 'bottom-start',
+    type: 'date',
   },
 )
 
 const emit = defineEmits<{ change: [range: MlDateRange] }>()
 const model = defineModel<MlDateRange>({ default: () => [null, null] })
 const { fieldError, fieldRequired } = useFormField(props)
-const presetList = computed(() => props.presets ?? defaultPresets(loc.value))
+const presetList = computed(() => props.presets ?? (props.type === 'date' ? defaultPresets(loc.value) : []))
 
 const open = ref(false)
 const root = ref<HTMLElement>()
 const trigger = ref<HTMLButtonElement>()
-const calendar = ref<InstanceType<typeof MlCalendar>>()
+const calendar = ref<{ focus(): void }>()
 /** The range being picked inside the panel; committed once both ends are set. */
 const draft = ref<MlDateRange>([null, null])
 const autoId = useId()
 const controlId = computed(() => props.id ?? `ml-daterange-${autoId}`)
 const panelId = `${controlId.value}-panel`
 
-const fmt = (d: Date | null) => (d ? new Intl.DateTimeFormat(props.locale ?? loc.value.name, props.format).format(d) : '')
+const fmt = (d: Date | null) => {
+  if (!d) return ''
+  if (props.type === 'date' || props.format)
+    return new Intl.DateTimeFormat(props.locale ?? loc.value.name, props.format ?? RANGE_FORMAT).format(d)
+  return formatPeriod(d, props.type, loc.value.date.period)
+}
 const hasValue = computed(() => !!(model.value[0] || model.value[1]))
+/** Length of the range in days (or months / years). */
 const days = computed(() => {
   const [a, b] = model.value
-  return a && b ? Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / 86_400_000) + 1 : 0
+  if (!a || !b) return 0
+  if (props.type !== 'date') return comparePeriods(b, a, props.type) + 1
+  return Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / 86_400_000) + 1
+})
+const text = computed(() => {
+  const t = loc.value.date
+  if (props.type === 'date')
+    return { start: t.rangeStart, end: t.rangeEnd, pick: t.pickRange, clear: t.clearRange, first: t.pickStart, next: t.pickEnd, count: t.days }
+  const p = t.period
+  const type = props.type
+  return {
+    start: p.rangeStart[type],
+    end: p.rangeEnd[type],
+    pick: p.pickRange[type],
+    clear: p.clearRange[type],
+    first: p.pickStart[type],
+    next: p.pickEnd,
+    count: (n: number) => p.count(n, type),
+  }
 })
 
 async function show() {
@@ -107,9 +137,10 @@ useOutsidePointer(root, () => open.value, () => hide(false))
 </script>
 
 <script lang="ts">
-import { addDays, startOfDay } from './dates'
+import { addDays, comparePeriods, formatPeriod, startOfDay } from './dates'
 import type { MlLocale } from '../locale'
 
+const RANGE_FORMAT: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' }
 const today = () => startOfDay(new Date())
 const defaultPresets = (t: MlLocale): MlRangePreset[] => [
   { label: t.date.today, value: () => [today(), today()] },
@@ -150,16 +181,16 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
           :disabled="disabled"
           @click="open ? hide() : show()"
         >
-          <span :class="{ 'ml-datepicker__placeholder': !model[0] }">{{ fmt(model[0]) || (startPlaceholder ?? loc.date.rangeStart) }}</span>
+          <span :class="{ 'ml-datepicker__placeholder': !model[0] }">{{ fmt(model[0]) || (startPlaceholder ?? text.start) }}</span>
           <MlIcon name="arrowRight" class="ml-daterange__arrow" />
-          <span :class="{ 'ml-datepicker__placeholder': !model[1] }">{{ fmt(model[1]) || (endPlaceholder ?? loc.date.rangeEnd) }}</span>
+          <span :class="{ 'ml-datepicker__placeholder': !model[1] }">{{ fmt(model[1]) || (endPlaceholder ?? text.end) }}</span>
         </button>
-        <span v-if="days" class="ml-daterange__days" aria-hidden="true">{{ loc.date.days(days) }}</span>
+        <span v-if="days" class="ml-daterange__days" aria-hidden="true">{{ text.count(days) }}</span>
         <button
           v-if="clearable && hasValue && !disabled"
           type="button"
           class="ml-datepicker__clear"
-          :aria-label="loc.date.clearRange"
+          :aria-label="text.clear"
           @click="clear"
         >
           <MlIcon name="close" />
@@ -170,7 +201,7 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
           v-if="open"
           :id="panelId"
           role="dialog"
-          :aria-label="loc.date.pickRange"
+          :aria-label="text.pick"
           :class="['ml-datepicker__panel', 'ml-daterange__panel', `ml-datepicker__panel--${placement}`]"
           @keydown="onPanelKeydown"
         >
@@ -181,6 +212,7 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
           </ul>
           <div class="ml-daterange__cal">
             <MlCalendar
+              v-if="type === 'date'"
               ref="calendar"
               mode="range"
               :range="draft"
@@ -192,8 +224,20 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
               :week-starts-on="weekStartsOn"
               @update:range="onDraft"
             />
+            <MlPeriodPanel
+              v-else
+              ref="calendar"
+              :type="type"
+              mode="range"
+              :range="draft"
+              :min="min"
+              :max="max"
+              :disabled-date="disabledDate"
+              :locale="locale"
+              @update:range="onDraft"
+            />
             <p class="ml-daterange__status" aria-live="polite">
-              {{ draft[0] && !draft[1] ? loc.date.pickEnd(fmt(draft[0])) : loc.date.pickStart }}
+              {{ draft[0] && !draft[1] ? text.next(fmt(draft[0])) : text.first }}
             </p>
           </div>
         </div>

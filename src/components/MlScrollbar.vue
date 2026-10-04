@@ -142,6 +142,8 @@ onMounted(() => {
     observer = new ResizeObserver(() => requestAnimationFrame(update))
     if (wrap.value) observer.observe(wrap.value)
     if (view.value) observer.observe(view.value)
+    // Tracks resize when late-loading CSS arrives, even if the content doesn't.
+    for (const t of [trackY.value, trackX.value]) if (t) observer.observe(t)
   }
 })
 onBeforeUnmount(() => {

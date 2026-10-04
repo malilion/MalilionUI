@@ -17,27 +17,7 @@ const group = computed(() => groups.find((g) => g.id === page.value.group))
 const drawer = ref(false)
 watch(route, () => (drawer.value = false))
 
-/* Theme — remembered per browser; storage can be unavailable, so guard it */
-function readTheme() {
-  try {
-    return localStorage.getItem('ml-docs-theme') === 'light'
-  } catch {
-    return false
-  }
-}
-const daylight = ref(readTheme())
-watch(
-  daylight,
-  (on) => {
-    document.documentElement.dataset.mlTheme = on ? 'light' : 'dark'
-    try {
-      localStorage.setItem('ml-docs-theme', on ? 'light' : 'dark')
-    } catch {
-      /* private mode: theme just won't persist */
-    }
-  },
-  { immediate: true },
-)
+/* Theme: <MlThemeToggle> + the shared store (main.ts sets the 'ml-docs-theme' key). */
 
 watch(
   page,
@@ -66,7 +46,7 @@ watch(
           <strong>{{ page.title }}</strong>
           <span class="crumbs__zh">{{ page.zh }}</span>
         </p>
-        <MlSwitch v-model="daylight" tone="tech" label="日光模式" class="theme-switch" />
+        <MlThemeToggle label="日光模式" class="theme-switch" />
       </header>
 
       <main class="content">
@@ -218,7 +198,7 @@ body {
     display: none;
   }
 
-  .theme-switch .ml-switch__label {
+  .theme-switch .ml-theme-toggle__label {
     position: absolute;
     width: 1px;
     height: 1px;

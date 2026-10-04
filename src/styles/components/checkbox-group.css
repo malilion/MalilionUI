@@ -1,0 +1,124 @@
+/* Checkbox group — a row / column / tile grid of checkboxes with an optional select-all */
+.ml-check-group {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.ml-check-group__all {
+  justify-self: start;
+  padding-bottom: 10px;
+  border-bottom: 1px dashed var(--ml-line-steel);
+  width: 100%;
+}
+
+.ml-check-group__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 22px;
+}
+
+.ml-check-group--column .ml-check-group__items {
+  flex-direction: column;
+}
+
+.ml-check-group--error .ml-check__box::before {
+  background: var(--ml-danger);
+}
+
+/* Card tiles: a plate per option, the socket rides in the corner */
+.ml-check-group--card .ml-check-group__items {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 190px), 1fr));
+  gap: 12px;
+}
+
+.ml-check-group--card.ml-check-group--column .ml-check-group__items {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check {
+  --_cut: var(--ml-cut);
+  isolation: isolate;
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: space-between;
+  padding: 16px 16px 16px 18px;
+  line-height: 22px;
+  transition: filter var(--ml-dur) var(--ml-ease), transform var(--ml-dur) var(--ml-ease);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check::before,
+.ml-check-group--card .ml-check-group__items .ml-check::after {
+  content: '';
+  position: absolute;
+  z-index: -1;
+  clip-path: polygon(var(--_cut) 0, 100% 0, 100% calc(100% - var(--_cut)),
+      calc(100% - var(--_cut)) 100%, 0 100%, 0 var(--_cut));
+  transition: background var(--ml-dur) var(--ml-ease);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check::before {
+  inset: 0;
+  background: var(--ml-line-steel-strong);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check::after {
+  inset: 1px;
+  background: var(--ml-brushed), var(--ml-plate-fill);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check__input {
+  top: 16px;
+  left: auto;
+  right: 16px;
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check__text > :first-child {
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check:hover:not(.ml-check--disabled) {
+  transform: translateY(-2px);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check:hover:not(.ml-check--disabled)::before {
+  background: var(--ml-line-strong);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check:has(.ml-check__input:checked) {
+  filter: var(--ml-glow-gold);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check:has(.ml-check__input:checked)::before {
+  background: var(--ml-metal-gold);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check:has(.ml-check__input:checked)::after {
+  background:
+    radial-gradient(120% 80% at 100% 0%, rgb(240 173 47 / 0.14), transparent 60%),
+    var(--ml-brushed),
+    var(--ml-plate-fill);
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check__input:focus-visible + .ml-check__box {
+  outline: none;
+}
+
+.ml-check-group--card .ml-check-group__items .ml-check:has(.ml-check__input:focus-visible) {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-check-group--error.ml-check-group--card .ml-check-group__items .ml-check:not(:has(.ml-check__input:checked))::before {
+  background: var(--ml-danger);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-check-group--card .ml-check-group__items .ml-check:hover:not(.ml-check--disabled) {
+    transform: none;
+  }
+}

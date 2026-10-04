@@ -303,6 +303,8 @@ export const Scrollbar = forwardRef(function Scrollbar(
       observer = new ResizeObserver(() => requestAnimationFrame(() => update()))
       if (wrap.current) observer.observe(wrap.current)
       if (view.current) observer.observe(view.current)
+      // Tracks resize when late-loading CSS arrives, even if the content doesn't.
+      for (const t of [trackY.current, trackX.current]) if (t) observer.observe(t)
     }
     return () => {
       observer?.disconnect()

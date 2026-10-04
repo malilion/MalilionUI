@@ -155,3 +155,26 @@
     transition-delay: 0s !important;
   }
 }
+
+/* Theme switches (src/theme.ts puts these classes on <html> for a moment).
+   View Transitions: the new theme grows as a circle from the toggle. */
+:root.ml-theme-vt::view-transition-old(root),
+:root.ml-theme-vt::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+:root.ml-theme-vt::view-transition-new(root) {
+  z-index: 2147483646;
+}
+
+/* Fallback without View Transitions: colours ease across instead of snapping. */
+:root.ml-theme-switching,
+:root.ml-theme-switching *,
+:root.ml-theme-switching *::before,
+:root.ml-theme-switching *::after {
+  transition-property: background-color, border-color, outline-color, color, fill, stroke, box-shadow, transform, opacity !important;
+  transition-duration: var(--ml-theme-switch-dur, 360ms) !important;
+  transition-timing-function: ease !important;
+  transition-delay: 0s !important;
+}

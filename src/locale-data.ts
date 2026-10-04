@@ -40,7 +40,7 @@ export interface MlLocale {
     back: string
   }
   carousel: { label: string; prev: string; next: string; play: string; pause: string; slide: (n: number) => string }
-  calendar: { prevMonth: string; nextMonth: string }
+  calendar: { prevMonth: string; nextMonth: string; prevYear: string; nextYear: string; prevDecade: string; nextDecade: string }
   date: {
     pick: string
     clear: string
@@ -64,6 +64,27 @@ export interface MlLocale {
     time: string
     timeFirst: string
     units: { h: string; m: string; s: string }
+    /** Month / quarter / year picking (MlDatePicker / MlDateRangePicker `type`). */
+    period: {
+      /** Display of a chosen period; `month` is 1–12, `quarter` 1–4. */
+      month: (year: number, month: number) => string
+      quarter: (year: number, quarter: number) => string
+      year: (year: number) => string
+      /** Cell label in the quarter panel. */
+      quarterCell: (quarter: number) => string
+      /** Title of the year panel. */
+      decade: (from: number, to: number) => string
+      pick: { month: string; quarter: string; year: string }
+      clear: { month: string; quarter: string; year: string }
+      rangeStart: { month: string; year: string }
+      rangeEnd: { month: string; year: string }
+      pickRange: { month: string; year: string }
+      clearRange: { month: string; year: string }
+      pickStart: { month: string; year: string }
+      pickEnd: (start: string) => string
+      /** Length badge of a chosen range. */
+      count: (n: number, type: 'month' | 'year') => string
+    }
   }
   countdown: { label: string; days: string; hours: string; minutes: string; seconds: string }
   color: {
@@ -140,9 +161,11 @@ export interface MlLocale {
   heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
   scatter: { summary: (series: number, points: number) => string; table: string; series: string; point: string; x: string; y: string; size: string; trend: (name: string) => string; toggle: (name: string) => string }
   funnel: { summary: (stages: number, rate: string) => string; value: string; fromPrev: string; fromFirst: string; drop: string; start: string }
+  bars: { summary: (mode: 'grouped' | 'stacked' | 'percent', series: number, categories: number) => string; table: string; category: string; total: string; share: string; toggle: (name: string) => string }
   rate: string
   wheel: { label: string; summary: (label: string, prizes: string[]) => string; spin: string; spinning: string; result: (prize: string) => string }
   toast: { region: string; close: string }
+  theme: { label: string; switch: string; dark: string; light: string; system: string; toDark: string; toLight: string }
   qrcode: { tooLong: string; label: (value: string) => string }
   signature: { label: string; placeholder: string; hint: string; undo: string; clear: string; empty: string; signed: (strokes: number) => string; cleared: string }
   cropper: {
@@ -161,6 +184,23 @@ export interface MlLocale {
     status: (width: number, height: number, x: number, y: number, zoom: number) => string
   }
   result: Record<'success' | 'info' | 'warning' | 'error' | '403' | '404' | '500', { title: string; subtitle: string }>
+  checkboxGroup: { all: string }
+  password: {
+    show: string
+    hide: string
+    capsLock: string
+    strength: string
+    /** Score 0 … 4. */
+    levels: [string, string, string, string, string]
+    rules: string
+    met: string
+    unmet: string
+    minLength: (n: number) => string
+    upper: string
+    lower: string
+    digit: string
+    symbol: string
+  }
   form: {
     required: string
     pattern: string
@@ -220,7 +260,7 @@ export const zhTW: MlLocale = {
     pause: '暫停自動播放',
     slide: (n) => `第 ${n} 張`,
   },
-  calendar: { prevMonth: '上個月', nextMonth: '下個月' },
+  calendar: { prevMonth: '上個月', nextMonth: '下個月', prevYear: '上一年', nextYear: '下一年', prevDecade: '上個十年', nextDecade: '下個十年' },
   date: {
     pick: '選擇日期',
     clear: '清除日期',
@@ -244,6 +284,22 @@ export const zhTW: MlLocale = {
     time: '時間',
     timeFirst: '先選日期或時間',
     units: { h: '時', m: '分', s: '秒' },
+    period: {
+      month: (y, m) => `${y} 年 ${m} 月`,
+      quarter: (y, q) => `${y} 年第 ${q} 季`,
+      year: (y) => `${y} 年`,
+      quarterCell: (q) => `第 ${q} 季`,
+      decade: (from, to) => `${from} – ${to} 年`,
+      pick: { month: '選擇月份', quarter: '選擇季度', year: '選擇年份' },
+      clear: { month: '清除月份', quarter: '清除季度', year: '清除年份' },
+      rangeStart: { month: '開始月份', year: '開始年份' },
+      rangeEnd: { month: '結束月份', year: '結束年份' },
+      pickRange: { month: '選擇月份區間', year: '選擇年份區間' },
+      clearRange: { month: '清除月份區間', year: '清除年份區間' },
+      pickStart: { month: '先選開始月份，再選結束月份', year: '先選開始年份，再選結束年份' },
+      pickEnd: (start) => `${start} → 再選結束`,
+      count: (n, type) => (type === 'year' ? `${n} 年` : `${n} 個月`),
+    },
   },
   countdown: { label: '剩餘時間', days: '天', hours: '時', minutes: '分', seconds: '秒' },
   color: {
@@ -342,9 +398,18 @@ export const zhTW: MlLocale = {
     toggle: (n) => `顯示或隱藏「${n}」`,
   },
   funnel: { summary: (n, r) => `漏斗圖：${n} 個階段，整體轉換率 ${r}`, value: '數量', fromPrev: '較上一階段', fromFirst: '整體轉換', drop: '流失', start: '起點' },
+  bars: {
+    summary: (m, s, c) => `${{ grouped: '分組', stacked: '堆疊', percent: '百分比堆疊' }[m]}長條圖：${s} 個數列、${c} 個類別`,
+    table: '長條圖資料',
+    category: '類別',
+    total: '合計',
+    share: '占比',
+    toggle: (n) => `顯示或隱藏「${n}」`,
+  },
   rate: '評分',
   wheel: { label: '幸運轉盤', summary: (l, p) => `${l}：${p.join('、')}`, spin: '開始抽獎', spinning: '轉盤轉動中…', result: (p) => `恭喜！抽中：${p}` },
   toast: { region: '通知', close: '關閉通知' },
+  theme: { label: '佈景主題', switch: '日光模式', dark: '夜間', light: '日光', system: '系統', toDark: '切換為夜間模式', toLight: '切換為日光模式' },
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
   signature: {
     label: '簽名板',
@@ -379,6 +444,22 @@ export const zhTW: MlLocale = {
     '403': { title: '這裡是獅王的領地', subtitle: '你沒有權限進入這個頁面。' },
     '404': { title: '找不到這個頁面', subtitle: '小獅子把它叼走了，或是它從來不存在。' },
     '500': { title: '伺服器打了個盹', subtitle: '我們的工程獅正在搶修，請稍後再回來。' },
+  },
+  checkboxGroup: { all: '全選' },
+  password: {
+    show: '顯示密碼',
+    hide: '隱藏密碼',
+    capsLock: '大寫鎖定已開啟',
+    strength: '密碼強度',
+    levels: ['很弱', '弱', '普通', '強', '很強'],
+    rules: '密碼規則',
+    met: '已符合',
+    unmet: '未符合',
+    minLength: (n) => `至少 ${n} 個字元`,
+    upper: '包含大寫英文字母',
+    lower: '包含小寫英文字母',
+    digit: '包含數字',
+    symbol: '包含符號',
   },
   form: {
     required: '此欄位為必填',
@@ -439,7 +520,14 @@ export const en: MlLocale = {
     pause: 'Pause autoplay',
     slide: (n) => `Slide ${n}`,
   },
-  calendar: { prevMonth: 'Previous month', nextMonth: 'Next month' },
+  calendar: {
+    prevMonth: 'Previous month',
+    nextMonth: 'Next month',
+    prevYear: 'Previous year',
+    nextYear: 'Next year',
+    prevDecade: 'Previous decade',
+    nextDecade: 'Next decade',
+  },
   date: {
     pick: 'Pick a date',
     clear: 'Clear date',
@@ -463,6 +551,22 @@ export const en: MlLocale = {
     time: 'Time',
     timeFirst: 'Pick a date or time first',
     units: { h: 'h', m: 'm', s: 's' },
+    period: {
+      month: (y, m) => `${y}-${String(m).padStart(2, '0')}`,
+      quarter: (y, q) => `${y} Q${q}`,
+      year: (y) => String(y),
+      quarterCell: (q) => `Q${q}`,
+      decade: (from, to) => `${from} – ${to}`,
+      pick: { month: 'Pick a month', quarter: 'Pick a quarter', year: 'Pick a year' },
+      clear: { month: 'Clear month', quarter: 'Clear quarter', year: 'Clear year' },
+      rangeStart: { month: 'Start month', year: 'Start year' },
+      rangeEnd: { month: 'End month', year: 'End year' },
+      pickRange: { month: 'Pick a month range', year: 'Pick a year range' },
+      clearRange: { month: 'Clear month range', year: 'Clear year range' },
+      pickStart: { month: 'Pick a start month, then an end month', year: 'Pick a start year, then an end year' },
+      pickEnd: (start) => `${start} → now pick the end`,
+      count: (n, type) => `${n} ${type}${n === 1 ? '' : 's'}`,
+    },
   },
   countdown: { label: 'Time left', days: 'Days', hours: 'Hours', minutes: 'Min', seconds: 'Sec' },
   color: {
@@ -561,9 +665,18 @@ export const en: MlLocale = {
     toggle: (n) => `Show or hide “${n}”`,
   },
   funnel: { summary: (n, r) => `Funnel chart: ${n} stages, ${r} overall conversion`, value: 'Count', fromPrev: 'From previous', fromFirst: 'Overall', drop: 'Dropped', start: 'Start' },
+  bars: {
+    summary: (m, s, c) => `${{ grouped: 'Grouped', stacked: 'Stacked', percent: '100% stacked' }[m]} bar chart: ${s} series, ${c} categories`,
+    table: 'Bar chart data',
+    category: 'Category',
+    total: 'Total',
+    share: 'Share',
+    toggle: (n) => `Show or hide “${n}”`,
+  },
   rate: 'Rating',
   wheel: { label: 'Prize wheel', summary: (l, p) => `${l}: ${p.join(', ')}`, spin: 'Spin the wheel', spinning: 'Spinning…', result: (p) => `You won: ${p}` },
   toast: { region: 'Notifications', close: 'Dismiss notification' },
+  theme: { label: 'Theme', switch: 'Light mode', dark: 'Dark', light: 'Light', system: 'System', toDark: 'Switch to dark theme', toLight: 'Switch to light theme' },
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },
   signature: {
     label: 'Signature pad',
@@ -598,6 +711,22 @@ export const en: MlLocale = {
     '403': { title: 'The lion king’s territory', subtitle: 'You don’t have access to this page.' },
     '404': { title: 'Page not found', subtitle: 'A cub ran off with it — or it never existed.' },
     '500': { title: 'The server took a nap', subtitle: 'Our engineer lions are on it. Please come back soon.' },
+  },
+  checkboxGroup: { all: 'Select all' },
+  password: {
+    show: 'Show password',
+    hide: 'Hide password',
+    capsLock: 'Caps Lock is on',
+    strength: 'Strength',
+    levels: ['Very weak', 'Weak', 'Fair', 'Strong', 'Very strong'],
+    rules: 'Password rules',
+    met: 'met',
+    unmet: 'not met',
+    minLength: (n) => `At least ${n} characters`,
+    upper: 'An uppercase letter',
+    lower: 'A lowercase letter',
+    digit: 'A number',
+    symbol: 'A symbol',
   },
   form: {
     required: 'This field is required',
