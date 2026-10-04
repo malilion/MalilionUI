@@ -325,6 +325,41 @@ export interface MlLocale {
     hint: string
     moved: (title: string, when: string) => string
   }
+  filter: {
+    label: string
+    search: string
+    reset: string
+    more: (n: number) => string
+    less: string
+    all: string
+    min: string
+    max: string
+    clear: (field: string) => string
+    clearAll: string
+    applied: (n: number) => string
+  }
+  query: {
+    label: string
+    and: string
+    or: string
+    combinator: string
+    addRule: string
+    addGroup: string
+    removeRule: string
+    removeGroup: string
+    field: string
+    operator: string
+    value: string
+    from: string
+    to: string
+    yes: string
+    no: string
+    empty: string
+    ops: Record<'contains' | 'notContains' | 'eq' | 'neq' | 'startsWith' | 'endsWith' | 'gt' | 'gte' | 'lt' | 'lte' | 'between' | 'in' | 'notIn' | 'before' | 'after' | 'empty' | 'notEmpty' | 'isTrue' | 'isFalse', string>
+  }
+  waterfall: { table: string; category: string; change: string; running: string; total: string; increase: string; decrease: string; summary: (n: number) => string }
+  boxplot: { table: string; group: string; min: string; q1: string; median: string; q3: string; max: string; mean: string; outliers: string; count: string; summary: (n: number) => string }
+  bullet: { value: string; target: string; describe: (label: string, value: string, target: string | null, band: string | null) => string; bands: string[] }
   player: {
     video: string
     audio: string
@@ -904,6 +939,87 @@ export const zhTW: MlLocale = {
     allDay: '全天',
     hint: '方向鍵上下移動一格、左右換日，Shift + 上下調整結束時間；在空白處拖曳可以新增行程。',
     moved: (title, when) => `${title} 改到 ${when}`,
+  },
+  filter: {
+    label: '篩選',
+    search: '搜尋',
+    reset: '重設',
+    more: (n) => `更多篩選（${n}）`,
+    less: '收起篩選',
+    all: '全部',
+    min: '最小',
+    max: '最大',
+    clear: (f) => `清除「${f}」`,
+    clearAll: '全部清除',
+    applied: (n) => `已套用 ${n} 個篩選`,
+  },
+  query: {
+    label: '查詢條件',
+    and: '且',
+    or: '或',
+    combinator: '條件組合方式',
+    addRule: '新增條件',
+    addGroup: '新增群組',
+    removeRule: '移除條件',
+    removeGroup: '移除群組',
+    field: '欄位',
+    operator: '運算',
+    value: '值',
+    from: '從',
+    to: '到',
+    yes: '是',
+    no: '否',
+    empty: '還沒有條件：所有資料都符合',
+    ops: {
+      contains: '包含',
+      notContains: '不包含',
+      eq: '等於',
+      neq: '不等於',
+      startsWith: '開頭是',
+      endsWith: '結尾是',
+      gt: '大於',
+      gte: '大於等於',
+      lt: '小於',
+      lte: '小於等於',
+      between: '介於',
+      in: '是其中之一',
+      notIn: '不是其中之一',
+      before: '早於',
+      after: '晚於',
+      empty: '是空的',
+      notEmpty: '不是空的',
+      isTrue: '是',
+      isFalse: '否',
+    },
+  },
+  waterfall: {
+    table: '瀑布圖資料',
+    category: '項目',
+    change: '增減',
+    running: '累計',
+    total: '小計',
+    increase: '增加',
+    decrease: '減少',
+    summary: (n) => `瀑布圖，${n} 個項目。用左右鍵逐項查看。`,
+  },
+  boxplot: {
+    table: '箱形圖資料',
+    group: '組別',
+    min: '最小值',
+    q1: '第一四分位數',
+    median: '中位數',
+    q3: '第三四分位數',
+    max: '最大值',
+    mean: '平均',
+    outliers: '離群值',
+    count: '樣本數',
+    summary: (n) => `箱形圖，${n} 組。用左右鍵逐組查看。`,
+  },
+  bullet: {
+    value: '實際',
+    target: '目標',
+    describe: (label, value, target, band) => [`${label}：${value}`, target && `目標 ${target}`, band && `落在「${band}」區間`].filter(Boolean).join('，'),
+    bands: ['差', '普通', '良好', '優秀'],
   },
   player: {
     video: '影片播放器',
@@ -1541,6 +1657,87 @@ export const en: MlLocale = {
     allDay: 'All day',
     hint: 'Arrow up/down moves by one slot, left/right by a day; Shift + up/down changes the end. Drag on an empty slot to add an event.',
     moved: (title, when) => `${title} moved to ${when}`,
+  },
+  filter: {
+    label: 'Filters',
+    search: 'Search',
+    reset: 'Reset',
+    more: (n) => `More filters (${n})`,
+    less: 'Fewer filters',
+    all: 'All',
+    min: 'Min',
+    max: 'Max',
+    clear: (f) => `Clear “${f}”`,
+    clearAll: 'Clear all',
+    applied: (n) => `${n} filter${n === 1 ? '' : 's'} applied`,
+  },
+  query: {
+    label: 'Query',
+    and: 'AND',
+    or: 'OR',
+    combinator: 'Match',
+    addRule: 'Add rule',
+    addGroup: 'Add group',
+    removeRule: 'Remove rule',
+    removeGroup: 'Remove group',
+    field: 'Field',
+    operator: 'Operator',
+    value: 'Value',
+    from: 'From',
+    to: 'To',
+    yes: 'Yes',
+    no: 'No',
+    empty: 'No rules yet: everything matches',
+    ops: {
+      contains: 'contains',
+      notContains: 'does not contain',
+      eq: 'equals',
+      neq: 'does not equal',
+      startsWith: 'starts with',
+      endsWith: 'ends with',
+      gt: '>',
+      gte: '≥',
+      lt: '<',
+      lte: '≤',
+      between: 'between',
+      in: 'is any of',
+      notIn: 'is none of',
+      before: 'before',
+      after: 'after',
+      empty: 'is empty',
+      notEmpty: 'is not empty',
+      isTrue: 'is true',
+      isFalse: 'is false',
+    },
+  },
+  waterfall: {
+    table: 'Waterfall data',
+    category: 'Item',
+    change: 'Change',
+    running: 'Running total',
+    total: 'Subtotal',
+    increase: 'Increase',
+    decrease: 'Decrease',
+    summary: (n) => `Waterfall chart, ${n} items. Use the arrow keys to step through them.`,
+  },
+  boxplot: {
+    table: 'Box plot data',
+    group: 'Group',
+    min: 'Min',
+    q1: 'Q1',
+    median: 'Median',
+    q3: 'Q3',
+    max: 'Max',
+    mean: 'Mean',
+    outliers: 'Outliers',
+    count: 'Count',
+    summary: (n) => `Box plot, ${n} groups. Use the arrow keys to step through them.`,
+  },
+  bullet: {
+    value: 'Actual',
+    target: 'Target',
+    describe: (label, value, target, band) => [`${label}: ${value}`, target && `target ${target}`, band && `in the “${band}” band`].filter(Boolean).join(', '),
+    bands: ['Poor', 'Fair', 'Good', 'Excellent'],
   },
   player: {
     video: 'Video player',
