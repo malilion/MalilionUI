@@ -76,20 +76,39 @@ function pick(clientY: number) {
   })
   const key = buttons[railKeyAt(centers, clientY)].dataset.key
   if (key) jump(key)
+  return key
 }
+
+// No pointer capture: a finger already stays with the rail, and capturing would
+// send the click that ends a drag to the <nav>, where it bubbles out as a click
+// on nothing. Instead the click that ends a drag onto another key is dropped.
+let downKey: string | undefined
+let draggedAway = false
 
 function onPointerDown(event: PointerEvent) {
   if (event.button !== 0) return
   event.preventDefault()
   dragging.value = true
-  ;(event.currentTarget as HTMLElement).setPointerCapture?.(event.pointerId)
-  pick(event.clientY)
+  draggedAway = false
+  downKey = pick(event.clientY)
 }
 function onPointerMove(event: PointerEvent) {
-  if (dragging.value) pick(event.clientY)
+  if (dragging.value && pick(event.clientY) !== downKey) draggedAway = true
 }
 function onPointerUp() {
   dragging.value = false
+}
+
+function onKeyClick(key: string) {
+  if (draggedAway) draggedAway = false
+  else jump(key)
+}
+
+/** A mouse drag between keys clicks the rail itself; keep that click from reaching outer handlers. */
+function onRailClick(event: MouseEvent) {
+  if (event.target !== event.currentTarget) return
+  draggedAway = false
+  event.stopPropagation()
 }
 
 function onKeydown(event: KeyboardEvent) {
@@ -142,7 +161,9 @@ defineExpose({ jump })
       @pointermove="onPointerMove"
       @pointerup="onPointerUp"
       @pointercancel="onPointerUp"
+      @pointerleave="onPointerUp"
       @keydown="onKeydown"
+      @click="onRailClick"
     >
       <button
         v-for="key in keys"
@@ -154,7 +175,7 @@ defineExpose({ jump })
         :aria-current="key === active ? 'true' : undefined"
         :disabled="!present.has(key)"
         :tabindex="key === active ? 0 : -1"
-        @click="jump(key)"
+        @click="onKeyClick(key)"
       >
         {{ key }}
       </button>

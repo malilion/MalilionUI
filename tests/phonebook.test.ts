@@ -2,7 +2,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import { mount, type VueWrapper } from '@vue/test-utils'
-import { MlIndexBar, MlZhuyin, annotateZhuyin, zhuyinPieces, clearZhuyin, formatZhuyin, groupIndexItems, indexKey, parseZhuyin, pinyinToZhuyin, registerZhuyin } from '../src'
+import { MlIndexBar, MlZhuyin, annotateZhuyin, zhuyinPieces, clearZhuyin, formatZhuyin, groupIndexItems, indexKey, parseZhuyin, pinyinToZhuyin, registerZhuyin, zhuyinToPinyin } from '../src'
 import { activeGroup, railKeyAt } from '../src/components/index-bar'
 
 let wrapper: VueWrapper | undefined
@@ -59,6 +59,26 @@ describe('zhuyin syllables', () => {
     expect(pinyinToZhuyin('hello')).toBe('')
     expect(pinyinToZhuyin('yx')).toBe('')
     expect(pinyinToZhuyin('')).toBe('')
+  })
+
+  it.each([
+    ['ㄇㄚˇ', 'mǎ'], ['ㄐㄩㄝˊ', 'jué'], ['ㄓ', 'zhī'], ['ㄕˋ', 'shì'], ['ㄗ', 'zī'], ['ㄌㄩˋ', 'lǜ'], ['ㄋㄩˇ', 'nǚ'],
+    ['ㄌㄩㄝˋ', 'lüè'], ['ㄐㄩㄥˇ', 'jiǒng'], ['ㄒㄩㄥ', 'xiōng'], ['ㄧ', 'yī'], ['ㄧㄡˇ', 'yǒu'], ['ㄌㄧㄡˊ', 'liú'],
+    ['ㄍㄨㄟˇ', 'guǐ'], ['ㄨㄥ', 'wēng'], ['ㄉㄨㄥˋ', 'dòng'], ['ㄩㄢˊ', 'yuán'], ['ㄩㄥˇ', 'yǒng'], ['ㄦˋ', 'èr'],
+    ['ㄅㄛˊ', 'bó'], ['ㄈㄥ', 'fēng'], ['ㄓㄨㄤ', 'zhuāng'], ['ㄒㄧㄚˋ', 'xià'], ['ㄡ', 'ōu'], ['ㄌㄡˊ', 'lóu'], ['˙ㄉㄜ', 'de'], ['ㄉㄜ˙', 'de'],
+  ])('注音 %s → %s', (zy, py) => {
+    expect(zhuyinToPinyin(zy)).toBe(py)
+    // And back again.
+    expect(parseZhuyin(pinyinToZhuyin(py))).toEqual(parseZhuyin(zy))
+  })
+
+  it('zhuyinToPinyin: numbered / plain tones and non-syllables', () => {
+    expect(zhuyinToPinyin('ㄇㄚˇ', { tone: 'number' })).toBe('ma3')
+    expect(zhuyinToPinyin('˙ㄇㄚ', { tone: 'number' })).toBe('ma5')
+    expect(zhuyinToPinyin('ㄐㄩㄝˊ', { tone: 'none' })).toBe('jue')
+    expect(zhuyinToPinyin('ㄅ')).toBe('')
+    expect(zhuyinToPinyin('ma3')).toBe('')
+    expect(zhuyinToPinyin('')).toBe('')
   })
 })
 
@@ -238,6 +258,37 @@ describe('MlIndexBar', () => {
     expect(wrapper.attributes('style')).toContain('--ml-indexbar-h: 50vh')
     await wrapper.find('.ml-indexbar__item').trigger('click')
     expect((wrapper.emitted('item-click')?.[0][0] as { label: string }).label).toBe('林美玲')
+  })
+
+  it('a drag across the rail neither jumps back on release nor leaks a click outside', async () => {
+    let outside = 0
+    const count = () => outside++
+    document.body.addEventListener('click', count)
+    wrapper = mount(MlIndexBar, { props: { items: contacts }, attachTo: document.body })
+    const list = wrapper.find('.ml-indexbar__list').element as HTMLElement
+    wrapper.findAll('.ml-indexbar__group').forEach((s, i) => Object.defineProperty(s.element, 'offsetTop', { value: i * 100, configurable: true }))
+    const keys = wrapper.findAll('.ml-indexbar__key')
+    keys.forEach((k, i) => (k.element.getBoundingClientRect = () => ({ top: i * 20, height: 20, bottom: i * 20 + 20 }) as DOMRect))
+    const nav = wrapper.find('nav').element
+    const pointer = (type: string, y: number) => nav.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, clientY: y, button: 0, pointerId: 1 }))
+    pointer('pointerdown', 10)
+    pointer('pointermove', 50)
+    pointer('pointerup', 50)
+    expect(list.scrollTop).toBe(200)
+    // Touch: the click lands on the key the finger went down on — it must not jump back.
+    keys[0].element.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await nextTick()
+    expect(list.scrollTop).toBe(200)
+    expect(wrapper.find('.ml-indexbar__key--active').text()).toBe('ㄨ')
+    // Mouse: the click lands on the rail itself — it must not reach outer handlers.
+    pointer('pointerdown', 10)
+    pointer('pointermove', 50)
+    nav.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(outside).toBe(1)
+    // A plain click still works.
+    keys[1].element.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    expect(list.scrollTop).toBe(100)
+    document.body.removeEventListener('click', count)
   })
 
   it('empty state', () => {

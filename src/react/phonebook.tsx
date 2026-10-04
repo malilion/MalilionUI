@@ -86,14 +86,25 @@ function IndexBarInner<T extends MlIndexBarItem>(
     })
     const key = buttons[railKeyAt(centers, clientY)].dataset.key
     if (key) jump(key)
+    return key
   }
 
+  // No pointer capture: a finger already stays with the rail, and capturing would
+  // send the click that ends a drag to the <nav>, where it bubbles out as a click
+  // on nothing. Instead the click that ends a drag onto another key is dropped.
+  const drag = useRef({ downKey: undefined as string | undefined, away: false })
   const onPointerDown = (e: ReactPointerEvent<HTMLElement>) => {
     if (e.button !== 0) return
     e.preventDefault()
     setDragging(true)
-    e.currentTarget.setPointerCapture?.(e.pointerId)
-    pick(e.clientY)
+    drag.current = { downKey: pick(e.clientY), away: false }
+  }
+  const onPointerMove = (e: ReactPointerEvent<HTMLElement>) => {
+    if (dragging && pick(e.clientY) !== drag.current.downKey) drag.current.away = true
+  }
+  const onKeyClick = (key: string) => {
+    if (drag.current.away) drag.current.away = false
+    else jump(key)
   }
 
   const focusKey = useRef<string>(undefined)
@@ -153,10 +164,17 @@ function IndexBarInner<T extends MlIndexBarItem>(
           className="ml-indexbar__rail"
           aria-label={label ?? loc.indexBar.label}
           onPointerDown={onPointerDown}
-          onPointerMove={(e) => dragging && pick(e.clientY)}
+          onPointerMove={onPointerMove}
           onPointerUp={() => setDragging(false)}
           onPointerCancel={() => setDragging(false)}
+          onPointerLeave={() => setDragging(false)}
           onKeyDown={onKeyDown}
+          onClick={(e) => {
+            // A mouse drag between keys clicks the rail itself; keep that click from reaching outer handlers.
+            if (e.target !== e.currentTarget) return
+            drag.current.away = false
+            e.stopPropagation()
+          }}
         >
           {keys.map((key) => (
             <button
@@ -168,7 +186,7 @@ function IndexBarInner<T extends MlIndexBarItem>(
               aria-current={key === active ? 'true' : undefined}
               disabled={!present.has(key)}
               tabIndex={key === active ? 0 : -1}
-              onClick={() => jump(key)}
+              onClick={() => onKeyClick(key)}
             >
               {key}
             </button>

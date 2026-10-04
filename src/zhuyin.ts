@@ -115,6 +115,62 @@ export function pinyinToZhuyin(syllable: string) {
   return symbols ? formatZhuyin({ symbols, tone }) : ''
 }
 
+/* ── 注音 → Pinyin ───────────────────────────────────── */
+
+const TO_INITIAL: Record<string, string> = Object.fromEntries(INITIALS.map(([p, z]) => [z, p]))
+
+// Rhymes after a consonant ('' is the bare zhi / chi / shi / ri / zi / ci / si).
+const TO_FINAL: Record<string, string> = {
+  '': 'i', ㄚ: 'a', ㄛ: 'o', ㄜ: 'e', ㄝ: 'ê', ㄞ: 'ai', ㄟ: 'ei', ㄠ: 'ao', ㄡ: 'ou', ㄢ: 'an', ㄣ: 'en', ㄤ: 'ang', ㄥ: 'eng', ㄦ: 'er',
+  ㄧ: 'i', ㄧㄚ: 'ia', ㄧㄛ: 'io', ㄧㄝ: 'ie', ㄧㄞ: 'iai', ㄧㄠ: 'iao', ㄧㄡ: 'iu', ㄧㄢ: 'ian', ㄧㄣ: 'in', ㄧㄤ: 'iang', ㄧㄥ: 'ing',
+  ㄨ: 'u', ㄨㄚ: 'ua', ㄨㄛ: 'uo', ㄨㄞ: 'uai', ㄨㄟ: 'ui', ㄨㄢ: 'uan', ㄨㄣ: 'un', ㄨㄤ: 'uang', ㄨㄥ: 'ong',
+  ㄩ: 'ü', ㄩㄝ: 'üe', ㄩㄢ: 'üan', ㄩㄣ: 'ün', ㄩㄥ: 'iong',
+}
+
+// Whole syllables with no consonant.
+const TO_ZERO: Record<string, string> = {
+  ㄚ: 'a', ㄛ: 'o', ㄜ: 'e', ㄝ: 'ê', ㄞ: 'ai', ㄟ: 'ei', ㄠ: 'ao', ㄡ: 'ou', ㄢ: 'an', ㄣ: 'en', ㄤ: 'ang', ㄥ: 'eng', ㄦ: 'er',
+  ...Object.fromEntries(Object.entries(Y_W).map(([py, fin]) => [FINALS[fin], py])),
+}
+
+const MARK_ON: Record<string, string> = { a: 'āáǎà', e: 'ēéěè', i: 'īíǐì', o: 'ōóǒò', u: 'ūúǔù', ü: 'ǖǘǚǜ' }
+
+/** The tone mark goes on a / e, the o of "ou", else the last vowel. */
+function markTone(pinyin: string, tone: ZhuyinTone) {
+  if (tone === 5) return pinyin
+  const at = /a/.test(pinyin) ? pinyin.indexOf('a') : /e/.test(pinyin) ? pinyin.indexOf('e') : pinyin.includes('ou') ? pinyin.indexOf('o') : Math.max(...[...'iouü'].map((v) => pinyin.lastIndexOf(v)))
+  const marks = MARK_ON[pinyin[at]]
+  return marks ? pinyin.slice(0, at) + marks[tone - 1] + pinyin.slice(at + 1) : pinyin
+}
+
+/**
+ * One 注音 syllable to pinyin: "ㄇㄚˇ" → "mǎ", "ㄐㄩㄝˊ" → "jué", "ㄓ" → "zhī",
+ * "˙ㄉㄜ" → "de". `tone: 'number'` gives "ma3" (light tone 5), `'none'` drops it.
+ * Returns '' when it isn't a syllable.
+ */
+export function zhuyinToPinyin(syllable: string, options: { tone?: 'mark' | 'number' | 'none' } = {}) {
+  const parsed = parseZhuyin(syllable)
+  if (!parsed) return ''
+  const { symbols, tone } = parsed
+  const first = symbols[0]
+  let pinyin: string | undefined
+  const initial = TO_INITIAL[first]
+  if (initial) {
+    const rest = symbols.slice(1)
+    let final = TO_FINAL[rest]
+    // A lone consonant is only a syllable for zh ch sh r z c s.
+    if (final === undefined || (!rest && !BARE.has(initial))) return ''
+    // ü loses its dots after j / q / x.
+    if (/^[jqx]$/.test(initial)) final = final.replace('ü', 'u')
+    pinyin = initial + final
+  } else {
+    pinyin = TO_ZERO[symbols]
+  }
+  if (!pinyin) return ''
+  const mode = options.tone ?? 'mark'
+  return mode === 'none' ? pinyin : mode === 'number' ? `${pinyin}${tone}` : markTone(pinyin, tone)
+}
+
 /* ── Dictionaries ─────────────────────────────────────── */
 
 const dictionary = new Map<string, string[]>()
