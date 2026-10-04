@@ -20,6 +20,9 @@
       "node"
     ],
     "paths": {
+      "@malilion/ui/editor": [
+        "./src/editor.ts"
+      ],
       "@malilion/ui": [
         "./src/index.ts"
       ]

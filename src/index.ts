@@ -5,7 +5,9 @@ import MlActionSheet from './components/MlActionSheet.vue'
 import MlActionSheetHost from './components/MlActionSheetHost.vue'
 import MlAffix from './components/MlAffix.vue'
 import MlAlert from './components/MlAlert.vue'
+import MlAmountInput from './components/MlAmountInput.vue'
 import MlAnchor from './components/MlAnchor.vue'
+import MlAudioPlayer from './components/MlAudioPlayer.vue'
 import MlAurora from './components/MlAurora.vue'
 import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
@@ -73,8 +75,10 @@ import MlImage from './components/MlImage.vue'
 import MlImageCropper from './components/MlImageCropper.vue'
 import MlImagePreview from './components/MlImagePreview.vue'
 import MlInbox from './components/MlInbox.vue'
+import MlIndexBar from './components/MlIndexBar.vue'
 import MlInfiniteScroll from './components/MlInfiniteScroll.vue'
 import MlInput from './components/MlInput.vue'
+import MlInputMask from './components/MlInputMask.vue'
 import MlInvoiceChecker from './components/MlInvoiceChecker.vue'
 import MlJsonViewer from './components/MlJsonViewer.vue'
 import MlKanban from './components/MlKanban.vue'
@@ -97,6 +101,7 @@ import MlMenu from './components/MlMenu.vue'
 import MlModal from './components/MlModal.vue'
 import MlNavBar from './components/MlNavBar.vue'
 import MlNumberInput from './components/MlNumberInput.vue'
+import MlNumberKeyboard from './components/MlNumberKeyboard.vue'
 import MlPagination from './components/MlPagination.vue'
 import MlParticles from './components/MlParticles.vue'
 import MlPasswordInput from './components/MlPasswordInput.vue'
@@ -119,6 +124,7 @@ import MlRate from './components/MlRate.vue'
 import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
+import MlScheduler from './components/MlScheduler.vue'
 import MlScratchCard from './components/MlScratchCard.vue'
 import MlSankey from './components/MlSankey.vue'
 import MlScatterChart from './components/MlScatterChart.vue'
@@ -164,8 +170,10 @@ import MlTree from './components/MlTree.vue'
 import MlTreeSelect from './components/MlTreeSelect.vue'
 import MlTreemap from './components/MlTreemap.vue'
 import MlUpload from './components/MlUpload.vue'
+import MlVideoPlayer from './components/MlVideoPlayer.vue'
 import MlVirtualList from './components/MlVirtualList.vue'
 import MlWatermark from './components/MlWatermark.vue'
+import MlZhuyin from './components/MlZhuyin.vue'
 import { vPawStamp } from './pawStamp'
 import { vLoading } from './loading'
 import { setLocale, type MlLocaleInput } from './locale'
@@ -177,7 +185,9 @@ const components = {
   MlActionSheetHost,
   MlAffix,
   MlAlert,
+  MlAmountInput,
   MlAnchor,
+  MlAudioPlayer,
   MlAurora,
   MlAutocomplete,
   MlAvatar,
@@ -245,8 +255,10 @@ const components = {
   MlImageCropper,
   MlImagePreview,
   MlInbox,
+  MlIndexBar,
   MlInfiniteScroll,
   MlInput,
+  MlInputMask,
   MlInvoiceChecker,
   MlJsonViewer,
   MlKanban,
@@ -269,6 +281,7 @@ const components = {
   MlModal,
   MlNavBar,
   MlNumberInput,
+  MlNumberKeyboard,
   MlPagination,
   MlParticles,
   MlPasswordInput,
@@ -291,6 +304,7 @@ const components = {
   MlResult,
   MlReveal,
   MlRing,
+  MlScheduler,
   MlScratchCard,
   MlSankey,
   MlScatterChart,
@@ -336,8 +350,10 @@ const components = {
   MlTreeSelect,
   MlTreemap,
   MlUpload,
+  MlVideoPlayer,
   MlVirtualList,
   MlWatermark,
+  MlZhuyin,
 
 }
 
@@ -372,7 +388,9 @@ export {
   MlActionSheetHost,
   MlAffix,
   MlAlert,
+  MlAmountInput,
   MlAnchor,
+  MlAudioPlayer,
   MlAurora,
   MlAutocomplete,
   MlAvatar,
@@ -440,8 +458,10 @@ export {
   MlImageCropper,
   MlImagePreview,
   MlInbox,
+  MlIndexBar,
   MlInfiniteScroll,
   MlInput,
+  MlInputMask,
   MlInvoiceChecker,
   MlJsonViewer,
   MlKanban,
@@ -464,6 +484,7 @@ export {
   MlModal,
   MlNavBar,
   MlNumberInput,
+  MlNumberKeyboard,
   MlPagination,
   MlParticles,
   MlPasswordInput,
@@ -486,6 +507,7 @@ export {
   MlResult,
   MlReveal,
   MlRing,
+  MlScheduler,
   MlScratchCard,
   MlSankey,
   MlScatterChart,
@@ -531,8 +553,10 @@ export {
   MlTreeSelect,
   MlTreemap,
   MlUpload,
+  MlVideoPlayer,
   MlVirtualList,
   MlWatermark,
+  MlZhuyin,
 
 }
 
@@ -651,6 +675,17 @@ export type {
 } from './components/taiwan-map'
 export * from './validators-tw'
 export * from './roc'
+export { MASK_PRESETS, MASK_TOKENS, applyMask, parseMask, resolveMask, maskPlaceholder, formatAmount, formatAmountInput, groupDigits, amountInChinese } from './components/mask'
+export type { MlMaskPreset, MlMaskToken, MaskResult, AmountOptions } from './components/mask'
+export { keyboardLayout, shuffledDigits } from './components/number-keyboard'
+export * from './zhuyin'
+export { groupIndexItems, indexOrder } from './components/index-bar'
+export type { IndexGroup } from './components/index-bar'
+export { allDayBars, layoutColumns, moveEvent, resizeEvent, timedSegments, viewDays } from './components/scheduler'
+export type { MlSchedulerEvent, MlSchedulerView, MlSchedulerDate, SchedulerRange, SchedulerSegment, AllDayBar } from './components/scheduler'
+export { PLAYBACK_RATES, formatMediaTime, playerKeyAction } from './components/player'
+export type { MlMediaSource, MlMediaTrack, PlayerAction } from './components/player'
+export type { MlNumberKeyboardTheme, NumberKeyboardKey } from './components/number-keyboard'
 export {
   getTwBanks,
   getTwBank,
@@ -770,7 +805,9 @@ declare module 'vue' {
     MlActionSheetHost: typeof MlActionSheetHost
     MlAffix: typeof MlAffix
     MlAlert: typeof MlAlert
+    MlAmountInput: typeof MlAmountInput
     MlAnchor: typeof MlAnchor
+    MlAudioPlayer: typeof MlAudioPlayer
     MlAurora: typeof MlAurora
     MlAutocomplete: typeof MlAutocomplete
     MlAvatar: typeof MlAvatar
@@ -838,8 +875,10 @@ declare module 'vue' {
     MlImageCropper: typeof MlImageCropper
     MlImagePreview: typeof MlImagePreview
     MlInbox: typeof MlInbox
+    MlIndexBar: typeof MlIndexBar
     MlInfiniteScroll: typeof MlInfiniteScroll
     MlInput: typeof MlInput
+    MlInputMask: typeof MlInputMask
     MlInvoiceChecker: typeof MlInvoiceChecker
     MlJsonViewer: typeof MlJsonViewer
     MlKanban: typeof MlKanban
@@ -862,6 +901,7 @@ declare module 'vue' {
     MlModal: typeof MlModal
     MlNavBar: typeof MlNavBar
     MlNumberInput: typeof MlNumberInput
+    MlNumberKeyboard: typeof MlNumberKeyboard
     MlPagination: typeof MlPagination
     MlParticles: typeof MlParticles
     MlPasswordInput: typeof MlPasswordInput
@@ -884,6 +924,7 @@ declare module 'vue' {
     MlResult: typeof MlResult
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
+    MlScheduler: typeof MlScheduler
     MlScratchCard: typeof MlScratchCard
     MlSankey: typeof MlSankey
     MlScatterChart: typeof MlScatterChart
@@ -929,8 +970,10 @@ declare module 'vue' {
     MlTreeSelect: typeof MlTreeSelect
     MlTreemap: typeof MlTreemap
     MlUpload: typeof MlUpload
+    MlVideoPlayer: typeof MlVideoPlayer
     MlVirtualList: typeof MlVirtualList
     MlWatermark: typeof MlWatermark
+    MlZhuyin: typeof MlZhuyin
 
   }
   export interface GlobalDirectives {

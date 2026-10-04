@@ -1,0 +1,175 @@
+/* IndexBar — a phone-book list with an ㄅㄆㄇ / A–Z rail */
+
+.ml-indexbar {
+  position: relative;
+  display: flex;
+  height: var(--ml-indexbar-h, 420px);
+  color: var(--ml-text);
+  background: var(--ml-brushed), var(--ml-plate-fill);
+  box-shadow: inset 0 0 0 1px var(--ml-plate-border);
+  clip-path: polygon(var(--ml-cut) 0, 100% 0, 100% calc(100% - var(--ml-cut)), calc(100% - var(--ml-cut)) 100%, 0 100%, 0 var(--ml-cut));
+}
+
+.ml-indexbar__list {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  /* The rail is the scroll control, like a phone's contacts app */
+  scrollbar-width: none;
+  outline: none;
+}
+
+.ml-indexbar__list::-webkit-scrollbar {
+  display: none;
+}
+
+.ml-indexbar__list:focus-visible {
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-indexbar__header {
+  padding: 5px 16px;
+  background: var(--ml-surface-2);
+  box-shadow: inset 0 -1px 0 var(--ml-line-steel), inset 3px 0 0 var(--ml-accent);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: var(--ml-tracking-hud);
+}
+
+.ml-indexbar--sticky .ml-indexbar__header {
+  position: sticky;
+  z-index: 1;
+  top: 0;
+}
+
+.ml-indexbar__items {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-indexbar__row + .ml-indexbar__row {
+  box-shadow: inset 0 1px 0 var(--ml-line);
+}
+
+.ml-indexbar__item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  width: 100%;
+  margin: 0;
+  padding: 11px 40px 11px 16px;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-indexbar__item:hover {
+  background: var(--ml-surface-2);
+}
+
+.ml-indexbar__item:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+
+.ml-indexbar__label {
+  font-size: 0.9375rem;
+}
+
+.ml-indexbar__desc {
+  color: var(--ml-text-dim);
+  font-size: 0.75rem;
+}
+
+.ml-indexbar__empty {
+  margin: 0;
+  padding: 48px 16px;
+  color: var(--ml-text-dim);
+  text-align: center;
+}
+
+/* The rail floats over the list's right edge */
+.ml-indexbar__rail {
+  position: absolute;
+  z-index: 2;
+  top: 50%;
+  right: 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-height: calc(100% - 16px);
+  padding: 6px 2px;
+  translate: 0 -50%;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.ml-indexbar__key {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 0 1 auto;
+  min-width: 22px;
+  min-height: 0;
+  margin: 0;
+  padding: 1px 0;
+  border: 0;
+  border-radius: var(--ml-radius-full);
+  background: none;
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-display);
+  font-size: 0.6875rem;
+  font-weight: 700;
+  line-height: 1.3;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ml-indexbar__key:hover {
+  color: var(--ml-text);
+}
+
+.ml-indexbar__key--active {
+  background: var(--ml-accent);
+  color: var(--ml-text-on-metal);
+}
+
+.ml-indexbar__key--empty {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.ml-indexbar__key:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 1px;
+}
+
+/* The big letter that follows a dragging finger */
+.ml-indexbar__bubble {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  right: 56px;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  translate: 0 -50%;
+  background: var(--ml-metal-gold);
+  clip-path: polygon(var(--ml-cut) 0, 100% 0, 100% calc(100% - var(--ml-cut)), calc(100% - var(--ml-cut)) 100%, 0 100%, 0 var(--ml-cut));
+  color: var(--ml-text-on-metal);
+  font-family: var(--ml-font-display);
+  font-size: 1.875rem;
+  font-weight: 700;
+  pointer-events: none;
+}

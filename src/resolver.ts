@@ -6,6 +6,7 @@
 //   import { MalilionResolver } from '@malilion/ui/resolver'
 //   plugins: [vue(), Components({ resolvers: [MalilionResolver()] })]
 import map from './styles/on-demand/map.json'
+import { componentSubpaths } from './subpaths'
 
 export interface MalilionResolverOptions {
   /**
@@ -40,7 +41,12 @@ export function MalilionResolver(options: MalilionResolverOptions = {}): Compone
   return [
     {
       type: 'component',
-      resolve: (name) => (components.has(name) ? { name, from: PKG, sideEffects: styles(importStyle, name) } : undefined),
+      resolve: (name) => {
+        if (!components.has(name)) return undefined
+        // MlRichTextEditor comes from @malilion/ui/editor (Tiptap is an optional peer).
+        const sub = componentSubpaths[name]
+        return { name, from: sub ? `${PKG}/${sub}` : PKG, sideEffects: styles(importStyle, name) }
+      },
     },
     {
       type: 'directive',

@@ -37,16 +37,19 @@ export default defineConfig({
         resolver: fileURLToPath(new URL('./src/resolver.ts', import.meta.url)),
         nuxt: fileURLToPath(new URL('./src/nuxt.ts', import.meta.url)),
         react: fileURLToPath(new URL('./src/react/index.ts', import.meta.url)),
+        // The Tiptap editor: own entries, so Tiptap stays an optional peer dependency.
+        editor: fileURLToPath(new URL('./src/editor.ts', import.meta.url)),
+        'react-editor': fileURLToPath(new URL('./src/react/editor.tsx', import.meta.url)),
       },
       formats: ['es'],
       fileName: (_format, name) => `${name}.js`,
       cssFileName: 'style',
     },
     rollupOptions: {
-      external: ['vue', '@nuxt/kit', '@nuxt/schema', 'react', 'react-dom', 'react/jsx-runtime'],
+      external: ['vue', '@nuxt/kit', '@nuxt/schema', 'react', 'react-dom', 'react/jsx-runtime', /^@tiptap\//, /^node:/],
       output: {
         // Next.js App Router: the React entry uses hooks, so it's a client module.
-        banner: (chunk) => (chunk.name === 'react' ? "'use client';" : ''),
+        banner: (chunk) => (chunk.name === 'react' || chunk.name === 'react-editor' ? "'use client';" : ''),
         // Framework-free code both entries share (QR encoder, locale strings, mascot images…).
         chunkFileNames: 'chunks/[name]-[hash].js',
         // The 368-district Taiwan table gets its own chunk, so it is only fetched (and
@@ -71,6 +74,7 @@ export default defineConfig({
   // Tests (e.g. the SSR render of every docs example) import '@malilion/ui' like the docs do.
   resolve: {
     alias: {
+      '@malilion/ui/editor': fileURLToPath(new URL('./src/editor.ts', import.meta.url)),
       '@malilion/ui': fileURLToPath(new URL('./src/index.ts', import.meta.url)),
     },
   },

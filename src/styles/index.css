@@ -102,5 +102,12 @@
 @import './components/inbox.css';
 @import './components/barcode.css';
 @import './components/typography.css';
+@import './components/editor.css';
+@import './components/mask.css';
+@import './components/number-keyboard.css';
+@import './components/index-bar.css';
+@import './components/zhuyin.css';
+@import './components/scheduler.css';
+@import './components/player.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';

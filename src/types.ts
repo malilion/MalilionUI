@@ -9,6 +9,18 @@ export type MlProgressTone = 'gold' | 'tech' | 'success' | 'danger'
 export type MlAvatarSize = 'sm' | 'md' | 'lg' | 'xl'
 export type MlAvatarStatus = 'online' | 'busy' | 'away' | 'offline'
 export type MlAvatarRing = 'gold' | 'steel' | 'tech'
+/** One entry in an MlIndexBar (a contact, a city…). Extra fields reach the item slot. */
+export interface MlIndexBarItem {
+  label: string
+  /** Stable key. Defaults to the label. */
+  value?: string | number
+  /** Second line under the label. */
+  desc?: string
+  /** File under this index instead of the one worked out from the label. */
+  index?: string
+  [key: string]: unknown
+}
+
 /** One person in an MlAvatarGroup. */
 export interface MlAvatarGroupItem {
   name?: string

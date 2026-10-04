@@ -1,0 +1,73 @@
+/* Zhuyin — 注音 beside (直式) or above each character */
+
+.ml-zhuyin {
+  line-height: 2.1;
+}
+
+.ml-zhuyin rp {
+  display: none;
+}
+
+/* A character plus the punctuation that may not start the next line */
+.ml-zhuyin__glyph {
+  white-space: nowrap;
+}
+
+/* 直式: the symbols stack in a narrow column to the right, tone marks beside the last one */
+.ml-zhuyin--right .ml-zhuyin__unit {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-end: 0.08em;
+  vertical-align: middle;
+}
+
+.ml-zhuyin--right .ml-zhuyin__rt {
+  display: inline-flex;
+  align-items: center;
+  margin-inline-start: 0.12em;
+  color: var(--ml-text-muted);
+  font-size: 0.38em;
+  line-height: 1;
+  letter-spacing: 0;
+  text-align: center;
+}
+
+.ml-zhuyin--right .ml-zhuyin__col {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.ml-zhuyin--right .ml-zhuyin__sym {
+  display: block;
+}
+
+.ml-zhuyin--right .ml-zhuyin__light {
+  display: block;
+  height: 0.7em;
+  line-height: 0.7;
+}
+
+.ml-zhuyin--right .ml-zhuyin__tone {
+  /* Tone glyphs sit high in their box, which lands them at the last symbol's upper right */
+  align-self: flex-end;
+  margin-inline-start: 0.04em;
+  font-size: 0.95em;
+}
+
+/* Ruby above, for horizontal reading at small sizes */
+.ml-zhuyin--top .ml-zhuyin__unit {
+  ruby-position: over;
+}
+
+.ml-zhuyin--top .ml-zhuyin__rt {
+  color: var(--ml-text-muted);
+  font-size: 0.5em;
+  letter-spacing: 0;
+}
+
+.ml-zhuyin--top .ml-zhuyin__col,
+.ml-zhuyin--top .ml-zhuyin__sym,
+.ml-zhuyin--top .ml-zhuyin__light {
+  display: inline;
+}

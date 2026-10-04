@@ -17,8 +17,16 @@
   "MlAlert": [
     "components/alert.css"
   ],
+  "MlAmountInput": [
+    "components/field.css",
+    "components/form.css",
+    "components/mask.css"
+  ],
   "MlAnchor": [
     "components/layout.css"
+  ],
+  "MlAudioPlayer": [
+    "components/player.css"
   ],
   "MlAurora": [
     "components/aurora.css"
@@ -314,6 +322,9 @@
     "components/cute-icon.css",
     "components/inbox.css"
   ],
+  "MlIndexBar": [
+    "components/index-bar.css"
+  ],
   "MlInfiniteScroll": [
     "components/button.css",
     "components/loader.css",
@@ -324,6 +335,11 @@
   "MlInput": [
     "components/field.css",
     "components/form.css"
+  ],
+  "MlInputMask": [
+    "components/field.css",
+    "components/form.css",
+    "components/mask.css"
   ],
   "MlInvoiceChecker": [
     "components/field.css",
@@ -418,6 +434,9 @@
     "components/controls.css",
     "components/form.css"
   ],
+  "MlNumberKeyboard": [
+    "components/number-keyboard.css"
+  ],
   "MlPagination": [
     "components/navigation.css"
   ],
@@ -502,6 +521,9 @@
   "MlRing": [
     "components/paw.css",
     "components/charts.css"
+  ],
+  "MlScheduler": [
+    "components/scheduler.css"
   ],
   "MlScratchCard": [
     "components/paw.css",
@@ -701,11 +723,22 @@
     "components/paw.css",
     "components/empty-upload.css"
   ],
+  "MlVideoPlayer": [
+    "components/player.css"
+  ],
   "MlVirtualList": [
     "components/layout.css"
   ],
   "MlWatermark": [
     "components/utilities.css"
+  ],
+  "MlZhuyin": [
+    "components/zhuyin.css"
+  ],
+  "MlRichTextEditor": [
+    "components/field.css",
+    "components/form.css",
+    "components/editor.css"
   ],
   "v-paw-stamp": [
     "components/paw.css",

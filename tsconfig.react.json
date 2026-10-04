@@ -8,6 +8,12 @@
       "node"
     ],
     "paths": {
+      "@malilion/ui/editor": [
+        "./src/editor.ts"
+      ],
+      "@malilion/ui/react/editor": [
+        "./src/react/editor.tsx"
+      ],
       "@malilion/ui": [
         "./src/index.ts"
       ],
