@@ -49,6 +49,9 @@ export default defineConfig({
         banner: (chunk) => (chunk.name === 'react' ? "'use client';" : ''),
         // Framework-free code both entries share (QR encoder, locale strings, mascot images…).
         chunkFileNames: 'chunks/[name]-[hash].js',
+        // The 368-district Taiwan table gets its own chunk, so it is only fetched (and
+        // only kept by a bundler) when something actually imports it.
+        manualChunks: (id) => (/\/src\/(taiwan-regions|components\/region)\.ts$/.test(id) ? 'taiwan-regions' : undefined),
       },
     },
   },

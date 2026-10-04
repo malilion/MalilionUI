@@ -195,6 +195,10 @@
     "components/field.css",
     "components/form.css"
   ],
+  "MlFunnelChart": [
+    "components/paw.css",
+    "components/charts-extra.css"
+  ],
   "MlGauge": [
     "components/paw.css",
     "components/charts.css"
@@ -258,6 +262,11 @@
   "MlLoader": [
     "components/loader.css",
     "components/paw.css"
+  ],
+  "MlLuckyWheel": [
+    "components/paw.css",
+    "components/effects.css",
+    "components/wheel.css"
   ],
   "MlMarkdown": [
     "components/button.css",
@@ -362,6 +371,10 @@
     "components/paw.css",
     "components/charts.css"
   ],
+  "MlScatterChart": [
+    "components/paw.css",
+    "components/charts-extra.css"
+  ],
   "MlScrollbar": [
     "components/scrollbar.css"
   ],
@@ -436,6 +449,14 @@
     "components/combobox.css",
     "components/form.css",
     "components/inputs-extra.css"
+  ],
+  "MlTaiwanRegion": [
+    "components/field.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/region.css"
   ],
   "MlTextarea": [
     "components/field.css",

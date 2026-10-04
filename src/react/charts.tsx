@@ -1,11 +1,11 @@
 import { Fragment, useEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type ReactNode } from 'react'
-import { chartStops, niceStep, seriesColors, smoothPath } from '../components/charts'
+import { bubbleRadius, chartStops, diamondPath, funnelStages, linearFit, nearestIndex, niceScale, niceStep, percentText, seriesColors, smoothPath } from '../components/charts'
 import { addDays, dayKey, startOfDay } from '../components/dates'
 import { createPawPath } from '../components/paw'
 import { highlightLines } from '../highlight'
 import { mascotImages } from '../mascot'
 import { encodeQr, qrEyePath, qrLayout, type QrLevel } from '../qrcode'
-import type { MlChartDatum, MlChartTone, MlHeatmapDatum, MlLineSeries } from '../types'
+import type { MlChartDatum, MlChartTone, MlFunnelDatum, MlHeatmapDatum, MlLineSeries, MlScatterSeries, MlScatterShape } from '../types'
 import { Button, Paw, useSvgId } from './basic'
 import { toast } from './overlay'
 import { useLocale } from './locale'
@@ -951,6 +951,444 @@ export function LineChart({ series, labels, height = 220, area = true, smooth = 
           )}
         </div>
       </div>
+    </figure>
+  )
+}
+
+/* ── ScatterChart ──────────────────────────────────────── */
+
+export interface ScatterChartProps {
+  series: MlScatterSeries[]
+  /** Plot height in px. */
+  height?: number
+  /** Point marker. */
+  shape?: MlScatterShape
+  /** Radius (px) of points without a `size`. */
+  pointSize?: number
+  /** Smallest and largest bubble radius (px) for points with a `size`. */
+  sizeRange?: [number, number]
+  /** Least-squares trend line for every series (a series' own `trend` wins). */
+  trend?: boolean
+  /** Number of horizontal / vertical grid steps (approximate; steps stay round). */
+  ticks?: number
+  xTicks?: number
+  /** Show the series legend (on by default with more than one series). Click a key to hide that series. */
+  legend?: boolean
+  xTitle?: string
+  yTitle?: string
+  /** Format y values (and x values when `xFormat` is not set). */
+  format?: (value: number) => string
+  xFormat?: (value: number) => string
+  /** Accessible summary of the chart. */
+  label?: string
+  onToggle?: (name: string, visible: boolean) => void
+}
+
+export function ScatterChart({
+  series,
+  height = 260,
+  shape = 'circle',
+  pointSize = 5,
+  sizeRange = [4, 18],
+  trend = false,
+  ticks = 4,
+  xTicks = 5,
+  legend,
+  xTitle,
+  yTitle,
+  format,
+  xFormat,
+  label,
+  onToggle,
+}: ScatterChartProps) {
+  const loc = useLocale()
+  const fmtY = (v: number) => (format ? format(v) : v.toLocaleString())
+  const fmtX = (v: number) => (xFormat ? xFormat(v) : format ? format(v) : v.toLocaleString())
+  const uid = useSvgId('ml-scatter')
+  // Real pixels (markers never stretch); the width follows the container. Updates
+  // wait for the next frame so a re-layout can't trigger "ResizeObserver loop" errors.
+  const plot = useRef<HTMLDivElement>(null)
+  const [width, setWidth] = useState(600)
+  const [hidden, setHidden] = useState<number[]>([])
+  const [active, setActive] = useState<{ s: number; j: number } | null>(null)
+  useEffect(() => {
+    const el = plot.current
+    if (!el) return
+    if (el.clientWidth) setWidth(el.clientWidth)
+    if (typeof ResizeObserver === 'undefined') return
+    let frame = 0
+    const observer = new ResizeObserver(([entry]) => {
+      const next = Math.max(80, Math.round(entry.contentRect.width))
+      cancelAnimationFrame(frame)
+      frame = requestAnimationFrame(() => setWidth(next))
+    })
+    observer.observe(el)
+    return () => {
+      observer.disconnect()
+      cancelAnimationFrame(frame)
+    }
+  }, [])
+
+  const PAD_Y = 8
+  // Axes cover every series (hidden ones too), so toggling never rescales the plot.
+  const all = series.flatMap((s) => s.points)
+  const xScale = niceScale(Math.min(...all.map((p) => p.x)), Math.max(...all.map((p) => p.x)), xTicks)
+  const yScale = niceScale(Math.min(...all.map((p) => p.y)), Math.max(...all.map((p) => p.y)), ticks)
+  const sizes = all.filter((p) => p.size !== undefined).map((p) => p.size as number)
+  const hasSize = sizes.length > 0
+  const hasLabel = all.some((p) => p.label !== undefined)
+  const x = (v: number) => ((v - xScale.lo) / (xScale.hi - xScale.lo || 1)) * width
+  const y = (v: number) => PAD_Y + (1 - (v - yScale.lo) / (yScale.hi - yScale.lo || 1)) * (height - PAD_Y * 2)
+  const radius = (size?: number) => (size === undefined ? pointSize : bubbleRadius(size, Math.min(...sizes), Math.max(...sizes), sizeRange))
+  const pawTransform = (cx: number, cy: number, r: number) => {
+    const k = (r * 2.3) / 24
+    return `translate(${(cx - 12 * k).toFixed(1)} ${(cy - 12 * k).toFixed(1)}) scale(${k.toFixed(3)})`
+  }
+
+  const drawn = series.map((s, i) => {
+    const color = s.color ?? (s.tone ? chartStops[s.tone][0] : seriesColors[i % seriesColors.length])
+    const pts = s.points.map((p) => ({ ...p, px: x(p.x), py: y(p.y), r: radius(p.size) }))
+    const fit = (s.trend ?? trend) ? linearFit(s.points) : null
+    let line: { x1: number; y1: number; x2: number; y2: number } | null = null
+    if (fit) {
+      const lo = Math.min(...s.points.map((p) => p.x))
+      const hi = Math.max(...s.points.map((p) => p.x))
+      line = { x1: x(lo), y1: y(fit.slope * lo + fit.intercept), x2: x(hi), y2: y(fit.slope * hi + fit.intercept) }
+    }
+    return { name: s.name, color, pts, trend: line, on: !hidden.includes(i), gradient: `${uid}-g${i}` }
+  })
+  const showLegend = legend ?? series.length > 1
+
+  const toggle = (i: number) => {
+    const on = hidden.includes(i)
+    setHidden(on ? hidden.filter((h) => h !== i) : [...hidden, i])
+    if (active?.s === i) setActive(null)
+    onToggle?.(series[i].name, on)
+  }
+
+  // Inspection: one point at a time. Keyboard order is left → right across every visible series.
+  const order = drawn
+    .flatMap((s, si) => (s.on ? s.pts.map((p, j) => ({ s: si, j, px: p.px, py: p.py })) : []))
+    .sort((a, b) => a.px - b.px || a.py - b.py)
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const list = order
+    if (!list.length) return
+    const at = active ? list.findIndex((p) => p.s === active.s && p.j === active.j) : -1
+    const pick = (k: number) => setActive({ s: list[k].s, j: list[k].j })
+    if (event.key === 'ArrowRight') pick(Math.min(list.length - 1, at + 1))
+    else if (event.key === 'ArrowLeft') pick(at < 0 ? 0 : Math.max(0, at - 1))
+    else if (event.key === 'Home') pick(0)
+    else if (event.key === 'End') pick(list.length - 1)
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowDown') {
+      // Jump to the nearest-in-x point of the next / previous visible series.
+      const seriesOn = [...new Set(list.map((p) => p.s))].sort((a, b) => a - b)
+      const cur = at < 0 ? list[0] : list[at]
+      const idx = seriesOn.indexOf(cur.s)
+      const next = seriesOn[(idx + (event.key === 'ArrowDown' ? 1 : -1) + seriesOn.length) % seriesOn.length]
+      const candidates = list.map((p, k) => ({ p, k })).filter(({ p }) => p.s === next)
+      const best = candidates.reduce((a, b) => (Math.abs(b.p.px - cur.px) < Math.abs(a.p.px - cur.px) ? b : a))
+      pick(best.k)
+    } else if (event.key === 'Escape') setActive(null)
+    else return
+    event.preventDefault()
+  }
+
+  const fs = active ? drawn[active.s] : undefined
+  const fp = active ? fs?.pts[active.j] : undefined
+  const focus = fs && fp ? { s: fs, p: fp } : null
+  const tipSide = focus && focus.p.px > width * 0.6 ? 'left' : 'right'
+  const summary = label ?? loc.scatter.summary(series.length, all.length)
+
+  return (
+    <figure className="ml-scatter" style={{ '--_h': `${height}px` } as CSSProperties}>
+      {showLegend && (
+        <div className="ml-scatter__legend">
+          {drawn.map((s, i) => (
+            <button
+              key={s.name}
+              type="button"
+              className={cx('ml-scatter__key', !s.on && 'ml-scatter__key--off')}
+              aria-pressed={s.on}
+              aria-label={loc.scatter.toggle(s.name)}
+              onClick={() => toggle(i)}
+            >
+              <i style={{ background: s.color, color: s.color }} />
+              {s.name}
+            </button>
+          ))}
+        </div>
+      )}
+      {yTitle && (
+        <div className="ml-scatter__title ml-scatter__title--y" aria-hidden="true">
+          {yTitle}
+        </div>
+      )}
+      <div className="ml-scatter__body">
+        <div className="ml-scatter__axis" aria-hidden="true">
+          {[...yScale.values].reverse().map((t) => (
+            <span key={t}>{fmtY(t)}</span>
+          ))}
+        </div>
+        <div className="ml-scatter__main">
+          <div
+            ref={plot}
+            className="ml-scatter__plot"
+            role="img"
+            tabIndex={0}
+            aria-label={summary}
+            onPointerMove={(event) => {
+              const rect = event.currentTarget.getBoundingClientRect()
+              const hit = nearestIndex(
+                order.map((p) => ({ x: p.px, y: p.py })),
+                event.clientX - rect.left,
+                event.clientY - rect.top,
+                40,
+              )
+              setActive(hit < 0 ? null : { s: order[hit].s, j: order[hit].j })
+            }}
+            onPointerLeave={() => setActive(null)}
+            onKeyDown={onKeyDown}
+            onBlur={() => setActive(null)}
+          >
+            <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} aria-hidden="true">
+              <defs>
+                {drawn.map((s) => (
+                  <radialGradient key={s.gradient} id={s.gradient} cx="0.35" cy="0.3" r="0.75">
+                    <stop offset="0" stopColor="#fff" stopOpacity={0.85} />
+                    <stop offset="0.35" stopColor={s.color} />
+                    <stop offset="1" stopColor={s.color} stopOpacity={0.7} />
+                  </radialGradient>
+                ))}
+              </defs>
+              <g className="ml-scatter__grid">
+                {yScale.values.map((t) => (
+                  <line key={`y${t}`} x1="0" x2={width} y1={y(t)} y2={y(t)} className={t === 0 ? 'ml-scatter__zero' : undefined} />
+                ))}
+                {xScale.values.map((t) => (
+                  <line key={`x${t}`} x1={x(t)} x2={x(t)} y1="0" y2={height} className={cx('ml-scatter__vline', t === 0 && 'ml-scatter__zero')} />
+                ))}
+              </g>
+              {drawn.map((s, i) =>
+                s.on ? (
+                  <g key={s.name} className="ml-scatter__series" style={{ '--_i': i, color: s.color } as CSSProperties}>
+                    {s.trend && <line className="ml-scatter__trend" x1={s.trend.x1} y1={s.trend.y1} x2={s.trend.x2} y2={s.trend.y2} stroke={s.color} />}
+                    {s.pts.map((p, j) => {
+                      const cls = cx('ml-scatter__pt', p.size !== undefined && 'ml-scatter__pt--bubble')
+                      const style = { '--_j': j } as CSSProperties
+                      if (shape === 'circle') return <circle key={j} className={cls} cx={p.px} cy={p.py} r={p.r} fill={`url(#${s.gradient})`} style={style} />
+                      if (shape === 'paw') return <path key={j} className={cls} d={PAW_PATH} transform={pawTransform(p.px, p.py, p.r)} fill={s.color} style={style} />
+                      return <path key={j} className={cls} d={diamondPath(p.px, p.py, p.r * 1.25)} fill={`url(#${s.gradient})`} style={style} />
+                    })}
+                  </g>
+                ) : null,
+              )}
+              {focus && (
+                <g className="ml-scatter__cursor">
+                  <line x1={focus.p.px} x2={focus.p.px} y1={focus.p.py} y2={height} />
+                  <line x1="0" x2={focus.p.px} y1={focus.p.py} y2={focus.p.py} />
+                  <circle cx={focus.p.px} cy={focus.p.py} r={focus.p.r + 4} stroke={focus.s.color} className="ml-scatter__focus" />
+                </g>
+              )}
+            </svg>
+            {focus && (
+              <div className={cx('ml-scatter__tip', `ml-scatter__tip--${tipSide}`)} style={{ left: `${focus.p.px}px`, top: `${focus.p.py}px` }} aria-live="polite">
+                <p className="ml-scatter__tip-title">
+                  <i style={{ background: focus.s.color }} />
+                  {focus.p.label ?? focus.s.name}
+                </p>
+                {focus.p.label !== undefined && (
+                  <p className="ml-scatter__tip-row">
+                    <span>{loc.scatter.series}</span>
+                    <b>{focus.s.name}</b>
+                  </p>
+                )}
+                <p className="ml-scatter__tip-row">
+                  <span>{xTitle ?? loc.scatter.x}</span>
+                  <b>{fmtX(focus.p.x)}</b>
+                </p>
+                <p className="ml-scatter__tip-row">
+                  <span>{yTitle ?? loc.scatter.y}</span>
+                  <b>{fmtY(focus.p.y)}</b>
+                </p>
+                {focus.p.size !== undefined && (
+                  <p className="ml-scatter__tip-row">
+                    <span>{loc.scatter.size}</span>
+                    <b>{focus.p.size.toLocaleString()}</b>
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+          <div className="ml-scatter__x" aria-hidden="true">
+            {xScale.values.map((t) => (
+              <span key={t} style={{ left: `${x(t)}px` }}>
+                {fmtX(t)}
+              </span>
+            ))}
+          </div>
+          {xTitle && (
+            <div className="ml-scatter__title ml-scatter__title--x" aria-hidden="true">
+              {xTitle}
+            </div>
+          )}
+        </div>
+      </div>
+      <table className="ml-visually-hidden">
+        <caption>{loc.scatter.table}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{loc.scatter.series}</th>
+            {hasLabel && <th scope="col">{loc.scatter.point}</th>}
+            <th scope="col">{xTitle ?? loc.scatter.x}</th>
+            <th scope="col">{yTitle ?? loc.scatter.y}</th>
+            {hasSize && <th scope="col">{loc.scatter.size}</th>}
+          </tr>
+        </thead>
+        <tbody>
+          {series.map((s) =>
+            s.points.map((p, j) => (
+              <tr key={`${s.name}-${j}`}>
+                <th scope="row">{s.name}</th>
+                {hasLabel && <td>{p.label ?? ''}</td>}
+                <td>{fmtX(p.x)}</td>
+                <td>{fmtY(p.y)}</td>
+                {hasSize && <td>{p.size?.toLocaleString() ?? ''}</td>}
+              </tr>
+            )),
+          )}
+        </tbody>
+      </table>
+    </figure>
+  )
+}
+
+/* ── FunnelChart ───────────────────────────────────────── */
+
+export interface FunnelChartProps {
+  data: MlFunnelDatum[]
+  /** Stages stacked top → bottom (vertical) or left → right (horizontal). */
+  orientation?: 'vertical' | 'horizontal'
+  /** Tapered trapezoids, or plain bars. */
+  shape?: 'trapezoid' | 'rect'
+  /** Tone for stages without their own. */
+  tone?: MlChartTone
+  /** Vertical: height of each stage (px). Horizontal: height of the shapes (px). */
+  size?: number
+  /** Show each stage's share of the first stage on the shape. */
+  share?: boolean
+  format?: (value: number) => string
+  /** Accessible summary of the chart. */
+  label?: string
+  onSelect?: (index: number, datum: MlFunnelDatum) => void
+}
+
+export function FunnelChart({ data, orientation = 'vertical', shape = 'trapezoid', tone = 'gold', size, share = true, format, label, onSelect }: FunnelChartProps) {
+  const loc = useLocale()
+  const fmt = (v: number) => (format ? format(v) : v.toLocaleString())
+  const [active, setActive] = useState<number | null>(null)
+  const items = useRef<(HTMLLIElement | null)[]>([])
+
+  const list = funnelStages(data)
+  const stages = list.map((st, i) => {
+    const t = st.tone ?? tone
+    const a = st.width * 100
+    // A trapezoid tapers into the next stage; the last one narrows a little on its own.
+    const b = shape === 'rect' ? a : (list[i + 1]?.width ?? st.width * 0.82) * 100
+    return { ...st, tone: t, a, b, c0: chartStops[t][0], c1: chartStops[t][1] }
+  })
+  const overall = stages.length ? stages[stages.length - 1].fromFirst : 0
+  const summary = label ?? loc.funnel.summary(data.length, percentText(overall))
+  const thickness = size ?? (orientation === 'vertical' ? 52 : 200)
+
+  const move = (i: number) => {
+    if (!data.length) return
+    const next = Math.min(data.length - 1, Math.max(0, i))
+    setActive(next)
+    items.current[next]?.focus()
+  }
+
+  const onKeyDown = (event: KeyboardEvent<HTMLOListElement>) => {
+    const cur = active ?? 0
+    if (event.key === 'ArrowDown' || event.key === 'ArrowRight') move(cur + 1)
+    else if (event.key === 'ArrowUp' || event.key === 'ArrowLeft') move(cur - 1)
+    else if (event.key === 'Home') move(0)
+    else if (event.key === 'End') move(data.length - 1)
+    else if (event.key === 'Escape') setActive(null)
+    else if (event.key === 'Enter' || event.key === ' ') {
+      if (active !== null) onSelect?.(active, data[active])
+    } else return
+    event.preventDefault()
+  }
+
+  return (
+    <figure
+      className={cx('ml-funnel', `ml-funnel--${orientation}`, `ml-funnel--${shape}`)}
+      style={{ '--_size': `${thickness}px`, '--_n': data.length } as CSSProperties}
+    >
+      <ol
+        className="ml-funnel__list"
+        aria-label={summary}
+        onKeyDown={onKeyDown}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) setActive(null)
+        }}
+        onPointerLeave={() => setActive(null)}
+      >
+        {stages.map((s, i) => (
+          <li
+            key={`${i}-${s.label}`}
+            ref={(el) => {
+              items.current[i] = el
+            }}
+            className={cx('ml-funnel__stage', `ml-funnel__stage--${s.tone}`, active === i && 'ml-funnel__stage--on')}
+            tabIndex={(active ?? 0) === i ? 0 : -1}
+            style={{ '--_i': i, '--_a': s.a, '--_b': s.b, '--_c0': s.c0, '--_c1': s.c1 } as CSSProperties}
+            onPointerEnter={() => setActive(i)}
+            onFocus={() => setActive(i)}
+            onClick={() => onSelect?.(i, data[i])}
+          >
+            <span className="ml-funnel__label">{s.label}</span>
+            <span className="ml-funnel__track" aria-hidden="true">
+              <span className="ml-funnel__shape" />
+              {share && <span className="ml-funnel__share">{percentText(s.fromFirst)}</span>}
+            </span>
+            <span className="ml-funnel__value">{fmt(s.value)}</span>
+            <span className="ml-funnel__rate">
+              <small>{i ? loc.funnel.fromPrev : loc.funnel.start}</small>
+              {percentText(s.fromPrev)}
+              <span className="ml-visually-hidden">
+                {' '}({loc.funnel.fromFirst} {percentText(s.fromFirst)})
+              </span>
+            </span>
+            {active === i && (
+              <div className="ml-funnel__tip" aria-hidden="true">
+                <p className="ml-funnel__tip-title">{s.label}</p>
+                <p className="ml-funnel__tip-row">
+                  <span>{loc.funnel.value}</span>
+                  <b>{fmt(s.value)}</b>
+                </p>
+                {i > 0 && (
+                  <p className="ml-funnel__tip-row">
+                    <span>{loc.funnel.fromPrev}</span>
+                    <b>{percentText(s.fromPrev)}</b>
+                  </p>
+                )}
+                <p className="ml-funnel__tip-row">
+                  <span>{loc.funnel.fromFirst}</span>
+                  <b>{percentText(s.fromFirst)}</b>
+                </p>
+                {i > 0 && (
+                  <p className="ml-funnel__tip-row">
+                    <span>{loc.funnel.drop}</span>
+                    <b>{fmt(s.drop)}</b>
+                  </p>
+                )}
+              </div>
+            )}
+          </li>
+        ))}
+      </ol>
     </figure>
   )
 }

@@ -45,6 +45,7 @@ import MlField from './components/MlField.vue'
 import MlFloatButton from './components/MlFloatButton.vue'
 import MlForm from './components/MlForm.vue'
 import MlFormItem from './components/MlFormItem.vue'
+import MlFunnelChart from './components/MlFunnelChart.vue'
 import MlGauge from './components/MlGauge.vue'
 import MlGrid from './components/MlGrid.vue'
 import MlGridItem from './components/MlGridItem.vue'
@@ -63,6 +64,7 @@ import MlLionMark from './components/MlLionMark.vue'
 import MlList from './components/MlList.vue'
 import MlListItem from './components/MlListItem.vue'
 import MlLoader from './components/MlLoader.vue'
+import MlLuckyWheel from './components/MlLuckyWheel.vue'
 import MlMarkdown from './components/MlMarkdown.vue'
 import MlMarquee from './components/MlMarquee.vue'
 import MlMascot from './components/MlMascot.vue'
@@ -88,6 +90,7 @@ import MlRate from './components/MlRate.vue'
 import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
+import MlScatterChart from './components/MlScatterChart.vue'
 import MlScrollbar from './components/MlScrollbar.vue'
 import MlSegmented from './components/MlSegmented.vue'
 import MlSelect from './components/MlSelect.vue'
@@ -108,6 +111,7 @@ import MlTable from './components/MlTable.vue'
 import MlTabs from './components/MlTabs.vue'
 import MlTag from './components/MlTag.vue'
 import MlTagInput from './components/MlTagInput.vue'
+import MlTaiwanRegion from './components/MlTaiwanRegion.vue'
 import MlTextarea from './components/MlTextarea.vue'
 import MlTilt from './components/MlTilt.vue'
 import MlTimePicker from './components/MlTimePicker.vue'
@@ -171,6 +175,7 @@ const components = {
   MlFloatButton,
   MlForm,
   MlFormItem,
+  MlFunnelChart,
   MlGauge,
   MlGrid,
   MlGridItem,
@@ -189,6 +194,7 @@ const components = {
   MlList,
   MlListItem,
   MlLoader,
+  MlLuckyWheel,
   MlMarkdown,
   MlMarquee,
   MlMascot,
@@ -214,6 +220,7 @@ const components = {
   MlResult,
   MlReveal,
   MlRing,
+  MlScatterChart,
   MlScrollbar,
   MlSegmented,
   MlSelect,
@@ -234,6 +241,7 @@ const components = {
   MlTabs,
   MlTag,
   MlTagInput,
+  MlTaiwanRegion,
   MlTextarea,
   MlTilt,
   MlTimePicker,
@@ -318,6 +326,7 @@ export {
   MlFloatButton,
   MlForm,
   MlFormItem,
+  MlFunnelChart,
   MlGauge,
   MlGrid,
   MlGridItem,
@@ -336,6 +345,7 @@ export {
   MlList,
   MlListItem,
   MlLoader,
+  MlLuckyWheel,
   MlMarkdown,
   MlMarquee,
   MlMascot,
@@ -361,6 +371,7 @@ export {
   MlResult,
   MlReveal,
   MlRing,
+  MlScatterChart,
   MlScrollbar,
   MlSegmented,
   MlSelect,
@@ -381,6 +392,7 @@ export {
   MlTabs,
   MlTag,
   MlTagInput,
+  MlTaiwanRegion,
   MlTextarea,
   MlTilt,
   MlTimePicker,
@@ -408,6 +420,8 @@ export type { MdBlock, MdInline, MdHeading, MdCode, MdList, MdListItem, MdTable,
 export type { QrLevel, QrMatrix } from './qrcode'
 export type { SignatureStroke, SignaturePoint } from './components/signature'
 export type { MlCropData, MlCropOutput } from './components/cropper'
+export type { MlWheelPrize } from './components/wheel'
+export { pickWeighted as pickWheelPrize } from './components/wheel'
 export type { MlToastItem } from './toast'
 export { vPawStamp, pawStamp, pawBurst } from './pawStamp'
 export { vLoading } from './loading'
@@ -416,6 +430,18 @@ export type { PawBurstOptions } from './pawStamp'
 export { lionAvatarUrl, lionFullUrl, mascotImages } from './mascot'
 export * from './types'
 export { validateValue, isEmptyValue } from './form'
+export {
+  getTaiwanCounties,
+  getTaiwanCounty,
+  getTaiwanDistricts,
+  findTaiwanDistrict,
+  findTaiwanDistrictsByZip,
+  searchTaiwanRegions,
+  matchTaiwanDistrict,
+  formatTaiwanAddress,
+  normalizeTaiwanName,
+} from './taiwan-regions'
+export type { MlTaiwanRegionValue, TaiwanCounty, TaiwanDistrict, TaiwanRegionOptions, TaiwanAddressParts } from './taiwan-regions'
 export type { MlFormRule, MlFormRules, MlFormErrors, MlValidatorResult } from './form'
 export type { IconName } from './components/icons'
 
@@ -466,6 +492,7 @@ declare module 'vue' {
     MlFloatButton: typeof MlFloatButton
     MlForm: typeof MlForm
     MlFormItem: typeof MlFormItem
+    MlFunnelChart: typeof MlFunnelChart
     MlGauge: typeof MlGauge
     MlGrid: typeof MlGrid
     MlGridItem: typeof MlGridItem
@@ -484,6 +511,7 @@ declare module 'vue' {
     MlList: typeof MlList
     MlListItem: typeof MlListItem
     MlLoader: typeof MlLoader
+    MlLuckyWheel: typeof MlLuckyWheel
     MlMarkdown: typeof MlMarkdown
     MlMarquee: typeof MlMarquee
     MlMascot: typeof MlMascot
@@ -509,6 +537,7 @@ declare module 'vue' {
     MlResult: typeof MlResult
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
+    MlScatterChart: typeof MlScatterChart
     MlScrollbar: typeof MlScrollbar
     MlSegmented: typeof MlSegmented
     MlSelect: typeof MlSelect
@@ -529,6 +558,7 @@ declare module 'vue' {
     MlTabs: typeof MlTabs
     MlTag: typeof MlTag
     MlTagInput: typeof MlTagInput
+    MlTaiwanRegion: typeof MlTaiwanRegion
     MlTextarea: typeof MlTextarea
     MlTilt: typeof MlTilt
     MlTimePicker: typeof MlTimePicker

@@ -1,0 +1,538 @@
+/* Charts: ScatterChart, FunnelChart */
+
+/* ── Scatter chart ── */
+.ml-scatter {
+  --_h: 260px;
+
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  margin: 0;
+}
+
+.ml-scatter__legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+
+.ml-scatter__key {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 3px 9px;
+  border: 0;
+  border-radius: var(--ml-radius-sm);
+  background: transparent;
+  color: var(--ml-text-muted);
+  font: inherit;
+  font-size: var(--ml-text-xs);
+  cursor: pointer;
+  transition: color var(--ml-dur-fast) var(--ml-ease), background var(--ml-dur-fast) var(--ml-ease), opacity var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-scatter__key:hover {
+  background: var(--ml-surface-2);
+  color: var(--ml-text);
+}
+
+.ml-scatter__key:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-scatter__key i {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  box-shadow: 0 0 6px currentColor;
+}
+
+.ml-scatter__key--off {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.ml-scatter__key--off i {
+  box-shadow: none;
+  filter: grayscale(1);
+}
+
+.ml-scatter__title {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.ml-scatter__title--x {
+  margin-top: 2px;
+  text-align: center;
+}
+
+.ml-scatter__body {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
+  min-width: 0;
+}
+
+.ml-scatter__axis {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: var(--_h);
+  padding: 8px 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-scatter__axis span {
+  line-height: 0;
+}
+
+.ml-scatter__main {
+  min-width: 0;
+}
+
+.ml-scatter__plot {
+  position: relative;
+  height: var(--_h);
+  outline: none;
+  cursor: crosshair;
+}
+
+.ml-scatter__plot:focus-visible {
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-scatter__plot svg {
+  display: block;
+  overflow: visible;
+}
+
+.ml-scatter__grid line {
+  stroke: var(--ml-line-steel);
+  stroke-width: 1;
+}
+
+.ml-scatter__grid .ml-scatter__vline {
+  stroke-dasharray: 2 4;
+}
+
+.ml-scatter__grid .ml-scatter__zero,
+.ml-scatter__grid line:first-child {
+  stroke: var(--ml-line-strong);
+  stroke-dasharray: none;
+}
+
+.ml-scatter__pt {
+  stroke: var(--ml-surface);
+  stroke-width: 1.2;
+  transform-box: fill-box;
+  transform-origin: center;
+  filter: drop-shadow(0 0 3px rgb(0 0 0 / 0.35));
+  /* Points pop in one series after another, a few at a time */
+  animation: ml-scatter-pop 520ms var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * 140ms + min(var(--_j, 0) * 18ms, 600ms));
+}
+
+.ml-scatter__pt--bubble {
+  fill-opacity: 0.72;
+  stroke: currentColor;
+  stroke-opacity: 0.9;
+}
+
+@keyframes ml-scatter-pop {
+  from { scale: 0; opacity: 0; }
+}
+
+.ml-scatter__trend {
+  stroke-width: 1.6;
+  stroke-dasharray: 6 5;
+  stroke-linecap: round;
+  opacity: 0.85;
+  animation: ml-fade-in var(--ml-dur-chart) var(--ml-ease) backwards;
+  animation-delay: calc(500ms + var(--_i, 0) * 140ms);
+}
+
+.ml-scatter__cursor line {
+  stroke: var(--ml-line-strong);
+  stroke-dasharray: 3 4;
+}
+
+.ml-scatter__focus {
+  fill: none;
+  stroke-width: 2;
+  filter: drop-shadow(0 0 6px currentColor);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: ml-paw-pop 260ms var(--ml-ease-spring);
+}
+
+.ml-scatter__tip {
+  position: absolute;
+  z-index: 1;
+  min-width: 140px;
+  padding: 8px 10px;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-2);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  pointer-events: none;
+}
+
+.ml-scatter__tip--right { translate: 16px -50%; }
+.ml-scatter__tip--left { translate: calc(-100% - 16px) -50%; }
+
+.ml-scatter__tip p {
+  margin: 0;
+}
+
+.ml-scatter__tip-title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 4px !important;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.ml-scatter__tip-title i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.ml-scatter__tip-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+  line-height: 1.8;
+}
+
+.ml-scatter__tip-row span {
+  flex: 1;
+}
+
+.ml-scatter__tip-row b {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-scatter__x {
+  position: relative;
+  height: 18px;
+  margin-top: 8px;
+}
+
+.ml-scatter__x span {
+  position: absolute;
+  top: 0;
+  translate: -50% 0;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-scatter__x span:first-child { translate: 0 0; }
+.ml-scatter__x span:last-child:not(:first-child) { translate: -100% 0; }
+
+/* ── Funnel chart ── */
+.ml-funnel {
+  --_size: 52px;
+
+  min-width: 0;
+  margin: 0;
+}
+
+.ml-funnel__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ml-funnel__stage {
+  position: relative;
+  outline: none;
+  cursor: default;
+}
+
+.ml-funnel__label {
+  color: var(--ml-text);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+}
+
+.ml-funnel__value {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.ml-funnel__rate {
+  display: grid;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+}
+
+.ml-funnel__rate small {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-body);
+  font-size: 0.6875rem;
+}
+
+.ml-funnel__track {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-width: 0;
+}
+
+/* A brushed-metal slab: two-tone gradient across, sheen down, clipped to the stage outline */
+.ml-funnel__shape {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, rgb(255 255 255 / 0.32), rgb(255 255 255 / 0) 42%, rgb(0 0 0 / 0.18)),
+    linear-gradient(90deg, var(--_c1), var(--_c0) 30%, var(--_c0) 62%, var(--_c1));
+  transition: filter var(--ml-dur-fast) var(--ml-ease), opacity var(--ml-dur-fast) var(--ml-ease);
+  animation: ml-funnel-in 720ms var(--ml-ease-spring) backwards;
+  animation-delay: calc(var(--_i, 0) * 110ms);
+}
+
+.ml-funnel__share {
+  position: relative;
+  padding: 1px 7px;
+  border-radius: 999px;
+  background: rgb(10 12 16 / 0.62);
+  color: #fff;
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-variant-numeric: tabular-nums;
+  backdrop-filter: blur(2px);
+  animation: ml-fade-in var(--ml-dur-chart) var(--ml-ease) backwards;
+  animation-delay: calc(360ms + var(--_i, 0) * 110ms);
+}
+
+.ml-funnel__stage--on .ml-funnel__shape {
+  filter: brightness(1.12) drop-shadow(0 0 10px var(--_c0));
+}
+
+.ml-funnel__list:hover .ml-funnel__stage:not(.ml-funnel__stage--on) .ml-funnel__shape,
+.ml-funnel__list:focus-within .ml-funnel__stage:not(.ml-funnel__stage--on) .ml-funnel__shape {
+  opacity: 0.55;
+}
+
+.ml-funnel__stage:focus-visible .ml-funnel__track {
+  box-shadow: 0 0 0 1px var(--ml-focus);
+}
+
+.ml-funnel__tip {
+  position: absolute;
+  z-index: 2;
+  min-width: 150px;
+  padding: 8px 10px;
+  background: var(--ml-surface-3);
+  box-shadow: inset 0 0 0 1px var(--ml-line-strong), var(--ml-shadow-2);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  pointer-events: none;
+}
+
+.ml-funnel__tip p {
+  margin: 0;
+}
+
+.ml-funnel__tip-title {
+  margin-bottom: 4px !important;
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.06em;
+}
+
+.ml-funnel__tip-row {
+  display: flex;
+  gap: 12px;
+  color: var(--ml-text-muted);
+  font-size: var(--ml-text-xs);
+  line-height: 1.8;
+}
+
+.ml-funnel__tip-row span {
+  flex: 1;
+}
+
+.ml-funnel__tip-row b {
+  color: var(--ml-text);
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Vertical: one row per stage — label | shape | value | conversion */
+.ml-funnel--vertical .ml-funnel__list {
+  display: grid;
+  grid-template-columns: minmax(64px, max-content) minmax(0, 1fr) max-content max-content;
+  column-gap: 14px;
+  row-gap: 4px;
+}
+
+.ml-funnel--vertical .ml-funnel__stage {
+  display: grid;
+  grid-column: 1 / -1;
+  grid-template-columns: subgrid;
+  align-items: center;
+}
+
+.ml-funnel--vertical .ml-funnel__track {
+  height: var(--_size);
+}
+
+.ml-funnel--vertical .ml-funnel__shape {
+  clip-path: polygon(
+    calc(50% - var(--_a) * 0.5%) 0,
+    calc(50% + var(--_a) * 0.5%) 0,
+    calc(50% + var(--_b) * 0.5%) 100%,
+    calc(50% - var(--_b) * 0.5%) 100%
+  );
+  transform-origin: top center;
+}
+
+.ml-funnel--vertical .ml-funnel__value { text-align: right; }
+
+.ml-funnel--vertical .ml-funnel__rate {
+  min-width: 76px;
+  padding-left: 12px;
+  border-left: 1px solid var(--ml-line-steel);
+}
+
+.ml-funnel--vertical .ml-funnel__tip {
+  top: 50%;
+  left: 50%;
+  translate: -50% calc(-100% - 10px);
+}
+
+/* Horizontal: one column per stage — shape on top, figures below */
+.ml-funnel--horizontal .ml-funnel__list {
+  display: grid;
+  grid-template-columns: repeat(var(--_n, 1), minmax(0, 1fr));
+  column-gap: 3px;
+}
+
+.ml-funnel--horizontal .ml-funnel__stage {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.ml-funnel--horizontal .ml-funnel__label {
+  order: 2;
+  margin-top: 8px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ml-funnel--horizontal .ml-funnel__track {
+  order: 1;
+  height: var(--_size);
+}
+
+.ml-funnel--horizontal .ml-funnel__value { order: 3; }
+.ml-funnel--horizontal .ml-funnel__rate { order: 4; }
+
+.ml-funnel--horizontal .ml-funnel__shape {
+  clip-path: polygon(
+    0 calc(50% - var(--_a) * 0.5%),
+    100% calc(50% - var(--_b) * 0.5%),
+    100% calc(50% + var(--_b) * 0.5%),
+    0 calc(50% + var(--_a) * 0.5%)
+  );
+  transform-origin: left center;
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 0.2), rgb(255 255 255 / 0) 45%, rgb(0 0 0 / 0.14)),
+    linear-gradient(180deg, var(--_c1), var(--_c0) 30%, var(--_c0) 62%, var(--_c1));
+}
+
+.ml-funnel--horizontal .ml-funnel__tip {
+  top: calc(var(--_size) / 2);
+  left: 50%;
+  translate: -50% -50%;
+}
+
+@keyframes ml-funnel-in {
+  from { scale: 0.2 1; opacity: 0; }
+}
+
+.ml-funnel--vertical .ml-funnel__shape {
+  animation-name: ml-funnel-drop;
+}
+
+@keyframes ml-funnel-drop {
+  from { scale: 0.3 0.6; opacity: 0; }
+}
+
+/* Narrow containers: the conversion figure tucks under the value so the shapes keep their room */
+.ml-funnel--vertical {
+  container-type: inline-size;
+}
+
+@container (max-width: 460px) {
+  .ml-funnel--vertical .ml-funnel__list {
+    grid-template-columns: minmax(48px, max-content) minmax(0, 1fr) max-content;
+    column-gap: 10px;
+  }
+
+  .ml-funnel--vertical .ml-funnel__label,
+  .ml-funnel--vertical .ml-funnel__track {
+    grid-row: span 2;
+  }
+
+  .ml-funnel--vertical .ml-funnel__value {
+    align-self: end;
+  }
+
+  .ml-funnel--vertical .ml-funnel__rate {
+    grid-column: 3;
+    align-self: start;
+    min-width: 0;
+    padding-left: 0;
+    border-left: 0;
+    text-align: right;
+  }
+
+  .ml-funnel--vertical .ml-funnel__rate small {
+    display: none;
+  }
+}
+
+[data-ml-theme='light'] .ml-funnel__share {
+  background: rgb(255 255 255 / 0.78);
+  color: #1b1f27;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-scatter__pt,
+  .ml-scatter__trend,
+  .ml-scatter__focus,
+  .ml-funnel__shape,
+  .ml-funnel__share {
+    animation: none;
+  }
+}

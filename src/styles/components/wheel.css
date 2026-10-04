@@ -1,0 +1,266 @@
+/* ── LuckyWheel (幸運轉盤) ──
+ * A brushed-gold rim with chasing bulbs, a metal prize face that spins
+ * underneath a static sheen, a ticking pointer and a lion-gold GO hub. */
+.ml-lucky-wheel {
+  --_rim-shadow: rgb(0 0 0 / 0.55);
+  --_bulb-off: #5a3d0c;
+  --_bulb-on: #fff3c4;
+  --_bulb-glow: rgb(255 214 106 / 0.95);
+  --_groove: #1a1206;
+  --_ink-dark: #1a1104;
+  --_ink-light: #fff8e3;
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: var(--_size, 320px);
+  max-width: 100%;
+  aspect-ratio: 1;
+  isolation: isolate;
+  -webkit-tap-highlight-color: transparent;
+}
+
+[data-ml-theme='light'] .ml-lucky-wheel,
+.ml-lucky-wheel[data-ml-theme='light'] {
+  --_rim-shadow: rgb(20 24 33 / 0.22);
+  --_bulb-off: #b98a3a;
+  --_groove: #3c2a0c;
+}
+
+.ml-lucky-wheel__svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  filter: drop-shadow(0 14px 26px var(--_rim-shadow));
+}
+
+/* Brushed rim */
+.ml-lucky-wheel__rim {
+  stroke: rgb(0 0 0 / 0.35);
+  stroke-width: 0.6;
+}
+
+.ml-lucky-wheel__rim-groove {
+  fill: var(--_groove);
+  stroke: rgb(255 236 180 / 0.35);
+  stroke-width: 0.8;
+}
+
+/* Bulbs: a soft breathing glow at rest, a fast chase while spinning */
+.ml-lucky-wheel__light {
+  fill: var(--_bulb-off);
+  stroke: rgb(0 0 0 / 0.4);
+  stroke-width: 0.5;
+  animation: ml-wheel-idle 2.4s ease-in-out infinite;
+  animation-delay: calc(var(--_i, 0) * 0.15s);
+}
+
+.ml-lucky-wheel__light:nth-child(odd) {
+  animation-delay: calc(var(--_i, 0) * 0.15s + 1.2s);
+}
+
+.ml-lucky-wheel--spinning .ml-lucky-wheel__light {
+  animation: ml-wheel-chase 0.42s steps(1, end) infinite;
+  animation-delay: calc(var(--_i, 0) * -0.07s);
+}
+
+.ml-lucky-wheel--landed .ml-lucky-wheel__light {
+  animation: ml-wheel-flash 0.5s steps(1, end) 4;
+}
+
+@keyframes ml-wheel-idle {
+  0%, 100% { fill: var(--_bulb-off); }
+  50% { fill: var(--_bulb-on); filter: drop-shadow(0 0 2px var(--_bulb-glow)); }
+}
+
+@keyframes ml-wheel-chase {
+  0% { fill: var(--_bulb-on); filter: drop-shadow(0 0 2.5px var(--_bulb-glow)); }
+  33% { fill: var(--_bulb-off); filter: none; }
+}
+
+@keyframes ml-wheel-flash {
+  0% { fill: var(--_bulb-on); filter: drop-shadow(0 0 3px var(--_bulb-glow)); }
+  50% { fill: var(--_bulb-off); filter: none; }
+}
+
+/* Prize face */
+.ml-lucky-wheel__wedge {
+  stroke: rgb(26 17 4 / 0.55);
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  transition: filter var(--ml-dur) var(--ml-ease), opacity var(--ml-dur) var(--ml-ease);
+}
+
+.ml-lucky-wheel__label {
+  font-family: var(--ml-font-display);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.ml-lucky-wheel__slice--dark .ml-lucky-wheel__label { fill: var(--_ink-dark); }
+.ml-lucky-wheel__slice--light .ml-lucky-wheel__label { fill: var(--_ink-light); }
+
+.ml-lucky-wheel__icon {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ml-lucky-wheel__slice--dark .ml-lucky-wheel__icon { stroke: var(--_ink-dark); }
+.ml-lucky-wheel__slice--light .ml-lucky-wheel__icon { stroke: var(--_ink-light); }
+
+.ml-lucky-wheel__image {
+  pointer-events: none;
+}
+
+/* Sold out: hatched and dimmed, still visible so the odds are honest */
+.ml-lucky-wheel__slice--off .ml-lucky-wheel__wedge {
+  filter: grayscale(0.85) brightness(0.7);
+}
+
+.ml-lucky-wheel__slice--off .ml-lucky-wheel__label {
+  opacity: 0.6;
+  text-decoration: line-through;
+}
+
+/* The winner glows, everyone else steps back */
+.ml-lucky-wheel--landed .ml-lucky-wheel__slice:not(.ml-lucky-wheel__slice--win) .ml-lucky-wheel__wedge {
+  filter: brightness(0.55) saturate(0.7);
+}
+
+.ml-lucky-wheel__slice--win .ml-lucky-wheel__wedge {
+  stroke: #fff4cc;
+  stroke-width: 1.6;
+  animation: ml-wheel-win 1.1s var(--ml-ease) infinite alternate;
+}
+
+@keyframes ml-wheel-win {
+  from { filter: brightness(1) drop-shadow(0 0 0 rgb(255 214 106 / 0)); }
+  to { filter: brightness(1.18) drop-shadow(0 0 5px rgb(255 214 106 / 0.95)); }
+}
+
+.ml-lucky-wheel__peg {
+  fill: #fff0bf;
+  stroke: #6b450a;
+  stroke-width: 0.7;
+}
+
+.ml-lucky-wheel__sheen {
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+}
+
+[data-ml-theme='light'] .ml-lucky-wheel__sheen {
+  mix-blend-mode: normal;
+  opacity: 0.55;
+}
+
+/* Pointer */
+.ml-lucky-wheel__pointer-body {
+  stroke: #5a3a07;
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 2px 2px rgb(0 0 0 / 0.45));
+}
+
+.ml-lucky-wheel__pointer-pin {
+  fill: #fff4cc;
+  stroke: #7c4e0b;
+  stroke-width: 0.8;
+}
+
+/* Reduced motion: no spin, just a short fade to the result */
+.ml-lucky-wheel--fade .ml-lucky-wheel__face {
+  animation: ml-wheel-fade 360ms var(--ml-ease) both !important;
+}
+
+@keyframes ml-wheel-fade {
+  from { opacity: 0.15; }
+  to { opacity: 1; }
+}
+
+/* GO hub */
+.ml-lucky-wheel__hub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  gap: 0;
+  width: 25%;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  translate: -50% -50%;
+  color: var(--ml-text-on-metal);
+  background:
+    radial-gradient(circle at 35% 28%, rgb(255 255 255 / 0.55), transparent 42%),
+    var(--ml-metal-gold);
+  box-shadow:
+    0 0 0 calc(var(--_size, 320px) * 0.012) #2b1b06,
+    0 0 0 calc(var(--_size, 320px) * 0.022) #f2bd4a,
+    0 8px 18px rgb(0 0 0 / 0.5),
+    inset 0 -3px 6px rgb(0 0 0 / 0.3),
+    inset 0 2px 2px rgb(255 255 255 / 0.6);
+  font-family: var(--ml-font-display);
+  font-size: calc(var(--_size, 320px) * 0.068);
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform var(--ml-dur-fast) var(--ml-ease), filter var(--ml-dur) var(--ml-ease);
+}
+
+.ml-lucky-wheel__hub:hover:not(:disabled, [aria-disabled='true']) {
+  filter: brightness(1.08) var(--ml-glow-gold);
+}
+
+.ml-lucky-wheel__hub:active:not(:disabled, [aria-disabled='true']) {
+  transform: scale(0.94);
+}
+
+.ml-lucky-wheel__hub:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: calc(var(--_size, 320px) * 0.03);
+}
+
+.ml-lucky-wheel__hub:disabled,
+.ml-lucky-wheel__hub[aria-disabled='true'] {
+  cursor: not-allowed;
+}
+
+.ml-lucky-wheel__hub:disabled {
+  filter: grayscale(0.8) brightness(0.8);
+}
+
+.ml-lucky-wheel--spinning .ml-lucky-wheel__hub {
+  cursor: progress;
+}
+
+.ml-lucky-wheel__paw {
+  width: 0.62em;
+  height: 0.62em;
+  margin-bottom: 0.08em;
+  opacity: 0.85;
+}
+
+.ml-lucky-wheel__go {
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.45);
+}
+
+.ml-lucky-wheel--spinning .ml-lucky-wheel__go {
+  animation: ml-wheel-pulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes ml-wheel-pulse {
+  to { opacity: 0.55; }
+}
+
+.ml-lucky-wheel--disabled .ml-lucky-wheel__face {
+  filter: grayscale(0.6);
+}

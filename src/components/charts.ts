@@ -46,3 +46,114 @@ export function smoothPath(pts: { x: number; y: number }[]) {
   }
   return d
 }
+
+/* ── Scatter & funnel math (framework-free, shared by Vue and React) ── */
+
+/**
+ * Round axis bounds that cover [min, max] with readable gridlines. Unlike the
+ * bar/line charts this does not force zero in, so clustered data fills the plot.
+ */
+export function niceScale(min: number, max: number, ticks = 5) {
+  if (!Number.isFinite(min) || !Number.isFinite(max)) {
+    min = 0
+    max = 1
+  }
+  if (min > max) [min, max] = [max, min]
+  if (min === max) {
+    const pad = Math.abs(min) * 0.1 || 1
+    min -= pad
+    max += pad
+  }
+  // Free-range axes read best on 1 / 2 / 2.5 / 5 steps, so round niceStep's in-between ones up.
+  const raw = niceStep(max - min, Math.max(1, ticks))
+  const magnitude = 10 ** Math.floor(Math.log10(raw) + 1e-9)
+  const mantissa = +(raw / magnitude).toFixed(6)
+  const step = ({ 1.5: 2, 3: 5, 4: 5, 6: 10, 8: 10 } as Record<number, number>)[mantissa] * magnitude || raw
+  const lo = +(Math.floor(min / step + 1e-9) * step).toFixed(10)
+  const hi = +(Math.ceil(max / step - 1e-9) * step).toFixed(10)
+  const values: number[] = []
+  for (let v = lo; v <= hi + step / 2; v += step) values.push(+v.toFixed(10))
+  return { lo, hi, step, values }
+}
+
+/** Least-squares line y = slope·x + intercept (null with fewer than two distinct x). */
+export function linearFit(points: { x: number; y: number }[]) {
+  const n = points.length
+  if (n < 2) return null
+  const mx = points.reduce((s, p) => s + p.x, 0) / n
+  const my = points.reduce((s, p) => s + p.y, 0) / n
+  let sxx = 0
+  let sxy = 0
+  let syy = 0
+  for (const p of points) {
+    sxx += (p.x - mx) ** 2
+    sxy += (p.x - mx) * (p.y - my)
+    syy += (p.y - my) ** 2
+  }
+  if (sxx === 0) return null
+  const slope = sxy / sxx
+  return { slope, intercept: my - slope * mx, r2: syy === 0 ? 1 : (sxy * sxy) / (sxx * syy) }
+}
+
+/** Bubble radius with the *area* proportional to the value (not the radius). */
+export function bubbleRadius(value: number, min: number, max: number, range: [number, number]) {
+  const [r0, r1] = range
+  if (!(max > min)) return (r0 + r1) / 2
+  const t = Math.min(1, Math.max(0, (value - min) / (max - min)))
+  return Math.sqrt(r0 * r0 + t * (r1 * r1 - r0 * r0))
+}
+
+/** Index of the point closest to (px, py), or -1 when none lies within `maxDistance`. */
+export function nearestIndex(points: { x: number; y: number }[], px: number, py: number, maxDistance = Infinity) {
+  let best = -1
+  let bestD = maxDistance * maxDistance
+  points.forEach((p, i) => {
+    const d = (p.x - px) ** 2 + (p.y - py) ** 2
+    if (d <= bestD) {
+      best = i
+      bestD = d
+    }
+  })
+  return best
+}
+
+/** A diamond (rotated square) marker centred on (cx, cy). */
+export function diamondPath(cx: number, cy: number, r: number) {
+  const f = (n: number) => n.toFixed(1)
+  return `M${f(cx)} ${f(cy - r)}L${f(cx + r)} ${f(cy)}L${f(cx)} ${f(cy + r)}L${f(cx - r)} ${f(cy)}Z`
+}
+
+/** 0.625 → "62.5%", 1 → "100%". */
+export function percentText(ratio: number) {
+  return `${+(ratio * 100).toFixed(1)}%`
+}
+
+export interface FunnelStage {
+  label: string
+  value: number
+  tone?: MlChartTone
+  /** value ÷ previous stage (1 for the first stage). */
+  fromPrev: number
+  /** value ÷ first stage. */
+  fromFirst: number
+  /** How many were lost since the previous stage. */
+  drop: number
+  /** Shape width as a share of the widest stage, 0–1 (never thinner than `minWidth`). */
+  width: number
+}
+
+/** Conversion figures and shape widths for a funnel. */
+export function funnelStages(data: { label: string; value: number; tone?: MlChartTone }[], minWidth = 0.06): FunnelStage[] {
+  const ratio = (a: number, b: number) => (b > 0 ? Math.max(0, a) / b : 0)
+  const first = data[0]?.value ?? 0
+  const max = Math.max(0, ...data.map((d) => d.value))
+  return data.map((d, i) => ({
+    label: d.label,
+    value: d.value,
+    tone: d.tone,
+    fromPrev: i ? ratio(d.value, data[i - 1].value) : 1,
+    fromFirst: ratio(d.value, first),
+    drop: i ? data[i - 1].value - d.value : 0,
+    width: max > 0 ? Math.max(minWidth, Math.max(0, d.value) / max) : minWidth,
+  }))
+}

@@ -77,6 +77,7 @@ export interface MlLocale {
     presets: string
   }
   cascader: { placeholder: string }
+  region: { county: string; district: string; zip: string; pickCounty: string; pickDistrict: string; search: string }
   tagInput: {
     placeholder: string
     added: (label?: string) => string
@@ -137,7 +138,10 @@ export interface MlLocale {
   code: { copy: string; copied: string; expand: string; collapse: string; copiedToast: (file?: string) => string }
   markdown: { streaming: string }
   heatmap: { cell: (count: number, date: string) => string; summary: (total: number) => string; less: string; more: string }
+  scatter: { summary: (series: number, points: number) => string; table: string; series: string; point: string; x: string; y: string; size: string; trend: (name: string) => string; toggle: (name: string) => string }
+  funnel: { summary: (stages: number, rate: string) => string; value: string; fromPrev: string; fromFirst: string; drop: string; start: string }
   rate: string
+  wheel: { label: string; summary: (label: string, prizes: string[]) => string; spin: string; spinning: string; result: (prize: string) => string }
   toast: { region: string; close: string }
   qrcode: { tooLong: string; label: (value: string) => string }
   signature: { label: string; placeholder: string; hint: string; undo: string; clear: string; empty: string; signed: (strokes: number) => string; cleared: string }
@@ -253,6 +257,7 @@ export const zhTW: MlLocale = {
     presets: '預設顏色',
   },
   cascader: { placeholder: '請選擇' },
+  region: { county: '縣市', district: '鄉鎮市區', zip: '郵遞區號', pickCounty: '請選擇縣市', pickDistrict: '請選擇鄉鎮市區', search: '輸入縣市、鄉鎮或郵遞區號' },
   tagInput: {
     placeholder: '輸入後按 Enter',
     added: (label) => (label ? `${label}：已加入` : '已加入的標籤'),
@@ -325,7 +330,20 @@ export const zhTW: MlLocale = {
   code: { copy: '複製', copied: '已複製', expand: '展開程式碼', collapse: '收起', copiedToast: (f) => `已複製 ${f ?? '程式碼'}` },
   markdown: { streaming: '正在產生回覆…' },
   heatmap: { cell: (n, d) => `${d}：${n} 次`, summary: (t) => `一年內共 ${t.toLocaleString()} 次貢獻`, less: '少', more: '多' },
+  scatter: {
+    summary: (s, p) => `散佈圖：${s} 個數列，共 ${p} 個資料點`,
+    table: '散佈圖資料',
+    series: '數列',
+    point: '資料點',
+    x: 'X',
+    y: 'Y',
+    size: '大小',
+    trend: (n) => `${n} 趨勢線`,
+    toggle: (n) => `顯示或隱藏「${n}」`,
+  },
+  funnel: { summary: (n, r) => `漏斗圖：${n} 個階段，整體轉換率 ${r}`, value: '數量', fromPrev: '較上一階段', fromFirst: '整體轉換', drop: '流失', start: '起點' },
   rate: '評分',
+  wheel: { label: '幸運轉盤', summary: (l, p) => `${l}：${p.join('、')}`, spin: '開始抽獎', spinning: '轉盤轉動中…', result: (p) => `恭喜！抽中：${p}` },
   toast: { region: '通知', close: '關閉通知' },
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
   signature: {
@@ -458,6 +476,7 @@ export const en: MlLocale = {
     presets: 'Preset colours',
   },
   cascader: { placeholder: 'Select…' },
+  region: { county: 'City / County', district: 'District', zip: 'Postal code', pickCounty: 'Select city / county', pickDistrict: 'Select district', search: 'Search by name or postal code' },
   tagInput: {
     placeholder: 'Type and press Enter',
     added: (label) => (label ? `${label}: added` : 'Added tags'),
@@ -530,7 +549,20 @@ export const en: MlLocale = {
   code: { copy: 'Copy', copied: 'Copied', expand: 'Show code', collapse: 'Hide', copiedToast: (f) => `Copied ${f ?? 'code'}` },
   markdown: { streaming: 'Generating…' },
   heatmap: { cell: (n, d) => `${n === 1 ? '1 contribution' : `${n} contributions`} on ${d}`, summary: (t) => `${t.toLocaleString()} contributions in the last year`, less: 'Less', more: 'More' },
+  scatter: {
+    summary: (s, p) => `Scatter chart: ${s} series, ${p} ${p === 1 ? 'point' : 'points'}`,
+    table: 'Scatter chart data',
+    series: 'Series',
+    point: 'Point',
+    x: 'X',
+    y: 'Y',
+    size: 'Size',
+    trend: (n) => `${n} trend line`,
+    toggle: (n) => `Show or hide “${n}”`,
+  },
+  funnel: { summary: (n, r) => `Funnel chart: ${n} stages, ${r} overall conversion`, value: 'Count', fromPrev: 'From previous', fromFirst: 'Overall', drop: 'Dropped', start: 'Start' },
   rate: 'Rating',
+  wheel: { label: 'Prize wheel', summary: (l, p) => `${l}: ${p.join(', ')}`, spin: 'Spin the wheel', spinning: 'Spinning…', result: (p) => `You won: ${p}` },
   toast: { region: 'Notifications', close: 'Dismiss notification' },
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },
   signature: {
