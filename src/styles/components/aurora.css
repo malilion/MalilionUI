@@ -1,0 +1,134 @@
+/*
+ * Aurora — soft light drifting behind a hero section. Pure CSS: four blurred-
+ * edge radial lights moved with transforms only (compositor work, no layout or
+ * paint per frame). JS just pauses them off screen. Usable from plain HTML:
+ *   <div class="ml-aurora ml-aurora--pride ml-aurora--grain">
+ *     <div class="ml-aurora__sky" aria-hidden="true"><span class="ml-aurora__blob ml-aurora__blob--1"></span>…--4</div>
+ *     <div class="ml-aurora__content">…</div>
+ *   </div>
+ */
+.ml-aurora {
+  --_au-c1: #f9c757;
+  --_au-c2: #cd7631;
+  --_au-c3: #d48f17;
+  --_au-c4: #ffe9a6;
+  --_au-base: #0b0905;
+  --_au-intensity: 0.7;
+  --_au-speed: 1;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--_au-base);
+  color: var(--ml-text);
+}
+
+.ml-aurora--circuit { --_au-c1: #3eeed0; --_au-c2: #0a9f89; --_au-c3: #2bb7ff; --_au-c4: #b4fbef; --_au-base: #03100f; }
+.ml-aurora--bean { --_au-c1: #ff8fa8; --_au-c2: #f06d8c; --_au-c3: #c98bff; --_au-c4: #ffd6df; --_au-base: #11070b; }
+.ml-aurora--night { --_au-c1: #3b4dff; --_au-c2: #7a3cff; --_au-c3: #1d6bd6; --_au-c4: #b18cff; --_au-base: #05061a; }
+.ml-aurora--custom { --_au-base: var(--ml-bg); }
+
+[data-ml-theme='light'] .ml-aurora { --_au-c1: #ffcf5c; --_au-c2: #e9a066; --_au-c3: #f0ad2f; --_au-c4: #fff1c2; --_au-base: #fbf6ea; }
+[data-ml-theme='light'] .ml-aurora--circuit { --_au-c1: #7af6e2; --_au-c2: #14cfb2; --_au-c3: #7cc8ff; --_au-c4: #d4fff7; --_au-base: #eef8f6; }
+[data-ml-theme='light'] .ml-aurora--bean { --_au-c1: #ffb3c3; --_au-c2: #ff8fa8; --_au-c3: #dcb8ff; --_au-c4: #ffe3ea; --_au-base: #fdf1f4; }
+[data-ml-theme='light'] .ml-aurora--night { --_au-c1: #8c9bff; --_au-c2: #b493ff; --_au-c3: #7fb2f5; --_au-c4: #d9c9ff; --_au-base: #eff0fb; }
+[data-ml-theme='light'] .ml-aurora--custom { --_au-base: var(--ml-bg); }
+
+.ml-aurora__sky {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  opacity: var(--_au-intensity);
+  pointer-events: none;
+}
+
+.ml-aurora__blob {
+  position: absolute;
+  width: 84%;
+  aspect-ratio: 1.6;
+  border-radius: 50%;
+  /* A long, smooth falloff so no hot spot shows: reads as light, not as a disc */
+  background: radial-gradient(closest-side,
+      color-mix(in srgb, var(--_au-c) 80%, transparent),
+      color-mix(in srgb, var(--_au-c) 45%, transparent) 38%,
+      color-mix(in srgb, var(--_au-c) 16%, transparent) 70%,
+      transparent);
+  opacity: 0.95;
+  will-change: transform;
+  animation: var(--_au-anim) calc(var(--_au-dur) / var(--_au-speed)) ease-in-out infinite alternate;
+}
+
+.ml-aurora__blob--1 { --_au-c: var(--_au-c1); --_au-anim: ml-aurora-a; --_au-dur: 23s; left: -18%; top: -38%; }
+.ml-aurora__blob--2 { --_au-c: var(--_au-c2); --_au-anim: ml-aurora-b; --_au-dur: 29s; right: -22%; top: -18%; width: 64%; }
+.ml-aurora__blob--3 { --_au-c: var(--_au-c3); --_au-anim: ml-aurora-c; --_au-dur: 31s; left: 8%; bottom: -46%; width: 80%; aspect-ratio: 1.8; }
+.ml-aurora__blob--4 { --_au-c: var(--_au-c4); --_au-anim: ml-aurora-d; --_au-dur: 19s; right: 12%; bottom: -28%; width: 38%; opacity: 0.7; }
+
+[data-ml-theme='light'] .ml-aurora__blob { opacity: 0.75; }
+[data-ml-theme='light'] .ml-aurora__blob--4 { opacity: 0.55; }
+
+/* Grain: a tiny tiled noise texture (inline SVG turbulence) */
+.ml-aurora--grain::after,
+.ml-aurora--scanlines::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.ml-aurora--grain::after {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0 0.5 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.16;
+  mix-blend-mode: overlay;
+}
+
+[data-ml-theme='light'] .ml-aurora--grain::after { opacity: 0.22; mix-blend-mode: soft-light; }
+
+.ml-aurora--scanlines::before {
+  background: var(--ml-scanlines);
+}
+
+[data-ml-theme='light'] .ml-aurora--scanlines::before {
+  background: repeating-linear-gradient(0deg, rgb(20 24 33 / 0.04) 0 1px, transparent 1px 3px);
+}
+
+.ml-aurora__content {
+  position: relative;
+  z-index: 1;
+}
+
+.ml-aurora--paused .ml-aurora__blob {
+  animation-play-state: paused;
+}
+
+@keyframes ml-aurora-a {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate(18%, 14%) rotate(16deg) scale(1.12); }
+  100% { transform: translate(32%, 4%) rotate(-8deg) scale(0.94); }
+}
+
+@keyframes ml-aurora-b {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate(-22%, 18%) rotate(-20deg) scale(0.9); }
+  100% { transform: translate(-10%, 34%) rotate(12deg) scale(1.15); }
+}
+
+@keyframes ml-aurora-c {
+  0% { transform: translate(0, 0) rotate(0deg) scale(1); }
+  50% { transform: translate(14%, -20%) rotate(10deg) scale(1.08); }
+  100% { transform: translate(-16%, -10%) rotate(-14deg) scale(0.96); }
+}
+
+@keyframes ml-aurora-d {
+  0% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-40%, -30%) scale(1.3); }
+  100% { transform: translate(-70%, 6%) scale(0.85); }
+}
+
+/* Reduced motion: the lights hold a composed, still arrangement. */
+@media (prefers-reduced-motion: reduce) {
+  .ml-aurora__blob { animation: none; }
+  .ml-aurora__blob--1 { transform: translate(14%, 10%) rotate(8deg) scale(1.06); }
+  .ml-aurora__blob--2 { transform: translate(-12%, 16%) rotate(-10deg); }
+  .ml-aurora__blob--4 { transform: translate(-30%, -12%) scale(1.15); }
+}

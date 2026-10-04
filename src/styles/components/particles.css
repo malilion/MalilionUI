@@ -1,0 +1,35 @@
+/* Particles — a canvas constellation behind content. The canvas reads its colours from these variables. */
+.ml-particles {
+  --_pt-dot: #f9c757;
+  --_pt-line: #f0ad2f;
+  --_pt-spark: #fff4cc;
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 120px;
+}
+
+.ml-particles--tech { --_pt-dot: #7af6e2; --_pt-line: #3eeed0; --_pt-spark: #e6fffb; }
+.ml-particles--bean { --_pt-dot: #ffb3c3; --_pt-line: #ff8fa8; --_pt-spark: #fff0f3; }
+.ml-particles--steel { --_pt-dot: #c6cdd7; --_pt-line: #9ea7b5; --_pt-spark: #ffffff; }
+
+[data-ml-theme='light'] .ml-particles { --_pt-dot: #a96c0e; --_pt-line: #d48f17; --_pt-spark: #7c4e0b; }
+[data-ml-theme='light'] .ml-particles--tech { --_pt-dot: #0b6f61; --_pt-line: #0a9f89; --_pt-spark: #0b6f61; }
+[data-ml-theme='light'] .ml-particles--bean { --_pt-dot: #c94d6c; --_pt-line: #f06d8c; --_pt-spark: #c94d6c; }
+[data-ml-theme='light'] .ml-particles--steel { --_pt-dot: #414956; --_pt-line: #77818f; --_pt-spark: #2c323d; }
+
+.ml-particles__canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ml-particles__content {
+  position: relative;
+  z-index: 1;
+}

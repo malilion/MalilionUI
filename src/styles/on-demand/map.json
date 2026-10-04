@@ -20,6 +20,9 @@
   "MlAnchor": [
     "components/layout.css"
   ],
+  "MlAurora": [
+    "components/aurora.css"
+  ],
   "MlAutocomplete": [
     "components/field.css",
     "components/paw.css",
@@ -100,6 +103,10 @@
     "components/paw.css",
     "components/form.css",
     "components/checkbox-group.css"
+  ],
+  "MlClock": [
+    "components/lion-mark.css",
+    "components/clock.css"
   ],
   "MlCodeBlock": [
     "components/button.css",
@@ -364,6 +371,9 @@
   "MlPagination": [
     "components/navigation.css"
   ],
+  "MlParticles": [
+    "components/particles.css"
+  ],
   "MlPasswordInput": [
     "components/field.css",
     "components/form.css",
@@ -411,6 +421,9 @@
   ],
   "MlQRCode": [
     "components/misc.css"
+  ],
+  "MlRadar": [
+    "components/radar-scope.css"
   ],
   "MlRadarChart": [
     "components/paw.css",
