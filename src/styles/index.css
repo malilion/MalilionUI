@@ -85,5 +85,9 @@
 @import './components/scratch.css';
 @import './components/grid-lottery.css';
 @import './components/gacha.css';
+@import './components/sticker-picker.css';
+@import './components/comments.css';
+@import './components/swipe-stack.css';
+@import './components/inbox.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';

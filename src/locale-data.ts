@@ -1,4 +1,5 @@
 // Locale strings only — no framework imports, so the React build can share them.
+import type { CuteIconName } from './components/cute-icons'
 /**
  * Every piece of built-in UI text. Ship your own by copying `zhTW` or `en`
  * and passing it to <MlConfigProvider :locale> or `app.use(MalilionUI, { locale })`.
@@ -254,6 +255,67 @@ export interface MlLocale {
   captcha: { label: string; hint: string; slider: string; checking: string; success: string; fail: string; refresh: string; locked: string }
   scratch: { cover: string; label: string; hint: string; revealed: string; revealNow: string }
   lottery: { grid: string; gacha: string; draw: string; turn: string; drawing: string; result: (prize: string) => string; again: string; none: string }
+  /** Relative times ("3 分鐘前") shared by MlComments and MlInbox; the rest comes from Intl.RelativeTimeFormat. */
+  relativeTime: { justNow: string }
+  sticker: {
+    label: string
+    open: string
+    search: string
+    recent: string
+    groups: Record<'animals' | 'food' | 'nature' | 'things' | 'tech', string>
+    results: (n: number) => string
+    noMatch: string
+    noRecent: string
+    /** Accessible names of the cute icons. */
+    names: Record<CuteIconName, string>
+  }
+  comments: {
+    label: string
+    title: string
+    count: (n: number) => string
+    sortLabel: string
+    sort: { newest: string; oldest: string; popular: string }
+    placeholder: string
+    replyPlaceholder: (name: string) => string
+    reply: string
+    replyTo: (name: string) => string
+    submit: string
+    cancel: string
+    hint: string
+    like: (n: number) => string
+    expand: (n: number) => string
+    collapse: string
+    empty: string
+    emptyHint: string
+    submitted: string
+    you: string
+  }
+  swipeStack: {
+    label: string
+    like: string
+    nope: string
+    super: string
+    undo: string
+    stamp: { like: string; nope: string; super: string }
+    card: (n: number, total: number) => string
+    swiped: (direction: 'left' | 'right' | 'up', label?: string) => string
+    undone: string
+    empty: string
+    hint: string
+  }
+  inbox: {
+    label: string
+    open: (unread: number) => string
+    tabs: { all: string; unread: string; mention: string }
+    readAll: string
+    dismiss: (title: string) => string
+    unread: string
+    groups: { today: string; yesterday: string; earlier: string }
+    empty: { all: string; unread: string; mention: string }
+    markedAll: string
+    dismissed: (title: string) => string
+    types: { info: string; success: string; warning: string; danger: string; mention: string }
+  }
   password: {
     show: string
     hide: string
@@ -626,6 +688,73 @@ export const zhTW: MlLocale = {
     result: (p) => `恭喜！抽中：${p}`,
     again: '再抽一次',
     none: '這次沒有抽中',
+  },
+  relativeTime: { justNow: '剛剛' },
+  sticker: {
+    label: '貼圖',
+    open: '選擇貼圖',
+    search: '搜尋貼圖',
+    recent: '最近使用',
+    groups: { animals: '動物', food: '美食', nature: '自然', things: '生活', tech: '科技' },
+    results: (n) => (n ? `找到 ${n} 個貼圖` : '找不到貼圖'),
+    noMatch: '找不到符合的貼圖',
+    noRecent: '還沒有最近使用的貼圖',
+    names: {
+      lion: '獅子', cat: '貓咪', dog: '狗狗', bear: '熊熊', bunny: '兔兔', chick: '小雞', panda: '熊貓', frog: '青蛙',
+      bubbleTea: '珍奶', coffee: '咖啡', donut: '甜甜圈', cupcake: '杯子蛋糕', iceCream: '冰淇淋', strawberry: '草莓',
+      sun: '太陽', moon: '月亮', cloud: '雲朵', rain: '下雨', star: '星星', rainbow: '彩虹', flower: '花朵', sprout: '嫩芽',
+      heart: '愛心', paw: '肉球', gift: '禮物', rocket: '火箭', bell: '鈴鐺', mail: '信件', chat: '對話', camera: '相機',
+      music: '音樂', game: '遊戲', trophy: '獎盃', crown: '皇冠', bulb: '燈泡', home: '房子', ghost: '幽靈',
+      cyberLion: '機械獅', robot: '機器人', chip: '晶片', laptop: '筆電', terminal: '終端機', bolt: '閃電', shield: '盾牌',
+      gear: '齒輪', key: '鑰匙', lock: '鎖頭', database: '資料庫', bug: '蟲蟲', signal: '訊號', battery: '電池', sparkle: '閃亮',
+    },
+  },
+  comments: {
+    label: '留言',
+    title: '留言',
+    count: (n) => `${n} 則`,
+    sortLabel: '排序',
+    sort: { newest: '最新', oldest: '最早', popular: '熱門' },
+    placeholder: '留下你的想法…',
+    replyPlaceholder: (name) => `回覆 ${name}…`,
+    reply: '回覆',
+    replyTo: (name) => `回覆 @${name}`,
+    submit: '送出',
+    cancel: '取消',
+    hint: 'Ctrl + Enter 送出',
+    like: (n) => `讚（${n}）`,
+    expand: (n) => `展開 ${n} 則回覆`,
+    collapse: '收起回覆',
+    empty: '還沒有留言',
+    emptyHint: '成為第一個留言的人吧！',
+    submitted: '已送出留言',
+    you: '你',
+  },
+  swipeStack: {
+    label: '卡片堆疊',
+    like: '喜歡',
+    nope: '略過',
+    super: '超級喜歡',
+    undo: '復原',
+    stamp: { like: '喜歡', nope: '略過', super: '超讚' },
+    card: (n, t) => `第 ${n} 張，共 ${t} 張`,
+    swiped: (d, l) => `${d === 'right' ? '喜歡' : d === 'left' ? '略過' : '超級喜歡'}${l ? `：${l}` : ''}`,
+    undone: '已復原上一張',
+    empty: '沒有更多卡片了',
+    hint: '左右滑動或使用方向鍵，Backspace 復原',
+  },
+  inbox: {
+    label: '通知',
+    open: (n) => (n ? `通知，${n} 則未讀` : '通知'),
+    tabs: { all: '全部', unread: '未讀', mention: '提及' },
+    readAll: '全部標為已讀',
+    dismiss: (t) => `移除通知：${t}`,
+    unread: '未讀',
+    groups: { today: '今天', yesterday: '昨天', earlier: '更早' },
+    empty: { all: '目前沒有通知', unread: '全部都讀完了', mention: '還沒有人提到你' },
+    markedAll: '已全部標為已讀',
+    dismissed: (t) => `已移除：${t}`,
+    types: { info: '資訊', success: '成功', warning: '警告', danger: '錯誤', mention: '提及' },
   },
   password: {
     show: '顯示密碼',
@@ -1004,6 +1133,73 @@ export const en: MlLocale = {
     result: (p) => `You won: ${p}`,
     again: 'Again',
     none: 'No prize this time',
+  },
+  relativeTime: { justNow: 'just now' },
+  sticker: {
+    label: 'Stickers',
+    open: 'Choose a sticker',
+    search: 'Search stickers',
+    recent: 'Recent',
+    groups: { animals: 'Animals', food: 'Food', nature: 'Nature', things: 'Things', tech: 'Tech' },
+    results: (n) => (n ? `${n} sticker${n === 1 ? '' : 's'} found` : 'No stickers found'),
+    noMatch: 'No matching stickers',
+    noRecent: 'No recent stickers yet',
+    names: {
+      lion: 'Lion', cat: 'Cat', dog: 'Dog', bear: 'Bear', bunny: 'Bunny', chick: 'Chick', panda: 'Panda', frog: 'Frog',
+      bubbleTea: 'Bubble tea', coffee: 'Coffee', donut: 'Donut', cupcake: 'Cupcake', iceCream: 'Ice cream', strawberry: 'Strawberry',
+      sun: 'Sun', moon: 'Moon', cloud: 'Cloud', rain: 'Rain', star: 'Star', rainbow: 'Rainbow', flower: 'Flower', sprout: 'Sprout',
+      heart: 'Heart', paw: 'Paw', gift: 'Gift', rocket: 'Rocket', bell: 'Bell', mail: 'Mail', chat: 'Chat', camera: 'Camera',
+      music: 'Music', game: 'Game', trophy: 'Trophy', crown: 'Crown', bulb: 'Light bulb', home: 'Home', ghost: 'Ghost',
+      cyberLion: 'Cyber lion', robot: 'Robot', chip: 'Chip', laptop: 'Laptop', terminal: 'Terminal', bolt: 'Bolt', shield: 'Shield',
+      gear: 'Gear', key: 'Key', lock: 'Lock', database: 'Database', bug: 'Bug', signal: 'Signal', battery: 'Battery', sparkle: 'Sparkle',
+    },
+  },
+  comments: {
+    label: 'Comments',
+    title: 'Comments',
+    count: (n) => `${n}`,
+    sortLabel: 'Sort',
+    sort: { newest: 'Newest', oldest: 'Oldest', popular: 'Popular' },
+    placeholder: 'Share your thoughts…',
+    replyPlaceholder: (name) => `Reply to ${name}…`,
+    reply: 'Reply',
+    replyTo: (name) => `Replying to @${name}`,
+    submit: 'Post',
+    cancel: 'Cancel',
+    hint: 'Ctrl + Enter to post',
+    like: (n) => `Like (${n})`,
+    expand: (n) => `Show ${n} more ${n === 1 ? 'reply' : 'replies'}`,
+    collapse: 'Hide replies',
+    empty: 'No comments yet',
+    emptyHint: 'Be the first to comment!',
+    submitted: 'Comment posted',
+    you: 'You',
+  },
+  swipeStack: {
+    label: 'Card stack',
+    like: 'Like',
+    nope: 'Nope',
+    super: 'Super like',
+    undo: 'Undo',
+    stamp: { like: 'LIKE', nope: 'NOPE', super: 'SUPER' },
+    card: (n, t) => `Card ${n} of ${t}`,
+    swiped: (d, l) => `${d === 'right' ? 'Liked' : d === 'left' ? 'Skipped' : 'Super liked'}${l ? `: ${l}` : ''}`,
+    undone: 'Brought the last card back',
+    empty: 'No more cards',
+    hint: 'Swipe or use the arrow keys; Backspace to undo',
+  },
+  inbox: {
+    label: 'Notifications',
+    open: (n) => (n ? `Notifications, ${n} unread` : 'Notifications'),
+    tabs: { all: 'All', unread: 'Unread', mention: 'Mentions' },
+    readAll: 'Mark all as read',
+    dismiss: (t) => `Dismiss notification: ${t}`,
+    unread: 'Unread',
+    groups: { today: 'Today', yesterday: 'Yesterday', earlier: 'Earlier' },
+    empty: { all: 'No notifications', unread: 'You are all caught up', mention: 'No mentions yet' },
+    markedAll: 'All marked as read',
+    dismissed: (t) => `Dismissed: ${t}`,
+    types: { info: 'Info', success: 'Success', warning: 'Warning', danger: 'Error', mention: 'Mention' },
   },
   password: {
     show: 'Show password',
