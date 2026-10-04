@@ -221,7 +221,8 @@ export function bindSheetGesture(panel: HTMLElement, host: SheetGestureHost): ()
     return true
   }
 
-  function finish(cancelled = false) {
+  /** `at`: when the finger lifted (the release event's time), so velocity and samples share a clock. */
+  function finish(cancelled = false, at = now()) {
     if (!pending) return
     const wasActive = active
     pending = null
@@ -233,7 +234,7 @@ export function bindSheetGesture(panel: HTMLElement, host: SheetGestureHost): ()
     const snaps = host.snaps()
     const target = cancelled
       ? host.index()
-      : releaseSnap({ height: raw, velocity: tracker.velocity(now()), snaps, dismissible: host.dismissible() })
+      : releaseSnap({ height: raw, velocity: tracker.velocity(at), snaps, dismissible: host.dismissible() })
     host.release(target, raw)
   }
 
@@ -260,7 +261,7 @@ export function bindSheetGesture(panel: HTMLElement, host: SheetGestureHost): ()
   function onPointerUp(e: PointerEvent) {
     if (pending && e.pointerId !== pending.pointerId) return
     stopPointer()
-    finish()
+    finish(false, e.timeStamp || now())
   }
   function onPointerCancel() {
     stopPointer()
@@ -290,7 +291,7 @@ export function bindSheetGesture(panel: HTMLElement, host: SheetGestureHost): ()
   function onTouchEnd(e: TouchEvent) {
     if (!touchOf(e)) return
     touchId = null
-    finish(e.type === 'touchcancel')
+    finish(e.type === 'touchcancel', e.timeStamp || now())
   }
 
   // A click right after a drag (e.g. on a header button) isn't a click.

@@ -194,6 +194,9 @@ describe('MlSwipeCell', () => {
   })
 
   it('springs back when released before half way, and opens the left side on a right swipe', async () => {
+    // A slow drag: each gesture sample is 200ms apart, so no move reads as a flick under load.
+    let t = 0
+    vi.spyOn(performance, 'now').mockImplementation(() => (t += 200))
     const w = mountCell()
     await (await drag(w, -50)).release()
     expect(w.emitted('update:open')).toBeUndefined()
