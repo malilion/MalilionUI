@@ -76,6 +76,9 @@
     "components/paw.css",
     "components/calendar.css"
   ],
+  "MlCandlestick": [
+    "components/candlestick.css"
+  ],
   "MlCard": [
     "components/card.css"
   ],
@@ -254,6 +257,9 @@
     "components/effects.css",
     "components/cute-icon.css",
     "components/gacha.css"
+  ],
+  "MlGantt": [
+    "components/gantt.css"
   ],
   "MlGlobe": [
     "components/globe.css"
@@ -478,6 +484,9 @@
     "components/effects.css",
     "components/scratch.css"
   ],
+  "MlSankey": [
+    "components/sankey.css"
+  ],
   "MlScatterChart": [
     "components/paw.css",
     "components/charts-extra.css"
@@ -638,6 +647,9 @@
     "components/form.css",
     "components/tree.css",
     "components/cascader.css"
+  ],
+  "MlTreemap": [
+    "components/treemap.css"
   ],
   "MlUpload": [
     "components/paw.css",
