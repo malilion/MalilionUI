@@ -52,6 +52,10 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
+## What's New in 0.12.2
+
+- **Bare URLs in CJK text**: `MlMarkdown` / `parseMarkdown` now end a bare URL at full-width punctuation (`。，、；：！？「」` …), so `see https://x.y/。` no longer links the 。 or the rest of the sentence. Full-width parens stay in only as a balanced pair (`…/獅子（動物）`), and a URL right after full-width punctuation (`網址：https://x.y`) is now linked too. English text is unaffected
+
 ## What's New in 0.12.1 — security release
 
 A security pass over everything that renders untrusted text. Upgrading is recommended if you show Markdown or code from users or an LLM.
