@@ -24,6 +24,8 @@ const props = withDefaults(
     disabledDate?: (date: Date) => boolean
     markers?: Date[]
     locale?: string
+    /** 'roc' shows 民國 years (民國115/10/04) instead of Gregorian. */
+    calendar?: MlCalendarSystem
     weekStartsOn?: 0 | 1
     /** Intl options used to display each end of the range. */
     format?: Intl.DateTimeFormatOptions
@@ -54,7 +56,7 @@ const presetList = computed(() => props.presets ?? (props.type === 'date' ? defa
 const open = ref(false)
 const root = ref<HTMLElement>()
 const trigger = ref<HTMLButtonElement>()
-const calendar = ref<{ focus(): void }>()
+const panel = ref<{ focus(): void }>()
 /** The range being picked inside the panel; committed once both ends are set. */
 const draft = ref<MlDateRange>([null, null])
 const autoId = useId()
@@ -64,8 +66,8 @@ const panelId = `${controlId.value}-panel`
 const fmt = (d: Date | null) => {
   if (!d) return ''
   if (props.type === 'date' || props.format)
-    return new Intl.DateTimeFormat(props.locale ?? loc.value.name, props.format ?? RANGE_FORMAT).format(d)
-  return formatPeriod(d, props.type, loc.value.date.period)
+    return new Intl.DateTimeFormat(props.locale ?? loc.value.name, withCalendar(props.format ?? RANGE_FORMAT, props.calendar)).format(d)
+  return formatPeriod(d, props.type, loc.value.date.period, props.calendar === 'roc' ? loc.value.date.roc : undefined)
 }
 const hasValue = computed(() => !!(model.value[0] || model.value[1]))
 /** Length of the range in days (or months / years). */
@@ -97,7 +99,7 @@ async function show() {
   draft.value = [...model.value]
   open.value = true
   await nextTick()
-  calendar.value?.focus()
+  panel.value?.focus()
 }
 
 function hide(returnFocus = true) {
@@ -137,7 +139,7 @@ useOutsidePointer(root, () => open.value, () => hide(false))
 </script>
 
 <script lang="ts">
-import { addDays, comparePeriods, formatPeriod, startOfDay } from './dates'
+import { addDays, comparePeriods, formatPeriod, startOfDay, withCalendar, type MlCalendarSystem } from './dates'
 import type { MlLocale } from '../locale'
 
 const RANGE_FORMAT: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit' }
@@ -213,7 +215,7 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
           <div class="ml-daterange__cal">
             <MlCalendar
               v-if="type === 'date'"
-              ref="calendar"
+              ref="panel"
               mode="range"
               :range="draft"
               :min="min"
@@ -221,12 +223,13 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
               :disabled-date="disabledDate"
               :markers="markers"
               :locale="locale"
+              :calendar="calendar"
               :week-starts-on="weekStartsOn"
               @update:range="onDraft"
             />
             <MlPeriodPanel
               v-else
-              ref="calendar"
+              ref="panel"
               :type="type"
               mode="range"
               :range="draft"
@@ -234,6 +237,7 @@ const defaultPresets = (t: MlLocale): MlRangePreset[] => [
               :max="max"
               :disabled-date="disabledDate"
               :locale="locale"
+              :calendar="calendar"
               @update:range="onDraft"
             />
             <p class="ml-daterange__status" aria-live="polite">

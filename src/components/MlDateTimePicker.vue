@@ -5,7 +5,7 @@ import MlCalendar from './MlCalendar.vue'
 import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import MlTimeColumns from './MlTimeColumns.vue'
-import { startOfDay } from './dates'
+import { startOfDay, withCalendar, type MlCalendarSystem } from './dates'
 import type { TimeParts } from './time'
 import { describedBy, useOutsidePointer } from '../composables'
 import { useFormField } from '../form'
@@ -28,6 +28,8 @@ const props = withDefaults(
     disabledDate?: (date: Date) => boolean
     markers?: Date[]
     locale?: string
+    /** 'roc' shows 民國 years (民國115/10/04) instead of Gregorian. */
+    calendar?: MlCalendarSystem
     weekStartsOn?: 0 | 1
     /** Intl options used to display the chosen moment. */
     format?: Intl.DateTimeFormatOptions
@@ -52,7 +54,7 @@ const controlId = computed(() => props.id ?? `ml-datetimepicker-${autoId}`)
 const panelId = computed(() => `${controlId.value}-panel`)
 const root = ref<HTMLElement>()
 const trigger = ref<HTMLButtonElement>()
-const calendar = ref<InstanceType<typeof MlCalendar>>()
+const panel = ref<InstanceType<typeof MlCalendar>>()
 const open = ref(false)
 
 const display = computed(() => {
@@ -61,7 +63,7 @@ const display = computed(() => {
     year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit',
     second: props.seconds ? '2-digit' : undefined, hourCycle: 'h23',
   }
-  return new Intl.DateTimeFormat(props.locale ?? loc.value.name, format).format(model.value)
+  return new Intl.DateTimeFormat(props.locale ?? loc.value.name, withCalendar(format, props.calendar)).format(model.value)
 })
 
 const parts = computed<TimeParts | null>(() =>
@@ -105,7 +107,7 @@ async function show() {
   if (props.disabled) return
   open.value = true
   await nextTick()
-  calendar.value?.focus()
+  panel.value?.focus()
 }
 
 function hide(returnFocus = true) {
@@ -178,13 +180,14 @@ useOutsidePointer(root, () => open.value, () => hide(false))
         >
           <div class="ml-datetimepicker__body">
             <MlCalendar
-              ref="calendar"
+              ref="panel"
               :model-value="model ? startOfDay(model) : null"
               :min="min"
               :max="max"
               :disabled-date="disabledDate"
               :markers="markers"
               :locale="locale"
+              :calendar="calendar"
               :week-starts-on="weekStartsOn"
               @update:model-value="onPickDate"
             />

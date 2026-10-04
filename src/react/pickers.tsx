@@ -12,7 +12,7 @@ import {
   type Ref,
 } from 'react'
 import { hexToHsva, hsvaToHex, parseHex, type HSVA } from '../components/color'
-import { addDays, addMonths, comparePeriods, dayKey, formatPeriod, monthGrid, sameDay, startOfDay } from '../components/dates'
+import { addDays, addMonths, comparePeriods, dayKey, formatPeriod, monthGrid, sameDay, startOfDay, withCalendar, type MlCalendarSystem } from '../components/dates'
 import { formatTime, padTime, parseTime, range as steps, toSeconds, type TimeParts } from '../components/time'
 import type { MlLocale } from '../locale-data'
 import type { MlDatePickerType, MlDateRange, MlRangePreset } from '../types'
@@ -48,6 +48,8 @@ export interface CalendarProps {
   /** Days that get a little paw marker (events, deadlines…). */
   markers?: Date[]
   locale?: string
+  /** 'roc' titles the months in 民國 years (民國115年10月). */
+  calendar?: MlCalendarSystem
   /** 0 = Sunday, 1 = Monday. */
   weekStartsOn?: 0 | 1
   onMonthChange?: (year: number, month: number) => void
@@ -67,6 +69,7 @@ function CalendarImpl({
   disabledDate,
   markers,
   locale,
+  calendar,
   weekStartsOn = 0,
   onMonthChange,
   className,
@@ -97,8 +100,8 @@ function CalendarImpl({
   const dayFmt = new Intl.DateTimeFormat(lang, { weekday: isZh ? 'narrow' : 'short' })
   // 2023-01-01 was a Sunday.
   const weekdays = Array.from({ length: 7 }, (_, i) => dayFmt.format(new Date(2023, 0, 1 + ((i + weekStartsOn) % 7))))
-  const title = new Intl.DateTimeFormat(lang, { year: 'numeric', month: 'long' }).format(new Date(view.year, view.month, 1))
-  const fullFmt = new Intl.DateTimeFormat(lang, { dateStyle: 'full' })
+  const title = new Intl.DateTimeFormat(lang, withCalendar({ year: 'numeric', month: 'long' }, calendar)).format(new Date(view.year, view.month, 1))
+  const fullFmt = new Intl.DateTimeFormat(lang, withCalendar({ dateStyle: 'full' }, calendar))
   const markerKeys = new Set((markers ?? []).map(dayKey))
 
   const isDisabled = (d: Date) => {
@@ -387,6 +390,8 @@ interface CalendarBits {
   disabledDate?: (date: Date) => boolean
   markers?: Date[]
   locale?: string
+  /** 'roc' shows 民國 years (民國115/10/04) instead of Gregorian. */
+  calendar?: MlCalendarSystem
   weekStartsOn?: 0 | 1
 }
 
@@ -405,18 +410,18 @@ export interface DatePickerProps extends PickerBase, CalendarBits {
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = { year: 'numeric', month: '2-digit', day: '2-digit', weekday: 'short' }
 
-export function DatePicker({ value, defaultValue = null, onChange, format, placeholder, min, max, disabledDate, markers, locale, weekStartsOn = 0, type = 'date', ...base }: DatePickerProps) {
+export function DatePicker({ value, defaultValue = null, onChange, format, placeholder, min, max, disabledDate, markers, locale, calendar, weekStartsOn = 0, type = 'date', ...base }: DatePickerProps) {
   const loc = useLocale()
   const controlId = base.id ?? `ml-datepicker-${cleanId(useId())}`
   const [model, setModel] = useControllable(value, defaultValue, onChange)
-  const calendar = useRef<FocusHandle>(null)
-  const pop = usePopup(base.disabled, () => calendar.current?.focus())
+  const panel = useRef<FocusHandle>(null)
+  const pop = usePopup(base.disabled, () => panel.current?.focus())
   // Periods use the locale's wording unless an explicit Intl format is given (quarters always do).
   const display = !model
     ? ''
     : type === 'date' || (format && type !== 'quarter')
-      ? new Intl.DateTimeFormat(locale ?? loc.name, format ?? DATE_FORMAT).format(model)
-      : formatPeriod(model, type, loc.date.period)
+      ? new Intl.DateTimeFormat(locale ?? loc.name, withCalendar(format ?? DATE_FORMAT, calendar)).format(model)
+      : formatPeriod(model, type, loc.date.period, calendar === 'roc' ? loc.date.roc : undefined)
   const pickLabel = type === 'date' ? loc.date.pick : loc.date.period.pick[type]
   const pick = (d: Date | null) => {
     setModel(d)
@@ -440,18 +445,19 @@ export function DatePicker({ value, defaultValue = null, onChange, format, place
       panel={
         type === 'date' ? (
           <Calendar
-            ref={calendar}
+            ref={panel}
             value={model}
             min={min}
             max={max}
             disabledDate={disabledDate}
             markers={markers}
             locale={locale}
+            calendar={calendar}
             weekStartsOn={weekStartsOn}
             onChange={pick}
           />
         ) : (
-          <PeriodPanel ref={calendar} type={type} value={model} min={min} max={max} disabledDate={disabledDate} locale={locale} onChange={pick} />
+          <PeriodPanel ref={panel} type={type} value={model} min={min} max={max} disabledDate={disabledDate} locale={locale} calendar={calendar} onChange={pick} />
         )
       }
     />
@@ -514,6 +520,7 @@ export function DateRangePicker({
   disabledDate,
   markers,
   locale,
+  calendar,
   weekStartsOn = 0,
   ...base
 }: DateRangePickerProps) {
@@ -522,15 +529,15 @@ export function DateRangePicker({
   const [model, setModel] = useControllable(value, defaultValue, onChange)
   /** The range being picked inside the panel; committed once both ends are set. */
   const [draft, setDraft] = useState<MlDateRange>(NO_RANGE)
-  const calendar = useRef<FocusHandle>(null)
-  const pop = usePopup(base.disabled, () => calendar.current?.focus())
+  const panel = useRef<FocusHandle>(null)
+  const pop = usePopup(base.disabled, () => panel.current?.focus())
   const presetList = presets ?? (type === 'date' ? defaultPresets(loc) : [])
   const fmt = (d: Date | null) =>
     !d
       ? ''
       : type === 'date' || format
-        ? new Intl.DateTimeFormat(locale ?? loc.name, format ?? RANGE_FORMAT).format(d)
-        : formatPeriod(d, type, loc.date.period)
+        ? new Intl.DateTimeFormat(locale ?? loc.name, withCalendar(format ?? RANGE_FORMAT, calendar)).format(d)
+        : formatPeriod(d, type, loc.date.period, calendar === 'roc' ? loc.date.roc : undefined)
   const [a, b] = model
   /** Length of the range in days (or months / years). */
   const days = !a || !b ? 0 : type !== 'date' ? comparePeriods(b, a, type) + 1 : Math.round((startOfDay(b).getTime() - startOfDay(a).getTime()) / 86_400_000) + 1
@@ -609,7 +616,7 @@ export function DateRangePicker({
           <div className="ml-daterange__cal">
             {type === 'date' ? (
               <Calendar
-                ref={calendar}
+                ref={panel}
                 mode="range"
                 range={draft}
                 min={min}
@@ -617,11 +624,12 @@ export function DateRangePicker({
                 disabledDate={disabledDate}
                 markers={markers}
                 locale={locale}
+                calendar={calendar}
                 weekStartsOn={weekStartsOn}
                 onRangeChange={onDraft}
               />
             ) : (
-              <PeriodPanel ref={calendar} type={type} mode="range" range={draft} min={min} max={max} disabledDate={disabledDate} locale={locale} onRangeChange={onDraft} />
+              <PeriodPanel ref={panel} type={type} mode="range" range={draft} min={min} max={max} disabledDate={disabledDate} locale={locale} calendar={calendar} onRangeChange={onDraft} />
             )}
             <p className="ml-daterange__status" aria-live="polite">
               {draft[0] && !draft[1] ? text.next(fmt(draft[0])) : text.first}
@@ -845,17 +853,20 @@ export interface DateTimePickerProps extends PickerBase, CalendarBits {
   format?: Intl.DateTimeFormatOptions
 }
 
-export function DateTimePicker({ value, defaultValue = null, onChange, seconds, minuteStep = 1, format, placeholder, min, max, disabledDate, markers, locale, weekStartsOn = 0, ...base }: DateTimePickerProps) {
+export function DateTimePicker({ value, defaultValue = null, onChange, seconds, minuteStep = 1, format, placeholder, min, max, disabledDate, markers, locale, calendar, weekStartsOn = 0, ...base }: DateTimePickerProps) {
   const loc = useLocale()
   const controlId = base.id ?? `ml-datetimepicker-${cleanId(useId())}`
   const [model, setModel] = useControllable(value, defaultValue, onChange)
-  const calendar = useRef<FocusHandle>(null)
-  const pop = usePopup(base.disabled, () => calendar.current?.focus())
+  const panel = useRef<FocusHandle>(null)
+  const pop = usePopup(base.disabled, () => panel.current?.focus())
 
   const display = model
     ? new Intl.DateTimeFormat(
         locale ?? loc.name,
-        format ?? { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: seconds ? '2-digit' : undefined, hourCycle: 'h23' },
+        withCalendar(
+          format ?? { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: seconds ? '2-digit' : undefined, hourCycle: 'h23' },
+          calendar,
+        ),
       ).format(model)
     : ''
   const parts: TimeParts | null = model ? { h: model.getHours(), m: model.getMinutes(), s: model.getSeconds() } : null
@@ -900,13 +911,14 @@ export function DateTimePicker({ value, defaultValue = null, onChange, seconds, 
         <>
           <div className="ml-datetimepicker__body">
             <Calendar
-              ref={calendar}
+              ref={panel}
               value={model ? startOfDay(model) : null}
               min={min}
               max={max}
               disabledDate={disabledDate}
               markers={markers}
               locale={locale}
+              calendar={calendar}
               weekStartsOn={weekStartsOn}
               onChange={onPickDate}
             />

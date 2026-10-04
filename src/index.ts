@@ -9,11 +9,13 @@ import MlAnchor from './components/MlAnchor.vue'
 import MlAurora from './components/MlAurora.vue'
 import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
+import MlAvatarGroup from './components/MlAvatarGroup.vue'
 import MlBackTop from './components/MlBackTop.vue'
 import MlBadge from './components/MlBadge.vue'
 import MlBankPicker from './components/MlBankPicker.vue'
 import MlBanner from './components/MlBanner.vue'
 import MlBarChart from './components/MlBarChart.vue'
+import MlBarcode from './components/MlBarcode.vue'
 import MlBorderBeam from './components/MlBorderBeam.vue'
 import MlBottomSheet from './components/MlBottomSheet.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
@@ -79,6 +81,7 @@ import MlKanban from './components/MlKanban.vue'
 import MlKbd from './components/MlKbd.vue'
 import MlLayout from './components/MlLayout.vue'
 import MlLineChart from './components/MlLineChart.vue'
+import MlLink from './components/MlLink.vue'
 import MlLionMark from './components/MlLionMark.vue'
 import MlList from './components/MlList.vue'
 import MlListItem from './components/MlListItem.vue'
@@ -146,11 +149,13 @@ import MlTagInput from './components/MlTagInput.vue'
 import MlTaiwanRegion from './components/MlTaiwanRegion.vue'
 import MlTaiwanMap from './components/MlTaiwanMap.vue'
 import MlTerminal from './components/MlTerminal.vue'
+import MlText from './components/MlText.vue'
 import MlTextarea from './components/MlTextarea.vue'
 import MlThemeToggle from './components/MlThemeToggle.vue'
 import MlTilt from './components/MlTilt.vue'
 import MlTimePicker from './components/MlTimePicker.vue'
 import MlTimeline from './components/MlTimeline.vue'
+import MlTitle from './components/MlTitle.vue'
 import MlToastHost from './components/MlToastHost.vue'
 import MlTooltip from './components/MlTooltip.vue'
 import MlTour from './components/MlTour.vue'
@@ -176,11 +181,13 @@ const components = {
   MlAurora,
   MlAutocomplete,
   MlAvatar,
+  MlAvatarGroup,
   MlBackTop,
   MlBadge,
   MlBankPicker,
   MlBanner,
   MlBarChart,
+  MlBarcode,
   MlBorderBeam,
   MlBottomSheet,
   MlBreadcrumb,
@@ -246,6 +253,7 @@ const components = {
   MlKbd,
   MlLayout,
   MlLineChart,
+  MlLink,
   MlLionMark,
   MlList,
   MlListItem,
@@ -313,11 +321,13 @@ const components = {
   MlTaiwanRegion,
   MlTaiwanMap,
   MlTerminal,
+  MlText,
   MlTextarea,
   MlThemeToggle,
   MlTilt,
   MlTimePicker,
   MlTimeline,
+  MlTitle,
   MlToastHost,
   MlTooltip,
   MlTour,
@@ -366,11 +376,13 @@ export {
   MlAurora,
   MlAutocomplete,
   MlAvatar,
+  MlAvatarGroup,
   MlBackTop,
   MlBadge,
   MlBankPicker,
   MlBanner,
   MlBarChart,
+  MlBarcode,
   MlBorderBeam,
   MlBottomSheet,
   MlBreadcrumb,
@@ -436,6 +448,7 @@ export {
   MlKbd,
   MlLayout,
   MlLineChart,
+  MlLink,
   MlLionMark,
   MlList,
   MlListItem,
@@ -503,11 +516,13 @@ export {
   MlTaiwanRegion,
   MlTaiwanMap,
   MlTerminal,
+  MlText,
   MlTextarea,
   MlThemeToggle,
   MlTilt,
   MlTimePicker,
   MlTimeline,
+  MlTitle,
   MlToastHost,
   MlTooltip,
   MlTour,
@@ -547,6 +562,7 @@ export {
 } from './components/json'
 export type { JsonParseResult, JsonParseError, JsonSegment, JsonRow, JsonNodeRow, JsonSearch } from './components/json'
 export { encodeQr } from './qrcode'
+export { encodeBarcode, barcodeLayout, ean13CheckDigit } from './barcode'
 export { highlight, highlightLines } from './highlight'
 export { highlightTokens } from './highlight'
 export type { HighlightToken } from './highlight'
@@ -571,6 +587,9 @@ export { parseMarkdown, parseInline, createMarkdownParser, sanitizeUrl, slugify,
 export { safeHref } from './url'
 export type { MdBlock, MdInline, MdHeading, MdCode, MdList, MdListItem, MdTable, MdAlign, MdParseOptions, MlMarkdownCodeSlot, MlMarkdownLinkSlot, MlMarkdownImageSlot } from './markdown'
 export type { QrLevel, QrMatrix } from './qrcode'
+export type { MlBarcodeFormat, BarcodeEncoding, BarcodeLayout, BarcodeLayoutOptions } from './barcode'
+export type { MlTitleLevel } from './components/typography'
+export { splitAvatars } from './components/avatar-group'
 export type { SignatureStroke, SignaturePoint } from './components/signature'
 export type { MlCropData, MlCropOutput } from './components/cropper'
 export type { MlWheelPrize } from './components/wheel'
@@ -631,6 +650,7 @@ export type {
   TaiwanMapScaleResult,
 } from './components/taiwan-map'
 export * from './validators-tw'
+export * from './roc'
 export {
   getTwBanks,
   getTwBank,
@@ -754,11 +774,13 @@ declare module 'vue' {
     MlAurora: typeof MlAurora
     MlAutocomplete: typeof MlAutocomplete
     MlAvatar: typeof MlAvatar
+    MlAvatarGroup: typeof MlAvatarGroup
     MlBackTop: typeof MlBackTop
     MlBadge: typeof MlBadge
     MlBankPicker: typeof MlBankPicker
     MlBanner: typeof MlBanner
     MlBarChart: typeof MlBarChart
+    MlBarcode: typeof MlBarcode
     MlBorderBeam: typeof MlBorderBeam
     MlBottomSheet: typeof MlBottomSheet
     MlBreadcrumb: typeof MlBreadcrumb
@@ -824,6 +846,7 @@ declare module 'vue' {
     MlKbd: typeof MlKbd
     MlLayout: typeof MlLayout
     MlLineChart: typeof MlLineChart
+    MlLink: typeof MlLink
     MlLionMark: typeof MlLionMark
     MlList: typeof MlList
     MlListItem: typeof MlListItem
@@ -891,11 +914,13 @@ declare module 'vue' {
     MlTaiwanRegion: typeof MlTaiwanRegion
     MlTaiwanMap: typeof MlTaiwanMap
     MlTerminal: typeof MlTerminal
+    MlText: typeof MlText
     MlTextarea: typeof MlTextarea
     MlThemeToggle: typeof MlThemeToggle
     MlTilt: typeof MlTilt
     MlTimePicker: typeof MlTimePicker
     MlTimeline: typeof MlTimeline
+    MlTitle: typeof MlTitle
     MlToastHost: typeof MlToastHost
     MlTooltip: typeof MlTooltip
     MlTour: typeof MlTour

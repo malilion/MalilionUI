@@ -100,5 +100,7 @@
 @import './components/comments.css';
 @import './components/swipe-stack.css';
 @import './components/inbox.css';
+@import './components/barcode.css';
+@import './components/typography.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';

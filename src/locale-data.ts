@@ -65,6 +65,8 @@ export interface MlLocale {
     time: string
     timeFirst: string
     units: { h: string; m: string; s: string }
+    /** Republic of China (民國) era labels for `calendar="roc"`. */
+    roc: { era: string; before: string }
     /** Month / quarter / year picking (MlDatePicker / MlDateRangePicker `type`). */
     period: {
       /** Display of a chosen period; `month` is 1–12, `quarter` 1–4. */
@@ -275,6 +277,9 @@ export interface MlLocale {
   toast: { region: string; close: string }
   theme: { label: string; switch: string; dark: string; light: string; system: string; toDark: string; toLight: string }
   qrcode: { tooLong: string; label: (value: string) => string }
+  barcode: { invalid: string; label: (value: string) => string }
+  avatarGroup: { label: string; more: (count: number) => string; showAll: (count: number) => string; collapse: string }
+  link: { external: string }
   signature: { label: string; placeholder: string; hint: string; undo: string; clear: string; empty: string; signed: (strokes: number) => string; cleared: string }
   cropper: {
     label: string
@@ -534,6 +539,7 @@ export const zhTW: MlLocale = {
     time: '時間',
     timeFirst: '先選日期或時間',
     units: { h: '時', m: '分', s: '秒' },
+    roc: { era: '民國', before: '民國前' },
     period: {
       month: (y, m) => `${y} 年 ${m} 月`,
       quarter: (y, q) => `${y} 年第 ${q} 季`,
@@ -783,6 +789,9 @@ export const zhTW: MlLocale = {
   toast: { region: '通知', close: '關閉通知' },
   theme: { label: '佈景主題', switch: '日光模式', dark: '夜間', light: '日光', system: '系統', toDark: '切換為夜間模式', toLight: '切換為日光模式' },
   qrcode: { tooLong: '內容太長，無法產生 QR Code', label: (v) => `QR Code：${v}` },
+  barcode: { invalid: '這個格式無法編碼此內容', label: (v) => `條碼：${v}` },
+  avatarGroup: { label: '成員', more: (n) => `還有 ${n} 位`, showAll: (n) => `顯示其他 ${n} 位`, collapse: '收合成員' },
+  link: { external: '（另開新視窗）' },
   signature: {
     label: '簽名板',
     placeholder: '請在此簽名',
@@ -1100,6 +1109,7 @@ export const en: MlLocale = {
     time: 'Time',
     timeFirst: 'Pick a date or time first',
     units: { h: 'h', m: 'm', s: 's' },
+    roc: { era: 'ROC', before: 'Before ROC' },
     period: {
       month: (y, m) => `${y}-${String(m).padStart(2, '0')}`,
       quarter: (y, q) => `${y} Q${q}`,
@@ -1349,6 +1359,9 @@ export const en: MlLocale = {
   toast: { region: 'Notifications', close: 'Dismiss notification' },
   theme: { label: 'Theme', switch: 'Light mode', dark: 'Dark', light: 'Light', system: 'System', toDark: 'Switch to dark theme', toLight: 'Switch to light theme' },
   qrcode: { tooLong: 'Too long for a QR code', label: (v) => `QR code: ${v}` },
+  barcode: { invalid: "This format can't encode that value", label: (v) => `Barcode: ${v}` },
+  avatarGroup: { label: 'Members', more: (n) => `${n} more`, showAll: (n) => `Show ${n} more`, collapse: 'Show fewer' },
+  link: { external: '(opens in a new tab)' },
   signature: {
     label: 'Signature pad',
     placeholder: 'Sign here',

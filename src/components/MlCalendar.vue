@@ -2,7 +2,7 @@
 import { computed, nextTick, ref, useId, watch } from 'vue'
 import MlIcon from './MlIcon.vue'
 import MlPaw from './MlPaw.vue'
-import { addDays, addMonths, dayKey, monthGrid, sameDay, startOfDay } from './dates'
+import { addDays, addMonths, dayKey, monthGrid, sameDay, startOfDay, withCalendar, type MlCalendarSystem } from './dates'
 import type { MlDateRange } from '../types'
 import { useLocale } from '../locale'
 
@@ -18,6 +18,8 @@ const props = withDefaults(
     /** Days that get a little paw marker (events, deadlines…). */
     markers?: Date[]
     locale?: string
+    /** 'roc' titles the months in 民國 years (民國115年10月). */
+    calendar?: MlCalendarSystem
     /** 0 = Sunday, 1 = Monday. */
     weekStartsOn?: 0 | 1
   }>(),
@@ -51,9 +53,9 @@ const weekdays = computed(() => {
   return Array.from({ length: 7 }, (_, i) => fmt.format(new Date(2023, 0, 1 + ((i + props.weekStartsOn) % 7))))
 })
 const title = computed(() =>
-  new Intl.DateTimeFormat(lang.value, { year: 'numeric', month: 'long' }).format(new Date(view.value.year, view.value.month, 1)),
+  new Intl.DateTimeFormat(lang.value, withCalendar({ year: 'numeric', month: 'long' }, props.calendar)).format(new Date(view.value.year, view.value.month, 1)),
 )
-const fullDate = (d: Date) => new Intl.DateTimeFormat(lang.value, { dateStyle: 'full' }).format(d)
+const fullDate = (d: Date) => new Intl.DateTimeFormat(lang.value, withCalendar({ dateStyle: 'full' }, props.calendar)).format(d)
 
 const markerKeys = computed(() => new Set((props.markers ?? []).map(dayKey)))
 

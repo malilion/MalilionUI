@@ -4,7 +4,7 @@ import MlCalendar from './MlCalendar.vue'
 import MlField from './MlField.vue'
 import MlIcon from './MlIcon.vue'
 import MlPeriodPanel from './MlPeriodPanel.vue'
-import { formatPeriod } from './dates'
+import { formatPeriod, withCalendar, type MlCalendarSystem } from './dates'
 import { describedBy } from '../composables'
 import { useFormField } from '../form'
 import { useLocale } from '../locale'
@@ -24,6 +24,8 @@ const props = withDefaults(
     disabledDate?: (date: Date) => boolean
     markers?: Date[]
     locale?: string
+    /** 'roc' shows 民國 years (民國115/10/04) instead of Gregorian. */
+    calendar?: MlCalendarSystem
     weekStartsOn?: 0 | 1
     /** Intl options used to display the chosen date. */
     format?: Intl.DateTimeFormatOptions
@@ -50,7 +52,7 @@ const model = defineModel<Date | null>({ default: null })
 const open = ref(false)
 const root = ref<HTMLElement>()
 const trigger = ref<HTMLButtonElement>()
-const calendar = ref<{ focus(): void }>()
+const panel = ref<{ focus(): void }>()
 const autoId = useId()
 const controlId = computed(() => props.id ?? `ml-datepicker-${autoId}`)
 const panelId = `${controlId.value}-panel`
@@ -59,8 +61,8 @@ const display = computed(() => {
   if (!model.value) return ''
   // Periods use the locale's wording unless an explicit Intl format is given (quarters always do).
   if (props.type === 'date' || (props.format && props.type !== 'quarter'))
-    return new Intl.DateTimeFormat(props.locale ?? loc.value.name, props.format ?? DATE_FORMAT).format(model.value)
-  return formatPeriod(model.value, props.type, loc.value.date.period)
+    return new Intl.DateTimeFormat(props.locale ?? loc.value.name, withCalendar(props.format ?? DATE_FORMAT, props.calendar)).format(model.value)
+  return formatPeriod(model.value, props.type, loc.value.date.period, props.calendar === 'roc' ? loc.value.date.roc : undefined)
 })
 const pickLabel = computed(() => (props.type === 'date' ? loc.value.date.pick : loc.value.date.period.pick[props.type]))
 const clearLabel = computed(() => (props.type === 'date' ? loc.value.date.clear : loc.value.date.period.clear[props.type]))
@@ -69,7 +71,7 @@ async function show() {
   if (props.disabled) return
   open.value = true
   await nextTick()
-  calendar.value?.focus()
+  panel.value?.focus()
 }
 
 function hide(returnFocus = true) {
@@ -147,25 +149,27 @@ onBeforeUnmount(() => document.removeEventListener('pointerdown', onDocumentPoin
         >
           <MlCalendar
             v-if="type === 'date'"
-            ref="calendar"
+            ref="panel"
             :model-value="model"
             :min="min"
             :max="max"
             :disabled-date="disabledDate"
             :markers="markers"
             :locale="locale"
+            :calendar="calendar"
             :week-starts-on="weekStartsOn"
             @update:model-value="onPick"
           />
           <MlPeriodPanel
             v-else
-            ref="calendar"
+            ref="panel"
             :type="type"
             :model-value="model"
             :min="min"
             :max="max"
             :disabled-date="disabledDate"
             :locale="locale"
+            :calendar="calendar"
             @update:model-value="onPick"
           />
         </div>
