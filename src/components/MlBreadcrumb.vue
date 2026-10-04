@@ -2,6 +2,7 @@
 import MlIcon from './MlIcon.vue'
 import type { MlBreadcrumbItem } from '../types'
 import { useLocale } from '../locale'
+import { safeHref } from '../url'
 
 const loc = useLocale()
 
@@ -16,7 +17,7 @@ defineProps<{
   <nav class="ml-breadcrumb" :aria-label="label ?? loc.nav.breadcrumb">
     <ol>
       <li v-for="(item, i) in items" :key="`${i}-${item.label}`" class="ml-breadcrumb__item">
-        <a v-if="item.href && i < items.length - 1" :href="item.href" class="ml-breadcrumb__link">
+        <a v-if="item.href && i < items.length - 1" :href="safeHref(item.href)" class="ml-breadcrumb__link">
           <MlIcon v-if="item.icon" :name="item.icon" />
           {{ item.label }}
         </a>

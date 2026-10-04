@@ -52,6 +52,17 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
 - 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
 
+## 0.12.1 版：安全性更新
+
+針對所有會顯示不受信任文字的元件做了一次資安檢查與修補。如果你會顯示使用者或 LLM 產生的 Markdown、程式碼，建議升級。
+
+- **特製輸入不再讓頁面卡死**：`MlMarkdown`／`parseMarkdown`，以及 `MlCodeBlock`、`MlCodeDiff` 背後的語法上色，現在都是線性時間。以前大約 20 KB 的特製文字（一長串空白、上千個 `[a](`、`**a` 或沒關閉的 `/*`）就能讓分頁卡住幾秒到幾分鐘；同樣的輸入現在只要幾毫秒
+- **深層巢狀不再讓頁面崩潰**：超過 32 層的引用與清單會當成一般段落，超過 32 層的強調會收成純文字，`> > > …` 重複一萬次也不會讓堆疊溢位
+- **`MlCodeBlock` 不再用 `v-html`**：程式碼以真正的元素輸出（React 版也不用 `dangerouslySetInnerHTML`），啟用 Trusted Types 的網站也能用
+- **`safeHref()`**：`MlButton`、`MlListItem`、`MlBreadcrumb`、`MlMenuList`（以及對應的 React 元件）會擋掉 `javascript:`、`vbscript:`、`data:` 連結；一般路徑、http(s)、`mailto:`、`tel:` 與 App 自訂協定照常可用。這個工具函式也有匯出，你自己的連結也能用
+- 上色也更準了：英文縮寫的撇號（`don't`）不會再被當成字串開頭，shell 的萬用字元（`dist/*`）也不會讓後面整段變成註解
+- CI 的 Actions 改為鎖定 commit SHA，發佈到 npm 的工作只能從版本標籤執行
+
 ## 0.12 版新功能
 
 - **台灣格式驗證**：`twRules` 支援身分證、居留證、統一編號（2023 年起的「可被 5 整除」新規則）、依數位發展部號碼計畫的手機與市話、電子發票手機條碼與自然人憑證載具、郵遞區號，附排版工具，Vue 與 React 表單都能用
@@ -435,6 +446,15 @@ git push --follow-tags
 建置產物是 `dist/malilion-ui.js`（ESM）、`dist/style.css` 與 `dist/types/`（型別宣告）。Vue 是外部依賴，不會被打包進去。
 
 文件站在 `playground/`。每個範例都是 `playground/examples/` 裡真正的 `.vue` 檔，同一個檔案既是即時預覽，也是可複製的原始碼，兩者永遠一致。每次推到 `main`，GitHub Actions 會跑檢查並把文件站部署到 GitHub Pages。
+
+## 安全性
+
+- Markdown、JSON、差異檢視與終端機輸出都以真正的元素渲染，從不當成 HTML 字串；Markdown 裡的原始 HTML 一律顯示為文字，不安全的連結協定會被移除
+- 解析器都是線性時間、巢狀深度有上限，惡意輸入無法讓頁面卡死或崩潰；由 `tests/security.test.ts` 把關
+- 以 props 傳入的連結會經過 `safeHref()`。使用者提供的網址若要放進其他屬性，請自行驗證
+- 版本由 GitHub Actions 透過 npm Trusted Publishing 發佈並附 provenance，不存在任何 npm token
+
+發現漏洞？請透過 [GitHub security advisories](https://github.com/malilion/MalilionUI/security/advisories/new) 私下回報，不要開公開 issue。
 
 ## 瀏覽器支援
 

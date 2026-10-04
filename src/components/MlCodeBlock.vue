@@ -2,7 +2,7 @@
 import { computed, ref } from 'vue'
 import MlButton from './MlButton.vue'
 import MlPaw from './MlPaw.vue'
-import { highlightLines } from '../highlight'
+import { highlightTokens } from '../highlight'
 import { toast } from '../toast'
 import { copyText } from '../clipboard'
 import { useLocale } from '../locale'
@@ -39,11 +39,11 @@ const emit = defineEmits<{ copy: [code: string] }>()
 
 const open = ref(!props.collapsed)
 const copied = ref(false)
-const source = computed(() => props.code.replace(/^\n+|\s+$/g, ''))
+// trimEnd() rather than /\s+$/, which backtracks quadratically on long runs of spaces.
+const source = computed(() => props.code.trimEnd().replace(/^\n+/, ''))
+// Tokens rendered as real elements (no v-html), so Trusted Types sites work too.
 const lines = computed(() =>
-  props.plain
-    ? source.value.split('\n').map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'))
-    : highlightLines(source.value, props.lang),
+  props.plain ? source.value.split('\n').map((text) => (text ? [{ text, cls: '' }] : [])) : highlightTokens(source.value, props.lang),
 )
 const marked = computed(() => new Set(props.highlight ?? []))
 let resetTimer: ReturnType<typeof setTimeout> | undefined
@@ -93,7 +93,12 @@ defineExpose({ copy })
       v-for="(line, i) in lines"
       :key="i"
       :class="['ml-code__line', { 'ml-code__line--hl': marked.has(i + 1) }]"
-    ><span v-if="lineNumbers" class="ml-code__num" aria-hidden="true">{{ i + 1 }}</span><span class="ml-code__text" v-html="line || ' '" />
+    ><span v-if="lineNumbers" class="ml-code__num" aria-hidden="true">{{ i + 1 }}</span><span class="ml-code__text"
+        ><template v-for="(t, j) in line" :key="j"
+          ><span v-if="t.cls" :class="t.cls">{{ t.text }}</span
+          ><template v-else>{{ t.text }}</template></template
+        ><template v-if="!line.length"> </template></span
+      >
 </span></code></pre>
   </div>
 </template>

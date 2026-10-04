@@ -3,7 +3,7 @@ import { barLayout, bubbleRadius, chartStops, diamondPath, funnelStages, linearF
 import { addDays, dayKey, startOfDay } from '../components/dates'
 import { createPawPath } from '../components/paw'
 import { copyText } from '../clipboard'
-import { highlightLines } from '../highlight'
+import { highlightTokens } from '../highlight'
 import { mascotImages } from '../mascot'
 import { encodeQr, qrEyePath, qrLayout, type QrLevel } from '../qrcode'
 import type { MlBarMode, MlBarSeries, MlChartDatum, MlChartTone, MlFunnelDatum, MlHeatmapDatum, MlLineSeries, MlScatterSeries, MlScatterShape } from '../types'
@@ -776,9 +776,11 @@ export function CodeBlock({ code, lang = 'ts', filename, lineNumbers, highlight,
   const [copied, setCopied] = useState(false)
   const reset = useRef<ReturnType<typeof setTimeout>>(undefined)
   useEffect(() => () => clearTimeout(reset.current), [])
-  const source = code.replace(/^\n+|\s+$/g, '')
+  // trimEnd() rather than /\s+$/, which backtracks quadratically on long runs of spaces.
+  const source = code.trimEnd().replace(/^\n+/, '')
+  // Tokens rendered as real elements (no dangerouslySetInnerHTML), so Trusted Types sites work too.
   const lines = useMemo(
-    () => (plain ? source.split('\n').map((l) => l.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')) : highlightLines(source, lang)),
+    () => (plain ? source.split('\n').map((text) => (text ? [{ text, cls: '' }] : [])) : highlightTokens(source, lang)),
     [source, lang, plain],
   )
   const marked = new Set(highlight ?? [])
@@ -838,7 +840,19 @@ export function CodeBlock({ code, lang = 'ts', filename, lineNumbers, highlight,
                   {i + 1}
                 </span>
               )}
-              <span className="ml-code__text" dangerouslySetInnerHTML={{ __html: line || ' ' }} />
+              <span className="ml-code__text">
+                {line.length
+                  ? line.map((t, j) =>
+                      t.cls ? (
+                        <span key={j} className={t.cls}>
+                          {t.text}
+                        </span>
+                      ) : (
+                        <Fragment key={j}>{t.text}</Fragment>
+                      ),
+                    )
+                  : ' '}
+              </span>
               {'\n'}
             </span>
           ))}

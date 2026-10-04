@@ -19,6 +19,7 @@ import {
 } from 'react'
 import { createPortal } from 'react-dom'
 import type { MlKanbanColumn } from '../types'
+import { safeHref } from '../url'
 import { Button, Icon, Loader, Paw } from './basic'
 import { useLocale } from './locale'
 import { lockScroll, unlockScroll, useTransition } from './overlay'
@@ -401,7 +402,7 @@ export function ListItem({ title, subtitle, meta, badge, href, clickable, active
   return (
     <li className="ml-list-item">
       <Tag
-        href={href}
+        href={safeHref(href)}
         type={Tag === 'button' ? 'button' : undefined}
         aria-current={active ? 'page' : undefined}
         className={cx('ml-list-item__row', { 'ml-list-item__row--interactive': Tag !== 'div', 'ml-list-item__row--active': active })}

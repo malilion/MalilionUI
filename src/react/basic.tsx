@@ -3,6 +3,7 @@ import { icons, type IconName } from '../components/icons'
 import { PAW_PAD, PAW_SHINE, PAW_TOES } from '../components/paw'
 import { mascotImages } from '../mascot'
 import { pawStamp } from '../pawStamp'
+import { safeHref } from '../url'
 import type {
   MlAlertTone,
   MlAvatarSize,
@@ -163,7 +164,7 @@ export function Button({
   if (href) {
     return (
       <a
-        href={inactive ? undefined : href}
+        href={inactive ? undefined : safeHref(href)}
         target={target}
         aria-disabled={inactive || undefined}
         aria-busy={loading || undefined}
@@ -760,7 +761,7 @@ export function Breadcrumb({ items, label }: { items: MlBreadcrumbItem[]; label?
           return (
             <li key={`${i}-${item.label}`} className="ml-breadcrumb__item">
               {item.href && !last ? (
-                <a href={item.href} className="ml-breadcrumb__link">
+                <a href={safeHref(item.href)} className="ml-breadcrumb__link">
                   {item.icon && <Icon name={item.icon} />}
                   {item.label}
                 </a>
