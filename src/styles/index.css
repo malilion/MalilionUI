@@ -85,5 +85,9 @@
 @import './components/scratch.css';
 @import './components/grid-lottery.css';
 @import './components/gacha.css';
+@import './components/treemap.css';
+@import './components/sankey.css';
+@import './components/gantt.css';
+@import './components/candlestick.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';
