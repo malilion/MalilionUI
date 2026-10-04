@@ -51,6 +51,35 @@ describe('React IndexBar', () => {
     expect(host.querySelector('.ml-indexbar__key--active')!.textContent).toBe('ㄔ')
   })
 
+  it('a drag across the rail neither jumps back on release nor leaks a click outside', () => {
+    let outside = 0
+    const count = () => outside++
+    document.body.addEventListener('click', count)
+    const host = render(<IndexBar items={contacts} />)
+    fakeOffsets(host)
+    const list = host.querySelector<HTMLElement>('.ml-indexbar__list')!
+    const keys = [...host.querySelectorAll<HTMLElement>('.ml-indexbar__key')]
+    keys.forEach((k, i) => (k.getBoundingClientRect = () => ({ top: i * 20, height: 20, bottom: i * 20 + 20 }) as DOMRect))
+    const nav = host.querySelector('nav')!
+    const pointer = (type: string, y: number) =>
+      act(() => void nav.dispatchEvent(new PointerEvent(type, { bubbles: true, cancelable: true, clientY: y, button: 0, pointerId: 1 })))
+    pointer('pointerdown', 10)
+    pointer('pointermove', 50)
+    pointer('pointerup', 50)
+    expect(list.scrollTop).toBe(200)
+    // Touch: the click lands on the key the finger went down on — it must not jump back.
+    act(() => keys[0].click())
+    expect(list.scrollTop).toBe(200)
+    // Mouse: the click lands on the rail itself — it must not reach outer handlers.
+    pointer('pointerdown', 10)
+    pointer('pointermove', 50)
+    act(() => void nav.dispatchEvent(new MouseEvent('click', { bubbles: true })))
+    expect(outside).toBe(1)
+    act(() => keys[1].click())
+    expect(list.scrollTop).toBe(100)
+    document.body.removeEventListener('click', count)
+  })
+
   it('item clicks and renderItem', () => {
     const onItemClick = vi.fn()
     const host = render(<IndexBar items={contacts} onItemClick={onItemClick} />)
