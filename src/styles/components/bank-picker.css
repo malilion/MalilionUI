@@ -1,0 +1,26 @@
+/* BankPicker — searchable 銀行代碼 + optional account number, side by side when there's room */
+.ml-bank-picker {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 220px), 1fr));
+  align-items: start;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* 「822 中國信託」: codes line up in the list and the field */
+.ml-bank-picker__bank .ml-combobox__search,
+.ml-bank-picker__bank .ml-combobox__option {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Grouped digits 「1234 5678 9012」 */
+.ml-bank-picker__account-input {
+  font-family: var(--ml-font-mono);
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+
+.ml-bank-picker__account-input::placeholder {
+  font-family: var(--ml-font-body);
+  letter-spacing: 0;
+}

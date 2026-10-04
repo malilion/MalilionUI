@@ -1,0 +1,262 @@
+/* LunarCalendar — month grid with 農曆, 節氣 and Taiwan holidays under each day */
+.ml-lunar-cal {
+  --_lc-off: var(--ml-danger-text);
+  --_lc-term: var(--ml-tech-text);
+  --_lc-cell: 50px;
+
+  display: inline-grid;
+  gap: 10px;
+  width: 400px;
+  max-width: 100%;
+  padding: 14px;
+  background: var(--ml-brushed), var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  clip-path: polygon(12px 0, 100% 0, 100% calc(100% - 12px), calc(100% - 12px) 100%, 0 100%, 0 12px);
+}
+
+.ml-lunar-cal__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.ml-lunar-cal__heading {
+  display: grid;
+  justify-items: center;
+  gap: 2px;
+  min-width: 0;
+  text-align: center;
+}
+
+.ml-lunar-cal__title {
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* 「丙午年（馬）」 — a gold HUD tag */
+.ml-lunar-cal__year {
+  padding: 1px 10px;
+  background: var(--ml-accent-soft);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  color: var(--ml-accent-text);
+  font-size: var(--ml-text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+}
+
+.ml-lunar-cal__nav {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: none;
+  color: var(--ml-text-muted);
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-lunar-cal__nav:hover {
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+}
+
+.ml-lunar-cal__nav:focus-visible {
+  outline: 2px solid var(--ml-focus);
+}
+
+.ml-lunar-cal__nav svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-lunar-cal__grid {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px 3px;
+  table-layout: fixed;
+}
+
+.ml-lunar-cal__weekday {
+  padding: 2px 0 6px;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-align: center;
+}
+
+.ml-lunar-cal__weekday--weekend {
+  color: color-mix(in oklab, var(--_lc-off) 75%, var(--ml-text-dim));
+}
+
+.ml-lunar-cal__grid td {
+  padding: 0;
+  text-align: center;
+}
+
+/* Month change: the new days slide in from the side we're travelling towards */
+.ml-lunar-cal__body--next .ml-lunar-cal__day,
+.ml-lunar-cal__body--prev .ml-lunar-cal__day {
+  animation: ml-slide-in-x var(--ml-dur) var(--ml-ease);
+}
+
+.ml-lunar-cal__body--next .ml-lunar-cal__day { --_from-x: 14px; }
+.ml-lunar-cal__body--prev .ml-lunar-cal__day { --_from-x: -14px; }
+
+.ml-lunar-cal__day {
+  position: relative;
+  display: inline-grid;
+  grid-template-rows: auto auto;
+  place-content: center;
+  justify-items: center;
+  gap: 1px;
+  width: 100%;
+  max-width: var(--_lc-cell);
+  height: var(--_lc-cell);
+  padding: 0 1px;
+  border: 0;
+  background: none;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  color: var(--ml-text);
+  cursor: pointer;
+  transition: background var(--ml-dur-fast) var(--ml-ease), color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-lunar-cal__num {
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.ml-lunar-cal__label {
+  max-width: 100%;
+  overflow: hidden;
+  color: var(--ml-text-dim);
+  font-size: 0.625rem;
+  line-height: 1.2;
+  text-overflow: clip;
+  white-space: nowrap;
+}
+
+.ml-lunar-cal__label--month {
+  color: var(--ml-accent-text);
+  font-weight: 700;
+}
+
+.ml-lunar-cal__label--term {
+  color: var(--_lc-term);
+  font-weight: 600;
+}
+
+.ml-lunar-cal__label--holiday {
+  color: var(--ml-accent-text);
+  font-weight: 600;
+}
+
+.ml-lunar-cal__label--off {
+  color: var(--_lc-off);
+}
+
+.ml-lunar-cal__day:hover:not(:disabled) {
+  background: var(--ml-accent-soft);
+}
+
+.ml-lunar-cal__day:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+
+.ml-lunar-cal__day--weekend .ml-lunar-cal__num {
+  color: color-mix(in oklab, var(--_lc-off) 80%, var(--ml-text));
+}
+
+/* 國定假日 / 放假: red number on a soft red plate */
+.ml-lunar-cal__day--off {
+  background: var(--ml-danger-soft);
+}
+
+.ml-lunar-cal__day--off .ml-lunar-cal__num {
+  color: var(--_lc-off);
+}
+
+/* 補行上班: a weekend that's a working day — normal ink and a small 「班」 corner */
+.ml-lunar-cal__day--workday .ml-lunar-cal__num {
+  color: var(--ml-text);
+}
+
+.ml-lunar-cal__day--workday::after {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 3px;
+  width: 6px;
+  height: 6px;
+  background: var(--ml-steel-400);
+  clip-path: polygon(0 0, 100% 0, 100% 100%);
+}
+
+.ml-lunar-cal__day--outside {
+  opacity: 0.4;
+}
+
+.ml-lunar-cal__day--today {
+  box-shadow: inset 0 0 0 1.5px var(--ml-line-strong);
+}
+
+.ml-lunar-cal__day--today .ml-lunar-cal__num {
+  color: var(--ml-accent-text);
+}
+
+.ml-lunar-cal__day--selected,
+.ml-lunar-cal__day--selected:hover:not(:disabled) {
+  background: var(--ml-metal-gold-soft);
+  box-shadow: 0 0 12px rgb(240 173 47 / 0.45);
+  opacity: 1;
+}
+
+.ml-lunar-cal__day--selected .ml-lunar-cal__num,
+.ml-lunar-cal__day--selected .ml-lunar-cal__label {
+  color: var(--ml-text-on-metal);
+}
+
+.ml-lunar-cal__day:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.ml-lunar-cal__day:disabled .ml-lunar-cal__num {
+  text-decoration: line-through;
+}
+
+@media (max-width: 420px) {
+  .ml-lunar-cal {
+    --_lc-cell: 44px;
+    padding: 10px;
+  }
+
+  .ml-lunar-cal__label {
+    font-size: 0.5625rem;
+  }
+}
+
+[data-ml-theme='light'] .ml-lunar-cal__day--selected {
+  box-shadow: 0 0 10px rgb(212 143 23 / 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-lunar-cal__body--next .ml-lunar-cal__day,
+  .ml-lunar-cal__body--prev .ml-lunar-cal__day {
+    animation: none;
+  }
+}
