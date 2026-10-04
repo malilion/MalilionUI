@@ -254,6 +254,10 @@ export interface MlLocale {
   captcha: { label: string; hint: string; slider: string; checking: string; success: string; fail: string; refresh: string; locked: string }
   scratch: { cover: string; label: string; hint: string; revealed: string; revealNow: string }
   lottery: { grid: string; gacha: string; draw: string; turn: string; drawing: string; result: (prize: string) => string; again: string; none: string }
+  /** MlRadar: bearing is "045°", distance is "60%" or "12 km". */
+  radar: { label: string; summary: (blips: number) => string; blip: (label: string | undefined, bearing: string, distance: string) => string }
+  /** MlClock: spoken time, announced once a minute. */
+  clock: { label: string; time: (place: string | undefined, h: number, m: number) => string }
   password: {
     show: string
     hide: string
@@ -626,6 +630,15 @@ export const zhTW: MlLocale = {
     result: (p) => `恭喜！抽中：${p}`,
     again: '再抽一次',
     none: '這次沒有抽中',
+  },
+  radar: {
+    label: '雷達',
+    summary: (n) => (n ? `雷達，${n} 個目標` : '雷達，沒有目標'),
+    blip: (l, b, d) => `${l ?? '目標'}：方位 ${b}，距離 ${d}`,
+  },
+  clock: {
+    label: '時鐘',
+    time: (p, h, m) => `${p ? `${p} ` : ''}${h < 12 ? '上午' : '下午'} ${h % 12 || 12}:${String(m).padStart(2, '0')}`,
   },
   password: {
     show: '顯示密碼',
@@ -1004,6 +1017,15 @@ export const en: MlLocale = {
     result: (p) => `You won: ${p}`,
     again: 'Again',
     none: 'No prize this time',
+  },
+  radar: {
+    label: 'Radar',
+    summary: (n) => (n ? `Radar with ${n} ${n === 1 ? 'contact' : 'contacts'}` : 'Radar, no contacts'),
+    blip: (l, b, d) => `${l ?? 'Contact'}: bearing ${b}, range ${d}`,
+  },
+  clock: {
+    label: 'Clock',
+    time: (p, h, m) => `${p ? `${p}, ` : ''}${h % 12 || 12}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`,
   },
   password: {
     show: 'Show password',

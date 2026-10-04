@@ -6,6 +6,7 @@ import MlActionSheetHost from './components/MlActionSheetHost.vue'
 import MlAffix from './components/MlAffix.vue'
 import MlAlert from './components/MlAlert.vue'
 import MlAnchor from './components/MlAnchor.vue'
+import MlAurora from './components/MlAurora.vue'
 import MlAutocomplete from './components/MlAutocomplete.vue'
 import MlAvatar from './components/MlAvatar.vue'
 import MlBackTop from './components/MlBackTop.vue'
@@ -25,6 +26,7 @@ import MlChatInput from './components/MlChatInput.vue'
 import MlChatMessage from './components/MlChatMessage.vue'
 import MlCheckbox from './components/MlCheckbox.vue'
 import MlCheckboxGroup from './components/MlCheckboxGroup.vue'
+import MlClock from './components/MlClock.vue'
 import MlCodeBlock from './components/MlCodeBlock.vue'
 import MlCodeDiff from './components/MlCodeDiff.vue'
 import MlColorPicker from './components/MlColorPicker.vue'
@@ -86,6 +88,7 @@ import MlModal from './components/MlModal.vue'
 import MlNavBar from './components/MlNavBar.vue'
 import MlNumberInput from './components/MlNumberInput.vue'
 import MlPagination from './components/MlPagination.vue'
+import MlParticles from './components/MlParticles.vue'
 import MlPasswordInput from './components/MlPasswordInput.vue'
 import MlPaw from './components/MlPaw.vue'
 import MlPuzzle from './components/MlPuzzle.vue'
@@ -98,6 +101,7 @@ import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
 import MlPullRefresh from './components/MlPullRefresh.vue'
 import MlQRCode from './components/MlQRCode.vue'
+import MlRadar from './components/MlRadar.vue'
 import MlRadarChart from './components/MlRadarChart.vue'
 import MlRadio from './components/MlRadio.vue'
 import MlRadioGroup from './components/MlRadioGroup.vue'
@@ -158,6 +162,7 @@ const components = {
   MlAffix,
   MlAlert,
   MlAnchor,
+  MlAurora,
   MlAutocomplete,
   MlAvatar,
   MlBackTop,
@@ -177,6 +182,7 @@ const components = {
   MlChatMessage,
   MlCheckbox,
   MlCheckboxGroup,
+  MlClock,
   MlCodeBlock,
   MlCodeDiff,
   MlColorPicker,
@@ -238,6 +244,7 @@ const components = {
   MlNavBar,
   MlNumberInput,
   MlPagination,
+  MlParticles,
   MlPasswordInput,
   MlPaw,
   MlPuzzle,
@@ -250,6 +257,7 @@ const components = {
   MlProgress,
   MlPullRefresh,
   MlQRCode,
+  MlRadar,
   MlRadarChart,
   MlRadio,
   MlRadioGroup,
@@ -333,6 +341,7 @@ export {
   MlAffix,
   MlAlert,
   MlAnchor,
+  MlAurora,
   MlAutocomplete,
   MlAvatar,
   MlBackTop,
@@ -352,6 +361,7 @@ export {
   MlChatMessage,
   MlCheckbox,
   MlCheckboxGroup,
+  MlClock,
   MlCodeBlock,
   MlCodeDiff,
   MlColorPicker,
@@ -413,6 +423,7 @@ export {
   MlNavBar,
   MlNumberInput,
   MlPagination,
+  MlParticles,
   MlPasswordInput,
   MlPaw,
   MlPuzzle,
@@ -425,6 +436,7 @@ export {
   MlProgress,
   MlPullRefresh,
   MlQRCode,
+  MlRadar,
   MlRadarChart,
   MlRadio,
   MlRadioGroup,
@@ -612,6 +624,14 @@ export { captchaHit, captchaPiecePath, captchaTarget } from './components/captch
 export type { MlCaptchaAttempt, MlCaptchaTarget, MlCaptchaTone, CaptchaState } from './components/captcha'
 export type { MlScratchTone } from './components/scratch'
 export type { MlGlobeArc, MlGlobeMarker, MlGlobePoint, MlGlobeTone, GlobeView, GlobeProjected } from './components/globe'
+export { AURORA_PALETTES } from './components/aurora'
+export type { MlAuroraPalette } from './components/aurora'
+export { particleBurst, particleCount, particleField, particleLinks, particleStep } from './components/particles'
+export type { MlParticlesInteraction, MlParticlesShape, MlParticlesTone, Particle, ParticleField } from './components/particles'
+export { radarBearing, radarGlow, radarPolar, radarPosition } from './components/radar'
+export type { MlRadarBlip, MlRadarTone } from './components/radar'
+export { clockAngles, clockDigital, clockFormatOffset, clockOffset, clockTime } from './components/clock'
+export type { ClockAngles, ClockTime, MlClockInput, MlClockMotion, MlClockNumerals, MlClockTone } from './components/clock'
 
 declare module 'vue' {
   export interface GlobalComponents {
@@ -621,6 +641,7 @@ declare module 'vue' {
     MlAffix: typeof MlAffix
     MlAlert: typeof MlAlert
     MlAnchor: typeof MlAnchor
+    MlAurora: typeof MlAurora
     MlAutocomplete: typeof MlAutocomplete
     MlAvatar: typeof MlAvatar
     MlBackTop: typeof MlBackTop
@@ -640,6 +661,7 @@ declare module 'vue' {
     MlChatMessage: typeof MlChatMessage
     MlCheckbox: typeof MlCheckbox
     MlCheckboxGroup: typeof MlCheckboxGroup
+    MlClock: typeof MlClock
     MlCodeBlock: typeof MlCodeBlock
     MlCodeDiff: typeof MlCodeDiff
     MlColorPicker: typeof MlColorPicker
@@ -701,6 +723,7 @@ declare module 'vue' {
     MlNavBar: typeof MlNavBar
     MlNumberInput: typeof MlNumberInput
     MlPagination: typeof MlPagination
+    MlParticles: typeof MlParticles
     MlPasswordInput: typeof MlPasswordInput
     MlPaw: typeof MlPaw
     MlPuzzle: typeof MlPuzzle
@@ -713,6 +736,7 @@ declare module 'vue' {
     MlProgress: typeof MlProgress
     MlPullRefresh: typeof MlPullRefresh
     MlQRCode: typeof MlQRCode
+    MlRadar: typeof MlRadar
     MlRadarChart: typeof MlRadarChart
     MlRadio: typeof MlRadio
     MlRadioGroup: typeof MlRadioGroup

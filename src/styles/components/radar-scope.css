@@ -1,0 +1,203 @@
+/* Radar (MlRadar; block ml-radar-scope, since ml-radar belongs to MlRadarChart) — a HUD scope: rings, crosshair, a sweeping beam with a fading trail, and blips that flare as it passes */
+.ml-radar-scope {
+  --_rd-size: 280px;
+  --_rd-c: var(--ml-cyan-400);
+  --_rd-hi: var(--ml-cyan-200);
+  --_rd-bg-hi: #0b2724;
+  --_rd-bg: #051210;
+  --_rd-bg-lo: #020706;
+  --_rd-line: rgb(62 238 208 / 0.22);
+
+  width: min(100%, var(--_rd-size));
+  min-width: 0;
+  margin: 0;
+}
+
+.ml-radar-scope--gold { --_rd-c: var(--ml-gold-400); --_rd-hi: var(--ml-gold-200); --_rd-bg-hi: #2a2210; --_rd-bg: #120e06; --_rd-bg-lo: #060402; --_rd-line: rgb(240 173 47 / 0.22); }
+.ml-radar-scope--bean { --_rd-c: var(--ml-bean-400); --_rd-hi: var(--ml-bean-200); --_rd-bg-hi: #2b1219; --_rd-bg: #12070b; --_rd-bg-lo: #070304; --_rd-line: rgb(255 143 168 / 0.22); }
+.ml-radar-scope--success { --_rd-c: var(--ml-green-400); --_rd-hi: var(--ml-green-300); --_rd-bg-hi: #0d2716; --_rd-bg: #05120a; --_rd-bg-lo: #020704; --_rd-line: rgb(82 227 138 / 0.22); }
+.ml-radar-scope--danger { --_rd-c: var(--ml-red-400); --_rd-hi: var(--ml-red-300); --_rd-bg-hi: #2b100c; --_rd-bg: #120605; --_rd-bg-lo: #070202; --_rd-line: rgb(255 92 72 / 0.22); }
+
+[data-ml-theme='light'] .ml-radar-scope { --_rd-c: var(--ml-cyan-600); --_rd-hi: var(--ml-cyan-700); --_rd-bg-hi: #ffffff; --_rd-bg: #ecf7f5; --_rd-bg-lo: #cfe8e3; --_rd-line: rgb(11 111 97 / 0.25); }
+[data-ml-theme='light'] .ml-radar-scope--gold { --_rd-c: var(--ml-gold-500); --_rd-hi: var(--ml-gold-700); --_rd-bg: #f8f1e1; --_rd-bg-lo: #e7d8b6; --_rd-line: rgb(124 78 11 / 0.25); }
+[data-ml-theme='light'] .ml-radar-scope--bean { --_rd-c: var(--ml-bean-500); --_rd-hi: var(--ml-bean-600); --_rd-bg: #fcf0f3; --_rd-bg-lo: #f0d3da; --_rd-line: rgb(201 77 108 / 0.25); }
+[data-ml-theme='light'] .ml-radar-scope--success { --_rd-c: var(--ml-green-500); --_rd-hi: var(--ml-green-600); --_rd-bg: #edf8f1; --_rd-bg-lo: #cfe9d9; --_rd-line: rgb(22 138 71 / 0.25); }
+[data-ml-theme='light'] .ml-radar-scope--danger { --_rd-c: var(--ml-red-500); --_rd-hi: var(--ml-red-600); --_rd-bg: #fcefed; --_rd-bg-lo: #f1d0cc; --_rd-line: rgb(180 44 30 / 0.25); }
+
+.ml-radar-scope__screen {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    var(--ml-scanlines),
+    radial-gradient(circle at 50% 50%, var(--_rd-bg-hi), var(--_rd-bg) 58%, var(--_rd-bg-lo) 100%);
+  box-shadow:
+    inset 0 0 0 1px var(--_rd-line),
+    inset 0 0 calc(var(--_rd-size) * 0.12) rgb(0 0 0 / 0.55),
+    0 0 0 3px var(--ml-steel-800),
+    0 0 0 4px var(--_rd-line),
+    0 0 calc(var(--_rd-size) * 0.1) color-mix(in srgb, var(--_rd-c) 18%, transparent);
+}
+
+[data-ml-theme='light'] .ml-radar-scope__screen {
+  background: radial-gradient(circle at 50% 50%, var(--_rd-bg-hi), var(--_rd-bg) 58%, var(--_rd-bg-lo) 100%);
+  box-shadow:
+    inset 0 0 0 1px var(--_rd-line),
+    inset 0 0 calc(var(--_rd-size) * 0.08) rgb(44 50 61 / 0.12),
+    0 0 0 3px var(--ml-steel-200),
+    0 0 0 4px var(--_rd-line);
+}
+
+.ml-radar-scope__grid {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.ml-radar-scope__ring,
+.ml-radar-scope__cross,
+.ml-radar-scope__ticks {
+  fill: none;
+  stroke: var(--_rd-line);
+  stroke-width: 0.7;
+}
+
+.ml-radar-scope__ring:last-of-type { stroke: color-mix(in srgb, var(--_rd-c) 55%, transparent); stroke-width: 1; }
+.ml-radar-scope__cross { stroke-dasharray: 2 2.5; }
+.ml-radar-scope__ticks { stroke: color-mix(in srgb, var(--_rd-c) 50%, transparent); }
+
+.ml-radar-scope__range {
+  fill: color-mix(in srgb, var(--_rd-hi) 75%, transparent);
+  font-family: var(--ml-font-mono);
+  font-size: 6px;
+  letter-spacing: 0.04em;
+  dominant-baseline: hanging;
+}
+
+/* The beam: a conic wedge whose leading edge is at 0°, turned by the loop (or resting at --_rd-a) */
+.ml-radar-scope__sweep {
+  position: absolute;
+  inset: 2%;
+  border-radius: 50%;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg calc(360deg - var(--_rd-trail, 90deg)),
+    color-mix(in srgb, var(--_rd-c) 42%, transparent) 360deg
+  );
+  transform: rotate(var(--_rd-live, var(--_rd-a, 0deg)));
+  will-change: transform;
+  pointer-events: none;
+}
+
+.ml-radar-scope--ccw .ml-radar-scope__sweep {
+  background: conic-gradient(
+    from 0deg,
+    color-mix(in srgb, var(--_rd-c) 42%, transparent) 0deg,
+    transparent var(--_rd-trail, 90deg) 360deg
+  );
+}
+
+/* Leading edge */
+.ml-radar-scope__sweep::after {
+  content: '';
+  position: absolute;
+  left: calc(50% - 0.75px);
+  top: 0;
+  width: 1.5px;
+  height: 50%;
+  background: linear-gradient(var(--_rd-hi), color-mix(in srgb, var(--_rd-c) 30%, transparent));
+  box-shadow: 0 0 6px var(--_rd-c);
+}
+
+/* ── Blips ──────────────────────────────────────────────── */
+.ml-radar-scope__blip {
+  --_rd-bc: var(--_rd-c);
+
+  position: absolute;
+  z-index: 1;
+  width: 16px;
+  height: 16px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  translate: -50% -50%;
+}
+
+.ml-radar-scope__blip--gold { --_rd-bc: var(--ml-gold-300); }
+.ml-radar-scope__blip--tech { --_rd-bc: var(--ml-cyan-300); }
+.ml-radar-scope__blip--bean { --_rd-bc: var(--ml-bean-300); }
+.ml-radar-scope__blip--success { --_rd-bc: var(--ml-green-300); }
+.ml-radar-scope__blip--danger { --_rd-bc: var(--ml-red-400); }
+[data-ml-theme='light'] .ml-radar-scope__blip--gold { --_rd-bc: var(--ml-gold-600); }
+[data-ml-theme='light'] .ml-radar-scope__blip--tech { --_rd-bc: var(--ml-cyan-700); }
+[data-ml-theme='light'] .ml-radar-scope__blip--bean { --_rd-bc: var(--ml-bean-600); }
+[data-ml-theme='light'] .ml-radar-scope__blip--success { --_rd-bc: var(--ml-green-600); }
+[data-ml-theme='light'] .ml-radar-scope__blip--danger { --_rd-bc: var(--ml-red-600); }
+
+.ml-radar-scope__blip::before {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border-radius: 50%;
+  background: var(--_rd-bc);
+  box-shadow: 0 0 calc(10px * var(--_rd-live, var(--_rd-glow, 1))) var(--_rd-bc);
+  opacity: var(--_rd-live, var(--_rd-glow, 1));
+  scale: calc(0.75 + 0.45 * var(--_rd-live, var(--_rd-glow, 1)));
+}
+
+/* Selected / focused: a lock-on ring that stays lit */
+.ml-radar-scope__blip::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border: 1px solid var(--_rd-bc);
+  border-radius: 50%;
+  opacity: 0;
+  scale: 1.4;
+  transition: opacity var(--ml-dur) var(--ml-ease), scale var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-radar-scope__blip:hover::after,
+.ml-radar-scope__blip--active::after,
+.ml-radar-scope__blip:focus-visible::after { opacity: 1; scale: 1; }
+.ml-radar-scope__blip--active::before,
+.ml-radar-scope__blip:focus-visible::before { opacity: 1; }
+.ml-radar-scope__blip:focus { outline: none; }
+.ml-radar-scope__blip:focus-visible::after { border-color: var(--ml-focus); border-style: dashed; }
+
+.ml-radar-scope__tip {
+  position: absolute;
+  left: 50%;
+  bottom: calc(100% + 6px);
+  padding: 3px 8px;
+  border: 1px solid var(--ml-line-strong);
+  border-radius: var(--ml-radius-sm);
+  background: var(--ml-bg-elevated);
+  box-shadow: var(--ml-shadow-1);
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-xs);
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  opacity: 0;
+  translate: -50% 4px;
+  pointer-events: none;
+  transition: opacity var(--ml-dur) var(--ml-ease), translate var(--ml-dur) var(--ml-ease);
+}
+
+.ml-radar-scope__blip:hover .ml-radar-scope__tip,
+.ml-radar-scope__blip:focus-visible .ml-radar-scope__tip,
+.ml-radar-scope__blip--active .ml-radar-scope__tip { opacity: 1; translate: -50% 0; }
+.ml-radar-scope__blip--active { z-index: 2; }
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-radar-scope__blip::after,
+  .ml-radar-scope__tip { transition: none; }
+}
