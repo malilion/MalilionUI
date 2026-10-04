@@ -1124,7 +1124,7 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     group: 'basic',
     isNew: true,
     desc: '在國字旁邊標注音，預設是課本那種直式：符號由上往下排在字的右邊，聲調標在最後一個符號旁，輕聲的「˙」放在最上面；position="top" 則改成標在字的上方。讀音可以直接寫注音，也可以寫拼音（自動轉換）。不想每次都寫讀音，可以用 registerZhuyin 註冊字典；詞會優先於單字，所以「銀行」和「行走」的「行」都能讀對。標點、英文和查不到的字會原樣顯示。',
-    usage: `import { MlZhuyin, registerZhuyin, pinyinToZhuyin } from '@malilion/ui'`,
+    usage: `import { MlZhuyin, registerZhuyin, pinyinToZhuyin, zhuyinToPinyin } from '@malilion/ui'`,
     examples: [
       { file: 'zhuyin/basic', title: '直式注音', desc: '每個字的讀音用空白分隔，標點會自動跳過。', block: true },
       { file: 'zhuyin/more', title: '輕聲、字典與拼音', desc: '第二行沒有寫讀音，用 registerZhuyin 註冊的詞典自動標上；第三行用拼音輸入並標在上方。', block: true },
@@ -1136,6 +1136,14 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
           { name: 'text', desc: '中文內容', type: 'string' },
           { name: 'zhuyin', desc: '依序對應每個國字的讀音（注音或拼音，空白分隔；「_」表示略過）', type: 'string | string[]' },
           { name: 'position', desc: '注音位置', type: `'right' | 'top'`, default: `'right'` },
+        ],
+      },
+      {
+        component: '工具函式',
+        props: [
+          { name: 'pinyinToZhuyin(syllable)', desc: '拼音轉注音：liáng / liang2 → ㄌㄧㄤˊ', type: '=> string' },
+          { name: 'zhuyinToPinyin(syllable, { tone? })', desc: '注音轉拼音：ㄐㄩㄝˊ → jué；tone: number 輸出 jue2、none 不標聲調', type: '=> string' },
+          { name: 'registerZhuyin(entries) / clearZhuyin()', desc: '註冊或清除字詞讀音（詞優先於單字，處理破音字）', type: '(entries: Record<string, string>) => void' },
         ],
       },
     ],
