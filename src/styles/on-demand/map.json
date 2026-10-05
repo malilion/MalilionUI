@@ -714,6 +714,17 @@
     "components/time.css",
     "components/effects.css"
   ],
+  "MlTimeRangePicker": [
+    "components/button.css",
+    "components/field.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/calendar.css",
+    "components/form.css",
+    "components/time.css",
+    "components/time-range.css",
+    "components/effects.css"
+  ],
   "MlTimeline": [
     "components/paw.css",
     "components/timeline.css"
