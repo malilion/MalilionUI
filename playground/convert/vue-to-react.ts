@@ -667,21 +667,27 @@ function elementNoFor(n: Node, ctx: JsxCtx): string {
 
 /* ── Formatting ────────────────────────────────────────── */
 
+// One language service for every example: creating one per file is slow.
+const FORMAT_FILE = 'example.tsx'
+let formatSource = ''
+let formatVersion = 0
+let formatter: ts.LanguageService | undefined
+
 /** Indent with the TypeScript formatter (2 spaces, no semicolons added). */
 function format(code: string) {
-  const name = 'example.tsx'
-  const host: ts.LanguageServiceHost = {
-    getScriptFileNames: () => [name],
-    getScriptVersion: () => '1',
-    getScriptSnapshot: (f) => (f === name ? ts.ScriptSnapshot.fromString(code) : undefined),
+  formatSource = code
+  formatVersion++
+  formatter ??= ts.createLanguageService({
+    getScriptFileNames: () => [FORMAT_FILE],
+    getScriptVersion: () => String(formatVersion),
+    getScriptSnapshot: (f) => (f === FORMAT_FILE ? ts.ScriptSnapshot.fromString(formatSource) : undefined),
     getCurrentDirectory: () => '/',
-    getCompilationSettings: () => ({ jsx: ts.JsxEmit.Preserve }),
+    getCompilationSettings: () => ({ jsx: ts.JsxEmit.Preserve, noLib: true }),
     getDefaultLibFileName: () => 'lib.d.ts',
-    fileExists: (f) => f === name,
-    readFile: (f) => (f === name ? code : undefined),
-  }
-  const service = ts.createLanguageService(host)
-  const edits = service.getFormattingEditsForDocument(name, {
+    fileExists: (f) => f === FORMAT_FILE,
+    readFile: (f) => (f === FORMAT_FILE ? formatSource : undefined),
+  })
+  const edits = formatter.getFormattingEditsForDocument(FORMAT_FILE, {
     ...ts.getDefaultFormatCodeSettings('\n'),
     indentSize: 2,
     tabSize: 2,

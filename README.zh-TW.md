@@ -52,6 +52,16 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
 - 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
 
+## 0.14 版新功能
+
+- **文件站可切換 Vue／React**：頂部的切換鈕會把每一頁都換成 React 寫法——從 `@malilion/ui/react` 匯入、API 表列出 React 版真正的 props（直接從型別定義讀取，Vue 有而 React 沒有的會標示「React 版沒有」），範例程式碼也轉成 TSX。轉換後的範例必須通過型別檢查、而且畫出來的 HTML 結構和 Vue 版一致才會顯示；少數還沒通過的會顯示 Vue 程式碼並加上說明
+- **文字與頭像**：`MlTitle` / `MlText` / `MlLink`（語氣色、截斷與多行限制、一鍵複製、安全的外部連結）、`MlAvatarGroup`（疊放、`+N` 並列出被收起的名字、可展開）
+- **表單**：`MlInputMask`（邊打邊套格式，內建手機、市話、身分證、統編、民國日期、載具、3+3 郵遞區號）、`MlAmountInput`（千分位與即時中文大寫）、`MlNumberKeyboard`（密碼鍵盤、亂數排列、底部彈出）、`MlRichTextEditor`（Tiptap 加上金屬工具列，從 `@malilion/ui/editor` 匯入；Tiptap 為選用的 peer dependency）
+- **台灣在地化**：所有日期選擇器與日曆都支援 `calendar="roc"`（民國115/10/04、民國 110 – 119 年），另有 `formatRocDate()` / `parseRocDate()`；`MlBarcode`（Code 128、手機條碼載具與自然人憑證用的 Code 39、會自動補檢查碼的 EAN-13）；`MlTaiwanAddress`（縣市區、3+3 郵遞區號、路段巷弄號樓，貼上整串地址會自動拆開，`parseTwAddress()`）；`MlZhuyin`（課本式直排注音，或在上方標拼音；`zhuyinToPinyin()` / `pinyinToZhuyin()`）
+- **清單與資料**：`MlIndexBar`（可拖曳 ㄅㄆㄇ／A–Z 索引的通訊錄，中文名字直接用瀏覽器內建的注音排序分組，不需要字典）、`MlFilterBar` 與 `MlQueryBuilder`（後台篩選列與巢狀 AND／OR 條件，搭配 `matchFilters()` / `evaluateQuery()`）、`MlScheduler`（週／日行程表，可拖曳移動、調整長度與新增）
+- **圖表與影音**：`MlWaterfallChart`、`MlBoxPlot`、`MlBulletChart`；`MlVideoPlayer` / `MlAudioPlayer`（原生影音加上金屬控制列，支援字幕、播放速度、子母畫面與鍵盤快捷鍵）
+- 共 180 個元件，Vue 與 React 都有
+
 ## 0.13 版新功能
 
 - **`MlCuteIcon`**：52 個貼紙風可愛圖示，大多有會眨眼的小臉——動物、珍奶甜點、天氣、生活小物，以及「科技工坊」（賽博獅子、機器人、晶片、終端機、盾牌、資料庫、Bug…）；彩色、品牌金屬 `metal`、單色（currentColor）與線條四種外觀，六種循環動畫，可設定只在滑過時播放
@@ -253,6 +263,14 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="視覺特效" width="100%">
 
+**0.14 · 民國年、手機條碼、注音與地址**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/taiwan.png" alt="民國年日曆、手機條碼、注音與台灣地址" width="100%">
+
+**0.14 · 索引列、行程表、頭像群組與瀑布圖**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/workflow.png" alt="索引列、行程表、頭像群組與瀑布圖" width="100%">
+
 **0.7 · 熱力圖、儀表、雷達、程式碼區塊與聊天**
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/devkit.png" alt="熱力圖、儀表、雷達、程式碼區塊與聊天" width="100%">
@@ -272,6 +290,10 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 每個元件在[文件站](https://malilion.github.io/MalilionUI/)都有自己的頁面：即時範例、一鍵複製原始碼與完整 API 表。
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="文件站" width="100%">
+
+文件站切換成 React 後，每一頁都會跟著換：React 的匯入方式、API 表裡的 React prop 名稱，以及轉成 TSX 的範例程式碼。
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-react.png" alt="文件站的 React 模式" width="100%">
 
 ## 元件一覽
 
@@ -480,7 +502,7 @@ git push --follow-tags
 
 建置產物是 `dist/malilion-ui.js`（ESM）、`dist/style.css` 與 `dist/types/`（型別宣告）。Vue 是外部依賴，不會被打包進去。
 
-文件站在 `playground/`。每個範例都是 `playground/examples/` 裡真正的 `.vue` 檔，同一個檔案既是即時預覽，也是可複製的原始碼，兩者永遠一致。每次推到 `main`，GitHub Actions 會跑檢查並把文件站部署到 GitHub Pages。
+文件站在 `playground/`。每個範例都是 `playground/examples/` 裡真正的 `.vue` 檔，同一個檔案既是即時預覽，也是可複製的原始碼，兩者永遠一致。React 模式會把同一批檔案轉成 TSX（`playground/convert/vue-to-react.ts`），而且要等 `tests/react/examples.test.tsx` 確認型別檢查通過、伺服器端渲染出的 HTML 結構和 Vue 範例一致後才會顯示；新增或修改範例之後，用 `npx vitest run tests/react/examples.test.tsx -u` 更新這份清單。每次推到 `main`，GitHub Actions 會跑檢查並把文件站部署到 GitHub Pages。
 
 ## 安全性
 

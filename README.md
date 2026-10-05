@@ -52,6 +52,16 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
+## What's New in 0.14
+
+- **Docs in Vue or React**: a switch in the docs' top bar turns every page into React — imports from `@malilion/ui/react`, API tables with the real React props (read from the type definitions, with a "not in React" tag where a Vue prop has no twin) and example code converted to TSX. A conversion is shown only after it type-checks and renders the same markup as the Vue example; the few that don't yet show the Vue code with a note
+- **Typography and identity**: `MlTitle` / `MlText` / `MlLink` (tones, ellipsis and line clamps, copyable text, safe external links), `MlAvatarGroup` (overlap, `+N` with the hidden names, expandable)
+- **Forms**: `MlInputMask` (as-you-type masks with Taiwan presets — mobile, phone, 身分證, 統編, 民國 date, 載具, 3+3 zip), `MlAmountInput` (thousands separators and live 中文大寫), `MlNumberKeyboard` (PIN pads, shuffled digits, bottom sheet), `MlRichTextEditor` (Tiptap with the machined toolbar, from `@malilion/ui/editor`; Tiptap stays an optional peer)
+- **Taiwan**: `calendar="roc"` on every date picker and the calendar (民國115/10/04, 民國 110 – 119 年) with `formatRocDate()` / `parseRocDate()`; `MlBarcode` (Code 128, Code 39 for 手機條碼載具 and 自然人憑證, EAN-13 with check digits); `MlTaiwanAddress` (縣市區, 3+3 postal code, 路段巷弄號樓, paste a whole address to split it, `parseTwAddress()`); `MlZhuyin` (注音 beside each character in textbook layout, or pinyin above; `zhuyinToPinyin()` / `pinyinToZhuyin()`)
+- **Lists and data**: `MlIndexBar` (phone-book list with a draggable ㄅㄆㄇ / A–Z rail — Chinese names filed by the browser's 注音 collation, no dictionary), `MlFilterBar` and `MlQueryBuilder` (admin filters and nested AND / OR rules, with `matchFilters()` / `evaluateQuery()`), `MlScheduler` (week / day timetable with drag to move, resize and create)
+- **Charts and media**: `MlWaterfallChart`, `MlBoxPlot`, `MlBulletChart`; `MlVideoPlayer` / `MlAudioPlayer` (steel control decks over native media with captions, speed, PiP and keyboard shortcuts)
+- 180 components, every one in Vue and React
+
 ## What's New in 0.13
 
 - **`MlCuteIcon`**: 52 sticker-style icons with blinking faces — animals, bubble tea and sweets, weather, everyday things and a tech workshop set (cyber lion, robot, chip, terminal, shield, database, bug…); `color`, brand `metal`, `mono` (currentColor) and `line` variants, six looping animations that can play on hover only
@@ -253,6 +263,14 @@ The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="Visual effects" width="100%">
 
+**0.14 · 民國 dates, mobile barcode, 注音 and addresses**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/taiwan.png" alt="ROC calendar, mobile barcode, zhuyin and Taiwan address" width="100%">
+
+**0.14 · Index bar, scheduler, avatar group and waterfall**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/workflow.png" alt="Index bar, scheduler, avatar group and waterfall chart" width="100%">
+
 **0.7 · Heatmap, gauge, radar, code block & chat**
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/devkit.png" alt="Heatmap, gauge, radar, code block and chat" width="100%">
@@ -272,6 +290,10 @@ The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style
 Every component has its own page on the [docs site](https://malilion.github.io/MalilionUI/) with live examples, copy-to-clipboard source and full API tables.
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-site.png" alt="Docs site" width="100%">
+
+Switch the docs to React and every page follows: React imports, React prop names in the API tables and example code converted to TSX.
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/docs-react.png" alt="Docs site in React mode" width="100%">
 
 ## Components
 
@@ -480,7 +502,7 @@ The `Publish` workflow checks that the tag matches `package.json`, runs the chec
 
 The build output is `dist/malilion-ui.js` (ESM), `dist/style.css` and `dist/types/` (type declarations). Vue is external and is not bundled.
 
-The docs site lives in `playground/`. Every example is a real `.vue` file in `playground/examples/` that is both rendered live and shown as copyable source, so the two can never drift apart. Every push to `main` runs the checks in GitHub Actions and deploys the site to GitHub Pages.
+The docs site lives in `playground/`. Every example is a real `.vue` file in `playground/examples/` that is both rendered live and shown as copyable source, so the two can never drift apart. The React mode converts those same files to TSX (`playground/convert/vue-to-react.ts`) and shows a conversion only after `tests/react/examples.test.tsx` has type-checked it and matched its server-rendered markup to the Vue example; after adding or changing examples, refresh that list with `npx vitest run tests/react/examples.test.tsx -u`. Every push to `main` runs the checks in GitHub Actions and deploys the site to GitHub Pages.
 
 ## Security
 
