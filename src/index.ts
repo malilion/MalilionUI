@@ -165,6 +165,7 @@ import MlTextarea from './components/MlTextarea.vue'
 import MlThemeToggle from './components/MlThemeToggle.vue'
 import MlTilt from './components/MlTilt.vue'
 import MlTimePicker from './components/MlTimePicker.vue'
+import MlTimeRangePicker from './components/MlTimeRangePicker.vue'
 import MlTimeline from './components/MlTimeline.vue'
 import MlTitle from './components/MlTitle.vue'
 import MlToastHost from './components/MlToastHost.vue'
@@ -351,6 +352,7 @@ const components = {
   MlThemeToggle,
   MlTilt,
   MlTimePicker,
+  MlTimeRangePicker,
   MlTimeline,
   MlTitle,
   MlToastHost,
@@ -560,6 +562,7 @@ export {
   MlThemeToggle,
   MlTilt,
   MlTimePicker,
+  MlTimeRangePicker,
   MlTimeline,
   MlTitle,
   MlToastHost,
@@ -605,6 +608,15 @@ export {
 export type { JsonParseResult, JsonParseError, JsonSegment, JsonRow, JsonNodeRow, JsonSearch } from './components/json'
 export { encodeQr } from './qrcode'
 export { encodeBarcode, barcodeLayout, ean13CheckDigit } from './barcode'
+export {
+  timeRangeSeconds,
+  formatTimeRangeDuration,
+  isOvernight,
+  validateTimeRange,
+  timeRangeRules,
+  setTimeRangeEnd,
+} from './components/time-range'
+export type { MlTimeRange, MlTimeRangePreset, TimeRangeIssue, TimeRangeOptions } from './components/time-range'
 export { highlight, highlightLines } from './highlight'
 export { highlightTokens } from './highlight'
 export type { HighlightToken } from './highlight'
@@ -989,6 +1001,7 @@ declare module 'vue' {
     MlThemeToggle: typeof MlThemeToggle
     MlTilt: typeof MlTilt
     MlTimePicker: typeof MlTimePicker
+    MlTimeRangePicker: typeof MlTimeRangePicker
     MlTimeline: typeof MlTimeline
     MlTitle: typeof MlTitle
     MlToastHost: typeof MlToastHost

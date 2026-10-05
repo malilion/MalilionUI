@@ -90,6 +90,20 @@ export interface MlLocale {
     }
   }
   countdown: { label: string; days: string; hours: string; minutes: string; seconds: string }
+  /** MlTimeRangePicker. */
+  timeRange: {
+    start: string
+    end: string
+    pick: string
+    clear: string
+    /** After the end time when it falls on the next day. */
+    nextDay: string
+    /** Length of the range, e.g. "共 1 小時 30 分"; zero parts are left out. */
+    duration: (h: number, m: number, s: number) => string
+    pickStart: string
+    pickEnd: string
+    errors: { incomplete: string; order: string; same: string; min: (min: string) => string; max: (max: string) => string }
+  }
   color: {
     pick: string
     clear: string
@@ -700,6 +714,23 @@ export const zhTW: MlLocale = {
     },
   },
   countdown: { label: '剩餘時間', days: '天', hours: '時', minutes: '分', seconds: '秒' },
+  timeRange: {
+    start: '開始時間',
+    end: '結束時間',
+    pick: '選擇時間區間',
+    clear: '清除時間區間',
+    nextDay: '（隔日）',
+    duration: (h, m, s) => `共 ${[h && `${h} 小時`, m && `${m} 分`, s && `${s} 秒`].filter(Boolean).join(' ') || '0 分'}`,
+    pickStart: '選擇開始時間',
+    pickEnd: '選擇結束時間',
+    errors: {
+      incomplete: '請選擇開始與結束時間',
+      order: '結束時間需晚於開始時間',
+      same: '開始與結束時間不能相同',
+      min: (min) => `時間不能早於 ${min}`,
+      max: (max) => `時間不能晚於 ${max}`,
+    },
+  },
   color: {
     pick: '選擇顏色',
     clear: '清除顏色',
@@ -1451,6 +1482,23 @@ export const en: MlLocale = {
     },
   },
   countdown: { label: 'Time left', days: 'Days', hours: 'Hours', minutes: 'Min', seconds: 'Sec' },
+  timeRange: {
+    start: 'Start time',
+    end: 'End time',
+    pick: 'Pick a time range',
+    clear: 'Clear time range',
+    nextDay: ' (next day)',
+    duration: (h, m, s) => [h && `${h} h`, m && `${m} min`, s && `${s} s`].filter(Boolean).join(' ') || '0 min',
+    pickStart: 'Pick the start time',
+    pickEnd: 'Pick the end time',
+    errors: {
+      incomplete: 'Pick both a start and an end time',
+      order: 'The end time must be after the start time',
+      same: 'The start and end times must differ',
+      min: (min) => `Times can't be before ${min}`,
+      max: (max) => `Times can't be after ${max}`,
+    },
+  },
   color: {
     pick: 'Pick a colour',
     clear: 'Clear colour',
