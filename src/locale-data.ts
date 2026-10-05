@@ -351,12 +351,21 @@ export interface MlLocale {
     today: string
     prev: string
     next: string
+    month: string
     week: string
     day: string
     allDay: string
     /** Keyboard help for editable schedulers. */
     hint: string
+    /** The same for the month grid. */
+    monthHint: string
     moved: (title: string, when: string) => string
+    /** "還有 2 項" under a full day in month view. */
+    more: (count: number) => string
+    /** Appended to a day cell's name: "3 項行程". */
+    events: (count: number) => string
+    /** The day number's button, which opens day view. */
+    openDay: (day: string) => string
   }
   address: {
     label: string
@@ -1017,11 +1026,16 @@ export const zhTW: MlLocale = {
     today: '今天',
     prev: '上一頁',
     next: '下一頁',
+    month: '月',
     week: '週',
     day: '日',
     allDay: '全天',
     hint: '方向鍵上下移動一格、左右換日，Shift + 上下調整結束時間；在空白處拖曳可以新增行程。',
+    monthHint: '方向鍵左右換日、上下換週，Shift + 左右調整全天行程的天數；在空白的日子點一下或拖曳可以新增全天行程。',
     moved: (title, when) => `${title} 改到 ${when}`,
+    more: (n) => `還有 ${n} 項`,
+    events: (n) => `${n} 項行程`,
+    openDay: (day) => `查看 ${day}`,
   },
   address: {
     label: '地址',
@@ -1785,11 +1799,16 @@ export const en: MlLocale = {
     today: 'Today',
     prev: 'Previous',
     next: 'Next',
+    month: 'Month',
     week: 'Week',
     day: 'Day',
     allDay: 'All day',
     hint: 'Arrow up/down moves by one slot, left/right by a day; Shift + up/down changes the end. Drag on an empty slot to add an event.',
+    monthHint: 'Arrow left/right moves by a day, up/down by a week; Shift + left/right changes how many days an all-day event lasts. Click or drag across empty days to add an all-day event.',
     moved: (title, when) => `${title} moved to ${when}`,
+    more: (n) => `${n} more`,
+    events: (n) => (n === 1 ? '1 event' : `${n} events`),
+    openDay: (day) => `Open ${day}`,
   },
   address: {
     label: 'Address',

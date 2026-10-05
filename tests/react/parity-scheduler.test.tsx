@@ -20,7 +20,33 @@ const events: V.MlSchedulerEvent[] = [
   { id: 'd', title: '鎖定', start: at(6, 14), end: at(6, 15), editable: false },
 ]
 
+// Month view: a bar across a week break, a crowded day and a timed overnight bar.
+const monthEvents: V.MlSchedulerEvent[] = [
+  ...events,
+  { id: 'e', title: '午餐', start: at(7, 12), end: at(7, 13), tone: 'success' },
+  { id: 'f', title: '週會', start: at(7, 15), end: at(7, 16) },
+  { id: 'g', title: '電腦展', start: '2026-10-29', end: '2026-11-03', allDay: true, tone: 'tech' },
+]
+
 const cases: [string, () => Promise<string>, () => string][] = [
+  ['Scheduler: month', () => vue(V.MlScheduler, { events: monthEvents, now, date: now, view: 'month' }), () => react(<R.Scheduler events={monthEvents} now={now} date={now} view="month" />)],
+  [
+    'Scheduler: month, editable, Monday start, 2 rows',
+    () => vue(V.MlScheduler, { events: monthEvents, now, date: now, view: 'month', editable: true, weekStartsOn: 1, monthMaxEvents: 2 }),
+    () => react(<R.Scheduler events={monthEvents} now={now} date={now} view="month" editable weekStartsOn={1} monthMaxEvents={2} />),
+  ],
+  [
+    'Scheduler: month, English',
+    async () => signature(await renderToString(createSSRApp({ render: () => h(MlConfigProvider, { locale: en }, () => h(V.MlScheduler, { events: monthEvents, now, date: now, view: 'month' })) }))),
+    () =>
+      signature(
+        renderToStaticMarkup(
+          <ConfigProvider locale={en}>
+            <R.Scheduler events={monthEvents} now={now} date={now} view="month" />
+          </ConfigProvider>,
+        ),
+      ),
+  ],
   ['Scheduler: week', () => vue(V.MlScheduler, { events, now, date: now }), () => react(<R.Scheduler events={events} now={now} date={now} />)],
   ['Scheduler: day, cropped hours', () => vue(V.MlScheduler, { events, now, date: now, view: 'day', startHour: 8, endHour: 18 }), () => react(<R.Scheduler events={events} now={now} date={now} view="day" startHour={8} endHour={18} />)],
   ['Scheduler: editable, Monday start', () => vue(V.MlScheduler, { events, now, date: now, editable: true, weekStartsOn: 1 }), () => react(<R.Scheduler events={events} now={now} date={now} editable weekStartsOn={1} />)],
@@ -62,5 +88,25 @@ describe('React ↔ Vue markup parity: Scheduler', () => {
     const reactHtml = renderToStaticMarkup(<R.Scheduler events={events} now={now} date={now} editable />)
     expect(pick(reactHtml)).toBe(pick(vueHtml))
     expect(top(reactHtml)).toBe(top(vueHtml))
+  })
+
+  it('month attributes match too (grid roles, roving tabindex, lanes and spans)', async () => {
+    const pick = (html: string) =>
+      [...html.matchAll(/<[a-z]+([^>]*)>/gi)]
+        .map((tag) =>
+          [...tag[1].matchAll(/ (role|aria-[a-z]+|data-id|tabindex|type)(?:="([^"]*)")?(?=[\s/>]|$)/gi)]
+            .map((m) => `${m[1].toLowerCase()}=${m[2] ?? ''}`)
+            .filter((a) => !a.startsWith('aria-describedby'))
+            .sort()
+            .join(' '),
+        )
+        .filter(Boolean)
+        .join('\n')
+    const vars = (html: string) => [...html.matchAll(/--_sc-(lane|span|max):\s?(\d+)/g)].map((m) => `${m[1]}${m[2]}`).join(',')
+    const vueHtml = await renderToString(createSSRApp({ render: () => h(V.MlScheduler, { events: monthEvents, now, date: now, view: 'month', editable: true }) }))
+    const reactHtml = renderToStaticMarkup(<R.Scheduler events={monthEvents} now={now} date={now} view="month" editable />)
+    expect(pick(reactHtml)).toBe(pick(vueHtml))
+    expect(vars(reactHtml)).toBe(vars(vueHtml))
+    expect(vars(vueHtml)).toContain('span')
   })
 })

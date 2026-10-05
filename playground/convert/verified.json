@@ -241,7 +241,10 @@
   "castSetters": true
  },
  "scheduler/basic": {},
- "scheduler/day": {},
+ "scheduler/day": {
+  "castSetters": true
+ },
+ "scheduler/month": {},
  "scratch-card/basic": {},
  "scratch-card/tones": {},
  "scrollbar/basic": {},
