@@ -2624,11 +2624,17 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'Tabs',
     zh: '分頁',
     group: 'nav',
-    desc: '金色墨線或滑動金屬板。支援方向鍵、Home / End。',
-    usage: `import { MlTabs } from '@malilion/ui'`,
+    desc: '金色墨線或滑動金屬板。支援方向鍵、Home / End。也能當成後台的瀏覽器式分頁：可關閉、可新增、可拖曳排序；分頁太多時可左右捲動，目前的分頁會自動捲進畫面。',
+    usage: `import { MlTabs, nextTabAfterClose } from '@malilion/ui'`,
     examples: [
       { file: 'tabs/line', title: '墨線分頁', desc: '每個分頁的內容用和 value 同名的插槽。', block: true },
       { file: 'tabs/plate', title: '金屬板切換' },
+      {
+        file: 'tabs/editable',
+        title: '工作區分頁',
+        desc: '元件不會改動 items，只發出 close / add / reorder，由你更新清單。關閉目前的分頁時，用 nextTabAfterClose 挑下一個（右邊優先，沒有就左邊）。點 ×、滑鼠中鍵或按 Delete / Backspace 關閉；拖曳或 Alt + ←/→ 排序（觸控裝置上拖曳是捲動）。',
+        block: true,
+      },
     ],
     api: [
       {
@@ -2638,10 +2644,25 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
           { name: 'items', desc: '分頁', type: '{ value, label, disabled? }[]' },
           { name: 'variant', desc: '樣式', type: `'line' | 'plate'`, default: `'line'` },
           { name: 'label', desc: '分頁列的無障礙名稱', type: 'string' },
+          { name: 'items[].closable', desc: '這個分頁可否關閉，優先於元件的 closable（例如固定的首頁設 false）', type: 'boolean' },
+          { name: 'closable', desc: '所有分頁都有關閉按鈕', type: 'boolean', default: 'false' },
+          { name: 'addable', desc: '最後一個分頁後面顯示「＋」新增按鈕', type: 'boolean', default: 'false' },
+          { name: 'reorderable', desc: '可拖曳分頁或按 Alt + ←/→ 調整順序，移動結果會念給螢幕閱讀器', type: 'boolean', default: 'false' },
+        ],
+        events: [
+          { name: 'close', desc: '要關閉某個分頁（×、中鍵、Delete / Backspace）；不會自動切換選取', type: '(value: string) => void' },
+          { name: 'add', desc: '按下「＋」', type: '() => void' },
+          { name: 'reorder', desc: '排序後所有分頁 value 的新順序', type: '(values: string[]) => void' },
         ],
         slots: [
           { name: '<value>', desc: '該分頁的內容' },
           { name: 'tab', desc: '自訂分頁標籤，提供 { item, active }' },
+        ],
+      },
+      {
+        component: '工具函式',
+        props: [
+          { name: 'nextTabAfterClose(items, value)', desc: '關閉 value 後該選哪個分頁：右邊最近的可用分頁，沒有就左邊；都沒有則是 undefined', type: '=> string | undefined' },
         ],
       },
     ],

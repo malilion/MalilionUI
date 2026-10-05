@@ -8,6 +8,7 @@ import {
   useState,
   type InputHTMLAttributes,
   type KeyboardEvent,
+  type PointerEvent as ReactPointerEvent,
   type ReactNode,
   type TextareaHTMLAttributes,
 } from 'react'
@@ -17,6 +18,7 @@ import { useLocale } from './locale'
 import { cx, describedBy, useControllable } from './utils'
 import { useFormField } from './validation'
 import { CheckboxGroupCtx } from './checkbox-context'
+import { dropTab, moveTab, nextTabAfterClose, scrollToReveal, tabDropSlot, tabOverflow } from '../components/tabs'
 
 // useLayoutEffect warns during SSR; fall back to useEffect there.
 const useIsoLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect
@@ -352,15 +354,106 @@ export interface TabsProps {
   /** Panel content per tab value. */
   panels?: Record<string, ReactNode>
   renderTab?: (item: MlTabItem, active: boolean) => ReactNode
+  /** Close buttons on every tab (an item's own `closable` wins). */
+  closable?: boolean
+  /** A "+" button after the last tab; calls onAdd. */
+  addable?: boolean
+  /** Drag tabs, or Alt + ←/→, to reorder them; calls onReorder. */
+  reorderable?: boolean
+  /** A tab asked to close. The component never changes `items`; see nextTabAfterClose. */
+  onClose?: (value: string) => void
+  onAdd?: () => void
+  /** The tab values in their new order. */
+  onReorder?: (values: string[]) => void
 }
 
-export function Tabs({ items, value, defaultValue, onChange, variant = 'line', label, panels, renderTab }: TabsProps) {
+const scrollBehavior = (): ScrollBehavior =>
+  typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'
+
+function scrollStrip(el: HTMLElement, left: number) {
+  if (typeof el.scrollTo === 'function') el.scrollTo({ left, behavior: scrollBehavior() })
+  else el.scrollLeft = left
+}
+
+export function Tabs({ items, value, defaultValue, onChange, variant = 'line', label, panels, renderTab, closable, addable, reorderable, onClose, onAdd, onReorder }: TabsProps) {
+  const loc = useLocale()
   const base = `ml-tabs-${useId().replace(/[^\w-]/g, '')}`
   const [current, set] = useControllable(value, defaultValue ?? items.find((i) => !i.disabled)?.value ?? '', onChange)
   const tabEls = useRef(new Map<string, HTMLButtonElement>())
-  const ink = useIndicator(() => tabEls.current.get(current), [current, items])
+  const list = useRef<HTMLDivElement>(null)
+  const [more, setMore] = useState({ start: false, end: false })
+  const [announce, setAnnounce] = useState('')
+  const [drag, setDrag] = useState<{ value: string; slot: number; x: number } | null>(null)
+  const refocus = useRef<string | null>(null)
 
-  function onKeydown(event: KeyboardEvent) {
+  const isClosable = (item: MlTabItem) => item.closable ?? closable
+  const shortcuts = (item: MlTabItem) =>
+    [isClosable(item) && 'Delete', reorderable && 'Alt+ArrowLeft Alt+ArrowRight'].filter(Boolean).join(' ') || undefined
+  /** The tab's whole box: its wrapper when it carries a close button. */
+  const boxOf = (v: string | undefined) => {
+    const el = v === undefined ? undefined : tabEls.current.get(v)
+    const wrap = el?.parentElement
+    return wrap?.classList.contains('ml-tabs__item') ? wrap : el
+  }
+  const ink = useIndicator(() => boxOf(current), [current, items])
+
+  const checkOverflow = () => {
+    if (!list.current) return
+    const next = tabOverflow(list.current)
+    setMore((m) => (m.start === next.start && m.end === next.end ? m : next))
+  }
+
+  // Keep the active tab in view when the strip overflows.
+  useIsoLayoutEffect(() => {
+    checkOverflow()
+    const el = boxOf(current)
+    const view = list.current
+    if (!el || !view || view.scrollWidth <= view.clientWidth) return
+    const left = scrollToReveal(view, el.offsetLeft, el.offsetWidth)
+    if (left !== undefined) scrollStrip(view, left)
+  }, [current, items])
+
+  useEffect(() => {
+    const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(checkOverflow) : undefined
+    if (ro && list.current) ro.observe(list.current)
+    return () => ro?.disconnect()
+  }, [])
+
+  // Re-rendering in a new order can drop focus; put it back.
+  useEffect(() => {
+    if (refocus.current === null) return
+    tabEls.current.get(refocus.current)?.focus()
+    refocus.current = null
+  }, [items])
+
+  function close(item: MlTabItem, fromKeyboard = false) {
+    if (item.disabled || !isClosable(item)) return
+    const next = nextTabAfterClose(items, item.value)
+    onClose?.(item.value)
+    if (fromKeyboard && next !== undefined) tabEls.current.get(next)?.focus()
+  }
+
+  function shift(item: MlTabItem, dir: 1 | -1) {
+    const values = items.map((i) => i.value)
+    const to = values.indexOf(item.value) + dir
+    if (to < 0 || to >= values.length) return
+    refocus.current = item.value
+    onReorder?.(moveTab(values, item.value, to))
+    setAnnounce(loc.sortable.moved(item.label, to + 1, values.length))
+  }
+
+  // Roving focus with automatic activation, per the WAI-ARIA tabs pattern.
+  function onKeydown(event: KeyboardEvent, item: MlTabItem) {
+    if ((event.key === 'Delete' || event.key === 'Backspace') && isClosable(item)) {
+      event.preventDefault()
+      close(item, true)
+      return
+    }
+    if (reorderable && event.altKey && (event.key === 'ArrowLeft' || event.key === 'ArrowRight')) {
+      event.preventDefault()
+      shift(item, event.key === 'ArrowRight' ? 1 : -1)
+      return
+    }
     const enabled = items.filter((i) => !i.disabled)
     const at = enabled.findIndex((i) => i.value === current)
     const next =
@@ -371,35 +464,150 @@ export function Tabs({ items, value, defaultValue, onChange, variant = 'line', l
     tabEls.current.get(enabled[next].value)?.focus()
   }
 
+  /* ── Pointer reordering: mouse and pen (touch keeps scrolling the strip) ── */
+  const latest = useRef({ items, onReorder, loc })
+  latest.current = { items, onReorder, loc }
+  const dragging = useRef<{ value: string; x: number; drag: { value: string; slot: number; x: number } | null } | null>(null)
+  const unlisten = useRef<(() => void) | null>(null)
+  useEffect(() => () => unlisten.current?.(), [])
+
+  function onPointerDown(event: ReactPointerEvent, item: MlTabItem) {
+    if (!reorderable || item.disabled || event.button !== 0 || event.pointerType === 'touch') return
+    dragging.current = { value: item.value, x: event.clientX, drag: null }
+    const move = (e: PointerEvent) => {
+      const d = dragging.current
+      if (!d) return
+      // A few pixels of travel before it counts as a drag, so clicks still select.
+      if (!d.drag && Math.abs(e.clientX - d.x) < 5) return
+      e.preventDefault()
+      const view = list.current
+      if (view) {
+        // Nudge the strip when dragging past either edge.
+        const r = view.getBoundingClientRect()
+        if (e.clientX < r.left + 24) view.scrollLeft -= 12
+        else if (e.clientX > r.right - 24) view.scrollLeft += 12
+      }
+      const boxes = latest.current.items.map((i) => boxOf(i.value))
+      const slot = tabDropSlot(
+        boxes.map((el) => {
+          const r = el?.getBoundingClientRect()
+          return { left: r?.left ?? 0, width: r?.width ?? 0 }
+        }),
+        e.clientX,
+      )
+      const at = boxes[slot] ?? boxes[boxes.length - 1]
+      d.drag = { value: d.value, slot, x: at ? (slot < boxes.length ? at.offsetLeft : at.offsetLeft + at.offsetWidth) : 0 }
+      setDrag(d.drag)
+    }
+    const end = (commit: boolean) => {
+      unlisten.current?.()
+      const done = dragging.current?.drag
+      dragging.current = null
+      setDrag(null)
+      if (!commit || !done) return
+      const { items: now, onReorder: report, loc: l } = latest.current
+      const values = now.map((i) => i.value)
+      const order = dropTab(values, done.value, done.slot)
+      if (order.every((v, i) => v === values[i])) return
+      report?.(order)
+      setAnnounce(l.sortable.moved(now.find((i) => i.value === done.value)?.label ?? done.value, order.indexOf(done.value) + 1, order.length))
+    }
+    const up = () => end(true)
+    const cancel = () => end(false)
+    unlisten.current?.()
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', cancel)
+    unlisten.current = () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', cancel)
+      unlisten.current = null
+    }
+  }
+
+  const page = (dir: 1 | -1) => list.current && scrollStrip(list.current, list.current.scrollLeft + dir * list.current.clientWidth * 0.7)
+
+  const tabOf = (item: MlTabItem) => (
+    <button
+      key={item.value}
+      id={`${base}-tab-${item.value}`}
+      ref={(el) => {
+        if (el) tabEls.current.set(item.value, el)
+        else tabEls.current.delete(item.value)
+      }}
+      type="button"
+      role="tab"
+      className={cx('ml-tabs__tab', drag?.value === item.value && 'ml-tabs__tab--dragging')}
+      aria-selected={item.value === current}
+      aria-controls={`${base}-panel-${item.value}`}
+      aria-keyshortcuts={shortcuts(item)}
+      tabIndex={item.value === current ? 0 : -1}
+      disabled={item.disabled}
+      onClick={() => !item.disabled && set(item.value)}
+      onKeyDown={(e) => onKeydown(e, item)}
+      onAuxClick={(e) => e.button === 1 && close(item)}
+      // Stop the middle button's autoscroll on closable tabs.
+      onMouseDown={(e) => e.button === 1 && isClosable(item) && e.preventDefault()}
+      onPointerDown={(e) => onPointerDown(e, item)}
+    >
+      {renderTab ? renderTab(item, item.value === current) : item.label}
+    </button>
+  )
+
   return (
-    <div className={cx('ml-tabs', `ml-tabs--${variant}`)}>
-      <div role="tablist" className="ml-tabs__list" aria-label={label}>
-        {items.map((item) => (
-          <button
-            key={item.value}
-            id={`${base}-tab-${item.value}`}
-            ref={(el) => {
-              if (el) tabEls.current.set(item.value, el)
-              else tabEls.current.delete(item.value)
-            }}
-            type="button"
-            role="tab"
-            className="ml-tabs__tab"
-            aria-selected={item.value === current}
-            aria-controls={`${base}-panel-${item.value}`}
-            tabIndex={item.value === current ? 0 : -1}
-            disabled={item.disabled}
-            onClick={() => !item.disabled && set(item.value)}
-            onKeyDown={onKeydown}
-          >
-            {renderTab ? renderTab(item, item.value === current) : item.label}
+    <div className={cx('ml-tabs', `ml-tabs--${variant}`, addable && 'ml-tabs--addable')}>
+      <div className={cx('ml-tabs__bar', more.start && 'ml-tabs__bar--more-start', more.end && 'ml-tabs__bar--more-end')}>
+        <div ref={list} role="tablist" className="ml-tabs__list" aria-label={label} onScroll={checkOverflow}>
+          {items.map((item) =>
+            isClosable(item) ? (
+              <div key={item.value} role="presentation" className={cx('ml-tabs__item', item.value === current && 'ml-tabs__item--active')}>
+                {tabOf(item)}
+                <button
+                  type="button"
+                  className="ml-tabs__close"
+                  tabIndex={-1}
+                  aria-label={loc.nav.closeTab(item.label)}
+                  disabled={item.disabled}
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    close(item)
+                  }}
+                >
+                  <Icon name="close" />
+                </button>
+              </div>
+            ) : (
+              tabOf(item)
+            ),
+          )}
+          <span
+            className="ml-tabs__ink"
+            aria-hidden="true"
+            style={{ width: `${ink.width}px`, transform: `translateX(${ink.x}px)`, display: ink.ready ? undefined : 'none' }}
+          />
+          {drag && <span className="ml-tabs__drop" aria-hidden="true" style={{ transform: `translateX(${drag.x}px)` }} />}
+        </div>
+        {more.start && (
+          <button type="button" className="ml-tabs__scroll ml-tabs__scroll--prev" tabIndex={-1} aria-label={loc.nav.scrollTabsPrev} onClick={() => page(-1)}>
+            <Icon name="chevronLeft" />
           </button>
-        ))}
-        <span
-          className="ml-tabs__ink"
-          aria-hidden="true"
-          style={{ width: `${ink.width}px`, transform: `translateX(${ink.x}px)`, display: ink.ready ? undefined : 'none' }}
-        />
+        )}
+        {more.end && (
+          <button type="button" className="ml-tabs__scroll ml-tabs__scroll--next" tabIndex={-1} aria-label={loc.nav.scrollTabsNext} onClick={() => page(1)}>
+            <Icon name="chevronRight" />
+          </button>
+        )}
+        {addable && (
+          <button type="button" className="ml-tabs__add" aria-label={loc.nav.addTab} onClick={() => onAdd?.()}>
+            <Icon name="plus" />
+          </button>
+        )}
+        {reorderable && (
+          <span className="ml-visually-hidden" aria-live="polite">
+            {announce}
+          </span>
+        )}
       </div>
       {panels &&
         items.map((item) =>
