@@ -143,7 +143,19 @@ export interface MlLocale {
     moveBack: (title: string) => string
   }
   tree: { empty: string }
-  upload: { title: string; or: string; browse: string }
+  upload: {
+    title: string
+    or: string
+    browse: string
+    /** Picture wall: the add tile, the card list, the reorder hint and its announcement. */
+    add: string
+    files: string
+    preview: (name: string) => string
+    reorderHint: string
+    moved: (position: number) => string
+    uploading: (name: string, percent: number) => string
+    failed: string
+  }
   image: { error: string; failed: (alt: string) => string; zoomIn: (alt: string) => string }
   preview: {
     label: string
@@ -745,7 +757,18 @@ export const zhTW: MlLocale = {
     moveBack: (t) => `移回${t}`,
   },
   tree: { empty: '沒有符合的節點' },
-  upload: { title: '把檔案拖到這裡', or: '或', browse: '點擊選擇檔案' },
+  upload: {
+    title: '把檔案拖到這裡',
+    or: '或',
+    browse: '點擊選擇檔案',
+    add: '上傳',
+    files: '已選擇的檔案',
+    preview: (name) => `預覽 ${name}`,
+    reorderHint: '按 Alt + 左右方向鍵調整順序',
+    moved: (position) => `已移到第 ${position} 張`,
+    uploading: (name, percent) => `${name} 上傳中 ${percent}%`,
+    failed: '上傳失敗',
+  },
   image: { error: '無法載入', failed: (alt) => `${alt}（無法載入）`, zoomIn: (alt) => `放大檢視：${alt}` },
   preview: {
     label: '圖片預覽',
@@ -1485,7 +1508,18 @@ export const en: MlLocale = {
     moveBack: (t) => `Move back to ${t}`,
   },
   tree: { empty: 'No matching nodes' },
-  upload: { title: 'Drop files here', or: 'or ', browse: 'browse' },
+  upload: {
+    title: 'Drop files here',
+    or: 'or ',
+    browse: 'browse',
+    add: 'Upload',
+    files: 'Selected files',
+    preview: (name) => `Preview ${name}`,
+    reorderHint: 'Press Alt + Left / Right arrow to reorder',
+    moved: (position) => `Moved to position ${position}`,
+    uploading: (name, percent) => `Uploading ${name}, ${percent}%`,
+    failed: 'Upload failed',
+  },
   image: { error: 'Failed to load', failed: (alt) => `${alt} (failed to load)`, zoomIn: (alt) => `View larger: ${alt}` },
   preview: {
     label: 'Image preview',

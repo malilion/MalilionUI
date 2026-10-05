@@ -761,7 +761,9 @@
   ],
   "MlUpload": [
     "components/paw.css",
-    "components/empty-upload.css"
+    "components/empty-upload.css",
+    "components/skeleton.css",
+    "components/image.css"
   ],
   "MlVideoPlayer": [
     "components/player.css"
