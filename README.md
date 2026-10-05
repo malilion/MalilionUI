@@ -36,13 +36,13 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 
 ## Features
 
-- 181 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
+- 183 components across basic, layout, form, feedback, data display, charts, navigation, mobile and visual effects, plus ready-made templates
 - Form validation built in: `MlForm` / `MlFormItem` rules (required, length, format, async) whose errors show up on every control
 - Taiwan validators: `twRules.nationalId()` / `residentId()` / `businessId()` / `mobile()` / `landline()` / `mobileBarcode()` / `citizenCert()` / `postalCode()` drop into `MlForm` and React `<Form>` with localized messages, backed by framework-free checkers (`isTwNationalId`, `isTwBusinessId` with the Ministry of Finance's 2023 divisible-by-5 rule, `isTwLandline` per the official numbering plan…) and formatters like `formatTwPhone()`
 - Rich pickers and overlays: searchable / multi-select combobox, autocomplete, time, date-time and colour pickers, drawer, popover, popconfirm
 - i18n: Traditional Chinese and English built in — switch with `app.use(MalilionUI, { locale: en })` or `<MlConfigProvider>`, or bring your own strings
 - Written in TypeScript, with typed props, slots and `GlobalComponents` for templates
-- React too: `@malilion/ui/react` has every component (all 181) with the same markup as the Vue ones, ready for the Next.js App Router
+- React too: `@malilion/ui/react` has every component (all 183) with the same markup as the Vue ones, ready for the Next.js App Router
 - Framework-agnostic styling: every visual lives in `.ml-*` classes and `--ml-*` CSS variables, so React or plain HTML can use it too
 - Two themes, dark **Night Pride** and light **Daylight Titanium**, switchable per page or per section
 - The Malilion mascot built in: `MlMascot`, `<MlAvatar lion>`, and a napping lion for empty states
@@ -60,7 +60,7 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - **Taiwan**: `calendar="roc"` on every date picker and the calendar (民國115/10/04, 民國 110 – 119 年) with `formatRocDate()` / `parseRocDate()`; `MlBarcode` (Code 128, Code 39 for 手機條碼載具 and 自然人憑證, EAN-13 with check digits); `MlTaiwanAddress` (縣市區, 3+3 postal code, 路段巷弄號樓, paste a whole address to split it, `parseTwAddress()`); `MlZhuyin` (注音 beside each character in textbook layout, or pinyin above; `zhuyinToPinyin()` / `pinyinToZhuyin()`)
 - **Lists and data**: `MlIndexBar` (phone-book list with a draggable ㄅㄆㄇ / A–Z rail — Chinese names filed by the browser's 注音 collation, no dictionary), `MlFilterBar` and `MlQueryBuilder` (admin filters and nested AND / OR rules, with `matchFilters()` / `evaluateQuery()`), `MlScheduler` (week / day timetable with drag to move, resize and create)
 - **Charts and media**: `MlWaterfallChart`, `MlBoxPlot`, `MlBulletChart`; `MlVideoPlayer` / `MlAudioPlayer` (steel control decks over native media with captions, speed, PiP and keyboard shortcuts)
-- 180 components, every one in Vue and React
+- 183 components, every one in Vue and React
 
 ## What's New in 0.13
 
@@ -299,11 +299,11 @@ Switch the docs to React and every page follows: React imports, React prop names
 
 | Category | Components |
 | --- | --- |
-| Basic | `MlButton` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlTitle` / `MlText` / `MlLink` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` · `MlZhuyin` |
+| Basic | `MlButton` · `MlButtonGroup` · `MlBadge` · `MlTag` · `MlCard` · `MlDivider` · `MlTitle` / `MlText` / `MlLink` · `MlKbd` · `MlMascot` · `MlLionMark` · `MlPaw` · `MlIcon` · `MlCuteIcon` · `MlConfigProvider` · `MlThemeToggle` · `MlZhuyin` |
 | Layout | `MlLayout` · `MlGrid` / `MlGridItem` · `MlSpace` · `MlScrollbar` · `MlMasonry` |
-| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlTimeRangePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` · `MlRichTextEditor` (`@malilion/ui/editor`) · `MlInputMask` · `MlAmountInput` · `MlFilterBar` · `MlQueryBuilder` · `MlTaiwanAddress` |
+| Form | `MlInput` · `MlPasswordInput` · `MlTextarea` · `MlSelect` · `MlCombobox` · `MlAutocomplete` · `MlDatePicker` · `MlTimePicker` · `MlTimeRangePicker` · `MlDateTimePicker` · `MlNumberInput` · `MlSlider` · `MlRate` · `MlColorPicker` · `MlCheckbox` · `MlCheckboxGroup` · `MlRadioGroup` / `MlRadio` · `MlSwitch` · `MlSegmented` · `MlToggleGroup` · `MlTransfer` · `MlUpload` · `MlField` · `MlForm` / `MlFormItem` · `MlDateRangePicker` · `MlCascader` · `MlTreeSelect` · `MlTagInput` · `MlPinInput` · `MlSliderCaptcha` · `MlMention` · `MlSignaturePad` · `MlImageCropper` · `MlTaiwanRegion` · `MlBankPicker` · `MlInvoiceChecker` · `MlStickerPicker` · `MlRichTextEditor` (`@malilion/ui/editor`) · `MlInputMask` · `MlAmountInput` · `MlFilterBar` · `MlQueryBuilder` · `MlTaiwanAddress` |
 | Feedback | `MlAlert` · `toast()` / `MlToastHost` · `MlProgress` · `MlLoader` · `MlModal` · `MlDrawer` · `MlTooltip` · `MlPopover` · `MlPopconfirm` · `MlSkeleton` · `MlEmpty` · `confirm()` / `MlDialogHost` · `MlResult` · `MlTour` · `MlBanner` · `v-loading` · `MlInbox` |
-| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlAvatarGroup` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlBarcode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlLunarCalendar` · `MlComments` · `MlScheduler` · `MlVideoPlayer` · `MlAudioPlayer` |
+| Data display | `MlTable` · `MlCalendar` · `MlAccordion` · `MlTree` · `MlTimeline` · `MlImage` / `MlImagePreview` · `MlCarousel` · `MlWatermark` · `MlAvatar` · `MlAvatarGroup` · `MlStat` · `MlDescriptions` · `MlSplitter` · `MlVirtualList` · `MlInfiniteScroll` · `MlQRCode` · `MlBarcode` · `MlCodeBlock` · `MlCodeDiff` · `MlCopyButton` · `MlJsonViewer` · `MlChat` / `MlChatMessage` / `MlChatInput` · `MlSortable` · `MlKanban` · `MlMarkdown` · `MlEllipsis` · `MlHighlight` · `MlLunarCalendar` · `MlComments` · `MlScheduler` · `MlVideoPlayer` · `MlAudioPlayer` |
 | Charts | `MlBarChart` · `MlDonut` · `MlRing` · `MlSparkline` · `MlLineChart` · `MlHeatmap` · `MlRadarChart` · `MlGauge` · `MlScatterChart` · `MlFunnelChart` · `MlTaiwanMap` · `MlGlobe` · `MlTreemap` · `MlSankey` · `MlGantt` · `MlCandlestick` · `MlWaterfallChart` · `MlBoxPlot` · `MlBulletChart` |
 | Navigation | `MlTabs` · `MlDropdown` · `MlBreadcrumb` · `MlPagination` · `MlSteps` · `MlAffix` · `MlBackTop` · `MlMenu` · `MlCommandPalette` · `MlContextMenu` · `MlAnchor` · `MlFloatButton` |
 | Mobile | `MlPhone` · `MlNavBar` · `MlTabBar` · `MlList` / `MlListItem` · `MlPickerView` · `MlBottomSheet` · `MlActionSheet` / `actionSheet()` · `MlPullRefresh` · `MlSwipeCell` · `MlSwipeStack` · `MlNumberKeyboard` · `MlIndexBar` |

@@ -1,0 +1,42 @@
+/* Highlight — keywords in a line of text, marked with a gold underglow */
+.ml-highlight {
+  --_mark-bg: var(--ml-accent-soft);
+  --_mark-line: rgb(240 173 47 / 0.55);
+  --_mark-fg: var(--ml-accent-text);
+}
+
+.ml-highlight--tech {
+  --_mark-bg: var(--ml-tech-soft);
+  --_mark-line: rgb(62 238 208 / 0.5);
+  --_mark-fg: var(--ml-tech-text);
+}
+
+.ml-highlight--success {
+  --_mark-bg: var(--ml-success-soft);
+  --_mark-line: var(--ml-success);
+  --_mark-fg: var(--ml-success-text);
+}
+
+.ml-highlight--danger {
+  --_mark-bg: var(--ml-danger-soft);
+  --_mark-line: var(--ml-danger);
+  --_mark-fg: var(--ml-danger-text);
+}
+
+.ml-highlight__mark {
+  padding: 0 0.08em;
+  border-radius: 2px;
+  background: var(--_mark-bg);
+  box-shadow: inset 0 -0.14em 0 var(--_mark-line);
+  color: var(--_mark-fg);
+  font-weight: 600;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+@media (forced-colors: active) {
+  .ml-highlight__mark {
+    background: Mark;
+    color: MarkText;
+  }
+}

@@ -36,6 +36,8 @@
  "box-plot/basic": {},
  "breadcrumb/basic": {},
  "bullet-chart/basic": {},
+ "button-group/basic": {},
+ "button-group/vertical": {},
  "button/sizes": {},
  "button/stamp": {},
  "button/states": {},
@@ -134,6 +136,8 @@
   "castSetters": true
  },
  "heatmap/tones": {},
+ "highlight/options": {},
+ "highlight/search": {},
  "image-cropper/avatar": {},
  "image-cropper/basic": {
   "castSetters": true
@@ -324,6 +328,8 @@
  "timeline/basic": {},
  "toast/advanced": {},
  "toast/basic": {},
+ "toggle-group/basic": {},
+ "toggle-group/icons": {},
  "tooltip/placement": {},
  "tour/basic": {},
  "transfer/basic": {},

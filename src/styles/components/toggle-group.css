@@ -1,0 +1,151 @@
+/*
+ * ToggleGroup — a machined slot of keys; each pressed key lights up as its own
+ * gold plate, so several can be lit at once (unlike Segmented's single slider).
+ */
+.ml-toggle-group {
+  --_h: 40px;
+  --_gap: 3px;
+
+  display: inline-flex;
+  gap: var(--_gap);
+  max-width: 100%;
+  padding: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel-strong), var(--ml-inset-shadow);
+  clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+}
+
+.ml-toggle-group::-webkit-scrollbar {
+  display: none;
+}
+
+.ml-toggle-group--sm { --_h: 32px; }
+.ml-toggle-group--lg { --_h: 48px; }
+
+.ml-toggle-group--vertical {
+  flex-direction: column;
+  overflow-x: visible;
+}
+
+.ml-toggle-group--block {
+  display: flex;
+  width: 100%;
+}
+
+.ml-toggle-group--block:not(.ml-toggle-group--vertical) .ml-toggle-group__item {
+  flex: 1 1 0;
+}
+
+.ml-toggle-group--disabled {
+  opacity: 0.5;
+}
+
+.ml-toggle-group__item {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  flex: none;
+  min-width: calc(var(--_h) - 8px);
+  min-height: calc(var(--_h) - 8px);
+  margin: 0;
+  padding: 0 14px;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color var(--ml-dur) var(--ml-ease);
+}
+
+.ml-toggle-group--vertical .ml-toggle-group__item {
+  justify-content: flex-start;
+}
+
+.ml-toggle-group--sm .ml-toggle-group__item { padding: 0 10px; font-size: var(--ml-text-xs); }
+.ml-toggle-group--lg .ml-toggle-group__item { padding: 0 18px; font-size: var(--ml-text-md); }
+
+/* Hairline between neighbours that are both released. */
+.ml-toggle-group__item + .ml-toggle-group__item::after {
+  content: '';
+  position: absolute;
+  top: 25%;
+  bottom: 25%;
+  left: calc(var(--_gap) / -2 - 0.5px);
+  width: 1px;
+  background: var(--ml-line-steel);
+}
+
+.ml-toggle-group--vertical .ml-toggle-group__item + .ml-toggle-group__item::after {
+  top: calc(var(--_gap) / -2 - 0.5px);
+  bottom: auto;
+  left: 12px;
+  right: 12px;
+  width: auto;
+  height: 1px;
+}
+
+.ml-toggle-group__item--active::after,
+.ml-toggle-group__item--active + .ml-toggle-group__item::after {
+  display: none;
+}
+
+/* The lit plate. */
+.ml-toggle-group__item::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: var(--ml-metal-gold-soft);
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  opacity: 0;
+  transform: scale(0.92);
+  transition:
+    opacity var(--ml-dur) var(--ml-ease),
+    transform var(--ml-dur-slow) var(--ml-ease-spring);
+}
+
+.ml-toggle-group__item:hover:not(:disabled, .ml-toggle-group__item--active) {
+  color: var(--ml-text);
+}
+
+.ml-toggle-group__item--active {
+  color: var(--ml-text-on-metal);
+  text-shadow: 0 1px 0 rgb(255 255 255 / 0.35);
+  filter: drop-shadow(0 0 6px rgb(240 173 47 / 0.3));
+}
+
+.ml-toggle-group__item--active::before {
+  opacity: 1;
+  transform: none;
+}
+
+.ml-toggle-group__item:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+
+.ml-toggle-group__item:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+
+.ml-toggle-group__icon {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ml-toggle-group__item::before {
+    transition: none;
+  }
+}

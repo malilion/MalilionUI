@@ -1,4 +1,4 @@
-import { useId, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
+import { createContext, useContext, useId, useState, type AnchorHTMLAttributes, type ButtonHTMLAttributes, type CSSProperties, type HTMLAttributes, type ReactNode } from 'react'
 import { hiddenNames, splitAvatars } from '../components/avatar-group'
 import { icons, type IconName } from '../components/icons'
 import { PAW_PAD, PAW_SHINE, PAW_TOES } from '../components/paw'
@@ -129,9 +129,12 @@ export interface ButtonProps extends Omit<ButtonHTMLAttributes<HTMLButtonElement
   target?: AnchorHTMLAttributes<HTMLAnchorElement>['target']
 }
 
+/** What <ButtonGroup> hands its buttons (mirrors src/components/button-group.ts); a button's own prop wins. */
+const ButtonGroupCtx = createContext<{ size?: MlSize; variant?: MlButtonVariant; disabled?: boolean } | null>(null)
+
 export function Button({
-  variant = 'primary',
-  size = 'md',
+  variant: variantProp,
+  size: sizeProp,
   type = 'button',
   href,
   disabled,
@@ -147,7 +150,10 @@ export function Button({
   target,
   ...rest
 }: ButtonProps) {
-  const inactive = disabled || loading
+  const group = useContext(ButtonGroupCtx)
+  const variant = variantProp ?? group?.variant ?? 'primary'
+  const size = sizeProp ?? group?.size ?? 'md'
+  const inactive = disabled || loading || !!group?.disabled
   const classes = cx('ml-btn', `ml-btn--${variant}`, `ml-btn--${size}`, className, {
     'ml-btn--block': block,
     'ml-btn--square': square,
@@ -183,6 +189,33 @@ export function Button({
     <button type={type} disabled={inactive} aria-busy={loading || undefined} className={classes} onPointerDown={onDown} {...rest}>
       {inner}
     </button>
+  )
+}
+
+/* ── ButtonGroup ────────────────────────────────────────── */
+
+export interface ButtonGroupProps extends HTMLAttributes<HTMLDivElement> {
+  /** Size for every button that doesn't set its own. */
+  size?: MlSize
+  /** Variant for every button that doesn't set its own. */
+  variant?: MlButtonVariant
+  /** Disable every button in the group. */
+  disabled?: boolean
+  /** Stack the buttons top to bottom. */
+  vertical?: boolean
+  /** Fill the container width, buttons sharing it equally. */
+  block?: boolean
+  /** Accessible name for the group. */
+  label?: string
+}
+
+export function ButtonGroup({ size, variant, disabled, vertical, block, label, className, children, ...rest }: ButtonGroupProps) {
+  return (
+    <ButtonGroupCtx.Provider value={{ size, variant, disabled }}>
+      <div role="group" aria-label={label} className={cx('ml-btn-group', className, { 'ml-btn-group--vertical': vertical, 'ml-btn-group--block': block })} {...rest}>
+        {children}
+      </div>
+    </ButtonGroupCtx.Provider>
   )
 }
 

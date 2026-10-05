@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, inject } from 'vue'
+import { buttonGroupKey } from './button-group'
 import { vPawStamp } from '../pawStamp'
 import { safeHref } from '../url'
 import type { MlButtonVariant, MlPawTone, MlSize } from '../types'
@@ -19,10 +20,14 @@ const props = withDefaults(
     /** Leave a paw print where it's pressed. true = gold, or pick a tone. */
     stamp?: boolean | MlPawTone
   }>(),
-  { variant: 'primary', size: 'md', type: 'button' },
+  { type: 'button' },
 )
 
-const inactive = computed(() => props.disabled || props.loading)
+// Inside MlButtonGroup, unset size / variant come from the group.
+const group = inject(buttonGroupKey, null)
+const look = computed(() => props.variant ?? group?.variant() ?? 'primary')
+const scale = computed(() => props.size ?? group?.size() ?? 'md')
+const inactive = computed(() => props.disabled || props.loading || !!group?.disabled())
 </script>
 
 <template>
@@ -34,8 +39,8 @@ const inactive = computed(() => props.disabled || props.loading)
     :aria-busy="loading || undefined"
     :class="[
       'ml-btn',
-      `ml-btn--${variant}`,
-      `ml-btn--${size}`,
+      `ml-btn--${look}`,
+      `ml-btn--${scale}`,
       { 'ml-btn--block': block, 'ml-btn--square': square, 'ml-btn--loading': loading },
     ]"
   >
@@ -52,8 +57,8 @@ const inactive = computed(() => props.disabled || props.loading)
     :aria-busy="loading || undefined"
     :class="[
       'ml-btn',
-      `ml-btn--${variant}`,
-      `ml-btn--${size}`,
+      `ml-btn--${look}`,
+      `ml-btn--${scale}`,
       { 'ml-btn--block': block, 'ml-btn--square': square, 'ml-btn--loading': loading },
     ]"
   >

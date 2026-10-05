@@ -1,0 +1,68 @@
+/*
+ * ButtonGroup — buttons machined from one bar: rims share a single seam and
+ * only the bar's outer ends keep the Malilion cut (top-left, bottom-right).
+ * Loaded after button.css so these overrides win.
+ */
+.ml-btn-group {
+  display: inline-flex;
+  align-items: stretch;
+  isolation: isolate;
+  max-width: 100%;
+}
+
+.ml-btn-group--vertical {
+  flex-direction: column;
+}
+
+.ml-btn-group--block {
+  display: flex;
+  width: 100%;
+}
+
+.ml-btn-group--block:not(.ml-btn-group--vertical) > .ml-btn {
+  flex: 1 1 0;
+}
+
+.ml-btn-group > .ml-btn {
+  --_tl: 0px;
+  --_br: 0px;
+}
+
+.ml-btn-group > .ml-btn:first-child { --_tl: var(--_cut); }
+.ml-btn-group > .ml-btn:last-child { --_br: var(--_cut); }
+
+.ml-btn-group > .ml-btn::before,
+.ml-btn-group > .ml-btn::after {
+  clip-path: polygon(var(--_tl) 0, 100% 0, 100% calc(100% - var(--_br)),
+      calc(100% - var(--_br)) 100%, 0 100%, 0 var(--_tl));
+}
+
+/* Overlap the rims so neighbours share one seam. */
+.ml-btn-group > .ml-btn + .ml-btn {
+  margin-left: -1.5px;
+}
+
+.ml-btn-group--vertical > .ml-btn + .ml-btn {
+  margin-top: -1.5px;
+  margin-left: 0;
+}
+
+/* Hovered / focused buttons rise above their neighbours' rims. */
+.ml-btn-group > .ml-btn:hover,
+.ml-btn-group > .ml-btn:focus-visible {
+  z-index: 1;
+}
+
+/* A joined bar shouldn't shrink apart when pressed. */
+.ml-btn-group > .ml-btn:active:not(:disabled, [aria-disabled='true']) {
+  transform: translateY(1px);
+}
+
+/* Ghost buttons have no rim; give them a hairline seam instead. */
+.ml-btn-group > .ml-btn--ghost + .ml-btn--ghost {
+  box-shadow: -1px 0 0 var(--ml-line-steel);
+}
+
+.ml-btn-group--vertical > .ml-btn--ghost + .ml-btn--ghost {
+  box-shadow: 0 -1px 0 var(--ml-line-steel);
+}
