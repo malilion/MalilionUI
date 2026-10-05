@@ -2,3 +2,5 @@
 import '../core.css'
 import '../components/paw.css'
 import '../components/empty-upload.css'
+import '../components/skeleton.css'
+import '../components/image.css'

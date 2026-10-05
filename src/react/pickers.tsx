@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type CSSProperties,
+  type DragEvent,
   type KeyboardEvent,
   type PointerEvent as ReactPointerEvent,
   type ReactNode,
@@ -14,10 +15,12 @@ import {
 import { hexToHsva, hsvaToHex, parseHex, type HSVA } from '../components/color'
 import { addDays, addMonths, comparePeriods, dayKey, formatPeriod, monthGrid, sameDay, startOfDay, withCalendar, type MlCalendarSystem } from '../components/dates'
 import { formatTime, padTime, parseTime, range as steps, toSeconds, type TimeParts } from '../components/time'
+import { CARD_DRAG_THRESHOLD, addFiles, canAddMore, cardIndexAt, createThumbStore, formatSize, moveItem, reorderKey, uploadState } from '../components/upload'
 import type { MlLocale } from '../locale-data'
-import type { MlDatePickerType, MlDateRange, MlRangePreset } from '../types'
+import type { MlDatePickerType, MlDateRange, MlRangePreset, MlUploadFile, MlUploadListType, MlUploadRejectReason } from '../types'
 import { Button, Icon, Paw } from './basic'
 import { Field } from './form'
+import { ImagePreview } from './layout'
 import { useLocale } from './locale'
 import { useTransition } from './overlay'
 import { PeriodPanel } from './period'
@@ -1100,28 +1103,28 @@ export function ColorPicker({ value, defaultValue = null, onChange, alpha, prese
 /* ── Upload ────────────────────────────────────────────── */
 
 export interface UploadProps {
-  value?: File[]
-  defaultValue?: File[]
-  onChange?: (files: File[]) => void
+  value?: MlUploadFile[]
+  defaultValue?: MlUploadFile[]
+  onChange?: (files: MlUploadFile[]) => void
   /** Same syntax as <input accept>: ".png,.pdf", "image/*"… */
   accept?: string
   multiple?: boolean
   /** Bytes. Larger files are rejected. */
   maxSize?: number
+  /** Most files kept. Extra ones are rejected with 'count'; the picture wall hides its add tile when full. */
+  maxCount?: number
   disabled?: boolean
   title?: ReactNode
   hint?: ReactNode
-  onReject?: (file: File, reason: 'type' | 'size') => void
+  /** 'picture': a wall of thumbnail cards that can be previewed and reordered. */
+  listType?: MlUploadListType
+  /** Card width / height in picture mode. */
+  aspect?: number
+  onReject?: (file: File, reason: MlUploadRejectReason) => void
   className?: string
 }
 
-const NO_FILES: File[] = []
-
-function formatSize(bytes: number) {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
-}
+const NO_FILES: MlUploadFile[] = []
 
 /** A file row that slides in when it's added after the list first rendered. */
 function FileRow({ animate, children }: { animate: boolean; children: ReactNode }) {
@@ -1138,12 +1141,32 @@ function FileRow({ animate, children }: { animate: boolean; children: ReactNode 
   return <li className={cx('ml-upload__file', phase)}>{children}</li>
 }
 
-export function Upload({ value, defaultValue = NO_FILES, onChange, accept, multiple = true, maxSize, disabled, title, hint, onReject, className }: UploadProps) {
+export function Upload({
+  value,
+  defaultValue = NO_FILES,
+  onChange,
+  accept,
+  multiple = true,
+  maxSize,
+  maxCount,
+  disabled,
+  title,
+  hint,
+  listType = 'text',
+  aspect = 1,
+  onReject,
+  className,
+}: UploadProps) {
   const loc = useLocale()
-  const inputId = `ml-upload-${cleanId(useId())}`
+  const uid = cleanId(useId())
+  const inputId = `ml-upload-${uid}`
+  const hintId = `ml-upload-${uid}-reorder`
   const [files, setFiles] = useControllable(value, defaultValue, onChange)
   const [dragging, setDragging] = useState(false)
   const dragDepth = useRef(0)
+  const root = useRef<HTMLDivElement>(null)
+  const picture = listType === 'picture'
+  const canAdd = canAddMore(files.length, maxCount)
   // Stable per-file keys; files keyed after the first render animate in.
   const keys = useRef({ map: new WeakMap<File, number>(), next: 0, settled: -1 })
   const fileKey = (file: File) => {
@@ -1155,70 +1178,212 @@ export function Upload({ value, defaultValue = NO_FILES, onChange, accept, multi
     if (keys.current.settled < 0) keys.current.settled = keys.current.next
   }, [])
 
-  const acceptList = (accept ?? '')
-    .split(',')
-    .map((part) => part.trim().toLowerCase())
-    .filter(Boolean)
-  function accepts(file: File) {
-    if (!acceptList.length) return true
-    const name = file.name.toLowerCase()
-    const type = file.type.toLowerCase()
-    return acceptList.some((rule) => (rule.startsWith('.') ? name.endsWith(rule) : rule.endsWith('/*') ? type.startsWith(rule.slice(0, -1)) : type === rule))
-  }
-  function add(list: FileList | null | undefined) {
+  function add(list: FileList | File[] | null | undefined) {
     if (!list || disabled) return
-    const incoming: File[] = []
-    for (const file of Array.from(list)) {
-      if (!accepts(file)) onReject?.(file, 'type')
-      else if (maxSize !== undefined && file.size > maxSize) onReject?.(file, 'size')
-      else incoming.push(file)
-    }
-    if (incoming.length) setFiles(multiple ? [...files, ...incoming] : incoming.slice(0, 1))
+    const { next, rejected } = addFiles(files, Array.from(list), { accept, maxSize, maxCount, multiple })
+    for (const [file, reason] of rejected) onReject?.(file, reason)
+    if (next) setFiles(next)
+  }
+  const remove = (index: number) => setFiles(files.filter((_, j) => j !== index))
+
+  const dropHandlers = {
+    onDragEnter: (e: DragEvent<HTMLElement>) => {
+      e.preventDefault()
+      dragDepth.current++
+      setDragging(!disabled)
+    },
+    onDragOver: (e: DragEvent<HTMLElement>) => e.preventDefault(),
+    onDragLeave: () => {
+      dragDepth.current = Math.max(0, dragDepth.current - 1)
+      if (!dragDepth.current) setDragging(false)
+    },
+    onDrop: (e: DragEvent<HTMLElement>) => {
+      e.preventDefault()
+      dragDepth.current = 0
+      setDragging(false)
+      add(e.dataTransfer?.files)
+    },
+  }
+
+  /* ── Picture wall ── */
+
+  // Object URLs are made in an effect (never during SSR) and revoked when their file leaves.
+  const [thumbStore] = useState(createThumbStore)
+  const [thumbs, setThumbs] = useState(() => new Map<File, string>())
+  useEffect(() => {
+    if (thumbStore.sync(picture ? files : NO_FILES)) setThumbs(new Map(thumbStore.urls))
+  }, [files, picture, thumbStore])
+  useEffect(() => () => thumbStore.clear(), [thumbStore])
+
+  const [previewOpen, setPreviewOpen] = useState(false)
+  const [previewIndex, setPreviewIndex] = useState(0)
+  const previewable = files.filter((file) => thumbs.has(file))
+  const openPreview = (file: File) => {
+    setPreviewIndex(Math.max(0, previewable.indexOf(file)))
+    setPreviewOpen(true)
+  }
+
+  const [announce, setAnnounce] = useState('')
+  const refocus = useRef(-1)
+  function move(from: number, to: number, focus: boolean) {
+    if (from === to) return
+    setFiles(moveItem(files, from, to))
+    setAnnounce(loc.upload.moved(to + 1))
+    if (focus) refocus.current = to
+  }
+  useEffect(() => {
+    if (refocus.current < 0) return
+    root.current?.querySelectorAll<HTMLElement>('.ml-upload__card')[refocus.current]?.focus()
+    refocus.current = -1
+  }, [files])
+
+  function onCardKeydown(e: KeyboardEvent<HTMLLIElement>, index: number) {
+    if (!e.altKey || disabled) return
+    const to = reorderKey(e.key, index, files.length)
+    if (to === null) return
+    e.preventDefault()
+    move(index, to, true)
+  }
+
+  // Drag a card onto another to reorder. The pressed card follows the pointer.
+  const press = useRef<{ index: number; x: number; y: number } | null>(null)
+  const [drag, setDrag] = useState<{ from: number; over: number; dx: number; dy: number } | null>(null)
+  function onCardPointerDown(e: ReactPointerEvent<HTMLLIElement>, index: number) {
+    if (disabled || e.button !== 0 || (e.target as Element).closest('button')) return
+    press.current = { index, x: e.clientX, y: e.clientY }
+    e.currentTarget.setPointerCapture?.(e.pointerId)
+  }
+  function onCardPointerMove(e: ReactPointerEvent<HTMLLIElement>) {
+    const start = press.current
+    if (!start) return
+    const dx = e.clientX - start.x
+    const dy = e.clientY - start.y
+    if (!drag && Math.hypot(dx, dy) < CARD_DRAG_THRESHOLD) return
+    const over = cardIndexAt(root.current, e.clientX, e.clientY, start.index)
+    // Off every other card (a gap, or back home) means "drop nowhere".
+    setDrag({ from: start.index, over: over < 0 ? start.index : over, dx, dy })
+  }
+  function onCardPointerUp() {
+    press.current = null
+    setDrag(null)
+    if (drag) move(drag.from, drag.over, false)
   }
 
   return (
-    <div className={cx('ml-upload', className, { 'ml-upload--dragging': dragging, 'ml-upload--disabled': disabled })}>
-      <label
-        htmlFor={inputId}
-        className="ml-upload__zone"
-        onDragEnter={(e) => {
-          e.preventDefault()
-          dragDepth.current++
-          setDragging(!disabled)
-        }}
-        onDragOver={(e) => e.preventDefault()}
-        onDragLeave={() => {
-          dragDepth.current = Math.max(0, dragDepth.current - 1)
-          if (!dragDepth.current) setDragging(false)
-        }}
-        onDrop={(e) => {
-          e.preventDefault()
-          dragDepth.current = 0
-          setDragging(false)
-          add(e.dataTransfer?.files)
-        }}
-      >
-        <Icon name="upload" className="ml-upload__icon" />
-        <span className="ml-upload__title">{title ?? loc.upload.title}</span>
-        <span className="ml-upload__sub">
-          {loc.upload.or}
-          <u>{loc.upload.browse}</u>
-        </span>
-        {hint && <span className="ml-upload__hint">{hint}</span>}
-      </label>
+    <div
+      ref={root}
+      className={cx('ml-upload', className, { 'ml-upload--picture': picture, 'ml-upload--dragging': dragging, 'ml-upload--disabled': disabled })}
+      style={picture ? ({ '--ml-upload-aspect': aspect } as CSSProperties) : undefined}
+    >
+      {picture ? (
+        <>
+          <div className="ml-upload__wall">
+            {files.length > 0 && (
+              <ul role="list" className="ml-upload__cards" aria-label={loc.upload.files}>
+                {files.map((file, i) => {
+                  const state = uploadState(file)
+                  const thumb = thumbs.get(file)
+                  return (
+                    <li
+                      key={fileKey(file)}
+                      role="listitem"
+                      className={cx('ml-upload__card', state.status && `ml-upload__card--${state.status}`, {
+                        'ml-upload__card--dragging': drag?.from === i,
+                        'ml-upload__card--over': !!drag && drag.from !== i && drag.over === i,
+                      })}
+                      style={drag?.from === i ? { translate: `${drag.dx}px ${drag.dy}px` } : undefined}
+                      data-index={i}
+                      tabIndex={disabled ? undefined : 0}
+                      aria-label={file.name}
+                      aria-describedby={disabled ? undefined : hintId}
+                      onKeyDown={(e) => onCardKeydown(e, i)}
+                      onPointerDown={(e) => onCardPointerDown(e, i)}
+                      onPointerMove={onCardPointerMove}
+                      onPointerUp={onCardPointerUp}
+                      onPointerCancel={onCardPointerUp}
+                    >
+                      {thumb ? (
+                        <img src={thumb} alt="" className="ml-upload__thumb" draggable={false} />
+                      ) : (
+                        <span className="ml-upload__doc">
+                          <Icon name="file" className="ml-upload__doc-icon" />
+                          <span className="ml-upload__doc-name">{file.name}</span>
+                        </span>
+                      )}
+                      {state.status === 'uploading' ? (
+                        <span
+                          className="ml-upload__overlay ml-upload__overlay--progress"
+                          role="progressbar"
+                          aria-valuemin={0}
+                          aria-valuemax={100}
+                          aria-valuenow={state.percent}
+                          aria-label={loc.upload.uploading(file.name, state.percent)}
+                        >
+                          <span className="ml-upload__percent">{state.percent}%</span>
+                          <span className="ml-upload__bar">
+                            <span className="ml-upload__bar-fill" style={{ width: `${state.percent}%` }} />
+                          </span>
+                        </span>
+                      ) : state.status === 'error' ? (
+                        <span className="ml-upload__overlay ml-upload__overlay--error">
+                          <Icon name="danger" className="ml-upload__error-icon" />
+                          <span className="ml-upload__error">{state.error || loc.upload.failed}</span>
+                        </span>
+                      ) : null}
+                      <span className="ml-upload__actions">
+                        {thumb && (
+                          <button type="button" className="ml-upload__action ml-upload__preview" aria-label={loc.upload.preview(file.name)} onClick={() => openPreview(file)}>
+                            <Icon name="eye" />
+                          </button>
+                        )}
+                        <button type="button" className="ml-upload__action ml-upload__remove" aria-label={loc.common.remove(file.name)} onClick={() => remove(i)}>
+                          <Icon name="close" />
+                        </button>
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+            )}
+            {canAdd && (
+              <label htmlFor={inputId} className="ml-upload__add" {...dropHandlers}>
+                <Icon name="plus" className="ml-upload__add-icon" />
+                <span className="ml-upload__add-text">{title ?? loc.upload.add}</span>
+              </label>
+            )}
+          </div>
+          {hint && <span className="ml-upload__hint">{hint}</span>}
+          <span id={hintId} className="ml-visually-hidden">
+            {loc.upload.reorderHint}
+          </span>
+          <span className="ml-visually-hidden" aria-live="polite">
+            {announce}
+          </span>
+        </>
+      ) : (
+        <label htmlFor={inputId} className="ml-upload__zone" {...dropHandlers}>
+          <Icon name="upload" className="ml-upload__icon" />
+          <span className="ml-upload__title">{title ?? loc.upload.title}</span>
+          <span className="ml-upload__sub">
+            {loc.upload.or}
+            <u>{loc.upload.browse}</u>
+          </span>
+          {hint && <span className="ml-upload__hint">{hint}</span>}
+        </label>
+      )}
       <input
         id={inputId}
         type="file"
         className="ml-visually-hidden ml-upload__input"
         accept={accept}
         multiple={multiple}
-        disabled={disabled}
+        disabled={disabled || (picture && !canAdd)}
         onChange={(e) => {
           add(e.target.files)
           e.target.value = '' // allow picking the same file again
         }}
       />
-      {files.length > 0 && (
+      {!picture && files.length > 0 && (
         <ul className="ml-upload__list">
           {files.map((file, i) => {
             const key = fileKey(file)
@@ -1227,13 +1392,23 @@ export function Upload({ value, defaultValue = NO_FILES, onChange, accept, multi
                 <Paw tone="current" className="ml-upload__paw" />
                 <span className="ml-upload__name">{file.name}</span>
                 <span className="ml-upload__size">{formatSize(file.size)}</span>
-                <button type="button" className="ml-upload__remove" aria-label={loc.common.remove(file.name)} onClick={() => setFiles(files.filter((_, j) => j !== i))}>
+                <button type="button" className="ml-upload__remove" aria-label={loc.common.remove(file.name)} onClick={() => remove(i)}>
                   <Icon name="close" />
                 </button>
               </FileRow>
             )
           })}
         </ul>
+      )}
+      {picture && (
+        <ImagePreview
+          open={previewOpen}
+          onOpenChange={setPreviewOpen}
+          index={previewIndex}
+          onIndexChange={setPreviewIndex}
+          images={previewable.map((file) => thumbs.get(file)!)}
+          alts={previewable.map((file) => file.name)}
+        />
       )}
     </div>
   )

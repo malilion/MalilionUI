@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import {
@@ -19,6 +19,7 @@ import {
   MlUpload,
   lionAvatarUrl,
 } from '../src'
+import { addFiles, moveItem, reorderKey } from '../src/components/upload'
 
 describe('MlMascot', () => {
   it('shows the lion with alt text, and can be decorative', () => {
@@ -229,6 +230,141 @@ describe('MlUpload', () => {
     drop(wrapper, [file('a.png', 'image/png'), file('b.png', 'image/png')])
     await nextTick()
     expect(wrapper.props('modelValue')).toHaveLength(1)
+  })
+
+  it('shares its filtering and reorder math with React', () => {
+    const a = file('a.png', 'image/png')
+    const b = file('b.png', 'image/png')
+    expect(addFiles([a], [b], { multiple: true, maxCount: 1 })).toEqual({ next: null, rejected: [[b, 'count']] })
+    expect(addFiles([a], [b, a], { multiple: false, maxCount: 1 })).toEqual({ next: [b], rejected: [] })
+    expect(moveItem(['a', 'b', 'c'], 0, 9)).toEqual(['b', 'c', 'a'])
+    expect(reorderKey('ArrowLeft', 0, 3)).toBeNull()
+    expect(reorderKey('ArrowRight', 1, 3)).toBe(2)
+    expect(reorderKey('ArrowUp', 1, 3)).toBeNull()
+  })
+
+  describe('picture wall', () => {
+    type Wall = ReturnType<typeof wall>
+    const names = (wrapper: Wall) => (wrapper.props('modelValue') as File[]).map((f) => f.name)
+    function wall(props: Record<string, unknown> = {}) {
+      const wrapper = mount(MlUpload, {
+        attachTo: document.body,
+        props: { listType: 'picture' as const, modelValue: [] as File[], 'onUpdate:modelValue': (v: File[]) => wrapper.setProps({ modelValue: v }), ...props },
+      })
+      return wrapper
+    }
+    function dropOnAdd(wrapper: Wall, files: File[]) {
+      const event = new Event('drop', { bubbles: true, cancelable: true }) as DragEvent
+      Object.defineProperty(event, 'dataTransfer', { value: { files } })
+      wrapper.get('.ml-upload__add').element.dispatchEvent(event)
+    }
+    let made = 0
+    const created: string[] = []
+    const revoked: string[] = []
+    beforeEach(() => {
+      created.length = revoked.length = 0
+      vi.spyOn(URL, 'createObjectURL').mockImplementation(() => {
+        const url = `blob:test/${made++}`
+        created.push(url)
+        return url
+      })
+      vi.spyOn(URL, 'revokeObjectURL').mockImplementation((url) => void revoked.push(url))
+    })
+    afterEach(() => {
+      vi.restoreAllMocks()
+      delete (document as { elementsFromPoint?: unknown }).elementsFromPoint
+      document.body.innerHTML = ''
+    })
+
+    it('shows thumbnails for images and an icon for other files, and revokes URLs', async () => {
+      const wrapper = wall({ modelValue: [file('photo.png', 'image/png'), file('spec.pdf', 'application/pdf')] })
+      await nextTick()
+      const cards = wrapper.findAll('[role="listitem"]')
+      expect(wrapper.get('ul').attributes('role')).toBe('list')
+      expect(cards).toHaveLength(2)
+      expect(cards[0].get('img').attributes('src')).toBe(created[0])
+      expect(cards[1].find('img').exists()).toBe(false)
+      expect(cards[1].get('.ml-upload__doc-name').text()).toBe('spec.pdf')
+      expect(cards[0].find('[aria-label="預覽 photo.png"]').exists()).toBe(true)
+      expect(cards[1].find('[aria-label="預覽 spec.pdf"]').exists()).toBe(false)
+
+      await wrapper.get('[aria-label="移除 photo.png"]').trigger('click')
+      await nextTick()
+      expect(names(wrapper)).toEqual(['spec.pdf'])
+      expect(revoked).toEqual([created[0]])
+
+      await wrapper.setProps({ modelValue: [file('b.jpg', 'image/jpeg')] })
+      await nextTick()
+      wrapper.unmount()
+      expect(revoked).toEqual(created)
+    })
+
+    it('opens the preview at the clicked image, skipping non-images', async () => {
+      const wrapper = wall({ modelValue: [file('a.png', 'image/png'), file('doc.pdf', 'application/pdf'), file('b.png', 'image/png')] })
+      await nextTick()
+      await wrapper.get('[aria-label="預覽 b.png"]').trigger('click')
+      await nextTick()
+      const preview = document.body.querySelector('.ml-preview')!
+      expect(preview.querySelector('img')!.getAttribute('src')).toBe(created[1])
+      expect(preview.querySelector('img')!.getAttribute('alt')).toBe('b.png')
+      expect(preview.querySelector('.ml-preview__counter')!.textContent).toContain('02')
+    })
+
+    it('rejects files past max-count and hides the add tile when full', async () => {
+      const onReject = vi.fn()
+      const wrapper = wall({ maxCount: 2, accept: 'image/*', onReject })
+      dropOnAdd(wrapper, [file('a.png', 'image/png')])
+      await nextTick()
+      dropOnAdd(wrapper, [file('b.png', 'image/png'), file('c.png', 'image/png'), file('d.txt', 'text/plain')])
+      await nextTick()
+      expect(names(wrapper)).toEqual(['a.png', 'b.png'])
+      expect(onReject.mock.calls.map(([f, reason]) => [f.name, reason])).toEqual([
+        ['d.txt', 'type'],
+        ['c.png', 'count'],
+      ])
+      expect(wrapper.find('.ml-upload__add').exists()).toBe(false)
+      expect(wrapper.get('input').attributes('disabled')).toBeDefined()
+    })
+
+    it('shows progress and error overlays from the file status', async () => {
+      const busy = Object.assign(file('busy.png', 'image/png'), { status: 'uploading' as const, percent: 42.4 })
+      const bad = Object.assign(file('bad.png', 'image/png'), { status: 'error' as const })
+      const wrapper = wall({ modelValue: [busy, bad, file('ok.png', 'image/png')] })
+      const bar = wrapper.get('[role="progressbar"]')
+      expect(bar.attributes('aria-valuenow')).toBe('42')
+      expect(bar.attributes('aria-label')).toBe('busy.png 上傳中 42%')
+      expect(wrapper.get('.ml-upload__card--error .ml-upload__error').text()).toBe('上傳失敗')
+      expect(wrapper.findAll('.ml-upload__overlay')).toHaveLength(2)
+    })
+
+    it('reorders with Alt+Arrow keys, keeps focus and announces the new place', async () => {
+      const wrapper = wall({ modelValue: [file('a.png', 'image/png'), file('b.png', 'image/png'), file('c.png', 'image/png')] })
+      const first = wrapper.findAll('[role="listitem"]')[0]
+      expect(first.attributes('tabindex')).toBe('0')
+      await first.trigger('keydown', { key: 'ArrowRight' })
+      expect(names(wrapper)).toEqual(['a.png', 'b.png', 'c.png'])
+      await first.trigger('keydown', { key: 'ArrowRight', altKey: true })
+      await nextTick()
+      expect(names(wrapper)).toEqual(['b.png', 'a.png', 'c.png'])
+      expect(wrapper.get('[aria-live="polite"]').text()).toBe('已移到第 2 張')
+      expect(document.activeElement?.getAttribute('aria-label')).toBe('a.png')
+      await wrapper.findAll('[role="listitem"]')[0].trigger('keydown', { key: 'ArrowLeft', altKey: true })
+      expect(names(wrapper)).toEqual(['b.png', 'a.png', 'c.png'])
+    })
+
+    it('reorders by dragging a card onto another', async () => {
+      const wrapper = wall({ modelValue: [file('a.png', 'image/png'), file('b.png', 'image/png'), file('c.png', 'image/png')] })
+      const cards = wrapper.findAll('[role="listitem"]')
+      const target = cards[2].element
+      document.elementsFromPoint = () => [cards[0].element, target]
+      await cards[0].trigger('pointerdown', { button: 0, clientX: 10, clientY: 10 })
+      await cards[0].trigger('pointermove', { clientX: 200, clientY: 12 })
+      expect(cards[0].classes()).toContain('ml-upload__card--dragging')
+      expect(cards[2].classes()).toContain('ml-upload__card--over')
+      await cards[0].trigger('pointerup')
+      expect(names(wrapper)).toEqual(['b.png', 'c.png', 'a.png'])
+      expect(wrapper.get('[aria-live="polite"]').text()).toBe('已移到第 3 張')
+    })
   })
 })
 

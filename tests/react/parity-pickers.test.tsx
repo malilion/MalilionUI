@@ -1,13 +1,23 @@
 // Markup parity for the date, time, colour and upload pickers (see parity.test.tsx).
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { createApp, h, nextTick } from 'vue'
+import { act } from 'react'
+import { createRoot } from 'react-dom/client'
 import * as V from '../../src'
 import * as R from '../../src/react/pickers'
-import { react, vue } from './parity-utils'
+import { react, signature, vue } from './parity-utils'
+
+;(globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }).IS_REACT_ACT_ENVIRONMENT = true
 
 const day = new Date(2026, 1, 12)
 const end = new Date(2026, 1, 20)
 const moment = new Date(2026, 1, 12, 9, 45)
 const files = [new File(['abc'], 'a.png', { type: 'image/png' }), new File([new Uint8Array(2048)], 'b.pdf', { type: 'application/pdf' })]
+const statusFiles = [
+  Object.assign(new File(['abc'], 'busy.png', { type: 'image/png' }), { status: 'uploading' as const, percent: 30 }),
+  Object.assign(new File(['abc'], 'bad.png', { type: 'image/png' }), { status: 'error' as const, error: 'Too slow' }),
+  Object.assign(new File(['abc'], 'ok.png', { type: 'image/png' }), { status: 'done' as const }),
+]
 
 const cases: [string, () => Promise<string>, () => string][] = [
   ['Calendar', () => vue(V.MlCalendar, { modelValue: day, markers: [end] }), () => react(<R.Calendar value={day} markers={[end]} />)],
@@ -25,6 +35,10 @@ const cases: [string, () => Promise<string>, () => string][] = [
   ['ColorPicker value', () => vue(V.MlColorPicker, { modelValue: '#3eeed0', clearable: true, alpha: true, id: 'c' }), () => react(<R.ColorPicker value="#3eeed0" clearable alpha id="c" />)],
   ['Upload', () => vue(V.MlUpload, { accept: 'image/*', hint: 'PNG only', title: 'Drop' }), () => react(<R.Upload accept="image/*" hint="PNG only" title="Drop" />)],
   ['Upload files', () => vue(V.MlUpload, { modelValue: files, disabled: true }), () => react(<R.Upload value={files} disabled />)],
+  ['Upload picture empty', () => vue(V.MlUpload, { listType: 'picture', hint: 'JPG' }), () => react(<R.Upload listType="picture" hint="JPG" />)],
+  ['Upload picture files', () => vue(V.MlUpload, { listType: 'picture', modelValue: files, title: 'Add', aspect: 0.75 }), () => react(<R.Upload listType="picture" value={files} title="Add" aspect={0.75} />)],
+  ['Upload picture status', () => vue(V.MlUpload, { listType: 'picture', modelValue: statusFiles }), () => react(<R.Upload listType="picture" value={statusFiles} />)],
+  ['Upload picture full', () => vue(V.MlUpload, { listType: 'picture', modelValue: files, maxCount: 2, disabled: true }), () => react(<R.Upload listType="picture" value={files} maxCount={2} disabled />)],
 ]
 
 describe('React ↔ Vue markup parity: pickers', () => {
@@ -33,4 +47,25 @@ describe('React ↔ Vue markup parity: pickers', () => {
       expect(fromReact()).toBe(await fromVue())
     })
   }
+})
+
+// Thumbnails and preview buttons only appear once mounted (object URLs are client-only).
+describe('React ↔ Vue markup parity: mounted picture wall', () => {
+  it('Upload picture files', async () => {
+    vi.spyOn(URL, 'createObjectURL').mockReturnValue('blob:test')
+    vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+    const vueHost = document.body.appendChild(document.createElement('div'))
+    const app = createApp({ render: () => h(V.MlUpload, { listType: 'picture', modelValue: files }) })
+    app.mount(vueHost)
+    await nextTick()
+    const reactHost = document.body.appendChild(document.createElement('div'))
+    const root = createRoot(reactHost)
+    act(() => root.render(<R.Upload listType="picture" value={files} />))
+    expect(vueHost.querySelector('.ml-upload__thumb')).not.toBeNull()
+    expect(signature(reactHost.innerHTML)).toBe(signature(vueHost.innerHTML))
+    app.unmount()
+    act(() => root.unmount())
+    document.body.innerHTML = ''
+    vi.restoreAllMocks()
+  })
 })
