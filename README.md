@@ -353,6 +353,22 @@ The full list for every component lives on the [docs site](https://malilion.gith
 import type { MlButtonVariant, MlTableColumn, MlToastOptions, MlPawTone } from '@malilion/ui'
 ```
 
+## For AI Agents (MCP)
+
+`@malilion/ui` ships an MCP server so coding agents look up real props, examples and tokens instead of guessing. No install into your project is needed:
+
+```bash
+claude mcp add malilion-ui -- npx -y -p @malilion/ui malilion-ui-mcp
+```
+
+Other clients (Cursor, VS Code, Claude Desktop…) take the same command in their MCP config:
+
+```json
+{ "mcpServers": { "malilion-ui": { "command": "npx", "args": ["-y", "-p", "@malilion/ui", "malilion-ui-mcp"] } } }
+```
+
+Tools: `list_components`, `search_components` (English or 中文), `get_component` (props / events / slots, `framework: "react"` for React names and types), `get_example`, `get_tokens`, `get_setup` (vue / react / nuxt / css / on-demand). Inside this repo, `.mcp.json` already registers it.
+
 ## On-demand Loading
 
 Only ship the components you use. With [unplugin-vue-components](https://github.com/unplugin/unplugin-vue-components), each component a template uses is imported together with just its own styles — no `app.use`, no full `style.css`:

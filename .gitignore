@@ -7,3 +7,4 @@ scripts/.cache/
 promo/
 
 env.local
+mcp/catalog.json
