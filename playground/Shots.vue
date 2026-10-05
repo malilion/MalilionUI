@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { lionAvatarUrl, lionFullUrl, type MlAvatarStatus, type MlSchedulerEvent, type MlTableSort, type MlTaiwanAddressValue } from '@malilion/ui'
+import { lionAvatarUrl, lionFullUrl, twRules, type MlAvatarStatus, type MlProTableColumn, type MlSchemaModel, type MlWizardStep, type MlSchedulerEvent, type MlTableSort, type MlTaiwanAddressValue } from '@malilion/ui'
 import MlToastCard from '../src/components/MlToastCard.vue'
 import type { MlToastItem } from '../src/toast'
 
@@ -8,6 +8,50 @@ import type { MlToastItem } from '../src/toast'
 // Every panel is a [data-shot] element captured on its own.
 
 const mailIcon = 'M3 6h18v12H3zM3 6l9 7 9-7'
+
+/* v0.15 — back-office kit */
+interface V15Member { id: number; name: string; team: string; level: number; active: boolean }
+const v15Teams = [
+  { value: 'core', label: '核心組' },
+  { value: 'ui', label: '介面組' },
+  { value: 'ops', label: '維運組' },
+]
+const v15Columns: MlProTableColumn<V15Member>[] = [
+  { key: 'id', title: '編號', width: '64px', mono: true, sortable: true },
+  { key: 'name', title: '姓名', sortable: true, filter: true, form: { required: true } },
+  { key: 'team', title: '組別', options: v15Teams, filter: true, form: { required: true } },
+  { key: 'level', title: '等級', align: 'right', sortable: true, form: { type: 'number' } },
+  { key: 'active', title: '狀態', format: (v) => (v ? '在職' : '停用'), form: { type: 'switch' } },
+]
+const v15Members: V15Member[] = [
+  { id: 1, name: '陳大獅', team: 'core', level: 9, active: true },
+  { id: 2, name: '林小鬃', team: 'ui', level: 6, active: true },
+  { id: 3, name: '王爪爪', team: 'ops', level: 4, active: false },
+  { id: 4, name: '張肉球', team: 'ui', level: 7, active: true },
+  { id: 5, name: '李金鬃', team: 'core', level: 10, active: true },
+  { id: 6, name: '黃小吼', team: 'ops', level: 3, active: true },
+  { id: 7, name: '吳尾巴', team: 'ui', level: 5, active: false },
+]
+const v15Selected = ref<(string | number)[]>([2, 4])
+const v15Steps: MlWizardStep[] = [
+  {
+    key: 'identity',
+    title: '身分驗證',
+    schema: [
+      { field: 'name', label: '姓名', required: true },
+      { field: 'nationalId', label: '身分證字號', required: true, rules: [twRules.nationalId()] },
+    ],
+  },
+  { key: 'shop', title: '商店設定' },
+  { key: 'confirm', title: '確認送出' },
+]
+const v15Model = ref<MlSchemaModel>({ name: '陳大獅', nationalId: 'A123456789' })
+const v15Format = ref<string[]>(['bold', 'code'])
+const v15Formats = [
+  { value: 'bold', label: '粗體' },
+  { value: 'italic', label: '斜體' },
+  { value: 'code', label: '程式碼' },
+]
 
 /* v0.14 — Taiwan, lists, data & workflow */
 const v14Day = new Date(2026, 9, 5)
@@ -1103,6 +1147,46 @@ const themes = [
       </div>
     </section>
 
+    <section data-shot="admin" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">22 // Back-office kit</p>
+          <h2 class="shot__title">CRUD 表格、分步表單與工具列</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v15-admin">
+        <MlProTable
+          v-model:selected="v15Selected"
+          title="獅群成員"
+          :columns="v15Columns"
+          :data="v15Members"
+          :page-size="7"
+          :page-sizes="[7]"
+          :on-create="() => {}"
+          :on-update="() => {}"
+          :on-delete="() => {}"
+          dense
+        />
+        <div class="stack">
+          <MlCard eyebrow="Wizard" title="商家開通" class="v14-card">
+            <MlWizard v-model="v15Model" :steps="v15Steps" label="商家開通" />
+          </MlCard>
+          <MlCard eyebrow="Toolbar" title="工具列與搜尋" class="v14-card">
+            <div class="stack">
+              <MlButtonGroup size="sm" variant="outline" label="分頁">
+                <MlButton>上一頁</MlButton>
+                <MlButton variant="primary">2</MlButton>
+                <MlButton>下一頁</MlButton>
+              </MlButtonGroup>
+              <MlToggleGroup v-model="v15Format" :options="v15Formats" multiple size="sm" label="文字格式" />
+              <p class="v15-hit"><MlHighlight text="碼力獅 MalilionUI：金屬質感的獅子元件庫" :keywords="['獅子', 'ｍａｌｉｌｉｏｎ']" /></p>
+            </div>
+          </MlCard>
+        </div>
+      </div>
+    </section>
+
     <div data-shot="logo" class="logo-shot">
       <MlMascot :size="132" frame="ring" title="碼力獅" />
     </div>
@@ -1789,6 +1873,18 @@ body {
 
 .v14-type {
   margin: 14px 0 0;
+}
+
+.v15-admin {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 22px;
+  align-items: start;
+}
+
+.v15-hit {
+  margin: 0;
+  color: var(--ml-text-muted);
 }
 
 .v7-grid {

@@ -53,6 +53,14 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
 - 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
 
+## 0.15 版新功能
+
+- **後台組合元件**：`MlProTable` 把 `MlFilterBar`、`MlTable`、`MlPagination` 與新增／編輯對話框串成一個 CRUD 頁——本地 `data` 或遠端 `request({ page, pageSize, filters, sort })`（較晚回來的舊回應會被忽略），`onCreate` / `onUpdate` / `onDelete` 有載入與錯誤狀態，選取後可批次刪除並先確認；`MlSchemaForm` 用欄位清單產生表單（15 種欄位型別、`twRules`、依條件 `visible` / `disabled`、巢狀路徑、格線欄數）；`MlWizard` 分步表單，按「下一步」只驗證當前這一步，最後一步才送出，每一步可直接放一份 SchemaForm 設定
+- **工具列與搜尋**：`MlButtonGroup`（相鄰按鈕共用接縫，只有外側兩角保留碼力獅切角）、`MlToggleGroup`（切換按鈕，可單選或 `multiple` 複選，再按一次可取消——這點與 `MlSegmented` 不同）、`MlHighlight`（在搜尋結果標出關鍵字，中文直接比對、全形半形視為相同、不會切斷 emoji）
+- **時間**：`MlTimeRangePicker`（開始、結束兩組捲輪並排，支援跨夜並顯示共幾小時幾分）
+- **既有元件升級**：`MlTable` 可直接編輯儲存格、拖曳調整欄寬；`MlTabs` 可關閉、新增、拖曳排序；`MlUpload` 照片牆模式；`MlScheduler` 月檢視；`MlTaiwanAddress` 放在表單項目裡時錯誤只顯示一次
+- 共 187 個元件，Vue 與 React 都有
+
 ## 0.14 版新功能
 
 - **文件站可切換 Vue／React**：頂部的切換鈕會把每一頁都換成 React 寫法——從 `@malilion/ui/react` 匯入、API 表列出 React 版真正的 props（直接從型別定義讀取，Vue 有而 React 沒有的會標示「React 版沒有」），範例程式碼也轉成 TSX。轉換後的範例必須通過型別檢查、而且畫出來的 HTML 結構和 Vue 版一致才會顯示；少數還沒通過的會顯示 Vue 程式碼並加上說明
@@ -263,6 +271,10 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 **視覺特效**
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="視覺特效" width="100%">
+
+**0.15 · CRUD 表格、分步表單與工具列**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/admin.png" alt="ProTable、Wizard、ButtonGroup、ToggleGroup 與 Highlight" width="100%">
 
 **0.14 · 民國年、手機條碼、注音與地址**
 

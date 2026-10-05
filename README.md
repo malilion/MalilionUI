@@ -53,6 +53,14 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
+## What's New in 0.15
+
+- **Back-office kit**: `MlProTable` wires `MlFilterBar`, `MlTable`, `MlPagination` and a create / edit dialog into one CRUD page — local `data` or a remote `request({ page, pageSize, filters, sort })` (stale responses ignored), `onCreate` / `onUpdate` / `onDelete` hooks with loading and error states, batch delete with confirmation; `MlSchemaForm` builds a form from a field list (15 field types, `twRules`, conditional `visible` / `disabled`, nested paths, grid columns); `MlWizard` is a step-by-step form that validates only the current step on 下一步 and submits on the last one — each step can be a SchemaForm schema
+- **Toolbars and search**: `MlButtonGroup` (joined buttons sharing one seam, the Malilion cut only on the outer corners), `MlToggleGroup` (toggle buttons, single or `multiple`, pressing again releases — unlike `MlSegmented`), `MlHighlight` (marks keywords in search results; works on Chinese, folds full / half width, never splits emoji)
+- **Time**: `MlTimeRangePicker` (start and end wheels side by side, overnight ranges and the total duration)
+- **Upgrades**: `MlTable` inline cell editing and resizable columns; `MlTabs` closable, addable and reorderable; `MlUpload` picture-wall mode; `MlScheduler` month view; `MlTaiwanAddress` inside a form item shows its error once
+- 187 components, every one in Vue and React
+
 ## What's New in 0.14
 
 - **Docs in Vue or React**: a switch in the docs' top bar turns every page into React — imports from `@malilion/ui/react`, API tables with the real React props (read from the type definitions, with a "not in React" tag where a Vue prop has no twin) and example code converted to TSX. A conversion is shown only after it type-checks and renders the same markup as the Vue example; the few that don't yet show the Vue code with a note
@@ -263,6 +271,10 @@ The Malilion brand typefaces (Malilion Display / Sans / Mono) ship inside `style
 **Visual effects**
 
 <img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/effects.png" alt="Visual effects" width="100%">
+
+**0.15 · ProTable, Wizard, SchemaForm and toolbars**
+
+<img src="https://raw.githubusercontent.com/malilion/MalilionUI/main/docs/images/admin.png" alt="ProTable, Wizard, ButtonGroup, ToggleGroup and Highlight" width="100%">
 
 **0.14 · 民國 dates, mobile barcode, 注音 and addresses**
 
