@@ -1,0 +1,218 @@
+/* ProTable — filter bar, toolbar, grid and pager bolted into one CRUD console */
+.ml-pro-table {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+
+.ml-pro-table__panel {
+  display: grid;
+  min-width: 0;
+  background: var(--ml-brushed), var(--ml-plate-fill);
+  box-shadow: inset 0 0 0 1px var(--ml-line);
+  clip-path: polygon(var(--ml-cut) 0, 100% 0, 100% calc(100% - var(--ml-cut)), calc(100% - var(--ml-cut)) 100%, 0 100%, 0 var(--ml-cut));
+}
+
+/* The panel draws the frame; the grid inside sits flush. */
+.ml-pro-table__panel > .ml-table {
+  clip-path: none;
+  box-shadow: inset 0 1px 0 var(--ml-line), inset 0 -1px 0 var(--ml-line);
+}
+
+/* ── Toolbar ── */
+.ml-pro-table__toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 12px 16px;
+}
+
+.ml-pro-table__heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  min-width: 0;
+}
+
+.ml-pro-table__title {
+  position: relative;
+  margin: 0;
+  padding-left: 12px;
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: var(--ml-text-md);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+/* A gold tick in front of the title, like a stamped plate label. */
+.ml-pro-table__title::before {
+  content: '';
+  position: absolute;
+  top: 0.2em;
+  bottom: 0.2em;
+  left: 0;
+  width: 3px;
+  background: var(--ml-accent);
+}
+
+.ml-pro-table__selection {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 3px 10px;
+  background: var(--ml-accent-soft);
+  color: var(--ml-accent-text);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  clip-path: polygon(var(--ml-cut-xs) 0, 100% 0, 100% calc(100% - var(--ml-cut-xs)), calc(100% - var(--ml-cut-xs)) 100%, 0 100%, 0 var(--ml-cut-xs));
+}
+
+.ml-pro-table__clear,
+.ml-pro-table__retry,
+.ml-pro-table__action {
+  padding: 2px 4px;
+  border: 0;
+  background: none;
+  color: var(--ml-accent-text);
+  font: inherit;
+  cursor: pointer;
+}
+
+.ml-pro-table__clear {
+  font-family: var(--ml-font-body);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ml-pro-table__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ── Errors ── */
+.ml-pro-table__error {
+  padding: 0 16px 12px;
+}
+
+.ml-pro-table__retry {
+  margin-left: 8px;
+  color: var(--ml-danger-text);
+  font-weight: 600;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* ── Row actions ── */
+.ml-pro-table__row-actions {
+  display: inline-flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 2px 6px;
+}
+
+.ml-pro-table__action {
+  font-size: var(--ml-text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  transition: color var(--ml-dur-fast) var(--ml-ease);
+}
+
+.ml-pro-table__action:hover:not(:disabled) {
+  color: var(--ml-accent);
+}
+
+.ml-pro-table__action--danger {
+  color: var(--ml-danger-text);
+}
+
+.ml-pro-table__action--danger:hover:not(:disabled) {
+  color: var(--ml-danger);
+}
+
+.ml-pro-table__action:disabled {
+  color: var(--ml-text-dim);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.ml-pro-table__clear:focus-visible,
+.ml-pro-table__retry:focus-visible,
+.ml-pro-table__action:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 2px;
+}
+
+/* ── Footer ── */
+.ml-pro-table__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  padding: 10px 16px;
+}
+
+.ml-pro-table__total {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+}
+
+.ml-pro-table__pager {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ── Create / edit form ── */
+.ml-pro-table__form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 16px;
+}
+
+.ml-pro-table__field--wide,
+.ml-pro-table__form-error {
+  grid-column: 1 / -1;
+}
+
+.ml-pro-table__field--switch {
+  align-self: end;
+  padding-bottom: 6px;
+}
+
+.ml-pro-table__form-error {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 10px 12px;
+  background: var(--ml-danger-soft);
+  box-shadow: inset 3px 0 0 var(--ml-danger);
+  color: var(--ml-danger-text);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-pro-table__form-error svg {
+  flex: none;
+  width: 16px;
+  height: 16px;
+}
+
+@media (max-width: 560px) {
+  .ml-pro-table__form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ml-pro-table__toolbar,
+  .ml-pro-table__footer {
+    padding-inline: 12px;
+  }
+}
