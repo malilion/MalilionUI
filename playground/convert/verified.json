@@ -242,6 +242,7 @@
  },
  "scheduler/basic": {},
  "scheduler/day": {},
+ "schema-form/basic": {},
  "scratch-card/basic": {},
  "scratch-card/tones": {},
  "scrollbar/basic": {},

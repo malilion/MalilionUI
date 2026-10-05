@@ -129,6 +129,7 @@ import MlResult from './components/MlResult.vue'
 import MlReveal from './components/MlReveal.vue'
 import MlRing from './components/MlRing.vue'
 import MlScheduler from './components/MlScheduler.vue'
+import MlSchemaForm from './components/MlSchemaForm.vue'
 import MlScratchCard from './components/MlScratchCard.vue'
 import MlSankey from './components/MlSankey.vue'
 import MlScatterChart from './components/MlScatterChart.vue'
@@ -179,6 +180,7 @@ import MlVideoPlayer from './components/MlVideoPlayer.vue'
 import MlVirtualList from './components/MlVirtualList.vue'
 import MlWaterfallChart from './components/MlWaterfallChart.vue'
 import MlWatermark from './components/MlWatermark.vue'
+import MlWizard from './components/MlWizard.vue'
 import MlZhuyin from './components/MlZhuyin.vue'
 import { vPawStamp } from './pawStamp'
 import { vLoading } from './loading'
@@ -315,6 +317,7 @@ const components = {
   MlReveal,
   MlRing,
   MlScheduler,
+  MlSchemaForm,
   MlScratchCard,
   MlSankey,
   MlScatterChart,
@@ -365,6 +368,7 @@ const components = {
   MlVirtualList,
   MlWaterfallChart,
   MlWatermark,
+  MlWizard,
   MlZhuyin,
 
 }
@@ -524,6 +528,7 @@ export {
   MlReveal,
   MlRing,
   MlScheduler,
+  MlSchemaForm,
   MlScratchCard,
   MlSankey,
   MlScatterChart,
@@ -574,6 +579,7 @@ export {
   MlVirtualList,
   MlWaterfallChart,
   MlWatermark,
+  MlWizard,
   MlZhuyin,
 
 }
@@ -709,6 +715,19 @@ export { waterfallLayout, boxStats, boxLayout, bulletRows, quantile } from './co
 export type { MlWaterfallDatum, WaterfallBar, MlBoxDatum, MlBoxStats, MlBulletDatum, BulletRow } from './components/charts-stat'
 export { formatTwAddress, parseTwAddress, formatStreet, twZipStatus, chineseNumeral, isTwAddressComplete, emptyTaiwanAddress } from './components/address'
 export type { MlTaiwanAddressValue, ParsedTaiwanAddress, TwZipStatus } from './components/address'
+export {
+  applySchemaDefaults,
+  schemaDefaults,
+  schemaRules,
+  schemaFieldRules,
+  setSchemaValue,
+  stripHiddenFields,
+  visibleSchemaFields,
+  isSchemaFieldVisible,
+  isSchemaFieldDisabled,
+  SCHEMA_FIELD_TYPES,
+} from './components/schema-form'
+export type { MlSchemaField, MlSchemaFieldType, MlSchemaModel, MlSchemaCondition, MlSchemaOption, MlWizardStep, MlWizardCheck } from './components/schema-form'
 export type { MlNumberKeyboardTheme, NumberKeyboardKey } from './components/number-keyboard'
 export {
   getTwBanks,
@@ -953,6 +972,7 @@ declare module 'vue' {
     MlReveal: typeof MlReveal
     MlRing: typeof MlRing
     MlScheduler: typeof MlScheduler
+    MlSchemaForm: typeof MlSchemaForm
     MlScratchCard: typeof MlScratchCard
     MlSankey: typeof MlSankey
     MlScatterChart: typeof MlScatterChart
@@ -1003,6 +1023,7 @@ declare module 'vue' {
     MlVirtualList: typeof MlVirtualList
     MlWaterfallChart: typeof MlWaterfallChart
     MlWatermark: typeof MlWatermark
+    MlWizard: typeof MlWizard
     MlZhuyin: typeof MlZhuyin
 
   }

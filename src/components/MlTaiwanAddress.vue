@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, ref, useId } from 'vue'
+import { computed, provide, ref, useId } from 'vue'
 import MlIcon from './MlIcon.vue'
 import MlInput from './MlInput.vue'
 import MlInputMask from './MlInputMask.vue'
 import MlTaiwanRegion from './MlTaiwanRegion.vue'
 import { emptyTaiwanAddress, formatTwAddress, parseTwAddress, rebaseZip, twZipStatus, type MlTaiwanAddressValue } from './address'
 import type { RegionLang } from './region'
+import { fieldKey, useFormField, type FieldContext } from '../form'
 import { useLocale } from '../locale'
 import type { MlTaiwanRegionValue } from '../taiwan-regions'
 import type { MlSize } from '../types'
@@ -35,6 +36,10 @@ const props = withDefaults(
 const emit = defineEmits<{ paste: [parts: ReturnType<typeof parseTwAddress>] }>()
 
 const model = defineModel<MlTaiwanAddressValue>({ default: emptyTaiwanAddress })
+const { fieldError, fieldRequired } = useFormField(props)
+// The parts are separate controls, but an MlFormItem's error belongs to the whole
+// address: shown once below, not under every part.
+provide(fieldKey, null as unknown as FieldContext)
 const autoId = useId()
 const errorId = `ml-address-${autoId}-error`
 
@@ -82,12 +87,12 @@ const fields = [
 
 <template>
   <fieldset
-    :class="['ml-address', `ml-address--${size}`, { 'ml-address--error': error }]"
+    :class="['ml-address', `ml-address--${size}`, { 'ml-address--error': fieldError }]"
     :disabled="disabled"
-    :aria-describedby="error ? errorId : undefined"
+    :aria-describedby="fieldError ? errorId : undefined"
   >
     <legend v-if="label" class="ml-field__label">
-      {{ label }}<span v-if="required" class="ml-field__required" aria-hidden="true">*</span>
+      {{ label }}<span v-if="fieldRequired" class="ml-field__required" aria-hidden="true">*</span>
     </legend>
     <div class="ml-address__row">
       <MlTaiwanRegion
@@ -98,7 +103,7 @@ const fields = [
         :include-islands="includeIslands"
         :size="size"
         :disabled="disabled"
-        :required="required"
+        :required="fieldRequired"
         @update:model-value="setRegion"
       />
       <MlInputMask
@@ -122,7 +127,7 @@ const fields = [
         :placeholder="loc.address.roadPlaceholder"
         :size="size"
         :disabled="disabled"
-        :required="required"
+        :required="fieldRequired"
         @update:model-value="set('road', String($event ?? ''))"
         @paste="onPaste"
       />
@@ -135,7 +140,7 @@ const fields = [
         inputmode="text"
         :size="size"
         :disabled="disabled"
-        :required="required && key === 'number'"
+        :required="fieldRequired && key === 'number'"
         @update:model-value="set(key, String($event ?? ''))"
       >
         <template #suffix>{{ loc.address[key] }}</template>
@@ -150,7 +155,7 @@ const fields = [
       </template>
     </p>
     <p v-if="pasted" class="ml-address__note" role="status">{{ loc.address.pasteHint }}</p>
-    <p v-if="error" :id="errorId" class="ml-field__error"><MlIcon name="warning" />{{ error }}</p>
+    <p v-if="fieldError" :id="errorId" class="ml-field__error"><MlIcon name="warning" />{{ fieldError }}</p>
     <p v-else-if="hint" class="ml-field__hint">{{ hint }}</p>
     <p v-else-if="zip && zipStatus === 'partial'" class="ml-field__hint">{{ loc.address.zipHint }}</p>
   </fieldset>

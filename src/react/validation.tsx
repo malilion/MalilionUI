@@ -64,6 +64,14 @@ export function useFormField(props: { error?: string; required?: boolean }) {
   }
 }
 
+/**
+ * For controls made of other controls (e.g. TaiwanAddress): the parts inside don't
+ * pick up the surrounding FormItem's error, which the whole control shows once.
+ */
+export function FormFieldBoundary({ children }: { children?: ReactNode }) {
+  return <FieldCtx.Provider value={null}>{children}</FieldCtx.Provider>
+}
+
 /** Deep-ish change detection for the watched value (Vue watches it deeply). */
 function snapshot(value: unknown) {
   if (value === null || typeof value !== 'object') return value
