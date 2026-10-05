@@ -1,5 +1,6 @@
-import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import type { MlTableColumn, MlTableSort } from '../types'
+import { Fragment, useEffect, useId, useLayoutEffect, useMemo, useRef, useState, type CSSProperties, type KeyboardEvent, type PointerEvent, type ReactNode } from 'react'
+import { cellText, clampWidth, columnWidth, editString, editorOf, nextEditable, parseEdit, resizeBounds, resizeByKey, widthStyle } from '../components/table-edit'
+import type { MlTableCellEdit, MlTableColumn, MlTableSort } from '../types'
 import { Icon, Loader, Paw } from './basic'
 import { Checkbox, Pagination } from './form'
 import { useLocale } from './locale'
@@ -56,6 +57,14 @@ export interface TableProps<Row extends Record<string, any>> {
   defaultPage?: number
   onPageChange?: (page: number) => void
   onRowClick?: (row: Row) => void
+  /** An inline edit passed validation (Vue's cell-edit); update `rows` to keep it. */
+  onCellEdit?: (edit: MlTableCellEdit<Row>) => void
+  /** Resized column widths in px, by column key (Vue's v-model:column-widths). */
+  columnWidths?: Record<string, number>
+  defaultColumnWidths?: Record<string, number>
+  onColumnWidthsChange?: (widths: Record<string, number>) => void
+  /** A resize finished: drag released, or an arrow-key step (Vue's column-resize). */
+  onColumnResize?: (key: string, width: number) => void
   /** Custom cell content (Vue's #cell-<key>); return undefined to keep the default text. */
   renderCell?: (ctx: TableCellContext<Row>) => ReactNode
   /** Custom header content (Vue's #header-<key>); return undefined to keep the title. */
@@ -75,6 +84,8 @@ interface FlatRow<Row> {
 }
 
 const EMPTY: Key[] = []
+const NO_WIDTHS: Record<string, number> = {}
+const cellId = (key: Key, column: string) => JSON.stringify([key, column])
 const isEmpty = (value: unknown) => value === null || value === undefined || value === ''
 
 export function Table<Row extends Record<string, any>>({
@@ -109,6 +120,11 @@ export function Table<Row extends Record<string, any>>({
   defaultPage = 1,
   onPageChange,
   onRowClick,
+  onCellEdit,
+  columnWidths: columnWidthsProp,
+  defaultColumnWidths = NO_WIDTHS,
+  onColumnWidthsChange,
+  onColumnResize,
   renderCell,
   renderHeader,
   renderExpand,
@@ -121,6 +137,7 @@ export function Table<Row extends Record<string, any>>({
   const [expanded, setExpanded] = useControllable(expandedProp, defaultExpanded, onExpandedChange)
   const [treeOpen, setTreeOpen] = useControllable(treeOpenProp, defaultTreeOpen, onTreeOpenChange)
   const [page, setPage] = useControllable(pageProp, defaultPage, onPageChange)
+  const [widths, setWidths] = useControllable(columnWidthsProp, defaultColumnWidths, onColumnWidthsChange)
   const hasExpand = !!renderExpand
 
   const keyOf = (row: Row): Key => (typeof rowKey === 'function' ? rowKey(row) : (row[rowKey] as Key))
@@ -176,6 +193,7 @@ export function Table<Row extends Record<string, any>>({
 
   // Sort cycle: none → ascending → descending → none
   const toggleSort = (column: MlTableColumn<Row>) => {
+    if (resizing) return
     if (!sort || sort.key !== column.key) setSort({ key: column.key, order: 'asc' })
     else if (sort.order === 'asc') setSort({ key: column.key, order: 'desc' })
     else setSort(null)
@@ -197,11 +215,7 @@ export function Table<Row extends Record<string, any>>({
   }
   const toggleRow = (key: Key, checked: boolean) => setSelected(checked ? [...selected, key] : selected.filter((k) => k !== key))
 
-  const display = (column: MlTableColumn<Row>, row: Row) => {
-    const value = row[column.key]
-    if (column.format) return column.format(value, row)
-    return value === null || value === undefined ? '—' : String(value)
-  }
+  const display = (column: MlTableColumn<Row>, row: Row) => cellText(column, row[column.key], row)
   const columnCount = columns.length + (selectable ? 1 : 0) + (hasExpand ? 1 : 0)
 
   /* ── Fixed columns: sticky offsets measured from the header cells ── */
@@ -252,7 +266,7 @@ export function Table<Row extends Record<string, any>>({
   const fixed = hasFixedLeft || hasFixedRight
   useIsoLayoutEffect(() => {
     if (fixed) measureRef.current()
-  }, [fixed, columns, view.length])
+  }, [fixed, columns, view.length, widths])
   useEffect(() => {
     if (!fixed || typeof ResizeObserver === 'undefined' || !scroller.current) return
     const observer = new ResizeObserver(() => measureRef.current())
@@ -275,6 +289,189 @@ export function Table<Row extends Record<string, any>>({
   })
   const maxHeightCss = len(maxHeight)
 
+  /* ── Inline editing: one cell at a time; `rows` is only ever reported, never changed ── */
+  const [editing, setEditing] = useState<{ row: Key; col: string } | null>(null)
+  const [draft, setDraft] = useState('')
+  const [editError, setEditError] = useState<string>()
+  const editErrorId = `ml-table-${useId()}-edit-error`
+  // Committed values shown (dimmed) until the parent hands over new rows.
+  const [pending, setPending] = useState<{ rows: Row[]; cells: Record<string, { value: unknown }> }>({ rows, cells: {} })
+  const pendingCells = pending.rows === rows ? pending.cells : {}
+  const editingRef = useRef(editing)
+  editingRef.current = editing
+  /** What to focus once the next render lands: the open editor, or a cell. */
+  const focusNext = useRef<{ editor: true } | { cell: string } | null>(null)
+  useEffect(() => {
+    const target = focusNext.current
+    if (!target) return
+    focusNext.current = null
+    if ('editor' in target) {
+      const control = scroller.current?.querySelector<HTMLInputElement | HTMLSelectElement>('.ml-table__editor .ml-input__control')
+      control?.focus()
+      if (control instanceof HTMLInputElement) control.select()
+    } else {
+      const cells = scroller.current?.querySelectorAll<HTMLElement>('td[data-ml-cell]') ?? []
+      ;[...cells].find((td) => td.dataset.mlCell === target.cell)?.focus()
+    }
+  })
+
+  const isEditing = (item: FlatRow<Row>, column: MlTableColumn<Row>) => editing?.row === item.key && editing.col === column.key
+  const pendingOf = (item: FlatRow<Row>, column: MlTableColumn<Row>) => {
+    const entry = pendingCells[cellId(item.key, column.key)]
+    // A parent that mutates the row in place already shows the new value.
+    return entry && !Object.is(entry.value, item.row[column.key]) ? entry : undefined
+  }
+
+  const startEdit = (item: FlatRow<Row>, column: MlTableColumn<Row>) => {
+    if (!editorOf(column) || isEditing(item, column)) return
+    setEditing({ row: item.key, col: column.key })
+    setDraft(editString(item.row[column.key]))
+    setEditError(undefined)
+    const id = cellId(item.key, column.key)
+    if (pendingCells[id]) {
+      const { [id]: _, ...rest } = pendingCells
+      setPending({ rows, cells: rest })
+    }
+    focusNext.current = { editor: true }
+  }
+
+  /** Validate and report the open edit. False keeps the editor open with its message. */
+  const commitEdit = (): boolean => {
+    const target = editing
+    if (!target) return true
+    const index = view.findIndex((r) => r.key === target.row)
+    const column = columns.find((c) => c.key === target.col)
+    if (index < 0 || !column) {
+      setEditing(null)
+      return true
+    }
+    const row = view[index].row
+    const oldValue = row[column.key]
+    const result = parseEdit(column, row, oldValue, draft, loc.table)
+    if (result.kind === 'error') {
+      setEditError(result.message)
+      return false
+    }
+    setEditing(null)
+    setEditError(undefined)
+    if (result.kind === 'ok') {
+      setPending((p) => ({ rows, cells: { ...(p.rows === rows ? p.cells : {}), [cellId(target.row, column.key)]: { value: result.value } } }))
+      onCellEdit?.({ row, key: column.key, value: result.value, oldValue, rowIndex: index })
+    }
+    return true
+  }
+
+  const cancelEdit = () => {
+    if (editing) focusNext.current = { cell: cellId(editing.row, editing.col) }
+    setEditing(null)
+    setEditError(undefined)
+  }
+
+  const onCellKey = (e: KeyboardEvent<HTMLElement>, item: FlatRow<Row>, column: MlTableColumn<Row>) => {
+    if (e.target !== e.currentTarget || (e.key !== 'Enter' && e.key !== 'F2')) return
+    e.preventDefault()
+    startEdit(item, column)
+  }
+
+  const onEditorKey = (e: KeyboardEvent<HTMLElement>, item: FlatRow<Row>, c: number) => {
+    // Enter while an IME is composing picks a candidate, it doesn't commit.
+    if (e.nativeEvent.isComposing || e.keyCode === 229) return
+    const column = columns[c]
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      if (commitEdit()) focusNext.current = { cell: cellId(item.key, column.key) }
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      e.stopPropagation()
+      cancelEdit()
+    } else if (e.key === 'Tab') {
+      e.preventDefault()
+      if (!commitEdit()) return
+      const next = nextEditable(columns, c, e.shiftKey ? -1 : 1)
+      if (next >= 0) startEdit(item, columns[next])
+      else focusNext.current = { cell: cellId(item.key, column.key) }
+    }
+  }
+
+  const onEditorBlur = (item: FlatRow<Row>, column: MlTableColumn<Row>) => {
+    // Only this cell's own editor commits: Tab / Enter may already have moved on.
+    const current = editingRef.current
+    if (current?.row === item.key && current.col === column.key) commitEdit()
+  }
+
+  /* ── Column resizing ── */
+  const [resizing, setResizing] = useState<string | null>(null)
+  // Drawn widths of resizable columns without a known width, for aria-valuenow.
+  const [measured, setMeasured] = useState<Record<string, number>>({})
+  const widthsRef = useRef(widths)
+  widthsRef.current = widths
+  const endDrag = useRef<(() => void) | null>(null)
+  useEffect(() => () => endDrag.current?.(), [])
+  const hasResizable = columns.some((c) => c.resizable)
+
+  const setWidth = (key: string, width: number) => {
+    if (widthsRef.current[key] !== width) {
+      widthsRef.current = { ...widthsRef.current, [key]: width }
+      setWidths(widthsRef.current)
+    }
+  }
+
+  useIsoLayoutEffect(() => {
+    if (!hasResizable || !headRow.current) return
+    const cells = [...headRow.current.children] as HTMLElement[]
+    const lead = cells.length - columns.length
+    const next: Record<string, number> = {}
+    columns.forEach((c, i) => {
+      if (c.resizable && cells[lead + i]) next[c.key] = cells[lead + i].offsetWidth
+    })
+    setMeasured((prev) => (JSON.stringify(prev) === JSON.stringify(next) ? prev : next))
+  }, [hasResizable, columns, widths])
+
+  const ariaWidth = (column: MlTableColumn<Row>) => columnWidth(column, widths) ?? measured[column.key]
+
+  const startResize = (e: PointerEvent<HTMLElement>, column: MlTableColumn<Row>) => {
+    if (e.button !== 0) return
+    e.preventDefault()
+    const th = e.currentTarget.closest('th')
+    const startX = e.clientX
+    const startWidth = widthsRef.current[column.key] ?? th?.offsetWidth ?? 0
+    let width = startWidth
+    setResizing(column.key)
+    const move = (ev: globalThis.PointerEvent) => {
+      width = clampWidth(column, startWidth + ev.clientX - startX)
+      setWidth(column.key, width)
+    }
+    const up = () => {
+      endDrag.current?.()
+      if (width === startWidth) return
+      // The click that ends a drag lands on whatever is under the pointer: swallow it.
+      const swallow = (ev: MouseEvent) => ev.stopPropagation()
+      window.addEventListener('click', swallow, { capture: true, once: true })
+      setTimeout(() => window.removeEventListener('click', swallow, { capture: true }))
+      onColumnResize?.(column.key, width)
+    }
+    endDrag.current = () => {
+      window.removeEventListener('pointermove', move)
+      window.removeEventListener('pointerup', up)
+      window.removeEventListener('pointercancel', up)
+      setResizing(null)
+      endDrag.current = null
+    }
+    window.addEventListener('pointermove', move)
+    window.addEventListener('pointerup', up)
+    window.addEventListener('pointercancel', up)
+  }
+
+  const onResizeKey = (e: KeyboardEvent<HTMLElement>, column: MlTableColumn<Row>) => {
+    const th = e.currentTarget.closest('th')
+    const current = columnWidth(column, widthsRef.current) ?? th?.offsetWidth ?? 0
+    const next = resizeByKey(column, current, e.key, e.shiftKey)
+    if (next === null) return
+    e.preventDefault()
+    setWidth(column.key, next)
+    onColumnResize?.(column.key, next)
+  }
+
   return (
     <div
       className={cx('ml-table', className, {
@@ -285,6 +482,7 @@ export function Table<Row extends Record<string, any>>({
         'ml-table--sticky': maxHeight !== undefined,
         'ml-table--scrolled-left': edge.left,
         'ml-table--scrolled-right': edge.right,
+        'ml-table--resizing': resizing,
       })}
     >
       <div ref={scroller} className="ml-table__scroll" style={maxHeightCss ? { maxHeight: maxHeightCss } : undefined} onScroll={onScroll}>
@@ -308,8 +506,12 @@ export function Table<Row extends Record<string, any>>({
                   <th
                     key={column.key}
                     scope="col"
-                    style={{ ...(column.width ? { width: column.width, minWidth: column.width } : {}), ...stickyStyle(column) }}
-                    className={cx(`ml-table__cell--${column.align ?? 'left'}`, { 'ml-table__th--sorted': sort?.key === column.key, ...fixedClass(column) })}
+                    style={{ ...widthStyle(column, widths), ...stickyStyle(column) }}
+                    className={cx(`ml-table__cell--${column.align ?? 'left'}`, {
+                      'ml-table__th--sorted': sort?.key === column.key,
+                      'ml-table__th--resizable': column.resizable,
+                      ...fixedClass(column),
+                    })}
                     aria-sort={ariaSort(column)}
                   >
                     {column.sortable ? (
@@ -324,6 +526,21 @@ export function Table<Row extends Record<string, any>>({
                       </button>
                     ) : (
                       title
+                    )}
+                    {column.resizable && (
+                      <span
+                        role="separator"
+                        className={cx('ml-table__resizer', { 'ml-table__resizer--active': resizing === column.key })}
+                        tabIndex={0}
+                        aria-orientation="vertical"
+                        aria-label={loc.table.resize(column.title)}
+                        aria-valuenow={ariaWidth(column)}
+                        aria-valuemin={resizeBounds(column).min}
+                        aria-valuemax={resizeBounds(column).max}
+                        onPointerDown={(e) => startResize(e, column)}
+                        onKeyDown={(e) => onResizeKey(e, column)}
+                        onClick={(e) => e.stopPropagation()}
+                      />
                     )}
                   </th>
                 )
@@ -356,17 +573,29 @@ export function Table<Row extends Record<string, any>>({
                       </td>
                     )}
                     {columns.map((column, c) => {
-                      const custom = renderCell?.({ column, row: item.row, value: item.row[column.key], index, level: item.level })
+                      const editor = editorOf(column)
+                      const active = isEditing(item, column)
+                      const waiting = pendingOf(item, column)
+                      const custom = active || waiting ? undefined : renderCell?.({ column, row: item.row, value: item.row[column.key], index, level: item.level })
                       return (
                         <td
                           key={column.key}
                           style={stickyStyle(column)}
-                          title={column.ellipsis ? display(column, item.row) : undefined}
+                          title={column.ellipsis && !active ? display(column, item.row) : undefined}
+                          tabIndex={editor && !active ? 0 : undefined}
+                          data-ml-cell={editor ? cellId(item.key, column.key) : undefined}
+                          aria-keyshortcuts={editor && !active ? 'Enter F2' : undefined}
+                          aria-busy={waiting ? true : undefined}
                           className={cx(`ml-table__cell--${column.align ?? 'left'}`, {
                             'ml-table__cell--mono': column.mono,
                             'ml-table__cell--ellipsis': column.ellipsis,
+                            'ml-table__cell--editable': editor,
+                            'ml-table__cell--editing': active,
+                            'ml-table__cell--pending': waiting,
                             ...fixedClass(column),
                           })}
+                          onDoubleClick={() => startEdit(item, column)}
+                          onKeyDown={(e) => onCellKey(e, item, column)}
                         >
                           {hoverPaw && c === 0 && <Paw tone="current" className="ml-table__paw" />}
                           {isTree && c === 0 && (
@@ -388,7 +617,61 @@ export function Table<Row extends Record<string, any>>({
                               )}
                             </span>
                           )}
-                          {custom ?? display(column, item.row)}
+                          {active ? (
+                            <>
+                              <div
+                                className={cx('ml-input', 'ml-input--sm', 'ml-table__editor', { 'ml-input--error': editError })}
+                                onClick={(e) => e.stopPropagation()}
+                                onDoubleClick={(e) => e.stopPropagation()}
+                              >
+                                {editor === 'select' ? (
+                                  <select
+                                    className="ml-input__control"
+                                    value={draft}
+                                    aria-label={loc.table.edit(column.title)}
+                                    aria-invalid={editError ? true : undefined}
+                                    aria-describedby={editError ? editErrorId : undefined}
+                                    onChange={(e) => setDraft(e.target.value)}
+                                    onKeyDown={(e) => onEditorKey(e, item, c)}
+                                    onBlur={() => onEditorBlur(item, column)}
+                                  >
+                                    {column.options?.map((option) => (
+                                      <option key={option.value} value={String(option.value)}>
+                                        {option.label}
+                                      </option>
+                                    ))}
+                                  </select>
+                                ) : (
+                                  <input
+                                    className="ml-input__control"
+                                    type="text"
+                                    inputMode={editor === 'number' ? 'decimal' : undefined}
+                                    value={draft}
+                                    aria-label={loc.table.edit(column.title)}
+                                    aria-invalid={editError ? true : undefined}
+                                    aria-describedby={editError ? editErrorId : undefined}
+                                    onChange={(e) => setDraft(e.target.value)}
+                                    onKeyDown={(e) => onEditorKey(e, item, c)}
+                                    onBlur={() => onEditorBlur(item, column)}
+                                  />
+                                )}
+                                {editor === 'select' && <Icon name="chevronDown" className="ml-input__chevron" />}
+                              </div>
+                              {editError && (
+                                <p id={editErrorId} className="ml-field__error ml-table__edit-error" role="alert">
+                                  <Icon name="warning" />
+                                  {editError}
+                                </p>
+                              )}
+                            </>
+                          ) : waiting ? (
+                            <>
+                              {cellText(column, waiting.value, item.row)}
+                              <span className="ml-visually-hidden">{loc.table.saving}</span>
+                            </>
+                          ) : (
+                            (custom ?? display(column, item.row))
+                          )}
                         </td>
                       )
                     })}

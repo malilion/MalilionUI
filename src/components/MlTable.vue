@@ -1,12 +1,13 @@
 <script setup lang="ts" generic="Row extends Record<string, any>">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useSlots, watch } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, useSlots, watch } from 'vue'
 import MlCheckbox from './MlCheckbox.vue'
 import MlIcon from './MlIcon.vue'
 import MlLoader from './MlLoader.vue'
 import MlPagination from './MlPagination.vue'
 import MlPaw from './MlPaw.vue'
-import type { MlTableColumn, MlTableSort } from '../types'
+import type { MlTableCellEdit, MlTableColumn, MlTableSort } from '../types'
 import { useLocale } from '../locale'
+import { cellText, clampWidth, columnWidth, editString, editorOf, nextEditable, parseEdit, resizeBounds, resizeByKey, widthStyle } from './table-edit'
 
 const loc = useLocale()
 
@@ -49,7 +50,13 @@ const props = withDefaults(
   { rowKey: 'id', hoverPaw: true, childrenKey: 'children' },
 )
 
-const emit = defineEmits<{ 'row-click': [row: Row] }>()
+const emit = defineEmits<{
+  'row-click': [row: Row]
+  /** An inline edit passed validation; update `rows` to keep it. */
+  'cell-edit': [edit: MlTableCellEdit<Row>]
+  /** A resize finished (drag released, or an arrow-key step). */
+  'column-resize': [key: string, width: number]
+}>()
 const sort = defineModel<MlTableSort | null>('sort', { default: null })
 const selected = defineModel<Key[]>('selected', { default: () => [] })
 /** Rows whose #expand detail panel is open. */
@@ -57,6 +64,8 @@ const expanded = defineModel<Key[]>('expanded', { default: () => [] })
 /** Tree rows whose children are shown. */
 const treeOpen = defineModel<Key[]>('treeOpen', { default: () => [] })
 const page = defineModel<number>('page', { default: 1 })
+/** Resized column widths in px, by column key. */
+const columnWidths = defineModel<Record<string, number>>('columnWidths', { default: () => ({}) })
 
 const slots = useSlots()
 const hasExpand = computed(() => !!slots.expand)
@@ -136,6 +145,7 @@ function toggleExpand(key: Key) {
 /* ── Sorting ── */
 // Sort cycle: none → ascending → descending → none
 function toggleSort(column: MlTableColumn<Row>) {
+  if (resizing.value) return
   const current = sort.value
   if (!current || current.key !== column.key) sort.value = { key: column.key, order: 'asc' }
   else if (current.order === 'asc') sort.value = { key: column.key, order: 'desc' }
@@ -168,10 +178,175 @@ function toggleRow(key: Key, checked: boolean) {
   selected.value = checked ? [...selected.value, key] : selected.value.filter((k) => k !== key)
 }
 
-function display(column: MlTableColumn<Row>, row: Row) {
-  const value = row[column.key]
-  if (column.format) return column.format(value, row)
-  return value === null || value === undefined ? '—' : String(value)
+const display = (column: MlTableColumn<Row>, row: Row) => cellText(column, row[column.key], row)
+
+/* ── Inline editing: one cell at a time; `rows` is only ever reported, never changed ── */
+const cellId = (key: Key, column: string) => JSON.stringify([key, column])
+const editing = ref<{ row: Key; col: string } | null>(null)
+const draft = ref('')
+const editError = ref<string>()
+const editErrorId = `ml-table-${useId()}-edit-error`
+/** Committed values shown (dimmed) until the parent hands over new rows. */
+const pending = ref<Record<string, { value: unknown }>>({})
+watch(() => props.rows, () => (pending.value = {}))
+
+const isEditing = (item: FlatRow, column: MlTableColumn<Row>) => editing.value?.row === item.key && editing.value.col === column.key
+const pendingOf = (item: FlatRow, column: MlTableColumn<Row>) => {
+  const entry = pending.value[cellId(item.key, column.key)]
+  // A parent that mutates the row in place already shows the new value.
+  return entry && !Object.is(entry.value, item.row[column.key]) ? entry : undefined
+}
+
+function focusCell(key: Key, column: string) {
+  nextTick(() => {
+    const id = cellId(key, column)
+    const cells = scroller.value?.querySelectorAll<HTMLElement>('td[data-ml-cell]') ?? []
+    ;[...cells].find((td) => td.dataset.mlCell === id)?.focus()
+  })
+}
+
+function startEdit(item: FlatRow, column: MlTableColumn<Row>) {
+  if (!editorOf(column) || isEditing(item, column)) return
+  editing.value = { row: item.key, col: column.key }
+  draft.value = editString(item.row[column.key])
+  editError.value = undefined
+  const { [cellId(item.key, column.key)]: _, ...rest } = pending.value
+  pending.value = rest
+  nextTick(() => {
+    const control = scroller.value?.querySelector<HTMLInputElement | HTMLSelectElement>('.ml-table__editor .ml-input__control')
+    control?.focus()
+    if (control instanceof HTMLInputElement) control.select()
+  })
+}
+
+/** Validate and report the open edit. False keeps the editor open with its message. */
+function commitEdit(): boolean {
+  const target = editing.value
+  if (!target) return true
+  const index = view.value.findIndex((r) => r.key === target.row)
+  const column = props.columns.find((c) => c.key === target.col)
+  if (index < 0 || !column) {
+    editing.value = null
+    return true
+  }
+  const row = view.value[index].row
+  const oldValue = row[column.key]
+  const result = parseEdit(column, row, oldValue, draft.value, loc.value.table)
+  if (result.kind === 'error') {
+    editError.value = result.message
+    return false
+  }
+  editing.value = null
+  editError.value = undefined
+  if (result.kind === 'ok') {
+    pending.value = { ...pending.value, [cellId(target.row, column.key)]: { value: result.value } }
+    emit('cell-edit', { row, key: column.key, value: result.value, oldValue, rowIndex: index })
+  }
+  return true
+}
+
+function cancelEdit() {
+  const target = editing.value
+  editing.value = null
+  editError.value = undefined
+  if (target) focusCell(target.row, target.col)
+}
+
+function onCellKey(e: KeyboardEvent, item: FlatRow, column: MlTableColumn<Row>) {
+  if (e.target !== e.currentTarget || (e.key !== 'Enter' && e.key !== 'F2')) return
+  e.preventDefault()
+  startEdit(item, column)
+}
+
+function onEditorKey(e: KeyboardEvent, item: FlatRow, c: number) {
+  // Enter while an IME is composing picks a candidate, it doesn't commit.
+  if (e.isComposing || e.keyCode === 229) return
+  const column = props.columns[c]
+  if (e.key === 'Enter') {
+    e.preventDefault()
+    if (commitEdit()) focusCell(item.key, column.key)
+  } else if (e.key === 'Escape') {
+    e.preventDefault()
+    e.stopPropagation()
+    cancelEdit()
+  } else if (e.key === 'Tab') {
+    e.preventDefault()
+    if (!commitEdit()) return
+    const next = nextEditable(props.columns, c, e.shiftKey ? -1 : 1)
+    if (next >= 0) startEdit(item, props.columns[next])
+    else focusCell(item.key, column.key)
+  }
+}
+
+function onEditorBlur(item: FlatRow, column: MlTableColumn<Row>) {
+  // Only this cell's own editor commits: Tab / Enter may already have moved on.
+  if (isEditing(item, column)) commitEdit()
+}
+
+/* ── Column resizing ── */
+/** Key of the column being dragged. */
+const resizing = ref<string | null>(null)
+/** Drawn widths of resizable columns without a known width, for aria-valuenow. */
+const measured = ref<Record<string, number>>({})
+let endDrag: (() => void) | undefined
+
+function setWidth(key: string, width: number) {
+  if (columnWidths.value[key] !== width) columnWidths.value = { ...columnWidths.value, [key]: width }
+}
+
+function measureResizable() {
+  const cells = headRow.value ? ([...headRow.value.children] as HTMLElement[]) : []
+  const lead = cells.length - props.columns.length
+  const next: Record<string, number> = {}
+  props.columns.forEach((c, i) => {
+    if (c.resizable && cells[lead + i]) next[c.key] = cells[lead + i].offsetWidth
+  })
+  measured.value = next
+}
+
+const ariaWidth = (column: MlTableColumn<Row>) => columnWidth(column, columnWidths.value) ?? measured.value[column.key]
+
+function startResize(e: PointerEvent, column: MlTableColumn<Row>) {
+  if (e.button !== 0) return
+  e.preventDefault()
+  const th = (e.currentTarget as HTMLElement).closest('th')
+  const startX = e.clientX
+  const startWidth = columnWidths.value[column.key] ?? th?.offsetWidth ?? 0
+  let width = startWidth
+  resizing.value = column.key
+  const move = (ev: PointerEvent) => {
+    width = clampWidth(column, startWidth + ev.clientX - startX)
+    setWidth(column.key, width)
+  }
+  const up = () => {
+    endDrag?.()
+    if (width === startWidth) return
+    // The click that ends a drag lands on whatever is under the pointer: swallow it.
+    const swallow = (ev: MouseEvent) => ev.stopPropagation()
+    window.addEventListener('click', swallow, { capture: true, once: true })
+    setTimeout(() => window.removeEventListener('click', swallow, { capture: true }))
+    emit('column-resize', column.key, width)
+  }
+  endDrag = () => {
+    window.removeEventListener('pointermove', move)
+    window.removeEventListener('pointerup', up)
+    window.removeEventListener('pointercancel', up)
+    resizing.value = null
+    endDrag = undefined
+  }
+  window.addEventListener('pointermove', move)
+  window.addEventListener('pointerup', up)
+  window.addEventListener('pointercancel', up)
+}
+
+function onResizeKey(e: KeyboardEvent, column: MlTableColumn<Row>) {
+  const th = (e.currentTarget as HTMLElement).closest('th')
+  const current = columnWidth(column, columnWidths.value) ?? th?.offsetWidth ?? 0
+  const next = resizeByKey(column, current, e.key, e.shiftKey)
+  if (next === null) return
+  e.preventDefault()
+  setWidth(column.key, next)
+  emit('column-resize', column.key, next)
 }
 
 const columnCount = computed(() => props.columns.length + (props.selectable ? 1 : 0) + (hasExpand.value ? 1 : 0))
@@ -233,7 +408,9 @@ const lastLeft = computed(() => [...props.columns].reverse().find((c) => c.fixed
 const firstRight = computed(() => props.columns.find((c) => c.fixed === 'right')?.key)
 
 let observer: ResizeObserver | undefined
+const hasResizable = computed(() => props.columns.some((c) => c.resizable))
 onMounted(() => {
+  if (hasResizable.value) measureResizable()
   if (!hasFixedLeft.value && !hasFixedRight.value) return
   measure()
   if (typeof ResizeObserver !== 'undefined' && scroller.value) {
@@ -241,10 +418,16 @@ onMounted(() => {
     observer.observe(scroller.value)
   }
 })
-onBeforeUnmount(() => observer?.disconnect())
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  endDrag?.()
+})
 watch(
-  () => [props.columns, view.value.length],
-  () => (hasFixedLeft.value || hasFixedRight.value) && nextTick(measure),
+  () => [props.columns, view.value.length, columnWidths.value],
+  () => {
+    if (hasFixedLeft.value || hasFixedRight.value) nextTick(measure)
+    if (hasResizable.value) nextTick(measureResizable)
+  },
 )
 
 const maxHeightCss = computed(() =>
@@ -267,6 +450,7 @@ const isFirst = (c: number) => c === 0
         'ml-table--sticky': maxHeight !== undefined,
         'ml-table--scrolled-left': edge.left,
         'ml-table--scrolled-right': edge.right,
+        'ml-table--resizing': resizing,
       },
     ]"
   >
@@ -298,11 +482,12 @@ const isFirst = (c: number) => c === 0
               v-for="column in columns"
               :key="column.key"
               scope="col"
-              :style="[column.width ? { width: column.width, minWidth: column.width } : {}, stickyStyle(column) ?? {}]"
+              :style="[widthStyle(column, columnWidths), stickyStyle(column) ?? {}]"
               :class="[
                 `ml-table__cell--${column.align ?? 'left'}`,
                 {
                   'ml-table__th--sorted': sort?.key === column.key,
+                  'ml-table__th--resizable': column.resizable,
                   'ml-table__fixed': column.fixed,
                   'ml-table__fixed--last-left': column.key === lastLeft,
                   'ml-table__fixed--first-right': column.key === firstRight,
@@ -326,6 +511,20 @@ const isFirst = (c: number) => c === 0
                 </span>
               </button>
               <slot v-else :name="`header-${column.key}`" :column="column">{{ column.title }}</slot>
+              <span
+                v-if="column.resizable"
+                role="separator"
+                :class="['ml-table__resizer', { 'ml-table__resizer--active': resizing === column.key }]"
+                tabindex="0"
+                aria-orientation="vertical"
+                :aria-label="loc.table.resize(column.title)"
+                :aria-valuenow="ariaWidth(column)"
+                :aria-valuemin="resizeBounds(column).min"
+                :aria-valuemax="resizeBounds(column).max"
+                @pointerdown="startResize($event, column)"
+                @keydown="onResizeKey($event, column)"
+                @click.stop
+              />
             </th>
           </tr>
         </thead>
@@ -371,17 +570,26 @@ const isFirst = (c: number) => c === 0
                 v-for="(column, c) in columns"
                 :key="column.key"
                 :style="stickyStyle(column)"
-                :title="column.ellipsis ? display(column, item.row) : undefined"
+                :title="column.ellipsis && !isEditing(item, column) ? display(column, item.row) : undefined"
+                :tabindex="editorOf(column) && !isEditing(item, column) ? 0 : undefined"
+                :data-ml-cell="editorOf(column) ? cellId(item.key, column.key) : undefined"
+                :aria-keyshortcuts="editorOf(column) && !isEditing(item, column) ? 'Enter F2' : undefined"
+                :aria-busy="pendingOf(item, column) ? true : undefined"
                 :class="[
                   `ml-table__cell--${column.align ?? 'left'}`,
                   {
                     'ml-table__cell--mono': column.mono,
                     'ml-table__cell--ellipsis': column.ellipsis,
+                    'ml-table__cell--editable': editorOf(column),
+                    'ml-table__cell--editing': isEditing(item, column),
+                    'ml-table__cell--pending': pendingOf(item, column),
                     'ml-table__fixed': column.fixed,
                     'ml-table__fixed--last-left': column.key === lastLeft,
                     'ml-table__fixed--first-right': column.key === firstRight,
                   },
                 ]"
+                @dblclick="startEdit(item, column)"
+                @keydown="onCellKey($event, item, column)"
               >
                 <MlPaw v-if="hoverPaw && isFirst(c)" tone="current" class="ml-table__paw" />
                 <span v-if="isTree && isFirst(c)" class="ml-table__tree" :style="{ '--_level': item.level }">
@@ -396,7 +604,42 @@ const isFirst = (c: number) => c === 0
                   </button>
                   <span v-else class="ml-table__tree-leaf" aria-hidden="true" />
                 </span>
-                <slot :name="`cell-${column.key}`" :row="item.row" :value="item.row[column.key]" :index="index" :level="item.level">
+                <template v-if="isEditing(item, column)">
+                  <div :class="['ml-input', 'ml-input--sm', 'ml-table__editor', { 'ml-input--error': editError }]" @click.stop @dblclick.stop>
+                    <select
+                      v-if="editorOf(column) === 'select'"
+                      v-model="draft"
+                      class="ml-input__control"
+                      :aria-label="loc.table.edit(column.title)"
+                      :aria-invalid="editError ? true : undefined"
+                      :aria-describedby="editError ? editErrorId : undefined"
+                      @keydown="onEditorKey($event, item, c)"
+                      @blur="onEditorBlur(item, column)"
+                    >
+                      <option v-for="option in column.options" :key="option.value" :value="String(option.value)">{{ option.label }}</option>
+                    </select>
+                    <input
+                      v-else
+                      v-model="draft"
+                      class="ml-input__control"
+                      type="text"
+                      :inputmode="editorOf(column) === 'number' ? 'decimal' : undefined"
+                      :aria-label="loc.table.edit(column.title)"
+                      :aria-invalid="editError ? true : undefined"
+                      :aria-describedby="editError ? editErrorId : undefined"
+                      @keydown="onEditorKey($event, item, c)"
+                      @blur="onEditorBlur(item, column)"
+                    />
+                    <MlIcon v-if="editorOf(column) === 'select'" name="chevronDown" class="ml-input__chevron" />
+                  </div>
+                  <p v-if="editError" :id="editErrorId" class="ml-field__error ml-table__edit-error" role="alert">
+                    <MlIcon name="warning" />{{ editError }}
+                  </p>
+                </template>
+                <template v-else-if="pendingOf(item, column)">
+                  {{ cellText(column, pendingOf(item, column)!.value, item.row) }}<span class="ml-visually-hidden">{{ loc.table.saving }}</span>
+                </template>
+                <slot v-else :name="`cell-${column.key}`" :row="item.row" :value="item.row[column.key]" :index="index" :level="item.level">
                   {{ display(column, item.row) }}
                 </slot>
               </td>

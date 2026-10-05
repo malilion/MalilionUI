@@ -640,6 +640,7 @@
     "components/mobile.css"
   ],
   "MlTable": [
+    "components/field.css",
     "components/checkbox.css",
     "components/loader.css",
     "components/paw.css",

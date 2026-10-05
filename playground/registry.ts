@@ -1968,7 +1968,7 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'Table',
     zh: '表格',
     group: 'data',
-    desc: 'HUD 資料表。可排序、可勾選、固定欄與表頭、分頁、展開列與樹狀資料；滑過的那一列會有小腳印走進來。',
+    desc: 'HUD 資料表。可排序、可勾選、固定欄與表頭、分頁、展開列與樹狀資料，也能就地編輯儲存格、拖曳調整欄寬；滑過的那一列會有小腳印走進來。',
     usage: `import { MlTable } from '@malilion/ui'`,
     examples: [
       { file: 'table/basic', title: '基本用法', block: true },
@@ -1978,6 +1978,18 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
       { file: 'table/fixed', title: '固定欄、固定表頭與分頁', desc: 'fixed 讓欄位在橫向捲動時留在原地；max-height 讓表頭固定；page-size 加上分頁器。', block: true },
       { file: 'table/expand', title: '展開列', desc: '有 #expand 插槽就會多一欄展開鈕；row-expandable 決定哪些列能展開。', block: true },
       { file: 'table/tree', title: '樹狀表格', desc: '資料有 children 就會變成可展開的樹；排序會在每一層各自進行。', block: true },
+      {
+        file: 'table/editable',
+        title: '就地編輯',
+        desc: '欄位加上 editable（文字、number、select）就能雙擊或按 Enter / F2 編輯：Enter 或離開欄位送出、Esc 取消、Tab 跳到同列下一個可編輯欄。validate 回傳訊息會擋下送出並顯示錯誤。表格不會改 rows，只發出 cell-edit，由你決定怎麼存；新的 rows 回來之前，該格會顯示「儲存中」。',
+        block: true,
+      },
+      {
+        file: 'table/resizable',
+        title: '調整欄寬',
+        desc: 'resizable 的欄位表頭右緣有把手，可拖曳，也能聚焦後用 ← → 調整（Shift 一次 50px）；min-width / max-width 限制範圍。欄寬存在 v-model:column-widths，可以存起來下次還原。',
+        block: true,
+      },
     ],
     api: [
       {
@@ -2002,8 +2014,13 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
           { name: 'row-expandable', desc: '哪些列可以展開', type: '(row) => boolean' },
           { name: 'children-key', desc: '樹狀資料的子列欄位', type: 'string', default: `'children'` },
           { name: 'v-model:tree-open', desc: '樹狀表格中展開的列', type: 'Key[]', default: '[]' },
+          { name: 'v-model:column-widths', desc: '調整過的欄寬（px），以欄位 key 對應', type: 'Record<string, number>', default: '{}' },
         ],
-        events: [{ name: 'row-click', desc: '點擊某列', type: '(row: Row) => void' }],
+        events: [
+          { name: 'row-click', desc: '點擊某列', type: '(row: Row) => void' },
+          { name: 'cell-edit', desc: '就地編輯通過驗證並送出；表格不會改 rows，請自行更新', type: '(edit: { row, key, value, oldValue, rowIndex }) => void' },
+          { name: 'column-resize', desc: '欄寬調整結束（放開拖曳或按一次方向鍵）', type: '(key: string, width: number) => void' },
+        ],
         slots: [
           { name: 'cell-<key>', desc: '自訂儲存格，提供 { row, value, index }' },
           { name: 'header-<key>', desc: '自訂表頭，提供 { column }' },
@@ -2023,6 +2040,11 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
           { name: 'format', desc: '格式化顯示值', type: '(value, row) => string' },
           { name: 'fixed', desc: '橫向捲動時固定在左或右', type: `'left' | 'right'` },
           { name: 'ellipsis', desc: '過長文字以「…」截斷，滑過看全文', type: 'boolean', default: 'false' },
+          { name: 'editable', desc: '可就地編輯；true 為文字輸入', type: `boolean | 'text' | 'number' | 'select'`, default: 'false' },
+          { name: 'options', desc: 'select 編輯器的選項，也用來顯示儲存格文字', type: '{ value, label }[]' },
+          { name: 'validate', desc: '回傳錯誤訊息就擋下送出', type: '(value, row) => string | undefined' },
+          { name: 'resizable', desc: '表頭右緣加上調整欄寬的把手', type: 'boolean', default: 'false' },
+          { name: 'minWidth / maxWidth', desc: '調整欄寬的範圍（px）', type: 'number', default: '48 / 無上限' },
         ],
       },
     ],
