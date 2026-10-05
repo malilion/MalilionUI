@@ -287,7 +287,10 @@ function buckets(kind: 'zhuyin' | 'pinyin'): Buckets | null {
   let result: Buckets | null = null
   try {
     const collator = new Intl.Collator(kind === 'zhuyin' ? 'zh-TW-u-co-zhuyin' : 'zh-u-co-pinyin')
-    if (collator.resolvedOptions().collation === kind) {
+    // Check the order itself, not resolvedOptions(): pinyin is zh's default
+    // collation, and some ICU builds (Node 24) report it as "default".
+    const [lo, mid, hi] = kind === 'zhuyin' ? ['吃', '陳', '尸'] : ['擦', '陳', '咑']
+    if (collator.compare(lo, mid) < 0 && collator.compare(mid, hi) < 0) {
       const table = [...(kind === 'zhuyin' ? ZHUYIN_BOUNDS : PINYIN_BOUNDS)]
       const pairs: [string, string][] = []
       for (let i = 0; i < table.length; i += 2) pairs.push([table[i], table[i + 1]])
