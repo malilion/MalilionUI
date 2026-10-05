@@ -78,8 +78,18 @@
     "components/paw.css",
     "components/sheet.css"
   ],
+  "MlBoxPlot": [
+    "components/paw.css",
+    "components/charts.css",
+    "components/charts-stat.css"
+  ],
   "MlBreadcrumb": [
     "components/navigation.css"
+  ],
+  "MlBulletChart": [
+    "components/paw.css",
+    "components/charts.css",
+    "components/charts-stat.css"
   ],
   "MlButton": [
     "components/button.css",
@@ -254,6 +264,17 @@
   ],
   "MlField": [
     "components/field.css"
+  ],
+  "MlFilterBar": [
+    "components/button.css",
+    "components/field.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/calendar.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/effects.css",
+    "components/filter.css"
   ],
   "MlFloatButton": [
     "components/float.css"
@@ -491,6 +512,14 @@
   "MlQRCode": [
     "components/misc.css"
   ],
+  "MlQueryBuilder": [
+    "components/field.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/filter.css"
+  ],
   "MlRadar": [
     "components/radar-scope.css"
   ],
@@ -631,6 +660,16 @@
     "components/form.css",
     "components/inputs-extra.css"
   ],
+  "MlTaiwanAddress": [
+    "components/field.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/region.css",
+    "components/mask.css",
+    "components/address.css"
+  ],
   "MlTaiwanRegion": [
     "components/field.css",
     "components/paw.css",
@@ -728,6 +767,11 @@
   ],
   "MlVirtualList": [
     "components/layout.css"
+  ],
+  "MlWaterfallChart": [
+    "components/paw.css",
+    "components/charts.css",
+    "components/charts-stat.css"
   ],
   "MlWatermark": [
     "components/utilities.css"
