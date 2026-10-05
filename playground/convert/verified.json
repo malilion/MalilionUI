@@ -313,6 +313,8 @@
  "tilt/basic": {},
  "time-picker/basic": {},
  "time-picker/range": {},
+ "time-range-picker/basic": {},
+ "time-range-picker/overnight": {},
  "timeline/alternate": {},
  "timeline/basic": {},
  "toast/advanced": {},
