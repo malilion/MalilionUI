@@ -1,0 +1,182 @@
+/* SchemaForm & Wizard — forms generated from a schema, and the same split into steps */
+
+/* ── SchemaForm ── */
+.ml-schema-form__grid {
+  --_label-w: var(--ml-schema-label-width, 8em);
+
+  container: ml-schema / inline-size;
+  display: grid;
+  grid-template-columns: repeat(var(--ml-schema-columns, 1), minmax(0, 1fr));
+  align-items: start;
+  gap: 18px 20px;
+  min-width: 0;
+}
+
+.ml-schema-form__item {
+  grid-column: span var(--ml-schema-span, 1);
+  min-width: 0;
+}
+
+/* Labels on the left: every field frame becomes label | control */
+.ml-schema-form__grid--label-left .ml-form-item > .ml-field {
+  grid-template-columns: var(--_label-w) minmax(0, 1fr);
+  column-gap: 16px;
+}
+
+.ml-schema-form__grid--label-left .ml-form-item > .ml-field > * {
+  grid-column: 2;
+}
+
+.ml-schema-form__grid--label-left .ml-form-item > .ml-field > .ml-field__label {
+  grid-column: 1;
+  align-self: start;
+  align-items: center;
+  min-height: 44px;
+  overflow-wrap: anywhere;
+}
+
+/* …and what has no frame (checkbox, the item's own error line) lines up with the controls */
+.ml-schema-form__grid--label-left .ml-form-item > .ml-check,
+.ml-schema-form__grid--label-left .ml-form-item > .ml-field__error {
+  margin-left: calc(var(--_label-w) + 16px);
+}
+
+.ml-schema-form__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+/* Narrow: one column, labels back on top */
+@container ml-schema (max-width: 520px) {
+  .ml-schema-form__item {
+    grid-column: 1 / -1;
+  }
+
+  .ml-schema-form__grid--label-left .ml-form-item > .ml-field {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ml-schema-form__grid--label-left .ml-form-item > .ml-field > *,
+  .ml-schema-form__grid--label-left .ml-form-item > .ml-field > .ml-field__label {
+    grid-column: 1;
+    min-height: 0;
+  }
+
+  .ml-schema-form__grid--label-left .ml-form-item > .ml-check,
+  .ml-schema-form__grid--label-left .ml-form-item > .ml-field__error {
+    margin-left: 0;
+  }
+}
+
+/* ── Wizard ── */
+.ml-wizard {
+  display: grid;
+  gap: 28px;
+  min-width: 0;
+}
+
+/* Each header step is a button: back to done steps, forward to reached ones */
+.ml-wizard__step {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  width: 100%;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: center;
+  cursor: pointer;
+}
+
+.ml-wizard__step:disabled {
+  cursor: default;
+}
+
+.ml-wizard__step:focus-visible {
+  outline: none;
+}
+
+.ml-wizard__step:focus-visible .ml-steps__marker {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: 3px;
+}
+
+.ml-wizard__step .ml-steps__marker {
+  transition: box-shadow var(--ml-dur) var(--ml-ease), transform var(--ml-dur) var(--ml-ease-spring);
+}
+
+.ml-wizard__item--open .ml-wizard__step:not(:disabled):hover .ml-steps__marker {
+  box-shadow: inset 0 0 0 2px var(--ml-accent), 0 0 12px rgb(240 173 47 / 0.35);
+  transform: scale(1.06);
+}
+
+.ml-wizard__item--open .ml-wizard__step:not(:disabled):hover .ml-steps__title {
+  color: var(--ml-accent-text);
+}
+
+/* Reached but not done (after stepping back): numbered, yet clearly open */
+.ml-steps__item--todo.ml-wizard__item--open .ml-steps__marker {
+  box-shadow: inset 0 0 0 1.5px var(--ml-gold-200);
+  color: var(--ml-text);
+}
+
+.ml-wizard__form {
+  gap: 22px;
+}
+
+.ml-wizard__panel {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  outline: none;
+  animation: ml-wizard-in var(--ml-dur-slow) var(--ml-ease) both;
+}
+
+@keyframes ml-wizard-in {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+.ml-wizard__error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  color: var(--ml-danger-text);
+  font-size: var(--ml-text-sm);
+}
+
+.ml-wizard__error svg {
+  width: 16px;
+  height: 16px;
+  flex: none;
+}
+
+.ml-wizard__actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 10px;
+  padding-top: 18px;
+  border-top: 1px solid var(--ml-line-steel);
+}
+
+/* "Back" stays on the left, the main button on the right */
+.ml-wizard__actions > .ml-btn--ghost {
+  margin-right: auto;
+}
+
+.ml-wizard__finish {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  animation: ml-wizard-in var(--ml-dur-slow) var(--ml-ease) both;
+}
