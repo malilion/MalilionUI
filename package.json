@@ -141,11 +141,11 @@
     "playwright-core": "^1.63.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "typescript": "~7.0.2",
+    "typescript": "~5.9.3",
     "vite": "^8.3.2",
     "vitest": "^5.0.3",
     "vue": "^3.5.43",
-    "vue-tsc": "^3.3.11"
+    "vue-tsc": "3.3.11"
   },
   "publishConfig": {
     "access": "public"
