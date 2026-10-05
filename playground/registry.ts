@@ -74,6 +74,7 @@ export const pages: PageDef[] = [
   { id: 'start', title: 'Quick start', zh: '快速開始', group: 'start', desc: '' },
   { id: 'tokens', title: 'Design tokens', zh: '設計代幣', group: 'start', desc: '' },
   { id: 'react', title: 'React', zh: 'React 與 Next.js', group: 'start', desc: '' },
+  { id: 'mcp', title: 'AI agents (MCP)', zh: 'AI Agent 與 MCP', group: 'start', desc: '', isNew: true },
   {
     id: 'paw',
     title: 'Paw',
