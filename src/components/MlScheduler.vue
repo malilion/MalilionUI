@@ -1,13 +1,20 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref, useId, watch } from 'vue'
 import { chartStops } from './charts'
 import { icons } from './icons'
 import {
   allDayBars,
+  dayLabel,
+  eventTimeText,
   formatClock,
   hourLabels,
   minuteOfDay,
   minutesAt,
+  monthCellAt,
+  monthKeyMove,
+  monthKeyTarget,
+  monthLayout,
+  monthTitle,
   moveEvent,
   resizeEvent,
   sameDay,
@@ -22,6 +29,7 @@ import {
   weekdayLabel,
   type MlSchedulerEvent,
   type MlSchedulerView,
+  type MonthItem,
   type SchedulerRange,
 } from './scheduler'
 import { useNow } from './use-now'
@@ -42,20 +50,22 @@ const props = withDefaults(
     hourHeight?: number
     /** Snap for dragging and keyboard moves, in minutes. */
     step?: number
-    /** Height of the scrolling area. Numbers are pixels. */
+    /** Height of the scrolling area (the month grid's minimum height). Numbers are pixels. */
     height?: number | string
     /** Hour scrolled to on mount. */
     scrollToHour?: number
+    /** Rows of events per day in month view; the rest fold into "還有 n 項". */
+    monthMaxEvents?: number
     /** Drag events to move them, their bottom edge to resize, empty slots to create. */
     editable?: boolean
-    /** Prev / today / next and the week–day switch. */
+    /** Prev / today / next and the month–week–day switch. */
     toolbar?: boolean
     /** Colour of events without a tone. */
     tone?: MlChartTone
     /** "Now" for the today highlight and the time line. Defaults to the clock. */
     now?: MlTimeInput
   }>(),
-  { events: () => [], weekStartsOn: 0, startHour: 0, endHour: 24, hourHeight: 48, step: 15, height: 560, scrollToHour: 8, editable: false, toolbar: true, tone: 'gold' },
+  { events: () => [], weekStartsOn: 0, startHour: 0, endHour: 24, hourHeight: 48, step: 15, height: 560, scrollToHour: 8, monthMaxEvents: 3, editable: false, toolbar: true, tone: 'gold' },
 )
 const emit = defineEmits<{
   'event-click': [event: MlSchedulerEvent]
@@ -67,11 +77,13 @@ defineSlots<{ event?: (props: { event: MlSchedulerEvent; time: string }) => unkn
 const view = defineModel<MlSchedulerView>('view', { default: 'week' })
 const date = defineModel<Date>('date')
 
+const VIEWS = ['month', 'week', 'day'] as const
 const nowInput = useNow(() => props.now)
 const now = computed(() => toDate(nowInput.value) ?? new Date())
 const anchor = computed(() => date.value ?? now.value)
+const isMonth = computed(() => view.value === 'month')
 const days = computed(() => viewDays(anchor.value, view.value, props.weekStartsOn))
-const title = computed(() => schedulerTitle(days.value, loc.value.name))
+const title = computed(() => (isMonth.value ? monthTitle(anchor.value, loc.value.name) : schedulerTitle(days.value, loc.value.name)))
 const hours = computed(() => hourLabels(props.startHour, props.endHour))
 
 /* Drafts: the event being dragged is drawn at its new place. */
@@ -80,6 +92,7 @@ const shown = computed(() =>
   draft.value ? props.events.map((e) => (e.id === draft.value!.id ? { ...e, start: draft.value!.range.start, end: draft.value!.range.end } : e)) : props.events,
 )
 const columns = computed(() => {
+  if (isMonth.value) return []
   const lo = props.startHour * 60
   const hi = props.endHour * 60
   return timedSegments(shown.value, days.value).map((list) =>
@@ -92,14 +105,25 @@ const columns = computed(() => {
       }),
   )
 })
-const bars = computed(() => allDayBars(shown.value, days.value))
+const bars = computed(() => (isMonth.value ? [] : allDayBars(shown.value, days.value)))
 const lanes = computed(() => bars.value.reduce((n, b) => Math.max(n, b.lane + 1), 0))
 const nowLine = computed(() => {
   const i = days.value.findIndex((d) => sameDay(d, now.value))
   const m = minuteOfDay(now.value)
-  if (i < 0 || m < props.startHour * 60 || m > props.endHour * 60) return null
+  if (isMonth.value || i < 0 || m < props.startHour * 60 || m > props.endHour * 60) return null
   return { day: i, top: ((m - props.startHour * 60) / 60) * props.hourHeight }
 })
+
+/* Month grid: six week rows, events in lanes, overflow per day. */
+const month = computed(() => (isMonth.value ? monthLayout(shown.value, days.value, props.monthMaxEvents) : null))
+const weeks = computed(() => (isMonth.value ? Array.from({ length: days.value.length / 7 }, (_, w) => Array.from({ length: 7 }, (_, c) => w * 7 + c)) : []))
+const focusIndex = computed(() => Math.max(0, days.value.findIndex((d) => sameDay(d, anchor.value))))
+const outside = (d: Date) => d.getMonth() !== anchor.value.getMonth()
+function cellLabel(i: number) {
+  const count = month.value?.perDay[i].length ?? 0
+  return [dayLabel(days.value[i], loc.value.name), count ? loc.value.scheduler.events(count) : ''].filter(Boolean).join('，')
+}
+const itemTime = (p: MonthItem) => (p.event.allDay ? loc.value.scheduler.allDay : p.time || formatClock(toDate(p.event.start)!))
 
 const canEdit = (e: MlSchedulerEvent) => props.editable && e.editable !== false
 const color = (e: MlSchedulerEvent) => chartStops[e.tone ?? props.tone]
@@ -113,16 +137,25 @@ function go(direction: 1 | -1) {
 function goToday() {
   date.value = startOfDay(now.value)
 }
+function openDay(d: Date) {
+  date.value = d
+  view.value = 'day'
+}
 
 /* ── Drag to move / resize ─────────────────────────────── */
 
-let drag: { pointer: number; event: MlSchedulerEvent; mode: 'move' | 'resize'; x: number; y: number; colWidth: number; moved: boolean } | null = null
+const root = ref<HTMLElement>()
+const grid = ref<HTMLElement>()
+type Box = { left: number; top: number; width: number; height: number }
+let drag: { pointer: number; event: MlSchedulerEvent; mode: 'move' | 'resize'; x: number; y: number; colWidth: number; moved: boolean; box?: Box; cell?: number } | null = null
 let swallowClick = false
 
 function onEventPointerDown(e: PointerEvent, event: MlSchedulerEvent) {
   if (!canEdit(event) || e.button !== 0) return
   const col = (e.currentTarget as HTMLElement).closest('.ml-scheduler__col, .ml-scheduler__lanes') as HTMLElement | null
   const width = col ? col.getBoundingClientRect().width / (col.classList.contains('ml-scheduler__lanes') ? days.value.length : 1) : 1
+  // Month view: which cell was grabbed, so a long bar keeps its offset under the pointer.
+  const box = isMonth.value ? grid.value?.getBoundingClientRect() : undefined
   drag = {
     pointer: e.pointerId,
     event,
@@ -131,6 +164,8 @@ function onEventPointerDown(e: PointerEvent, event: MlSchedulerEvent) {
     y: e.clientY,
     colWidth: width || 1,
     moved: false,
+    box,
+    cell: box ? monthCellAt(e.clientX, e.clientY, box) : undefined,
   }
   e.preventDefault()
   listen(true)
@@ -138,6 +173,14 @@ function onEventPointerDown(e: PointerEvent, event: MlSchedulerEvent) {
 
 function onPointerMove(e: PointerEvent) {
   if (drag && e.pointerId === drag.pointer) {
+    if (drag.box) {
+      const shift = monthCellAt(e.clientX, e.clientY, drag.box) - drag.cell!
+      if (!shift && !drag.moved) return
+      drag.moved = true
+      const range = moveEvent(drag.event, shift, 0)
+      if (range) draft.value = { id: drag.event.id, range }
+      return
+    }
     const dayShift = view.value === 'week' ? Math.round((e.clientX - drag.x) / drag.colWidth) : 0
     const minutes = drag.event.allDay ? 0 : snapMinutes(((e.clientY - drag.y) / props.hourHeight) * 60, props.step)
     if (!dayShift && !minutes && !drag.moved) return
@@ -145,6 +188,11 @@ function onPointerMove(e: PointerEvent) {
     const range = drag.mode === 'move' ? moveEvent(drag.event, dayShift, minutes) : resizeEvent(drag.event, drag.event.allDay ? dayShift * 1440 : minutes, props.step)
     if (range) draft.value = { id: drag.event.id, range }
   } else if (create && e.pointerId === create.pointer) {
+    if (create.box) {
+      const i = monthCellAt(e.clientX, e.clientY, create.box)
+      span.value = { from: Math.min(i, create.anchor), to: Math.max(i, create.anchor) }
+      return
+    }
     const m = minutesAt(e.clientY - create.top, props.hourHeight, props.step, props.startHour)
     ghost.value = m > create.anchor ? { day: create.day, start: create.anchor, end: m } : { day: create.day, start: m, end: create.anchor + props.step }
   }
@@ -161,10 +209,13 @@ function onPointerUp(e: PointerEvent) {
     if (moved && range && !cancelled) emit('change', event, range)
   } else if (create && e.pointerId === create.pointer) {
     const g = ghost.value
+    const s = span.value
     const day = days.value[create.day]
     create = null
     ghost.value = null
-    if (g && day && !cancelled) emit('create', { start: new Date(day.getTime() + g.start * 60_000), end: new Date(day.getTime() + g.end * 60_000) })
+    span.value = null
+    if (s && !cancelled) emit('create', { start: days.value[s.from], end: days.value[s.to], allDay: true })
+    else if (g && day && !cancelled) emit('create', { start: new Date(day.getTime() + g.start * 60_000), end: new Date(day.getTime() + g.end * 60_000) })
   }
   if (!drag && !create) listen(false)
 }
@@ -189,10 +240,11 @@ function onEventClick(event: MlSchedulerEvent) {
   emit('event-click', event)
 }
 
-/* ── Drag on an empty slot to create ───────────────────── */
+/* ── Drag on an empty slot (or across empty days) to create ── */
 
-let create: { pointer: number; day: number; top: number; anchor: number } | null = null
+let create: { pointer: number; day: number; top: number; anchor: number; box?: Box } | null = null
 const ghost = ref<{ day: number; start: number; end: number } | null>(null)
+const span = ref<{ from: number; to: number } | null>(null)
 
 function onColumnPointerDown(e: PointerEvent, day: number) {
   if (!props.editable || e.button !== 0 || e.target !== e.currentTarget) return
@@ -200,6 +252,14 @@ function onColumnPointerDown(e: PointerEvent, day: number) {
   const start = Math.floor((((e.clientY - top) / props.hourHeight) * 60 + props.startHour * 60) / props.step) * props.step
   create = { pointer: e.pointerId, day, top, anchor: start }
   ghost.value = { day, start, end: start + props.step }
+  e.preventDefault()
+  listen(true)
+}
+
+function onDayPointerDown(e: PointerEvent, day: number) {
+  if (!props.editable || e.button !== 0 || e.target !== e.currentTarget || !grid.value) return
+  create = { pointer: e.pointerId, day, top: 0, anchor: day, box: grid.value.getBoundingClientRect() }
+  span.value = { from: day, to: day }
   e.preventDefault()
   listen(true)
 }
@@ -219,24 +279,81 @@ function onEventKeydown(e: KeyboardEvent, event: MlSchedulerEvent) {
   let range: SchedulerRange | null = null
   const vertical = e.key === 'ArrowUp' ? -1 : e.key === 'ArrowDown' ? 1 : 0
   const horizontal = e.key === 'ArrowLeft' ? -1 : e.key === 'ArrowRight' ? 1 : 0
-  if (vertical && !event.allDay) range = e.shiftKey ? resizeEvent(event, vertical * props.step, props.step) : moveEvent(event, 0, vertical * props.step)
+  if (isMonth.value) range = monthKeyMove(event, e.key, e.shiftKey)
+  else if (vertical && !event.allDay) range = e.shiftKey ? resizeEvent(event, vertical * props.step, props.step) : moveEvent(event, 0, vertical * props.step)
   else if (horizontal) range = e.shiftKey && event.allDay ? resizeEvent(event, horizontal * 1440, props.step) : moveEvent(event, horizontal, 0)
   if (!range) return
   e.preventDefault()
+  // A moved event leaves the day it was listed under.
+  pop.value = null
   emit('change', event, range)
   live.value = loc.value.scheduler.moved(event.title, describe(range, event.allDay))
   // The event may now live in another column: keep the keyboard on it.
-  nextTick(() => body.value?.querySelectorAll<HTMLElement>('.ml-scheduler__event').forEach((el) => el.dataset.id === event.id && el.focus()))
+  nextTick(() => root.value?.querySelectorAll<HTMLElement>('.ml-scheduler__event').forEach((el) => el.dataset.id === event.id && el.focus()))
 }
 
-onMounted(() => {
-  if (body.value) body.value.scrollTop = Math.max(0, (props.scrollToHour - props.startHour) * props.hourHeight - 12)
+/* Month grid: roving focus over days; the focused day is the date model. */
+function onDayKeydown(e: KeyboardEvent, i: number) {
+  if (e.target !== e.currentTarget) return
+  const d = days.value[i]
+  if (e.key === 'Enter' || e.key === ' ') {
+    e.preventDefault()
+    openDay(d)
+    return
+  }
+  const next = monthKeyTarget(d, e.key, props.weekStartsOn, e.shiftKey)
+  if (!next) return
+  e.preventDefault()
+  date.value = next
+  nextTick(() => grid.value?.querySelector<HTMLElement>('.ml-scheduler__mday[tabindex="0"]')?.focus())
+}
+
+/* "還有 n 項": a popover listing the whole day. */
+const pop = ref<number | null>(null)
+function morePopover(i: number) {
+  pop.value = pop.value === i ? null : i
+  if (pop.value !== null) nextTick(() => root.value?.querySelector<HTMLElement>('.ml-scheduler__pop .ml-scheduler__event')?.focus())
+}
+function closePopover(returnFocus: boolean) {
+  const trigger = root.value?.querySelector<HTMLElement>('.ml-scheduler__more[aria-expanded="true"]')
+  pop.value = null
+  if (returnFocus) trigger?.focus()
+}
+function onPopKeydown(e: KeyboardEvent) {
+  if (e.key !== 'Escape') return
+  e.preventDefault()
+  e.stopPropagation()
+  closePopover(true)
+}
+function onOutside(e: Event) {
+  const target = e.target as Node
+  const popEl = root.value?.querySelector('.ml-scheduler__pop')
+  const trigger = root.value?.querySelector('.ml-scheduler__more[aria-expanded="true"]')
+  if (popEl?.contains(target) || trigger?.contains(target)) return
+  closePopover(!!popEl?.contains(document.activeElement))
+}
+watch(pop, (open) => {
+  if (typeof document === 'undefined') return
+  document.removeEventListener('pointerdown', onOutside)
+  if (open !== null) document.addEventListener('pointerdown', onOutside)
 })
-onBeforeUnmount(() => listen(false))
+watch([view, () => days.value[0]?.getTime()], () => (pop.value = null))
+
+function scrollToStart() {
+  if (body.value) body.value.scrollTop = Math.max(0, (props.scrollToHour - props.startHour) * props.hourHeight - 12)
+}
+onMounted(scrollToStart)
+// Coming back from the month grid mounts the hour grid afresh.
+watch(isMonth, (m) => !m && nextTick(scrollToStart))
+onBeforeUnmount(() => {
+  listen(false)
+  if (typeof document !== 'undefined') document.removeEventListener('pointerdown', onOutside)
+})
 
 const isToday = (d: Date) => sameDay(d, now.value)
 const weekend = (d: Date) => d.getDay() === 0 || d.getDay() === 6
 const chevron = { left: icons.chevronLeft, right: icons.chevronRight }
+const size = (v: number | string) => (typeof v === 'number' ? `${v}px` : v)
 defineExpose({ go, goToday })
 // For the visually hidden hint under editable schedulers.
 const hintId = `ml-scheduler-hint-${useId()}`
@@ -244,10 +361,11 @@ const hintId = `ml-scheduler-hint-${useId()}`
 
 <template>
   <div
-    :class="['ml-scheduler', `ml-scheduler--${view}`, { 'ml-scheduler--editable': editable, 'ml-scheduler--dragging': !!draft || !!ghost }]"
+    ref="root"
+    :class="['ml-scheduler', `ml-scheduler--${view}`, { 'ml-scheduler--editable': editable, 'ml-scheduler--dragging': !!draft || !!ghost || !!span }]"
     role="region"
     :aria-label="loc.scheduler.label"
-    :style="{ '--_sc-hour': `${hourHeight}px`, '--_sc-days': days.length }"
+    :style="{ '--_sc-hour': `${hourHeight}px`, '--_sc-days': isMonth ? 7 : days.length }"
   >
     <div v-if="toolbar" class="ml-scheduler__toolbar">
       <div class="ml-scheduler__nav">
@@ -262,7 +380,7 @@ const hintId = `ml-scheduler-hint-${useId()}`
       <h3 class="ml-scheduler__title" aria-live="polite">{{ title }}</h3>
       <div class="ml-scheduler__views" role="group">
         <button
-          v-for="v in (['week', 'day'] as const)"
+          v-for="v in VIEWS"
           :key="v"
           type="button"
           :class="['ml-scheduler__view', { 'ml-scheduler__view--active': view === v }]"
@@ -273,7 +391,104 @@ const hintId = `ml-scheduler-hint-${useId()}`
         </button>
       </div>
     </div>
-    <div ref="body" class="ml-scheduler__body" :style="{ height: typeof height === 'number' ? `${height}px` : height }">
+    <div v-if="month" class="ml-scheduler__month" role="grid" :aria-label="title" :style="{ minHeight: size(height), '--_sc-max': monthMaxEvents }">
+      <div class="ml-scheduler__mhead" role="row">
+        <div v-for="i in 7" :key="i" :class="['ml-scheduler__mweekday', { 'ml-scheduler__mweekday--weekend': weekend(days[i - 1]) }]" role="columnheader">
+          {{ weekdayLabel(days[i - 1], loc.name) }}
+        </div>
+      </div>
+      <div ref="grid" class="ml-scheduler__mweeks">
+        <div v-for="(week, w) in weeks" :key="w" class="ml-scheduler__mweek" role="row">
+          <div
+            v-for="i in week"
+            :key="i"
+            :class="[
+              'ml-scheduler__mday',
+              {
+                'ml-scheduler__mday--outside': outside(days[i]),
+                'ml-scheduler__mday--today': isToday(days[i]),
+                'ml-scheduler__mday--weekend': weekend(days[i]),
+                'ml-scheduler__mday--ghost': span && i >= span.from && i <= span.to,
+              },
+            ]"
+            role="gridcell"
+            :tabindex="i === focusIndex ? 0 : -1"
+            :aria-label="cellLabel(i)"
+            :aria-current="isToday(days[i]) ? 'date' : undefined"
+            @keydown="onDayKeydown($event, i)"
+            @pointerdown="onDayPointerDown($event, i)"
+          >
+            <button type="button" tabindex="-1" class="ml-scheduler__mdate" :aria-label="loc.scheduler.openDay(dayLabel(days[i], loc.name))" @click="openDay(days[i])">
+              {{ days[i].getDate() }}
+            </button>
+            <button
+              v-for="p in month.starts[i]"
+              :key="p.event.id"
+              type="button"
+              :data-id="p.event.id"
+              :class="[
+                'ml-scheduler__event',
+                'ml-scheduler__event--month',
+                p.bar ? 'ml-scheduler__event--bar' : 'ml-scheduler__event--chip',
+                { 'ml-scheduler__event--before': p.before, 'ml-scheduler__event--after': p.after, 'ml-scheduler__event--draft': draft?.id === p.event.id },
+              ]"
+              :style="{ '--_sc-lane': p.lane, '--_sc-span': p.to - p.from + 1, '--_sc-c0': color(p.event)[0], '--_sc-c1': color(p.event)[1] }"
+              :aria-label="label(p.event, eventTimeText(p.event))"
+              :aria-describedby="canEdit(p.event) ? hintId : undefined"
+              @pointerdown="onEventPointerDown($event, p.event)"
+              @click="onEventClick(p.event)"
+              @keydown="onEventKeydown($event, p.event)"
+            >
+              <slot name="event" :event="p.event" :time="itemTime(p)">
+                <template v-if="!p.bar">
+                  <span class="ml-scheduler__dot" aria-hidden="true" />
+                  <span class="ml-scheduler__time">{{ p.time }}</span>
+                </template>
+                <span class="ml-scheduler__name">{{ p.event.title }}</span>
+              </slot>
+            </button>
+            <button
+              v-if="month.more[i]"
+              type="button"
+              class="ml-scheduler__more"
+              aria-haspopup="dialog"
+              :aria-expanded="pop === i"
+              @click="morePopover(i)"
+            >
+              {{ loc.scheduler.more(month.more[i]) }}
+            </button>
+            <div
+              v-if="pop === i"
+              :class="['ml-scheduler__pop', { 'ml-scheduler__pop--up': w >= 3, 'ml-scheduler__pop--end': i % 7 >= 4 }]"
+              role="dialog"
+              :aria-label="dayLabel(days[i], loc.name)"
+              @keydown="onPopKeydown"
+            >
+              <p class="ml-scheduler__pop-title">{{ dayLabel(days[i], loc.name) }}</p>
+              <button
+                v-for="p in month.perDay[i]"
+                :key="p.event.id"
+                type="button"
+                :data-id="p.event.id"
+                class="ml-scheduler__event ml-scheduler__event--month ml-scheduler__event--chip"
+                :style="{ '--_sc-c0': color(p.event)[0], '--_sc-c1': color(p.event)[1] }"
+                :aria-label="label(p.event, eventTimeText(p.event))"
+                :aria-describedby="canEdit(p.event) ? hintId : undefined"
+                @click="onEventClick(p.event)"
+                @keydown="onEventKeydown($event, p.event)"
+              >
+                <slot name="event" :event="p.event" :time="itemTime(p)">
+                  <span class="ml-scheduler__dot" aria-hidden="true" />
+                  <span class="ml-scheduler__time">{{ itemTime(p) }}</span>
+                  <span class="ml-scheduler__name">{{ p.event.title }}</span>
+                </slot>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div v-else ref="body" class="ml-scheduler__body" :style="{ height: size(height) }">
       <div class="ml-scheduler__sticky">
         <div class="ml-scheduler__head">
           <span class="ml-scheduler__corner" />
@@ -360,7 +575,7 @@ const hintId = `ml-scheduler-hint-${useId()}`
         </div>
       </div>
     </div>
-    <p v-if="editable" :id="hintId" class="ml-visually-hidden">{{ loc.scheduler.hint }}</p>
+    <p v-if="editable" :id="hintId" class="ml-visually-hidden">{{ isMonth ? loc.scheduler.monthHint : loc.scheduler.hint }}</p>
     <p class="ml-visually-hidden" aria-live="polite">{{ live }}</p>
   </div>
 </template>

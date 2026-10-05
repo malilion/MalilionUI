@@ -1,10 +1,11 @@
 // Scheduler maths (framework-free, shared by MlScheduler and the React <Scheduler>):
 // the visible days, events cut into per-day segments, side-by-side columns for
-// overlapping events, lanes for all-day events, and snapping for drag and drop.
+// overlapping events, lanes for all-day events, snapping for drag and drop, and
+// the month grid (bars and chips in lanes, "n more" overflow, keyboard targets).
 import type { MlChartTone } from '../types'
 
 export type MlSchedulerDate = Date | string | number
-export type MlSchedulerView = 'week' | 'day'
+export type MlSchedulerView = 'month' | 'week' | 'day'
 
 export interface MlSchedulerEvent {
   id: string
@@ -46,16 +47,24 @@ export function sameDay(a: Date, b: Date) {
   return a.getFullYear() === b.getFullYear() && a.getMonth() === b.getMonth() && a.getDate() === b.getDate()
 }
 
-/** Midnight of each visible day. */
+/** The same day in another month, clamped to its length (31 Jan + 1 → 28 / 29 Feb). */
+export function addMonths(d: Date, n: number) {
+  const length = new Date(d.getFullYear(), d.getMonth() + n + 1, 0).getDate()
+  return new Date(d.getFullYear(), d.getMonth() + n, Math.min(d.getDate(), length), d.getHours(), d.getMinutes())
+}
+
+/** Midnight of each visible day: one day, one week, or the six weeks around a month. */
 export function viewDays(anchor: Date, view: MlSchedulerView, weekStartsOn: 0 | 1 = 0) {
   const day = startOfDay(anchor)
   if (view === 'day') return [day]
-  const first = addDays(day, -((day.getDay() - weekStartsOn + 7) % 7))
-  return Array.from({ length: 7 }, (_, i) => addDays(first, i))
+  const from = view === 'month' ? new Date(day.getFullYear(), day.getMonth(), 1) : day
+  const first = addDays(from, -((from.getDay() - weekStartsOn + 7) % 7))
+  return Array.from({ length: view === 'month' ? 42 : 7 }, (_, i) => addDays(first, i))
 }
 
 /** Step the anchor by one page. */
 export function shiftAnchor(anchor: Date, view: MlSchedulerView, direction: 1 | -1) {
+  if (view === 'month') return addMonths(anchor, direction)
   return addDays(anchor, direction * (view === 'day' ? 1 : 7))
 }
 
@@ -185,6 +194,8 @@ export function minutesAt(y: number, hourHeight: number, step: number, startHour
 export interface SchedulerRange {
   start: Date
   end: Date
+  /** Set on ranges created in month view: whole days, `end` is the last day (inclusive). */
+  allDay?: boolean
 }
 
 /** Move an event by whole days and minutes, keeping its length. */
@@ -259,4 +270,196 @@ export function segmentTime(seg: { start: number; end: number }) {
 /** Minutes after midnight of a Date. */
 export function minuteOfDay(d: Date) {
   return d.getHours() * 60 + d.getMinutes()
+}
+
+/* ── Month view ───────────────────────────────────────── */
+
+/** "2026年10月" / "October 2026". */
+export function monthTitle(anchor: Date, locale: string) {
+  if (locale.toLowerCase().startsWith('zh')) return `${anchor.getFullYear()}年${anchor.getMonth() + 1}月`
+  try {
+    return new Intl.DateTimeFormat(locale, { year: 'numeric', month: 'long' }).format(anchor)
+  } catch {
+    return `${anchor.getFullYear()}-${String(anchor.getMonth() + 1).padStart(2, '0')}`
+  }
+}
+
+/** "10月7日星期三" / "Wednesday, October 7": day cells and the overflow popover. */
+export function dayLabel(d: Date, locale: string) {
+  try {
+    return new Intl.DateTimeFormat(locale, { month: 'long', day: 'numeric', weekday: 'long' }).format(d)
+  } catch {
+    return d.toDateString()
+  }
+}
+
+/** First and last calendar day an event touches. Timed ends are exclusive, so 22:00–24:00 stays on one day. */
+export function eventDays(event: MlSchedulerEvent): { first: Date; last: Date } | null {
+  const s = toDate(event.start)
+  if (!s) return null
+  const e = toDate(event.end)
+  const first = startOfDay(s)
+  if (event.allDay) {
+    const last = e ? startOfDay(e) : first
+    return { first, last: last.getTime() < first.getTime() ? first : last }
+  }
+  if (!e || e.getTime() <= s.getTime()) return { first, last: first }
+  return { first, last: startOfDay(new Date(e.getTime() - 1)) }
+}
+
+/** Spoken time: "09:00–10:30", with dates when it spans days ("10/7 22:00–10/8 06:00"); all-day → ''. */
+export function eventTimeText(event: MlSchedulerEvent) {
+  if (event.allDay) return ''
+  const s = toDate(event.start)
+  const e = toDate(event.end)
+  if (!s) return ''
+  if (!e || e.getTime() <= s.getTime()) return formatClock(s)
+  const span = eventDays(event)!
+  const date = (d: Date) => (span.last.getTime() > span.first.getTime() ? `${d.getMonth() + 1}/${d.getDate()} ` : '')
+  return `${date(s)}${formatClock(s)}–${date(e)}${formatClock(e)}`
+}
+
+export interface MonthItem {
+  event: MlSchedulerEvent
+  /** Week row and first / last column (inclusive) of this piece. */
+  week: number
+  from: number
+  to: number
+  lane: number
+  /** A whole-day bar (all-day or spanning days), or a timed chip inside one day. */
+  bar: boolean
+  /** The event goes on from the previous row / into the next one (or past the grid). */
+  before: boolean
+  after: boolean
+  /** Start time shown on chips ("09:30"); '' on bars. */
+  time: string
+}
+
+export interface MonthLayout {
+  /** Per day: the visible pieces that start in that cell, by lane. */
+  starts: MonthItem[][]
+  /** Per day: every piece covering it, by lane (the overflow popover lists these). */
+  perDay: MonthItem[][]
+  /** Per day: how many pieces are hidden behind "還有 n 項". */
+  more: number[]
+}
+
+/**
+ * Events on the month grid. Each event is cut at week rows; in every row bars
+ * come first, then earlier, then longer events, and each piece takes the lowest
+ * lane free on all of its days. Lanes from `maxRows` on are hidden and counted.
+ */
+export function monthLayout(events: MlSchedulerEvent[], days: Date[], maxRows = 3): MonthLayout {
+  const starts: MonthItem[][] = days.map(() => [])
+  const perDay: MonthItem[][] = days.map(() => [])
+  const more = days.map(() => 0)
+  if (!days.length) return { starts, perDay, more }
+  const gridFirst = days[0].getTime()
+  const gridLast = days[days.length - 1].getTime()
+  const rows: MonthItem[][] = Array.from({ length: Math.ceil(days.length / 7) }, () => [])
+  const rank = new Map<MonthItem, { length: number; start: number }>()
+  for (const event of events) {
+    const span = eventDays(event)
+    if (!span) continue
+    const f = span.first.getTime()
+    const l = span.last.getTime()
+    if (l < gridFirst || f > gridLast) continue
+    const from = days.findIndex((d) => d.getTime() >= f)
+    let to = days.length - 1
+    while (to > 0 && days[to].getTime() > l) to--
+    const bar = !!event.allDay || l > f
+    const start = toDate(event.start)!
+    const length = Math.round((l - f) / 86_400_000) + 1
+    for (let w = Math.floor(from / 7); w <= Math.floor(to / 7); w++) {
+      const a = Math.max(from, w * 7)
+      const b = Math.min(to, w * 7 + 6)
+      const item: MonthItem = {
+        event,
+        week: w,
+        from: a - w * 7,
+        to: b - w * 7,
+        lane: 0,
+        bar,
+        before: a > from || f < gridFirst,
+        after: b < to || l > gridLast,
+        time: bar ? '' : formatClock(start),
+      }
+      rank.set(item, { length, start: start.getTime() })
+      rows[w].push(item)
+    }
+  }
+  const limit = Math.max(0, Math.floor(maxRows))
+  rows.forEach((row, w) => {
+    row.sort((x, y) => {
+      const rx = rank.get(x)!
+      const ry = rank.get(y)!
+      return (
+        Number(y.bar) - Number(x.bar) ||
+        x.from - y.from ||
+        ry.length - rx.length ||
+        Number(!!y.event.allDay) - Number(!!x.event.allDay) ||
+        rx.start - ry.start ||
+        x.event.id.localeCompare(y.event.id)
+      )
+    })
+    const taken: boolean[][] = []
+    for (const item of row) {
+      let lane = 0
+      while (taken[lane]?.slice(item.from, item.to + 1).some(Boolean)) lane++
+      taken[lane] ??= []
+      for (let c = item.from; c <= item.to; c++) taken[lane][c] = true
+      item.lane = lane
+    }
+    for (const item of [...row].sort((x, y) => x.lane - y.lane)) {
+      if (item.lane < limit) starts[w * 7 + item.from].push(item)
+      for (let c = item.from; c <= item.to; c++) {
+        perDay[w * 7 + c].push(item)
+        if (item.lane >= limit) more[w * 7 + c]++
+      }
+    }
+  })
+  return { starts, perDay, more }
+}
+
+/** The month cell (0–41) under a pointer, given the box of the week rows; clamped to the grid. */
+export function monthCellAt(x: number, y: number, box: { left: number; top: number; width: number; height: number }, weeks = 6) {
+  const col = box.width > 0 ? Math.min(6, Math.max(0, Math.floor(((x - box.left) / box.width) * 7))) : 0
+  const row = box.height > 0 ? Math.min(weeks - 1, Math.max(0, Math.floor(((y - box.top) / box.height) * weeks))) : 0
+  return row * 7 + col
+}
+
+/** Where a key moves the focused day of the month grid; null for other keys. Shift + PageUp / PageDown steps a year. */
+export function monthKeyTarget(day: Date, key: string, weekStartsOn: 0 | 1 = 0, shift = false): Date | null {
+  const col = (day.getDay() - weekStartsOn + 7) % 7
+  switch (key) {
+    case 'ArrowLeft':
+      return addDays(day, -1)
+    case 'ArrowRight':
+      return addDays(day, 1)
+    case 'ArrowUp':
+      return addDays(day, -7)
+    case 'ArrowDown':
+      return addDays(day, 7)
+    case 'Home':
+      return addDays(day, -col)
+    case 'End':
+      return addDays(day, 6 - col)
+    case 'PageUp':
+      return addMonths(day, shift ? -12 : -1)
+    case 'PageDown':
+      return addMonths(day, shift ? 12 : 1)
+  }
+  return null
+}
+
+/**
+ * Keyboard moves in month view, the week view's model by days: ← → a day,
+ * ↑ ↓ a week, Shift + ← → changes how many days an all-day event lasts.
+ */
+export function monthKeyMove(event: MlSchedulerEvent, key: string, shift = false): SchedulerRange | null {
+  const horizontal = key === 'ArrowLeft' ? -1 : key === 'ArrowRight' ? 1 : 0
+  const vertical = key === 'ArrowUp' ? -1 : key === 'ArrowDown' ? 1 : 0
+  if (shift) return horizontal && event.allDay ? resizeEvent(event, horizontal * DAY_MINUTES, 15) : null
+  if (horizontal || vertical) return moveEvent(event, horizontal + vertical * 7, 0)
+  return null
 }
