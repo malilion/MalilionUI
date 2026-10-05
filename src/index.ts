@@ -24,6 +24,7 @@ import MlBoxPlot from './components/MlBoxPlot.vue'
 import MlBreadcrumb from './components/MlBreadcrumb.vue'
 import MlBulletChart from './components/MlBulletChart.vue'
 import MlButton from './components/MlButton.vue'
+import MlButtonGroup from './components/MlButtonGroup.vue'
 import MlCalendar from './components/MlCalendar.vue'
 import MlCandlestick from './components/MlCandlestick.vue'
 import MlCard from './components/MlCard.vue'
@@ -73,6 +74,7 @@ import MlGridLottery from './components/MlGridLottery.vue'
 import MlGrid from './components/MlGrid.vue'
 import MlGridItem from './components/MlGridItem.vue'
 import MlHeatmap from './components/MlHeatmap.vue'
+import MlHighlight from './components/MlHighlight.vue'
 import MlIcon from './components/MlIcon.vue'
 import MlImage from './components/MlImage.vue'
 import MlImageCropper from './components/MlImageCropper.vue'
@@ -169,6 +171,7 @@ import MlTimeline from './components/MlTimeline.vue'
 import MlTitle from './components/MlTitle.vue'
 import MlToastHost from './components/MlToastHost.vue'
 import MlTooltip from './components/MlTooltip.vue'
+import MlToggleGroup from './components/MlToggleGroup.vue'
 import MlTour from './components/MlTour.vue'
 import MlTransfer from './components/MlTransfer.vue'
 import MlTree from './components/MlTree.vue'
@@ -210,6 +213,7 @@ const components = {
   MlBreadcrumb,
   MlBulletChart,
   MlButton,
+  MlButtonGroup,
   MlCalendar,
   MlCandlestick,
   MlCard,
@@ -259,6 +263,7 @@ const components = {
   MlGrid,
   MlGridItem,
   MlHeatmap,
+  MlHighlight,
   MlIcon,
   MlImage,
   MlImageCropper,
@@ -355,6 +360,7 @@ const components = {
   MlTitle,
   MlToastHost,
   MlTooltip,
+  MlToggleGroup,
   MlTour,
   MlTransfer,
   MlTree,
@@ -419,6 +425,7 @@ export {
   MlBreadcrumb,
   MlBulletChart,
   MlButton,
+  MlButtonGroup,
   MlCalendar,
   MlCandlestick,
   MlCard,
@@ -468,6 +475,7 @@ export {
   MlGrid,
   MlGridItem,
   MlHeatmap,
+  MlHighlight,
   MlIcon,
   MlImage,
   MlImageCropper,
@@ -564,6 +572,7 @@ export {
   MlTitle,
   MlToastHost,
   MlTooltip,
+  MlToggleGroup,
   MlTour,
   MlTransfer,
   MlTree,
@@ -709,6 +718,9 @@ export { waterfallLayout, boxStats, boxLayout, bulletRows, quantile } from './co
 export type { MlWaterfallDatum, WaterfallBar, MlBoxDatum, MlBoxStats, MlBulletDatum, BulletRow } from './components/charts-stat'
 export { formatTwAddress, parseTwAddress, formatStreet, twZipStatus, chineseNumeral, isTwAddressComplete, emptyTaiwanAddress } from './components/address'
 export type { MlTaiwanAddressValue, ParsedTaiwanAddress, TwZipStatus } from './components/address'
+export { splitHighlight, foldWidth } from './components/highlight-text'
+export type { HighlightChunk, HighlightOptions } from './components/highlight-text'
+export { nextToggleValue, toggleSelection } from './components/toggle-group'
 export type { MlNumberKeyboardTheme, NumberKeyboardKey } from './components/number-keyboard'
 export {
   getTwBanks,
@@ -848,6 +860,7 @@ declare module 'vue' {
     MlBreadcrumb: typeof MlBreadcrumb
     MlBulletChart: typeof MlBulletChart
     MlButton: typeof MlButton
+    MlButtonGroup: typeof MlButtonGroup
     MlCalendar: typeof MlCalendar
     MlCandlestick: typeof MlCandlestick
     MlCard: typeof MlCard
@@ -897,6 +910,7 @@ declare module 'vue' {
     MlGrid: typeof MlGrid
     MlGridItem: typeof MlGridItem
     MlHeatmap: typeof MlHeatmap
+    MlHighlight: typeof MlHighlight
     MlIcon: typeof MlIcon
     MlImage: typeof MlImage
     MlImageCropper: typeof MlImageCropper
@@ -993,6 +1007,7 @@ declare module 'vue' {
     MlTitle: typeof MlTitle
     MlToastHost: typeof MlToastHost
     MlTooltip: typeof MlTooltip
+    MlToggleGroup: typeof MlToggleGroup
     MlTour: typeof MlTour
     MlTransfer: typeof MlTransfer
     MlTree: typeof MlTree
