@@ -10,6 +10,8 @@ const props = defineProps<{
   source: string
   /** Full-width stage instead of a wrapping row. */
   block?: boolean
+  /** Show the React code: the verified conversion, or null when there isn't one yet. */
+  react?: { tsx: string; css: string } | null
 }>()
 
 const codeOpen = ref(false)
@@ -53,7 +55,16 @@ function onStageClick(event: MouseEvent) {
     </div>
 
     <MlModal v-model:open="codeOpen" eyebrow="Source" :title="props.title" :width="820">
-      <CodeBlock :code="source" :filename="`${file}.vue`" />
+      <template v-if="react">
+        <CodeBlock :code="react.tsx" :filename="`${file}.tsx`" lang="tsx" />
+        <CodeBlock v-if="react.css" :code="react.css" :filename="`${file.split('/').pop()}.css`" lang="css" class="demo__css" />
+      </template>
+      <template v-else>
+        <MlAlert v-if="react === null" tone="info" class="demo__note">
+          這個範例還沒有 React 寫法，先顯示 Vue 版本。元件與 props 的 React 名稱請看下方 API 表。
+        </MlAlert>
+        <CodeBlock :code="source" :filename="`${file}.vue`" />
+      </template>
     </MlModal>
   </section>
 </template>
@@ -61,6 +72,14 @@ function onStageClick(event: MouseEvent) {
 <style scoped>
 .demo {
   margin-top: 36px;
+}
+
+.demo__css {
+  margin-top: 12px;
+}
+
+.demo__note {
+  margin-bottom: 12px;
 }
 
 .demo__head {

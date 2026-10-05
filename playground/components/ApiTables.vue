@@ -1,7 +1,20 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { ApiDoc } from '../registry'
+import { reactApiDoc, type ReactApi } from '../react-docs'
 
-defineProps<{ api: ApiDoc[] }>()
+const props = defineProps<{
+  api: ApiDoc[]
+  /** Show the React reading (names checked against these props). */
+  react?: { props: ReactApi; components: string[] }
+}>()
+
+type Row = { name: string; desc: string; type?: string; default?: string; missing?: string[] }
+const docs = computed<{ component: string; props?: Row[]; events?: Row[]; slots?: Row[] }[]>(() => {
+  if (!props.react) return props.api
+  const components = new Set(props.react.components)
+  return props.api.map((doc) => reactApiDoc(doc, props.react!.props, components))
+})
 
 const propColumns = [
   { key: 'name', title: '屬性', width: '18%' },
@@ -9,39 +22,48 @@ const propColumns = [
   { key: 'type', title: '型別', mono: true, width: '28%' },
   { key: 'default', title: '預設值', mono: true, width: '14%' },
 ]
-const eventColumns = [
-  { key: 'name', title: '事件 / 方法', width: '22%' },
+const eventColumns = computed(() => [
+  { key: 'name', title: props.react ? '回呼 / 方法' : '事件 / 方法', width: '22%' },
   { key: 'desc', title: '說明' },
   { key: 'type', title: '參數 / 簽名', mono: true, width: '34%' },
-]
-const slotColumns = [
-  { key: 'name', title: '插槽', width: '22%' },
+])
+const slotColumns = computed(() => [
+  { key: 'name', title: props.react ? 'Prop' : '插槽', width: '22%' },
   { key: 'desc', title: '說明' },
-]
+])
 </script>
 
 <template>
   <section class="api">
     <h2 class="api__title">API</h2>
-    <div v-for="doc in api" :key="doc.component" class="api__component">
+    <div v-for="doc in docs" :key="doc.component" class="api__component">
       <h3 class="api__name"><code>{{ doc.component }}</code></h3>
       <template v-if="doc.props?.length">
         <p class="ml-hud-label api__label">Props</p>
         <MlTable :columns="propColumns" :rows="doc.props" row-key="name" dense>
-          <template #cell-name="{ value }"><code class="api__code">{{ value }}</code></template>
+          <template #cell-name="{ value, row }">
+            <code class="api__code">{{ value }}</code>
+            <MlTag v-if="row.missing?.length" tone="steel" variant="outline" class="api__missing">React 版沒有</MlTag>
+          </template>
           <template #cell-default="{ value }">{{ value ?? '—' }}</template>
         </MlTable>
       </template>
       <template v-if="doc.events?.length">
-        <p class="ml-hud-label api__label">Events / Methods</p>
+        <p class="ml-hud-label api__label">{{ react ? 'Callbacks / Methods' : 'Events / Methods' }}</p>
         <MlTable :columns="eventColumns" :rows="doc.events" row-key="name" dense>
-          <template #cell-name="{ value }"><code class="api__code">{{ value }}</code></template>
+          <template #cell-name="{ value, row }">
+            <code class="api__code">{{ value }}</code>
+            <MlTag v-if="row.missing?.length" tone="steel" variant="outline" class="api__missing">React 版沒有</MlTag>
+          </template>
         </MlTable>
       </template>
       <template v-if="doc.slots?.length">
-        <p class="ml-hud-label api__label">Slots</p>
+        <p class="ml-hud-label api__label">{{ react ? 'Children / Render props' : 'Slots' }}</p>
         <MlTable :columns="slotColumns" :rows="doc.slots" row-key="name" dense>
-          <template #cell-name="{ value }"><code class="api__code">{{ value }}</code></template>
+          <template #cell-name="{ value, row }">
+            <code class="api__code">{{ value }}</code>
+            <MlTag v-if="row.missing?.length" tone="steel" variant="outline" class="api__missing">React 版沒有</MlTag>
+          </template>
         </MlTable>
       </template>
     </div>
@@ -75,6 +97,11 @@ const slotColumns = [
 
 .api__label {
   margin: 18px 0 8px;
+}
+
+.api__missing {
+  margin-left: 6px;
+  vertical-align: middle;
 }
 
 .api__code {
