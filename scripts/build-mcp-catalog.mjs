@@ -22,7 +22,10 @@ const exampleSource = (file) => {
   }
 }
 
-const components = pages.map((p) => ({
+// Hand-written docs pages (home, start, tokens…) carry no data of their own.
+const components = pages
+  .filter((p) => p.desc || p.api || p.examples)
+  .map((p) => ({
   id: p.id,
   title: p.title,
   zh: p.zh,
