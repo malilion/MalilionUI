@@ -96,6 +96,9 @@
     "components/paw.css",
     "components/effects.css"
   ],
+  "MlButtonGroup": [
+    "components/button-group.css"
+  ],
   "MlCalendar": [
     "components/paw.css",
     "components/calendar.css"
@@ -321,6 +324,9 @@
   "MlHeatmap": [
     "components/paw.css",
     "components/charts.css"
+  ],
+  "MlHighlight": [
+    "components/highlight-text.css"
   ],
   "MlIcon": [],
   "MlImage": [
@@ -726,6 +732,9 @@
   ],
   "MlTooltip": [
     "components/tooltip.css"
+  ],
+  "MlToggleGroup": [
+    "components/toggle-group.css"
   ],
   "MlTour": [
     "components/button.css",
