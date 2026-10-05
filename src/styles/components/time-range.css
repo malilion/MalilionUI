@@ -1,0 +1,104 @@
+/* TimeRangePicker — start and end wheels side by side in one metal panel */
+.ml-timerange__trigger {
+  gap: 6px;
+}
+
+/* In a tight field only the end (and its 隔日 note) gives way */
+.ml-timerange__trigger > span:first-child {
+  flex: none;
+}
+
+.ml-timerange__next-day {
+  margin-left: 2px;
+  color: var(--ml-accent-text);
+  font-size: 0.75em;
+}
+
+.ml-timerange__panel {
+  display: flex;
+}
+
+.ml-timerange__body {
+  display: flex;
+  flex-direction: column;
+}
+
+.ml-timerange__groups {
+  display: flex;
+  align-items: center;
+}
+
+.ml-timerange__group {
+  display: flex;
+  flex-direction: column;
+}
+
+.ml-timerange__label {
+  margin: 12px 12px 0;
+  font-family: var(--ml-font-mono);
+  font-size: var(--ml-text-xs);
+  letter-spacing: var(--ml-tracking-hud);
+  color: var(--ml-text-dim);
+}
+
+.ml-timerange__group:focus-within .ml-timerange__label {
+  color: var(--ml-accent-text);
+}
+
+.ml-timerange__arrow {
+  width: 14px;
+  height: 14px;
+  flex: none;
+  margin-top: 24px;
+  color: var(--ml-text-dim);
+}
+
+.ml-timerange__status {
+  margin: 0;
+  padding: 0 12px 8px;
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-mono);
+  font-size: 0.6875rem;
+  text-align: center;
+}
+
+/* Narrow screens: presets above, start above end, shorter wheels */
+@media (max-width: 560px) {
+  .ml-timerange__panel {
+    flex-direction: column;
+  }
+
+  .ml-timerange__presets {
+    display: flex;
+    flex-wrap: wrap;
+    border-right: 0;
+    border-bottom: 1px dashed var(--ml-line);
+  }
+
+  .ml-timerange__presets .ml-daterange__preset {
+    width: auto;
+  }
+
+  .ml-timerange__groups {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .ml-timerange__arrow {
+    display: none;
+  }
+
+  .ml-timerange__group + .ml-timerange__arrow + .ml-timerange__group {
+    border-top: 1px dashed var(--ml-line);
+  }
+
+  .ml-timerange__group .ml-time {
+    justify-content: center;
+  }
+
+  .ml-timerange__group .ml-time__col {
+    height: 160px;
+    padding: 64px 0;
+    background-position: 0 64px;
+  }
+}

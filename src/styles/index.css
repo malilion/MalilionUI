@@ -41,6 +41,7 @@
 @import './components/timeline.css';
 @import './components/tree.css';
 @import './components/time.css';
+@import './components/time-range.css';
 @import './components/image.css';
 @import './components/carousel.css';
 @import './components/rate.css';

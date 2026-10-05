@@ -25,7 +25,8 @@ import { cx, describedBy, useControllable } from './utils'
 import { useFormField } from './validation'
 
 const NO_RANGE: MlDateRange = [null, null]
-const cleanId = (id: string) => id.replace(/[^\w-]/g, '')
+/** @internal */
+export const cleanId = (id: string) => id.replace(/[^\w-]/g, '')
 
 export interface FocusHandle {
   focus(): void
@@ -264,7 +265,8 @@ export const Calendar = forwardRef<FocusHandle, CalendarProps>(function Calendar
 
 type Placement = 'bottom-start' | 'bottom-end'
 
-interface PickerBase {
+/** @internal Props every field picker shares (also used by time-range.tsx). */
+export interface PickerBase {
   label?: ReactNode
   hint?: string
   error?: string
@@ -278,8 +280,8 @@ interface PickerBase {
   className?: string
 }
 
-/** Open state, outside-click closing, the dropdown transition and focus-on-open. */
-function usePopup(disabled: boolean | undefined, onOpened: () => void) {
+/** @internal Open state, outside-click closing, the dropdown transition and focus-on-open. */
+export function usePopup(disabled: boolean | undefined, onOpened: () => void) {
   const [open, setOpen] = useState(false)
   const root = useRef<HTMLDivElement>(null)
   const trigger = useRef<HTMLButtonElement>(null)
@@ -304,9 +306,10 @@ function usePopup(disabled: boolean | undefined, onOpened: () => void) {
   }, [open, transition.mounted])
   return { open, show, hide, root, trigger, transition }
 }
-type Popup = ReturnType<typeof usePopup>
+export type Popup = ReturnType<typeof usePopup>
 
-interface FrameProps extends PickerBase {
+/** @internal */
+export interface FrameProps extends PickerBase {
   pop: Popup
   controlId: string
   rootClass: string
@@ -323,7 +326,8 @@ interface FrameProps extends PickerBase {
   panel: ReactNode
 }
 
-function PickerFrame(p: FrameProps) {
+/** @internal The field + trigger + popup panel shell (also used by time-range.tsx). */
+export function PickerFrame(p: FrameProps) {
   const { pop, controlId, disabled, hint } = p
   const { error, required } = useFormField(p)
   const panelId = `${controlId}-panel`
@@ -645,7 +649,8 @@ export function DateRangePicker({
 
 type Unit = 'h' | 'm' | 's'
 
-interface TimeColumnsProps {
+/** @internal */
+export interface TimeColumnsProps {
   value: TimeParts | null
   seconds?: boolean
   minuteStep?: number
@@ -656,7 +661,8 @@ interface TimeColumnsProps {
   onChange: (value: TimeParts) => void
 }
 
-const TimeColumns = forwardRef<FocusHandle, TimeColumnsProps>(function TimeColumns({ value, seconds, minuteStep = 1, secondStep = 1, min = 0, max = 86399, onChange }, ref) {
+/** @internal The hour / minute / second wheels (also used by time-range.tsx). */
+export const TimeColumns = forwardRef<FocusHandle, TimeColumnsProps>(function TimeColumns({ value, seconds, minuteStep = 1, secondStep = 1, min = 0, max = 86399, onChange }, ref) {
   const loc = useLocale()
   const lists = useRef<(HTMLUListElement | null)[]>([])
   const columns: { unit: Unit; label: string; values: number[] }[] = [
@@ -752,7 +758,8 @@ const TimeColumns = forwardRef<FocusHandle, TimeColumnsProps>(function TimeColum
   )
 })
 
-function TimeFooter({ onNow, onConfirm }: { onNow: () => void; onConfirm: () => void }) {
+/** @internal */
+export function TimeFooter({ onNow, onConfirm }: { onNow: () => void; onConfirm: () => void }) {
   const loc = useLocale()
   return (
     <div className="ml-timepicker__footer">
