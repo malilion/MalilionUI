@@ -30,6 +30,22 @@ export interface MlAvatarGroupItem {
   ring?: MlAvatarRing
   lion?: boolean
 }
+/** How MlUpload lists files: rows of names, or a wall of thumbnail cards. */
+export type MlUploadListType = 'text' | 'picture'
+/** Why MlUpload turned a file away. */
+export type MlUploadRejectReason = 'type' | 'size' | 'count'
+export type MlUploadStatus = 'uploading' | 'done' | 'error'
+/**
+ * A File in MlUpload's v-model. Plain Files work as-is; set status / percent /
+ * error on one (and emit a new array) to show a progress or error overlay on its card.
+ */
+export type MlUploadFile = File & {
+  status?: MlUploadStatus
+  /** 0–100, shown while status is 'uploading'. */
+  percent?: number
+  /** Message on a failed card (falls back to "上傳失敗"). */
+  error?: string
+}
 export type MlTextTone = 'default' | 'dim' | 'gold' | 'tech' | 'success' | 'warning' | 'danger'
 export type MlTextSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl'
 export type MlPlacement = 'top' | 'bottom' | 'left' | 'right'
