@@ -401,6 +401,29 @@ export interface MlLocale {
     clearAll: string
     applied: (n: number) => string
   }
+  proTable: {
+    create: string
+    edit: string
+    delete: string
+    reload: string
+    actions: string
+    createTitle: string
+    editTitle: string
+    save: string
+    cancel: string
+    deleteTitle: string
+    confirmDelete: (n: number) => string
+    batchDelete: (n: number) => string
+    selected: (n: number) => string
+    clearSelection: string
+    total: (n: number) => string
+    pageSize: string
+    perPage: (n: number) => string
+    loadError: string
+    saveError: string
+    deleteError: string
+    retry: string
+  }
   query: {
     label: string
     and: string
@@ -1087,6 +1110,29 @@ export const zhTW: MlLocale = {
     clear: (f) => `清除「${f}」`,
     clearAll: '全部清除',
     applied: (n) => `已套用 ${n} 個篩選`,
+  },
+  proTable: {
+    create: '新增',
+    edit: '編輯',
+    delete: '刪除',
+    reload: '重新整理',
+    actions: '操作',
+    createTitle: '新增資料',
+    editTitle: '編輯資料',
+    save: '儲存',
+    cancel: '取消',
+    deleteTitle: '刪除資料',
+    confirmDelete: (n) => (n === 1 ? '確定刪除這筆資料？刪除後無法復原。' : `確定刪除選取的 ${n} 筆？刪除後無法復原。`),
+    batchDelete: (n) => `刪除選取（${n}）`,
+    selected: (n) => `已選取 ${n} 筆`,
+    clearSelection: '取消選取',
+    total: (n) => `共 ${n.toLocaleString('zh-TW')} 筆`,
+    pageSize: '每頁筆數',
+    perPage: (n) => `${n} 筆／頁`,
+    loadError: '資料載入失敗',
+    saveError: '儲存失敗，請再試一次',
+    deleteError: '刪除失敗，請再試一次',
+    retry: '重試',
   },
   query: {
     label: '查詢條件',
@@ -1874,6 +1920,29 @@ export const en: MlLocale = {
     clear: (f) => `Clear “${f}”`,
     clearAll: 'Clear all',
     applied: (n) => `${n} filter${n === 1 ? '' : 's'} applied`,
+  },
+  proTable: {
+    create: 'New',
+    edit: 'Edit',
+    delete: 'Delete',
+    reload: 'Refresh',
+    actions: 'Actions',
+    createTitle: 'New record',
+    editTitle: 'Edit record',
+    save: 'Save',
+    cancel: 'Cancel',
+    deleteTitle: 'Delete',
+    confirmDelete: (n) => (n === 1 ? 'Delete this record? This can’t be undone.' : `Delete the ${n} selected records? This can’t be undone.`),
+    batchDelete: (n) => `Delete selected (${n})`,
+    selected: (n) => `${n} selected`,
+    clearSelection: 'Clear selection',
+    total: (n) => `${n.toLocaleString('en')} record${n === 1 ? '' : 's'}`,
+    pageSize: 'Rows per page',
+    perPage: (n) => `${n} / page`,
+    loadError: 'Couldn’t load the data',
+    saveError: 'Couldn’t save. Please try again.',
+    deleteError: 'Couldn’t delete. Please try again.',
+    retry: 'Retry',
   },
   query: {
     label: 'Query',
