@@ -511,6 +511,26 @@
     "components/progress.css",
     "components/paw.css"
   ],
+  "MlProTable": [
+    "components/button.css",
+    "components/field.css",
+    "components/switch.css",
+    "components/checkbox.css",
+    "components/modal.css",
+    "components/alert.css",
+    "components/loader.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/table.css",
+    "components/navigation.css",
+    "components/controls.css",
+    "components/calendar.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/effects.css",
+    "components/filter.css",
+    "components/pro-table.css"
+  ],
   "MlPullRefresh": [
     "components/paw.css",
     "components/pull-swipe.css"

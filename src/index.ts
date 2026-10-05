@@ -119,6 +119,7 @@ import MlPinInput from './components/MlPinInput.vue'
 import MlPopconfirm from './components/MlPopconfirm.vue'
 import MlPopover from './components/MlPopover.vue'
 import MlProgress from './components/MlProgress.vue'
+import MlProTable from './components/MlProTable.vue'
 import MlPullRefresh from './components/MlPullRefresh.vue'
 import MlQRCode from './components/MlQRCode.vue'
 import MlQueryBuilder from './components/MlQueryBuilder.vue'
@@ -311,6 +312,7 @@ const components = {
   MlPopconfirm,
   MlPopover,
   MlProgress,
+  MlProTable,
   MlPullRefresh,
   MlQRCode,
   MlQueryBuilder,
@@ -526,6 +528,7 @@ export {
   MlPopconfirm,
   MlPopover,
   MlProgress,
+  MlProTable,
   MlPullRefresh,
   MlQRCode,
   MlQueryBuilder,
@@ -733,6 +736,8 @@ export { PLAYBACK_RATES, formatMediaTime, playerKeyAction } from './components/p
 export type { MlMediaSource, MlMediaTrack, PlayerAction } from './components/player'
 export { matchFilters, filterChips, filterText, isEmptyFilter, clearFilter, evaluateQuery, queryToText, createRule, createGroup, countRules, isQueryGroup, isRuleComplete, QUERY_OPERATORS } from './components/filter'
 export type { MlFilterField, MlFilterFieldType, MlFilterValue, FilterChip, MlQueryField, MlQueryFieldType, MlQueryOperator, MlQueryRule, MlQueryGroup, MlQueryNode } from './components/filter'
+export { localQuery, sortRows, clampPage, proFilterFields, proFormFields, proFormRules, proFormValues, proRequestParams, proTableColumns, createRequestGuard } from './components/pro-table'
+export type { MlProTableColumn, MlProTableAction, MlProTableMode, MlProTableRequest, MlProTableRequestParams, MlProTableResult, MlProFormConfig, MlProFilterConfig, MlProFormField, MlProFormFieldType } from './components/pro-table'
 export { waterfallLayout, boxStats, boxLayout, bulletRows, quantile } from './components/charts-stat'
 export type { MlWaterfallDatum, WaterfallBar, MlBoxDatum, MlBoxStats, MlBulletDatum, BulletRow } from './components/charts-stat'
 export { formatTwAddress, parseTwAddress, formatStreet, twZipStatus, chineseNumeral, isTwAddressComplete, emptyTaiwanAddress } from './components/address'
@@ -987,6 +992,7 @@ declare module 'vue' {
     MlPopconfirm: typeof MlPopconfirm
     MlPopover: typeof MlPopover
     MlProgress: typeof MlProgress
+    MlProTable: typeof MlProTable
     MlPullRefresh: typeof MlPullRefresh
     MlQRCode: typeof MlQRCode
     MlQueryBuilder: typeof MlQueryBuilder
