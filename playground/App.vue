@@ -8,10 +8,16 @@ import QuickStartPage from './pages/QuickStartPage.vue'
 import TokensPage from './pages/TokensPage.vue'
 import ReactPage from './pages/ReactPage.vue'
 import { route } from './router'
+import { framework } from './framework'
 import { groups, pageById } from './registry'
 
 const page = computed(() => pageById.get(route.value) ?? pageById.get('home')!)
 const group = computed(() => groups.find((g) => g.id === page.value.group))
+
+const frameworks = [
+  { label: 'Vue', value: 'vue' },
+  { label: 'React', value: 'react' },
+]
 
 /* Mobile drawer */
 const drawer = ref(false)
@@ -46,6 +52,7 @@ watch(
           <strong>{{ page.title }}</strong>
           <span class="crumbs__zh">{{ page.zh }}</span>
         </p>
+        <MlSegmented v-model="framework" :options="frameworks" size="sm" label="程式碼框架" class="framework-switch" />
         <MlThemeToggle label="日光模式" class="theme-switch" />
       </header>
 
@@ -145,9 +152,13 @@ body {
   text-overflow: ellipsis;
 }
 
-.theme-switch {
+.framework-switch {
   flex: none;
   margin-left: auto;
+}
+
+.theme-switch {
+  flex: none;
   font-size: var(--ml-text-xs);
 }
 

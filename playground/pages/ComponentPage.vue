@@ -5,6 +5,11 @@ import CodeBlock from '../components/CodeBlock.vue'
 import DemoBlock from '../components/DemoBlock.vue'
 import PageHeader from '../components/PageHeader.vue'
 import { groups, type PageDef } from '../registry'
+import { framework } from '../framework'
+import { reactProse, reactUsage } from '../react-docs'
+import { reactSetups } from '../react-pages'
+import reactApi from 'virtual:react-api'
+import reactExamples from 'virtual:react-examples'
 
 const props = defineProps<{ page: PageDef }>()
 
@@ -19,6 +24,11 @@ const examples = computed(() =>
   }),
 )
 
+const reactComponents = new Set(reactApi.components)
+const isReact = computed(() => framework.value === 'react')
+const usage = computed(() => (props.page.usage && isReact.value ? reactUsage(props.page.usage, reactComponents) : props.page.usage))
+const setup = computed(() => (isReact.value ? reactSetups[props.page.id] : props.page.setup))
+
 const groupLabel = computed(() => {
   const group = groups.find((g) => g.id === props.page.group)
   return group ? `${group.en} / ${group.label}` : ''
@@ -31,29 +41,30 @@ const groupLabel = computed(() => {
       :eyebrow="groupLabel"
       :title="page.title"
       :zh="page.zh"
-      :desc="page.desc"
+      :desc="isReact ? reactProse(page.desc, reactComponents) : page.desc"
       :is-new="page.isNew"
     >
-      <CodeBlock v-if="page.usage" :code="page.usage" lang="ts" filename="import" />
+      <CodeBlock v-if="usage" :code="usage" lang="ts" filename="import" />
     </PageHeader>
 
-    <section v-if="page.setup" class="setup">
-      <h2 class="setup__title">{{ page.setup.title }}</h2>
-      <CodeBlock :code="page.setup.code" :filename="page.setup.filename" :lang="page.setup.lang ?? 'vue'" />
+    <section v-if="setup" class="setup">
+      <h2 class="setup__title">{{ setup.title }}</h2>
+      <CodeBlock :code="setup.code" :filename="setup.filename" :lang="setup.lang ?? 'vue'" />
     </section>
 
     <DemoBlock
       v-for="example in examples"
       :key="example.file"
       :title="example.title"
-      :desc="example.desc"
+      :desc="isReact && example.desc ? reactProse(example.desc, reactComponents) : example.desc"
       :file="example.file"
       :component="example.component"
       :source="example.source"
       :block="example.block"
+      :react="isReact ? (reactExamples[example.file] ?? null) : undefined"
     />
 
-    <ApiTables v-if="page.api" :api="page.api" />
+    <ApiTables v-if="page.api" :api="page.api" :react="isReact ? reactApi : undefined" />
   </article>
 </template>
 
