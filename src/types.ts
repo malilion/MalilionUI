@@ -98,6 +98,36 @@ export interface MlTableColumn<Row = Record<string, unknown>> {
   fixed?: 'left' | 'right'
   /** Cut long text with "…" (full text in a tooltip). */
   ellipsis?: boolean
+  /**
+   * Edit the cell in place (double-click, or Enter / F2 on the focused cell).
+   * `true` is a text box. The table never changes `rows`: it reports the edit.
+   */
+  editable?: boolean | 'text' | 'number' | 'select'
+  /** Choices for a `select` editor; also shown as the cell text. */
+  options?: MlTableOption[]
+  /** Return a message to reject the new value (the editor stays open and shows it). */
+  validate?: (value: unknown, row: Row) => string | undefined
+  /** Drag (or arrow-key) handle on the header's right edge. */
+  resizable?: boolean
+  /** Narrowest width in px while resizing (default 48). */
+  minWidth?: number
+  /** Widest width in px while resizing. */
+  maxWidth?: number
+}
+
+export interface MlTableOption {
+  value: string | number
+  label: string
+}
+
+/** What a committed inline edit reports (Vue `cell-edit`, React `onCellEdit`). */
+export interface MlTableCellEdit<Row = Record<string, unknown>> {
+  row: Row
+  key: string
+  value: unknown
+  oldValue: unknown
+  /** Position among the rows on screen. */
+  rowIndex: number
 }
 
 export interface MlTableSort {

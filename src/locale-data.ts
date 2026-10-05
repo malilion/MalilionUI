@@ -124,6 +124,13 @@ export interface MlLocale {
     collapse: string
     expandRow: (n: number) => string
     total: (n: number) => string
+    /** Accessible name of an inline cell editor. */
+    edit: (column: string) => string
+    /** A committed edit waiting for new rows. */
+    saving: string
+    invalidNumber: string
+    /** Accessible name of a column's resize handle. */
+    resize: (column: string) => string
   }
   transfer: {
     titles: [string, string]
@@ -722,6 +729,10 @@ export const zhTW: MlLocale = {
     collapse: '收合',
     expandRow: (n) => `展開第 ${n} 列詳細資料`,
     total: (n) => `共 ${n} 筆`,
+    edit: (column) => `編輯 ${column}`,
+    saving: '儲存中',
+    invalidNumber: '請輸入數字',
+    resize: (column) => `調整「${column}」欄寬`,
   },
   transfer: {
     titles: ['可選', '已選'],
@@ -1458,6 +1469,10 @@ export const en: MlLocale = {
     collapse: 'Collapse',
     expandRow: (n) => `Show details for row ${n}`,
     total: (n) => (n === 1 ? '1 row' : `${n} rows`),
+    edit: (column) => `Edit ${column}`,
+    saving: 'Saving',
+    invalidNumber: 'Enter a number',
+    resize: (column) => `Resize column "${column}"`,
   },
   transfer: {
     titles: ['Available', 'Selected'],
