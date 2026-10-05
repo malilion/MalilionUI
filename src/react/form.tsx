@@ -268,13 +268,15 @@ export interface RadioGroupProps {
   variant?: 'default' | 'card'
   direction?: 'row' | 'column'
   children?: ReactNode
+  /** Names the group by another element, e.g. an outer <Field> label. */
+  'aria-labelledby'?: string
 }
 
-export function RadioGroup({ value, defaultValue, onChange, options, label, name, disabled, variant = 'default', direction = 'row', children }: RadioGroupProps) {
+export function RadioGroup({ value, defaultValue, onChange, options, label, name, disabled, variant = 'default', direction = 'row', children, 'aria-labelledby': labelledBy }: RadioGroupProps) {
   const autoName = `ml-radio-${useId().replace(/[^\w-]/g, '')}`
   const [current, set] = useControllable<RadioValue | undefined>(value, defaultValue, onChange as (v: RadioValue | undefined) => void)
   return (
-    <fieldset className={cx('ml-radio-group', `ml-radio-group--${variant}`, `ml-radio-group--${direction}`)} disabled={disabled}>
+    <fieldset className={cx('ml-radio-group', `ml-radio-group--${variant}`, `ml-radio-group--${direction}`)} disabled={disabled} aria-labelledby={labelledBy}>
       {label && <legend className="ml-radio-group__label">{label}</legend>}
       <div className="ml-radio-group__items">
         <RadioCtx.Provider value={{ name: name ?? autoName, value: current, disabled, variant, select: set }}>

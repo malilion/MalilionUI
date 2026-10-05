@@ -560,6 +560,25 @@
   "MlScheduler": [
     "components/scheduler.css"
   ],
+  "MlSchemaForm": [
+    "components/button.css",
+    "components/field.css",
+    "components/switch.css",
+    "components/checkbox.css",
+    "components/paw.css",
+    "components/radio.css",
+    "components/dropdown.css",
+    "components/controls.css",
+    "components/calendar.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/effects.css",
+    "components/region.css",
+    "components/checkbox-group.css",
+    "components/mask.css",
+    "components/address.css",
+    "components/schema-form.css"
+  ],
   "MlScratchCard": [
     "components/paw.css",
     "components/effects.css",
@@ -798,6 +817,26 @@
   ],
   "MlWatermark": [
     "components/utilities.css"
+  ],
+  "MlWizard": [
+    "components/button.css",
+    "components/field.css",
+    "components/switch.css",
+    "components/checkbox.css",
+    "components/paw.css",
+    "components/radio.css",
+    "components/dropdown.css",
+    "components/navigation.css",
+    "components/controls.css",
+    "components/calendar.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/effects.css",
+    "components/region.css",
+    "components/checkbox-group.css",
+    "components/mask.css",
+    "components/address.css",
+    "components/schema-form.css"
   ],
   "MlZhuyin": [
     "components/zhuyin.css"
