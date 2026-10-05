@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { lionAvatarUrl, lionFullUrl, type MlAvatarStatus, type MlTableSort } from '@malilion/ui'
+import { lionAvatarUrl, lionFullUrl, type MlAvatarStatus, type MlSchedulerEvent, type MlTableSort, type MlTaiwanAddressValue } from '@malilion/ui'
 import MlToastCard from '../src/components/MlToastCard.vue'
 import type { MlToastItem } from '../src/toast'
 
@@ -8,6 +8,43 @@ import type { MlToastItem } from '../src/toast'
 // Every panel is a [data-shot] element captured on its own.
 
 const mailIcon = 'M3 6h18v12H3zM3 6l9 7 9-7'
+
+/* v0.14 — Taiwan, lists, data & workflow */
+const v14Day = new Date(2026, 9, 5)
+const v14Now = new Date(2026, 9, 7, 14, 20)
+const v14At = (day: number, hour: number, minute = 0) => new Date(2026, 9, 4 + day, hour, minute)
+const v14Events: MlSchedulerEvent[] = [
+  { id: 'standup', title: '晨會', start: v14At(1, 9), end: v14At(1, 9, 30), tone: 'tech', location: '會議室 A' },
+  { id: 'review', title: '設計審查', start: v14At(1, 10), end: v14At(1, 12), tone: 'gold', location: '獅子廳' },
+  { id: 'pair', title: '結對寫程式', start: v14At(1, 11), end: v14At(1, 13), tone: 'bean' },
+  { id: 'lunch', title: '午餐', start: v14At(2, 12), end: v14At(2, 13), tone: 'success' },
+  { id: 'release', title: '發版 v0.14', start: v14At(3, 14), end: v14At(3, 16, 30), tone: 'danger', location: 'CI' },
+  { id: 'demo', title: 'Demo Day', start: v14At(4, 10), end: v14At(4, 11, 30), tone: 'gold' },
+  { id: 'gym', title: '健身', start: v14At(4, 15), end: v14At(4, 16, 30), tone: 'steel' },
+  { id: 'trip', title: '台南出差', start: v14At(5, 0), end: v14At(5, 0), allDay: true, tone: 'bean' },
+]
+const v14Contacts = [
+  '陳大文', '林美玲', '黃志明', '張雅婷', '李建宏', '王小明', '吳佩珊', '劉家豪', '蔡淑芬', '楊俊傑', '許文欣', '鄭宇翔',
+  '沈佳穎', '安以樂', '歐陽晴', '白子軒', '馬可', '方宇翔', 'Leo', 'Nala',
+].map((label, i) => ({ label, desc: i % 3 ? undefined : '碼力獅工作室' }))
+const v14Team = ['碼力獅', 'Leo', 'Nala', '小虎', 'Simba', '阿金', 'Kiara', '大橘'].map((name, i) => ({
+  name,
+  lion: i === 0,
+  ring: (['gold', 'steel', 'tech'] as const)[i % 3],
+}))
+const v14Waterfall = [
+  { label: '期初', value: 1200, total: true },
+  { label: '營收', value: 860 },
+  { label: '服務', value: 240 },
+  { label: '成本', value: -520 },
+  { label: '人事', value: -380 },
+  { label: '期末', total: true },
+]
+const v14Address: MlTaiwanAddressValue = { county: '臺北市', district: '中正區', zip: '100', road: '重慶南路', section: '1', number: '122' }
+const v14Poem: [string, string][] = [
+  ['床前明月光，', 'ㄔㄨㄤˊ ㄑㄧㄢˊ ㄇㄧㄥˊ ㄩㄝˋ ㄍㄨㄤ'],
+  ['疑是地上霜。', 'ㄧˊ ㄕˋ ㄉㄧˋ ㄕㄤˋ ㄕㄨㄤ'],
+]
 
 /* v0.7 — dev kit */
 const v7Today = new Date(2026, 9, 3)
@@ -1006,6 +1043,66 @@ const themes = [
       </div>
     </section>
 
+    <!-- ───────────── Taiwan (v0.14) ───────────── -->
+    <section data-shot="taiwan" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">20 // Built for Taiwan</p>
+          <h2 class="shot__title">民國年、手機條碼、注音與地址</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v14-tw">
+        <div class="stack">
+          <MlCalendar :model-value="v14Day" calendar="roc" />
+          <MlDatePicker :model-value="v14Day" label="出生日期" calendar="roc" />
+        </div>
+        <div class="stack">
+          <MlCard eyebrow="E-invoice carrier" title="手機條碼載具" class="v14-card">
+            <div class="v14-center"><MlBarcode value="/ABC+123" format="code39" :height="64" /></div>
+          </MlCard>
+          <MlBarcode value="4710088430120" format="ean13" :module="1.6" :height="52">EAN-13 · 471 台灣商品</MlBarcode>
+          <div class="v14-masks">
+            <MlInputMask :model-value="'0912345678'" preset="mobile" label="手機" />
+            <MlInputMask :model-value="'A123456789'" preset="id" label="身分證" />
+          </div>
+        </div>
+        <div class="stack">
+          <div class="v14-poem">
+            <p class="v14-poem__title"><MlZhuyin text="靜夜思" zhuyin="ㄐㄧㄥˋ ㄧㄝˋ ㄙ" /></p>
+            <p v-for="[text, zy] in v14Poem" :key="text"><MlZhuyin :text="text" :zhuyin="zy" /></p>
+          </div>
+          <MlTaiwanAddress :model-value="v14Address" label="收件地址" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ───────────── Workflow (v0.14) ───────────── -->
+    <section data-shot="workflow" class="shot">
+      <header class="shot__head">
+        <div>
+          <p class="shot__kicker">21 // Lists, data &amp; workflow</p>
+          <h2 class="shot__title">索引列、行程表、頭像群組與瀑布圖</h2>
+        </div>
+        <span class="shot__brand"><MlMascot :size="30" frame="ring" title="" />MALILION<b>UI</b></span>
+      </header>
+      <div class="v14-flow">
+        <MlIndexBar :items="v14Contacts" :height="470" />
+        <MlScheduler :events="v14Events" :date="v14Day" :now="v14Now" :start-hour="8" :end-hour="18" :height="470" :scroll-to-hour="9" />
+        <div class="stack">
+          <MlCard eyebrow="Team" title="專案成員" class="v14-card">
+            <MlAvatarGroup :items="v14Team" :max="5" :total="32" />
+            <p class="v14-type">
+              <MlText tone="dim">部署代號</MlText> <MlText mono copyable>LION-0014</MlText>
+            </p>
+          </MlCard>
+          <MlCard eyebrow="Waterfall" title="本季損益（萬元）" class="v14-card">
+            <MlWaterfallChart :data="v14Waterfall" :height="210" :show-values="false" />
+          </MlCard>
+        </div>
+      </div>
+    </section>
+
     <div data-shot="logo" class="logo-shot">
       <MlMascot :size="132" frame="ring" title="碼力獅" />
     </div>
@@ -1647,6 +1744,53 @@ body {
   margin-top: 26px;
 }
 /* v0.7 panel */
+/* v0.14 */
+.v14-tw {
+  display: grid;
+  grid-template-columns: 330px 1fr 1fr;
+  gap: 26px;
+  align-items: start;
+}
+
+.v14-card {
+  min-width: 0;
+}
+
+.v14-center {
+  display: grid;
+  justify-items: center;
+}
+
+.v14-masks {
+  display: grid;
+  gap: 14px;
+}
+
+.v14-poem {
+  font-size: 2rem;
+  line-height: 2;
+}
+
+.v14-poem p {
+  margin: 0;
+}
+
+.v14-poem__title {
+  color: var(--ml-accent-text);
+  font-weight: 700;
+}
+
+.v14-flow {
+  display: grid;
+  grid-template-columns: 250px 1fr 270px;
+  gap: 22px;
+  align-items: start;
+}
+
+.v14-type {
+  margin: 14px 0 0;
+}
+
 .v7-grid {
   display: grid;
   grid-template-columns: 1.25fr 1fr;

@@ -2,7 +2,7 @@
 //   npm run screenshots
 // Starts the playground dev server, opens playground/shots.html in the local
 // Google Chrome (via playwright-core, no browser download) and captures each
-// [data-shot] panel, plus a full-page shot of the docs site.
+// [data-shot] panel, plus full-page shots of the docs site (Vue, and React mode).
 //
 //   SHOTS=pickers,overlays npm run screenshots   only these panels (no docs-site shot)
 //   CHROME_PATH=/path/to/chromium                use that browser instead of Google Chrome
@@ -29,6 +29,9 @@ const browser = await chromium.launch(
   process.env.CHROME_PATH ? { executablePath: process.env.CHROME_PATH, proxy } : { channel: 'chrome', proxy },
 )
 
+// The first load compiles the whole site on demand (and converts the React examples): give it time.
+const LOAD_TIMEOUT = 300_000
+
 async function ready(page) {
   await page.evaluate(() => document.fonts.ready)
   // Let entrance animations (paw pops, toast slide-ins) settle.
@@ -38,7 +41,7 @@ async function ready(page) {
 try {
   /* README panels */
   const page = await browser.newPage({ viewport: { width: 1320, height: 1000 }, deviceScaleFactor: 2 })
-  await page.goto(`${base}shots.html`)
+  await page.goto(`${base}shots.html`, { timeout: LOAD_TIMEOUT })
   await ready(page)
 
   // Live states worth showing, set up right before each capture so they
@@ -102,12 +105,24 @@ try {
   /* Docs site */
   if (!only || only.has('docs-site')) {
     const docs = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
-    await docs.goto(`${base}#/table`)
+    await docs.goto(`${base}#/table`, { timeout: LOAD_TIMEOUT })
     await ready(docs)
     await docs.locator('.demo tbody tr').nth(1).hover()
     await docs.waitForTimeout(500)
     await docs.screenshot({ path: `${outDir}docs-site.png` })
     console.log('docs/images/docs-site.png')
+  }
+
+  /* Docs site in React mode, with an example's converted source open */
+  if (!only || only.has('docs-react')) {
+    const docs = await browser.newPage({ viewport: { width: 1440, height: 900 }, deviceScaleFactor: 2 })
+    await docs.goto(`${base}#/date-picker?fw=react`, { timeout: LOAD_TIMEOUT })
+    await ready(docs)
+    await docs.locator('.demo').first().getByRole('button', { name: '程式碼' }).click()
+    await docs.locator('.ml-modal__panel').waitFor()
+    await docs.waitForTimeout(700)
+    await docs.screenshot({ path: `${outDir}docs-react.png` })
+    console.log('docs/images/docs-react.png')
   }
 } finally {
   await browser.close()
