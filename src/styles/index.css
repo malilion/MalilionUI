@@ -111,5 +111,6 @@
 @import './components/player.css';
 @import './components/charts-stat.css';
 @import './components/filter.css';
+@import './components/address.css';
 @import './components/pull-swipe.css';
 @import './components/sheet.css';

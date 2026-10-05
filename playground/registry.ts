@@ -889,6 +889,35 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     ],
   },
   {
+    id: 'taiwan-address',
+    title: 'TaiwanAddress',
+    zh: '台灣地址',
+    group: 'form',
+    isNew: true,
+    desc: '完整的台灣地址欄位：縣市與鄉鎮市區（沿用 MlTaiwanRegion）、3+3 郵遞區號，以及路、段、巷、弄、號、樓、之。郵遞區號前 3 碼會依行政區自動帶入，換行政區時保留你填的後 3 碼，前 3 碼對不上會提示。下方即時組出完整地址，也能同時顯示中華郵政格式的英文地址。把整串地址貼到「路／街」欄位會自動拆解填好。parseTwAddress() 和 formatTwAddress() 也可以單獨使用。3+3 碼對應到路段，資料量很大，所以後 3 碼由使用者填寫，不會自動查詢。',
+    usage: `import { MlTaiwanAddress, formatTwAddress, parseTwAddress, type MlTaiwanAddressValue } from '@malilion/ui'`,
+    examples: [
+      { file: 'taiwan-address/basic', title: '收件地址', desc: 'english 會同時顯示英文地址（路名照你輸入的文字）。', block: true },
+      { file: 'taiwan-address/paste', title: '貼上自動拆解', desc: '村里鄰、大樓名稱等拆不進欄位的部分會放在 rest。', block: true },
+    ],
+    api: [
+      {
+        component: 'MlTaiwanAddress',
+        props: [
+          { name: 'v-model', desc: '地址（county / district / zip / road / section / lane / alley / number / floor / room）', type: 'MlTaiwanAddressValue' },
+          { name: 'zip', desc: '顯示郵遞區號欄位', type: 'boolean', default: 'true' },
+          { name: 'preview', desc: '在下方顯示完整地址', type: 'boolean', default: 'true' },
+          { name: 'english', desc: '同時顯示英文地址', type: 'boolean', default: 'false' },
+          { name: 'lang', desc: '縣市／鄉鎮市區名稱語言', type: `'zh' | 'en'`, default: '跟著語系' },
+          { name: 'include-islands', desc: '也列出釣魚臺、東沙、南沙', type: 'boolean', default: 'false' },
+          { name: 'size', desc: '尺寸', type: sizeType, default: `'md'` },
+          { name: 'label / hint / error / required / disabled', desc: '同 MlInput', type: '—' },
+        ],
+        events: [{ name: 'paste', desc: '貼上的整串地址被拆解時', type: '(parts: ParsedTaiwanAddress) => void' }],
+      },
+    ],
+  },
+  {
     id: 'tree-select',
     title: 'TreeSelect',
     zh: '樹狀選擇',

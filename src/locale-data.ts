@@ -325,6 +325,24 @@ export interface MlLocale {
     hint: string
     moved: (title: string, when: string) => string
   }
+  address: {
+    label: string
+    zip: string
+    zipHint: string
+    zipMismatch: string
+    zipInvalid: string
+    road: string
+    roadPlaceholder: string
+    section: string
+    lane: string
+    alley: string
+    number: string
+    floor: string
+    room: string
+    preview: string
+    english: string
+    pasteHint: string
+  }
   filter: {
     label: string
     search: string
@@ -939,6 +957,24 @@ export const zhTW: MlLocale = {
     allDay: '全天',
     hint: '方向鍵上下移動一格、左右換日，Shift + 上下調整結束時間；在空白處拖曳可以新增行程。',
     moved: (title, when) => `${title} 改到 ${when}`,
+  },
+  address: {
+    label: '地址',
+    zip: '郵遞區號',
+    zipHint: '前 3 碼依行政區自動帶入，可再補上後 3 碼',
+    zipMismatch: '郵遞區號前 3 碼和行政區不符',
+    zipInvalid: '郵遞區號是 3、5 或 6 碼數字',
+    road: '路／街',
+    roadPlaceholder: '例：重慶南路（可直接貼上整串地址）',
+    section: '段',
+    lane: '巷',
+    alley: '弄',
+    number: '號',
+    floor: '樓',
+    room: '之',
+    preview: '完整地址',
+    english: '英文地址',
+    pasteHint: '已自動拆解貼上的地址',
   },
   filter: {
     label: '篩選',
@@ -1657,6 +1693,24 @@ export const en: MlLocale = {
     allDay: 'All day',
     hint: 'Arrow up/down moves by one slot, left/right by a day; Shift + up/down changes the end. Drag on an empty slot to add an event.',
     moved: (title, when) => `${title} moved to ${when}`,
+  },
+  address: {
+    label: 'Address',
+    zip: 'Postal code',
+    zipHint: 'The first 3 digits follow the district; add the last 3 if you know them',
+    zipMismatch: 'The first 3 digits don’t match the district',
+    zipInvalid: 'Postal codes have 3, 5 or 6 digits',
+    road: 'Road / street',
+    roadPlaceholder: 'e.g. 重慶南路 (or paste a whole address)',
+    section: 'Sec.',
+    lane: 'Ln.',
+    alley: 'Aly.',
+    number: 'No.',
+    floor: 'F',
+    room: 'Unit',
+    preview: 'Full address',
+    english: 'In English',
+    pasteHint: 'Pasted address split into fields',
   },
   filter: {
     label: 'Filters',

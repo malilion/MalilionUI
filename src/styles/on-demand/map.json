@@ -660,6 +660,16 @@
     "components/form.css",
     "components/inputs-extra.css"
   ],
+  "MlTaiwanAddress": [
+    "components/field.css",
+    "components/paw.css",
+    "components/dropdown.css",
+    "components/combobox.css",
+    "components/form.css",
+    "components/region.css",
+    "components/mask.css",
+    "components/address.css"
+  ],
   "MlTaiwanRegion": [
     "components/field.css",
     "components/paw.css",
