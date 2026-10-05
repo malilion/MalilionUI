@@ -430,27 +430,6 @@ tr[aria-expanded='true'] .ml-table__tree-toggle svg {
   text-align: left;
 }
 
-/* Committed, waiting for the parent's new rows: dimmed, with a scanning line */
-.ml-table tbody td.ml-table__cell--pending {
-  color: var(--ml-text-muted);
-}
-
-.ml-table__cell--pending::before {
-  content: '';
-  position: absolute;
-  left: var(--_pad-x);
-  right: var(--_pad-x);
-  bottom: calc(var(--_pad-y) - 5px);
-  height: 1px;
-  background: linear-gradient(90deg, transparent, var(--ml-accent), transparent) 0 0 / 50% 100% no-repeat;
-  animation: ml-table-pending 1.1s linear infinite;
-}
-
-@keyframes ml-table-pending {
-  from { background-position: -100% 0; }
-  to { background-position: 200% 0; }
-}
-
 /* ── Column resizing ── */
 .ml-table__resizer {
   position: absolute;
@@ -499,10 +478,5 @@ tr[aria-expanded='true'] .ml-table__tree-toggle svg {
   .ml-table__cell--editable,
   .ml-table__resizer::after {
     transition: none;
-  }
-
-  .ml-table__cell--pending::before {
-    animation: none;
-    background-size: 100% 100%;
   }
 }

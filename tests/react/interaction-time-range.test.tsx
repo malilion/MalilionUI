@@ -134,3 +134,12 @@ describe('React TimeRangePicker', () => {
     expect(host.textContent).toContain('結束時間需晚於開始時間')
   })
 })
+
+describe('React entry', () => {
+  it('keeps the shared picker shell out of the public API', async () => {
+    const entry = await import('../../src/react')
+    for (const name of ['cleanId', 'usePopup', 'PickerFrame', 'TimeColumns', 'TimeFooter']) expect(entry).not.toHaveProperty(name)
+    expect(entry).toHaveProperty('TimePicker')
+    expect(entry).toHaveProperty('TimeRangePicker')
+  })
+})

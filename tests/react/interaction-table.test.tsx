@@ -131,7 +131,7 @@ describe('Table — inline editing', () => {
     { id: 2, name: 'Kiara', age: 1, role: 'cub' },
   ]
 
-  it('opens on double-click, commits on Enter, shows pending until new rows arrive', () => {
+  it('opens on double-click, commits on Enter, then shows rows as the parent gives them', () => {
     const onCellEdit = vi.fn()
     const onRowClick = vi.fn()
     const host = render(<Table columns={editCols} rows={editRows} onCellEdit={onCellEdit} onRowClick={onRowClick} hoverPaw={false} />)
@@ -147,12 +147,11 @@ describe('Table — inline editing', () => {
     key(input, 'Enter')
     expect(onCellEdit).toHaveBeenCalledWith({ row: editRows[0], key: 'name', value: 'Mufasa', oldValue: 'Simba', rowIndex: 0 })
     expect(host.querySelector('.ml-table__editor')).toBeNull()
-    expect(cell.classList).toContain('ml-table__cell--pending')
-    expect(cell.getAttribute('aria-busy')).toBe('true')
-    expect(cell.textContent).toContain('Mufasa')
+    // A parent that ignores the edit keeps the old value; one that applies it shows the new one.
+    expect(cell.textContent).toBe('Simba')
+    expect(cell.hasAttribute('aria-busy')).toBe(false)
     expect(document.activeElement).toBe(cell)
     act(() => root!.render(<Table columns={editCols} rows={[{ ...editRows[0], name: 'Mufasa' }, editRows[1]]} onCellEdit={onCellEdit} hoverPaw={false} />))
-    expect(host.querySelector('.ml-table__cell--pending')).toBeNull()
     expect(cellAt(host, 0, 0).textContent).toBe('Mufasa')
   })
 
@@ -192,7 +191,8 @@ describe('Table — inline editing', () => {
     pick(select, 'cub')
     act(() => select.blur())
     expect(onCellEdit).toHaveBeenLastCalledWith(expect.objectContaining({ key: 'role', value: 'cub', oldValue: 'king' }))
-    expect(cellAt(host, 0, 2).textContent).toContain('幼獅')
+    // rows weren't updated, so the cell still shows the old option's label.
+    expect(cellAt(host, 0, 2).textContent).toBe('國王')
     expect(cellAt(host, 1, 2).textContent).toBe('幼獅')
   })
 })
