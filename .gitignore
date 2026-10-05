@@ -5,3 +5,5 @@ dist-playground
 *.log
 scripts/.cache/
 promo/
+
+env.local
