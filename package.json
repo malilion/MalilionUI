@@ -14,7 +14,10 @@
     "lion",
     "dark-theme",
     "rich-text-editor",
-    "tiptap"
+    "tiptap",
+    "mcp",
+    "model-context-protocol",
+    "ai-agent"
   ],
   "type": "module",
   "license": "MIT",
@@ -68,20 +71,23 @@
   },
   "files": [
     "dist",
+    "mcp",
     "src/styles",
     "src/assets",
     "src/fonts"
   ],
   "scripts": {
     "dev": "vite --config playground/vite.config.ts",
-    "build": "node scripts/build-style-map.mjs --check && vite build && vue-tsc -p tsconfig.build.json && tsc -p tsconfig.react.build.json",
+    "build": "node scripts/build-style-map.mjs --check && npm run mcp:build && vite build && vue-tsc -p tsconfig.build.json && tsc -p tsconfig.react.build.json",
     "build:playground": "vite build --config playground/vite.config.ts",
     "typecheck": "vue-tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.react.json",
     "test": "vitest run",
     "screenshots": "node scripts/screenshots.mjs",
     "styles:map": "node scripts/build-style-map.mjs",
     "styles:check": "node scripts/check-on-demand.mjs",
-    "prepublishOnly": "npm run typecheck && npm test && npm run build"
+    "prepublishOnly": "npm run typecheck && npm test && npm run build",
+    "mcp:build": "node scripts/build-mcp-catalog.mjs",
+    "mcp": "node mcp/server.mjs"
   },
   "peerDependencies": {
     "@nuxt/kit": "^3.0.0 || ^4.0.0",
@@ -143,5 +149,8 @@
   },
   "publishConfig": {
     "access": "public"
+  },
+  "bin": {
+    "malilion-ui-mcp": "./mcp/server.mjs"
   }
 }

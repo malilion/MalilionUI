@@ -353,6 +353,22 @@ toast.success({ title: '部署完成', message: 'v0.2 已上線' })
 import type { MlButtonVariant, MlTableColumn, MlToastOptions, MlPawTone } from '@malilion/ui'
 ```
 
+## 給 AI Agent 用(MCP)
+
+`@malilion/ui` 內建 MCP server,讓 AI agent 查真實的 props、範例與 tokens,不再靠猜。不用額外安裝到專案:
+
+```bash
+claude mcp add malilion-ui -- npx -y -p @malilion/ui malilion-ui-mcp
+```
+
+其他工具(Cursor、VS Code、Claude Desktop…)在 MCP 設定裡填同一個指令:
+
+```json
+{ "mcpServers": { "malilion-ui": { "command": "npx", "args": ["-y", "-p", "@malilion/ui", "malilion-ui-mcp"] } } }
+```
+
+工具: `list_components`, `search_components` (English or 中文), `get_component` (props / events / slots, `framework: "react"` for React names and types), `get_example`, `get_tokens`, `get_setup` (vue / react / nuxt / css / on-demand). 本 repo 內的 `.mcp.json` 已經註冊好。
+
 ## 按需載入
 
 只想帶走用到的元件？搭配 [unplugin-vue-components](https://github.com/unplugin/unplugin-vue-components)，模板裡用到哪個元件，就只匯入那個元件和它需要的樣式（不必 `app.use`，也不必引入整份 `style.css`）：

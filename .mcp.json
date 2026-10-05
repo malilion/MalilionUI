@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "malilion-ui": {
+      "command": "sh",
+      "args": ["-c", "[ -f mcp/catalog.json ] || node scripts/build-mcp-catalog.mjs >&2; exec node mcp/server.mjs"]
+    }
+  }
+}
