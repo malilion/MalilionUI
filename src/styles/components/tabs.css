@@ -5,10 +5,21 @@
   min-width: 0;
 }
 
-.ml-tabs__list {
+/* The bar holds the scrolling strip plus the buttons that stay put beside it */
+.ml-tabs__bar {
   position: relative;
   display: flex;
+  min-width: 0;
+}
+
+.ml-tabs__list {
+  --ml-tabs-fade-start: 0px;
+  --ml-tabs-fade-end: 0px;
+  position: relative;
+  display: flex;
+  flex: 0 1 auto;
   gap: 4px;
+  min-width: 0;
   overflow-x: auto;
   scrollbar-width: none;
 }
@@ -17,7 +28,7 @@
   display: none;
 }
 
-.ml-tabs--line .ml-tabs__list {
+.ml-tabs--line .ml-tabs__bar {
   box-shadow: inset 0 -1px 0 var(--ml-line);
 }
 
@@ -115,6 +126,181 @@
   bottom: 4px;
   background: var(--ml-metal-gold-soft);
   clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+}
+
+/* Closable tabs: the tab and its × sit side by side in one box */
+.ml-tabs__item {
+  display: flex;
+  flex: none;
+  align-items: center;
+}
+
+.ml-tabs__item > .ml-tabs__tab {
+  padding-right: 6px;
+}
+
+.ml-tabs__close {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 20px;
+  height: 20px;
+  margin: 0 10px 0 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  opacity: 0.6;
+  cursor: pointer;
+  transition:
+    opacity var(--ml-dur) var(--ml-ease),
+    color var(--ml-dur) var(--ml-ease),
+    background-color var(--ml-dur) var(--ml-ease);
+}
+
+.ml-tabs__close svg {
+  width: 12px;
+  height: 12px;
+}
+
+.ml-tabs__item:hover .ml-tabs__close,
+.ml-tabs__item--active .ml-tabs__close {
+  opacity: 1;
+}
+
+.ml-tabs__close:hover:not(:disabled) {
+  color: var(--ml-text);
+  background: var(--ml-surface-inset);
+}
+
+.ml-tabs__item--active .ml-tabs__close {
+  color: var(--ml-accent-text);
+}
+
+.ml-tabs--plate .ml-tabs__item--active .ml-tabs__close {
+  color: var(--ml-text-on-metal);
+}
+
+.ml-tabs--plate .ml-tabs__close:hover:not(:disabled) {
+  background: rgb(0 0 0 / 0.12);
+}
+
+.ml-tabs__close:disabled {
+  cursor: not-allowed;
+  opacity: 0.25;
+}
+
+/* Reordering: the dragged tab dims, a gold bar marks where it lands */
+.ml-tabs__tab--dragging {
+  opacity: 0.45;
+}
+
+.ml-tabs__drop {
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  left: -2px;
+  z-index: 2;
+  width: 3px;
+  background: var(--ml-accent);
+  box-shadow: 0 0 10px rgb(240 173 47 / 0.8);
+  pointer-events: none;
+}
+
+/* Overflow: fade the hidden side and offer a small scroll button there */
+.ml-tabs__bar--more-start .ml-tabs__list {
+  --ml-tabs-fade-start: 40px;
+}
+
+.ml-tabs__bar--more-end .ml-tabs__list {
+  --ml-tabs-fade-end: 40px;
+}
+
+.ml-tabs__bar--more-start .ml-tabs__list,
+.ml-tabs__bar--more-end .ml-tabs__list {
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--ml-tabs-fade-start),
+    #000 calc(100% - var(--ml-tabs-fade-end)),
+    transparent
+  );
+}
+
+.ml-tabs__scroll {
+  position: absolute;
+  top: 50%;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  border: 0;
+  background: var(--ml-surface-2);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel);
+  color: var(--ml-text-dim);
+  cursor: pointer;
+  translate: 0 -50%;
+}
+
+.ml-tabs__scroll:hover {
+  color: var(--ml-accent-text);
+}
+
+.ml-tabs__scroll svg {
+  width: 14px;
+  height: 14px;
+}
+
+.ml-tabs__scroll--prev {
+  left: 0;
+}
+
+.ml-tabs__scroll--next {
+  right: 0;
+}
+
+.ml-tabs--addable .ml-tabs__scroll--next {
+  right: 40px;
+}
+
+.ml-tabs__add {
+  display: grid;
+  place-items: center;
+  flex: none;
+  align-self: center;
+  width: 36px;
+  height: 32px;
+  margin: 0 0 0 4px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--ml-text-dim);
+  cursor: pointer;
+  clip-path: polygon(6px 0, 100% 0, 100% calc(100% - 6px), calc(100% - 6px) 100%, 0 100%, 0 6px);
+  transition:
+    color var(--ml-dur) var(--ml-ease),
+    background-color var(--ml-dur) var(--ml-ease);
+}
+
+.ml-tabs__add svg {
+  width: 16px;
+  height: 16px;
+}
+
+.ml-tabs__add:hover {
+  color: var(--ml-accent-text);
+  background: var(--ml-surface-inset);
+}
+
+.ml-tabs__add:focus-visible,
+.ml-tabs__close:focus-visible,
+.ml-tabs__scroll:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
 }
 
 .ml-tabs__panel {

@@ -6,6 +6,14 @@ import * as V from '../../src'
 import * as R from '../../src/react'
 import { react, vue } from './parity-utils'
 
+// Pinned home tab (closable: false), one closable tab, one disabled.
+const editTabs = [
+  { value: 'a', label: 'A', closable: false },
+  { value: 'b', label: 'B' },
+  { value: 'c', label: 'C', closable: true },
+  { value: 'd', label: 'D', disabled: true },
+]
+
 const cases: [string, () => Promise<string>, () => string][] = [
   ['Button', () => vue(V.MlButton, { variant: 'tech', size: 'lg', block: true }, 'Go'), () => react(<R.Button variant="tech" size="lg" block>Go</R.Button>)],
   ['Button loading', () => vue(V.MlButton, { loading: true }, 'Wait'), () => react(<R.Button loading>Wait</R.Button>)],
@@ -41,6 +49,12 @@ const cases: [string, () => Promise<string>, () => string][] = [
   ['Switch', () => vue(V.MlSwitch, { label: 'Push', showState: true, modelValue: true }), () => react(<R.Switch label="Push" showState checked />)],
   ['RadioGroup', () => vue(V.MlRadioGroup, { label: 'Plan', variant: 'card', options: [{ value: 'a', label: 'A', hint: 'h' }, { value: 'b', label: 'B' }], modelValue: 'a' }), () => react(<R.RadioGroup label="Plan" variant="card" options={[{ value: 'a', label: 'A', hint: 'h' }, { value: 'b', label: 'B' }]} value="a" />)],
   ['Tabs', () => vue(V.MlTabs, { items: [{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }], modelValue: 'a' }), () => react(<R.Tabs items={[{ value: 'a', label: 'A' }, { value: 'b', label: 'B' }]} value="a" />)],
+  [
+    'Tabs editable',
+    () => vue(V.MlTabs, { items: editTabs, modelValue: 'b', closable: true, addable: true, reorderable: true }),
+    () => react(<R.Tabs items={editTabs} value="b" closable addable reorderable />),
+  ],
+  ['Tabs plate closable per tab', () => vue(V.MlTabs, { items: editTabs, variant: 'plate' }), () => react(<R.Tabs items={editTabs} variant="plate" />)],
   ['Segmented', () => vue(V.MlSegmented, { options: [{ value: 1, label: 'One' }, { value: 2, label: 'Two', icon: 'grid' }], modelValue: 1 }), () => react(<R.Segmented options={[{ value: 1, label: 'One' }, { value: 2, label: 'Two', icon: 'grid' }]} value={1} />)],
   ['Pagination', () => vue(V.MlPagination, { total: 20, page: 10 }), () => react(<R.Pagination total={20} page={10} />)],
   ['Tooltip', () => vue(V.MlTooltip, { content: 'Tip' }, 'x'), () => react(<R.Tooltip content="Tip">x</R.Tooltip>)],
