@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { act } from 'react'
 import { createRoot, type Root } from 'react-dom/client'
 import { Calendar, ColorPicker, DatePicker, DateRangePicker, DateTimePicker, TimePicker, Upload } from '../../src/react/pickers'
@@ -183,5 +183,104 @@ describe('React pickers', () => {
     expect(onChange).toHaveBeenLastCalledWith([ok, dropped])
     click(host.querySelector('.ml-upload__remove'))
     expect(onChange).toHaveBeenLastCalledWith([dropped])
+  })
+
+  describe('Upload picture wall', () => {
+    const img = (name: string) => new File(['x'], name, { type: 'image/png' })
+    const names = (fn: ReturnType<typeof vi.fn>) => (fn.mock.lastCall![0] as File[]).map((f) => f.name)
+    const pointer = (el: Element, type: string, init: MouseEventInit = {}) =>
+      act(() => void el.dispatchEvent(new MouseEvent(type, { bubbles: true, button: 0, ...init })))
+    let made = 0
+    const created: string[] = []
+    const revoked: string[] = []
+    beforeEach(() => {
+      created.length = revoked.length = 0
+      vi.spyOn(URL, 'createObjectURL').mockImplementation(() => {
+        const url = `blob:test/${made++}`
+        created.push(url)
+        return url
+      })
+      vi.spyOn(URL, 'revokeObjectURL').mockImplementation((url) => void revoked.push(url))
+    })
+    afterEach(() => {
+      vi.restoreAllMocks()
+      delete (document as { elementsFromPoint?: unknown }).elementsFromPoint
+    })
+
+    it('shows thumbnails, previews from the clicked image and revokes URLs', () => {
+      const onChange = vi.fn()
+      const host = render(<Upload listType="picture" defaultValue={[img('a.png'), new File(['x'], 'spec.pdf', { type: 'application/pdf' }), img('b.png')]} onChange={onChange} />)
+      const cards = host.querySelectorAll('[role="listitem"]')
+      expect(host.querySelector('ul')!.getAttribute('role')).toBe('list')
+      expect(cards[0].querySelector('img')!.getAttribute('src')).toBe(created[0])
+      expect(cards[1].querySelector('img')).toBeNull()
+      expect(cards[1].querySelector('.ml-upload__doc-name')!.textContent).toBe('spec.pdf')
+      expect(host.querySelector('[aria-label="預覽 spec.pdf"]')).toBeNull()
+
+      click(host.querySelector('[aria-label="預覽 b.png"]'))
+      const preview = document.body.querySelector('.ml-preview')!
+      expect(preview.querySelector('img')!.getAttribute('src')).toBe(created[1])
+      expect(preview.querySelector('img')!.getAttribute('alt')).toBe('b.png')
+
+      click(host.querySelector('[aria-label="移除 a.png"]'))
+      expect(names(onChange)).toEqual(['spec.pdf', 'b.png'])
+      expect(revoked).toEqual([created[0]])
+      act(() => root!.unmount())
+      root = undefined
+      expect(revoked).toEqual(created)
+    })
+
+    it('rejects past maxCount and drops the add tile when full', () => {
+      const onChange = vi.fn()
+      const onReject = vi.fn()
+      const host = render(<Upload listType="picture" maxCount={2} onChange={onChange} onReject={onReject} />)
+      const drop = (files: File[]) =>
+        act(() => void host.querySelector('.ml-upload__add')!.dispatchEvent(Object.assign(new Event('drop', { bubbles: true }), { dataTransfer: { files } })))
+      drop([img('a.png'), img('b.png'), img('c.png')])
+      expect(names(onChange)).toEqual(['a.png', 'b.png'])
+      expect(onReject.mock.calls.map(([f, reason]) => [f.name, reason])).toEqual([['c.png', 'count']])
+      expect(host.querySelector('.ml-upload__add')).toBeNull()
+      expect((host.querySelector('input[type="file"]') as HTMLInputElement).disabled).toBe(true)
+    })
+
+    it('shows progress and error overlays', () => {
+      const busy = Object.assign(img('busy.png'), { status: 'uploading' as const, percent: 120 })
+      const bad = Object.assign(img('bad.png'), { status: 'error' as const, error: '太大了' })
+      const host = render(<Upload listType="picture" value={[busy, bad]} />)
+      const bar = host.querySelector('[role="progressbar"]')!
+      expect(bar.getAttribute('aria-valuenow')).toBe('100')
+      expect(host.querySelector('.ml-upload__percent')!.textContent).toBe('100%')
+      expect(host.querySelector('.ml-upload__card--error .ml-upload__error')!.textContent).toBe('太大了')
+    })
+
+    it('reorders with Alt+Arrow keys, keeping focus and announcing', () => {
+      const onChange = vi.fn()
+      const host = render(<Upload listType="picture" defaultValue={[img('a.png'), img('b.png'), img('c.png')]} onChange={onChange} />)
+      const card = host.querySelectorAll<HTMLElement>('[role="listitem"]')[2]
+      card.focus()
+      key(card, 'ArrowLeft')
+      expect(onChange).not.toHaveBeenCalled()
+      key(card, 'ArrowLeft', { altKey: true })
+      expect(names(onChange)).toEqual(['a.png', 'c.png', 'b.png'])
+      expect(host.querySelector('[aria-live="polite"]')!.textContent).toBe('已移到第 2 張')
+      expect(document.activeElement?.getAttribute('aria-label')).toBe('c.png')
+      expect(document.activeElement).toBe(host.querySelectorAll('[role="listitem"]')[1])
+    })
+
+    it('reorders by dragging a card onto another', () => {
+      const onChange = vi.fn()
+      const host = render(<Upload listType="picture" defaultValue={[img('a.png'), img('b.png'), img('c.png')]} onChange={onChange} />)
+      const cards = host.querySelectorAll('[role="listitem"]')
+      document.elementsFromPoint = () => [cards[2], cards[1]]
+      pointer(cards[2], 'pointerdown', { clientX: 300, clientY: 10 })
+      pointer(cards[2], 'pointermove', { clientX: 2, clientY: 10 })
+      document.elementsFromPoint = () => [cards[2], cards[0]]
+      pointer(cards[2], 'pointermove', { clientX: 1, clientY: 10 })
+      expect(cards[2].classList).toContain('ml-upload__card--dragging')
+      expect(cards[0].classList).toContain('ml-upload__card--over')
+      pointer(cards[2], 'pointerup')
+      expect(names(onChange)).toEqual(['c.png', 'a.png', 'b.png'])
+      expect(host.querySelector('.ml-upload__card--dragging')).toBeNull()
+    })
   })
 })

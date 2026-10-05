@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useToast } from '@malilion/ui'
+import { useToast, type MlUploadRejectReason } from '@malilion/ui'
 
 const toast = useToast()
 const files = ref<File[]>([])
 
-function onReject(file: File, reason: 'type' | 'size') {
+function onReject(file: File, reason: MlUploadRejectReason) {
   toast.warning(reason === 'size' ? `${file.name} 超過 10MB` : `${file.name} 格式不支援`)
 }
 </script>
