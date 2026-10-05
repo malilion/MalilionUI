@@ -622,6 +622,20 @@ export interface MlLocale {
     maxItems: (n: number) => string
     maxValue: (n: number) => string
   }
+  /** MlSchemaForm's action row. */
+  schemaForm: {
+    submit: string
+    reset: string
+  }
+  wizard: {
+    /** Accessible name of the step list. */
+    label: string
+    prev: string
+    next: string
+    submit: string
+    /** Accessible name of the current step's panel. */
+    stepOf: (step: number, total: number, title: string) => string
+  }
   /** Messages of the Taiwan validators (`twRules`, src/validators-tw.ts). */
   twValidate: {
     nationalId: string
@@ -1391,6 +1405,17 @@ export const zhTW: MlLocale = {
     maxChars: (n) => `最多 ${n} 個字元`,
     maxItems: (n) => `最多選擇 ${n} 項`,
     maxValue: (n) => `不能大於 ${n}`,
+  },
+  schemaForm: {
+    submit: '送出',
+    reset: '重設',
+  },
+  wizard: {
+    label: '填寫步驟',
+    prev: '上一步',
+    next: '下一步',
+    submit: '送出',
+    stepOf: (step, total, title) => `第 ${step} 步，共 ${total} 步：${title}`,
   },
   twValidate: {
     nationalId: '身分證字號格式不正確',
@@ -2167,6 +2192,17 @@ export const en: MlLocale = {
     maxChars: (n) => `At most ${n} characters`,
     maxItems: (n) => `Choose at most ${n}`,
     maxValue: (n) => `Must be at most ${n}`,
+  },
+  schemaForm: {
+    submit: 'Submit',
+    reset: 'Reset',
+  },
+  wizard: {
+    label: 'Steps',
+    prev: 'Back',
+    next: 'Next',
+    submit: 'Submit',
+    stepOf: (step, total, title) => `Step ${step} of ${total}: ${title}`,
   },
   twValidate: {
     nationalId: 'Invalid Taiwan ID number',

@@ -9,6 +9,7 @@ import { InputMask } from './keypad'
 import { useLocale } from './locale'
 import { TaiwanRegion } from './region'
 import { cx, useControllable } from './utils'
+import { FormFieldBoundary, useFormField } from './validation'
 
 export interface TaiwanAddressProps {
   value?: MlTaiwanAddressValue
@@ -50,9 +51,9 @@ export function TaiwanAddress({
   onPaste,
   label,
   hint,
-  error,
+  error: errorProp,
   size = 'md',
-  required,
+  required: requiredProp,
   disabled,
   zip = true,
   preview = true,
@@ -62,6 +63,9 @@ export function TaiwanAddress({
   className,
 }: TaiwanAddressProps) {
   const loc = useLocale()
+  // The parts are separate controls, but a FormItem's error belongs to the whole
+  // address: shown once below, not under every part.
+  const { error, required } = useFormField({ error: errorProp, required: requiredProp })
   const [initial] = useState(() => defaultValue ?? emptyTaiwanAddress())
   const [model, setModel] = useControllable(value, initial, onChange)
   const [pasted, setPasted] = useState(false)
@@ -100,62 +104,64 @@ export function TaiwanAddress({
           )}
         </legend>
       )}
-      <div className="ml-address__row">
-        <TaiwanRegion
-          className="ml-address__region"
-          value={region}
-          zip
-          lang={lang}
-          includeIslands={includeIslands}
-          size={size}
-          disabled={disabled}
-          required={required}
-          onChange={(v) => {
-            setPasted(false)
-            setModel({ ...model, county: v?.county ?? '', district: v?.district ?? '', zip: rebaseZip(model.zip, v?.zip ?? '') })
-          }}
-        />
-        {zip && (
-          <InputMask
-            className="ml-address__zip"
-            value={model.zip}
-            preset="zip"
-            unmask={false}
-            label={loc.address.zip}
-            error={zipError}
+      <FormFieldBoundary>
+        <div className="ml-address__row">
+          <TaiwanRegion
+            className="ml-address__region"
+            value={region}
+            zip
+            lang={lang}
+            includeIslands={includeIslands}
             size={size}
             disabled={disabled}
-            onChange={(v) => set('zip', v)}
+            required={required}
+            onChange={(v) => {
+              setPasted(false)
+              setModel({ ...model, county: v?.county ?? '', district: v?.district ?? '', zip: rebaseZip(model.zip, v?.zip ?? '') })
+            }}
           />
-        )}
-      </div>
-      <div className="ml-address__row ml-address__row--street">
-        <Input
-          className="ml-address__road"
-          value={model.road}
-          label={loc.address.road}
-          placeholder={loc.address.roadPlaceholder}
-          size={size}
-          disabled={disabled}
-          required={required}
-          onChange={(v) => set('road', v)}
-          onPaste={paste}
-        />
-        {FIELDS.map(([key, cls]) => (
+          {zip && (
+            <InputMask
+              className="ml-address__zip"
+              value={model.zip}
+              preset="zip"
+              unmask={false}
+              label={loc.address.zip}
+              error={zipError}
+              size={size}
+              disabled={disabled}
+              onChange={(v) => set('zip', v)}
+            />
+          )}
+        </div>
+        <div className="ml-address__row ml-address__row--street">
           <Input
-            key={key}
-            className={cls}
-            value={model[key] ?? ''}
-            aria-label={loc.address[key]}
-            inputMode="text"
+            className="ml-address__road"
+            value={model.road}
+            label={loc.address.road}
+            placeholder={loc.address.roadPlaceholder}
             size={size}
             disabled={disabled}
-            required={required && key === 'number'}
-            suffix={loc.address[key]}
-            onChange={(v) => set(key, v)}
+            required={required}
+            onChange={(v) => set('road', v)}
+            onPaste={paste}
           />
-        ))}
-      </div>
+          {FIELDS.map(([key, cls]) => (
+            <Input
+              key={key}
+              className={cls}
+              value={model[key] ?? ''}
+              aria-label={loc.address[key]}
+              inputMode="text"
+              size={size}
+              disabled={disabled}
+              required={required && key === 'number'}
+              suffix={loc.address[key]}
+              onChange={(v) => set(key, v)}
+            />
+          ))}
+        </div>
+      </FormFieldBoundary>
       {preview && full && (
         <p className="ml-address__preview" aria-live="polite">
           <span className="ml-address__preview-label">{loc.address.preview}</span>
