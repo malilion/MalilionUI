@@ -62,6 +62,7 @@ export type { MlMaskPreset, MlMaskToken, MaskResult, AmountOptions } from '../co
 export { keyboardLayout, shuffledDigits } from '../components/number-keyboard'
 export * from '../zhuyin'
 export { groupIndexItems, indexOrder } from '../components/index-bar'
+export { nextTabAfterClose } from '../components/tabs'
 export type { IndexGroup } from '../components/index-bar'
 export { allDayBars, layoutColumns, monthLayout, moveEvent, resizeEvent, timedSegments, viewDays } from '../components/scheduler'
 export type { MlSchedulerEvent, MlSchedulerView, MlSchedulerDate, SchedulerRange, SchedulerSegment, AllDayBar, MonthItem, MonthLayout } from '../components/scheduler'

@@ -54,6 +54,8 @@ export interface MlTabItem {
   value: string
   label: string
   disabled?: boolean
+  /** Show a close button on this tab (overrides the component's `closable`). */
+  closable?: boolean
 }
 
 export interface MlSelectOption {
