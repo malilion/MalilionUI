@@ -33,6 +33,10 @@ export interface MlLocale {
     nextPage: string
     menu: string
     tabBar: string
+    closeTab: (label: string) => string
+    addTab: string
+    scrollTabsPrev: string
+    scrollTabsNext: string
     steps: string
     stepDone: string
     stepCurrent: string
@@ -623,6 +627,10 @@ export const zhTW: MlLocale = {
     nextPage: '下一頁',
     menu: '主選單',
     tabBar: '主要導覽',
+    closeTab: (l) => `關閉 ${l}`,
+    addTab: '新增分頁',
+    scrollTabsPrev: '向左捲動分頁',
+    scrollTabsNext: '向右捲動分頁',
     steps: '進度步驟',
     stepDone: '（已完成）',
     stepCurrent: '（進行中）',
@@ -1352,6 +1360,10 @@ export const en: MlLocale = {
     nextPage: 'Next page',
     menu: 'Main menu',
     tabBar: 'Main navigation',
+    closeTab: (l) => `Close ${l}`,
+    addTab: 'New tab',
+    scrollTabsPrev: 'Scroll tabs left',
+    scrollTabsNext: 'Scroll tabs right',
     steps: 'Progress',
     stepDone: ' (completed)',
     stepCurrent: ' (current)',
