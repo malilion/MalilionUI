@@ -1,4 +1,4 @@
-/* Scheduler — week / day timetable with draggable events */
+/* Scheduler — month grid and week / day timetable with draggable events */
 
 .ml-scheduler {
   --_sc-gutter: 56px;
@@ -404,12 +404,275 @@
   clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
 }
 
+/* ── Month grid: six week rows, events in lanes under the day number ── */
+.ml-scheduler__month {
+  --_sc-mdate: 30px;
+  --_sc-mlane: 22px;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.ml-scheduler__mhead,
+.ml-scheduler__mweek {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+}
+
+.ml-scheduler__mhead {
+  box-shadow: inset 0 -1px 0 var(--ml-line-steel);
+}
+
+.ml-scheduler__mweekday {
+  padding: 8px 0;
+  color: var(--ml-text-dim);
+  font-size: 0.75rem;
+  text-align: center;
+}
+
+.ml-scheduler__mweekday--weekend {
+  color: var(--ml-text-muted);
+}
+
+.ml-scheduler__mweeks {
+  flex: 1;
+  display: grid;
+  /* Room for the day number, the event rows and the "還有 n 項" row */
+  grid-template-rows: repeat(6, minmax(calc(var(--_sc-mdate) + (var(--_sc-max, 3) + 1) * var(--_sc-mlane) + 4px), 1fr));
+}
+
+.ml-scheduler__mweek + .ml-scheduler__mweek {
+  box-shadow: inset 0 1px 0 var(--_sc-line);
+}
+
+.ml-scheduler__mday {
+  position: relative;
+  min-width: 0;
+  box-shadow: inset 1px 0 0 var(--_sc-line);
+  outline: none;
+}
+
+.ml-scheduler__mday:first-child {
+  box-shadow: none;
+}
+
+.ml-scheduler__mday--weekend {
+  background-color: rgb(0 0 0 / 0.08);
+}
+
+.ml-scheduler__mday--outside {
+  background-color: rgb(0 0 0 / 0.16);
+}
+
+.ml-scheduler__mday--today {
+  background-color: color-mix(in srgb, var(--ml-accent) 5%, transparent);
+}
+
+.ml-scheduler__mday:focus-visible {
+  z-index: 2;
+  box-shadow: inset 0 0 0 2px var(--ml-focus);
+}
+
+.ml-scheduler--editable .ml-scheduler__mday {
+  cursor: cell;
+}
+
+/* The days being dragged across to create an all-day event */
+.ml-scheduler__mday--ghost {
+  background: color-mix(in srgb, var(--ml-accent) 18%, transparent);
+  box-shadow: inset 0 0 0 1px var(--ml-accent);
+}
+
+.ml-scheduler__mdate {
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  margin: 2px 0 0 4px;
+  padding: 0 4px;
+  border: 0;
+  background: none;
+  color: var(--ml-text);
+  font-family: var(--ml-font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.ml-scheduler__mdate:hover {
+  background: var(--ml-surface-2);
+}
+
+.ml-scheduler__mday--weekend .ml-scheduler__mdate {
+  color: var(--ml-text-muted);
+}
+
+.ml-scheduler__mday--outside .ml-scheduler__mdate {
+  color: var(--ml-text-dim);
+}
+
+.ml-scheduler__mday--today .ml-scheduler__mdate {
+  background: var(--ml-metal-gold);
+  clip-path: polygon(5px 0, 100% 0, 100% calc(100% - 5px), calc(100% - 5px) 100%, 0 100%, 0 5px);
+  color: var(--ml-text-on-metal);
+}
+
+/* Bars span days from the cell they start in; chips stay in their day */
+.ml-scheduler__event--month {
+  top: calc(var(--_sc-mdate) + var(--_sc-lane, 0) * var(--_sc-mlane));
+  left: 2px;
+  flex-direction: row;
+  align-items: center;
+  gap: 4px;
+  width: calc(var(--_sc-span, 1) * 100% - 4px);
+  height: calc(var(--_sc-mlane) - 2px);
+  padding-block: 0;
+  mask-image: none;
+}
+
+.ml-scheduler__event--chip {
+  padding-inline: 4px;
+  background: transparent;
+  box-shadow: none;
+}
+
+.ml-scheduler__event--chip:hover {
+  background: color-mix(in srgb, var(--_sc-c0) 16%, transparent);
+  filter: none;
+}
+
+.ml-scheduler__event--chip .ml-scheduler__name {
+  font-weight: 600;
+}
+
+.ml-scheduler__dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  background: var(--_sc-c0);
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+}
+
+/* Cut ends: the bar goes on in the previous / next week row */
+.ml-scheduler__event--bar.ml-scheduler__event--before {
+  left: 0;
+  width: calc(var(--_sc-span, 1) * 100% - 2px);
+  padding-left: 10px;
+  box-shadow: none;
+  clip-path: polygon(6px 0, 100% 0, 100% 100%, 6px 100%, 0 50%);
+}
+
+.ml-scheduler__event--bar.ml-scheduler__event--after {
+  width: calc(var(--_sc-span, 1) * 100% - 2px);
+  padding-right: 10px;
+  clip-path: polygon(0 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 0 100%);
+}
+
+.ml-scheduler__event--bar.ml-scheduler__event--before.ml-scheduler__event--after {
+  width: calc(var(--_sc-span, 1) * 100%);
+  clip-path: polygon(6px 0, calc(100% - 6px) 0, 100% 50%, calc(100% - 6px) 100%, 6px 100%, 0 50%);
+}
+
+.ml-scheduler__more {
+  position: absolute;
+  z-index: 1;
+  top: calc(var(--_sc-mdate) + var(--_sc-max, 3) * var(--_sc-mlane));
+  left: 2px;
+  right: 2px;
+  height: calc(var(--_sc-mlane) - 2px);
+  margin: 0;
+  padding: 0 6px;
+  overflow: hidden;
+  border: 0;
+  background: none;
+  color: var(--ml-accent-text);
+  font: inherit;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-align: start;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.ml-scheduler__more:hover,
+.ml-scheduler__more[aria-expanded='true'] {
+  background: var(--ml-surface-2);
+}
+
+.ml-scheduler__mdate:focus-visible,
+.ml-scheduler__more:focus-visible {
+  outline: 2px solid var(--ml-focus);
+  outline-offset: -2px;
+}
+
+/* The whole day, opened from "還有 n 項" */
+.ml-scheduler__pop {
+  position: absolute;
+  z-index: 5;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  box-sizing: border-box;
+  width: max(100%, 220px);
+  max-height: 280px;
+  padding: 8px;
+  overflow: auto;
+  background: var(--ml-surface);
+  box-shadow: inset 0 0 0 1px var(--ml-line-steel), var(--ml-shadow-2);
+  cursor: default;
+}
+
+.ml-scheduler__pop--end {
+  left: auto;
+  right: 0;
+}
+
+.ml-scheduler__pop--up {
+  top: auto;
+  bottom: 0;
+}
+
+.ml-scheduler__pop-title {
+  margin: 0 0 4px;
+  color: var(--ml-text-muted);
+  font-family: var(--ml-font-display);
+  font-size: 0.8125rem;
+  font-weight: 700;
+}
+
+.ml-scheduler__pop .ml-scheduler__event--month {
+  position: relative;
+  top: auto;
+  left: auto;
+  flex: none;
+  width: auto;
+  height: 26px;
+  cursor: pointer;
+}
+
 [data-ml-theme='light'] .ml-scheduler__event {
   background: color-mix(in srgb, var(--_sc-c0) 22%, #fff);
 }
 
-[data-ml-theme='light'] .ml-scheduler__col--weekend {
+[data-ml-theme='light'] .ml-scheduler__event--chip {
+  background: transparent;
+}
+
+[data-ml-theme='light'] .ml-scheduler__event--chip:hover {
+  background: color-mix(in srgb, var(--_sc-c0) 16%, transparent);
+}
+
+[data-ml-theme='light'] .ml-scheduler__col--weekend,
+[data-ml-theme='light'] .ml-scheduler__mday--weekend {
   background-color: rgb(0 0 0 / 0.025);
+}
+
+[data-ml-theme='light'] .ml-scheduler__mday--outside {
+  background-color: rgb(0 0 0 / 0.05);
 }
 
 /* Narrow week columns: titles only */
@@ -421,6 +684,13 @@
 
   .ml-scheduler--week .ml-scheduler__event {
     padding-inline: 5px 3px;
+  }
+}
+
+/* Narrow month cells: chips keep the dot and the title */
+@container ml-scheduler (max-width: 560px) {
+  .ml-scheduler__mday > .ml-scheduler__event--chip .ml-scheduler__time {
+    display: none;
   }
 }
 
