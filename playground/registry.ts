@@ -73,7 +73,7 @@ export const pages: PageDef[] = [
   { id: 'home', title: 'Overview', zh: '總覽', group: 'start', desc: '' },
   { id: 'start', title: 'Quick start', zh: '快速開始', group: 'start', desc: '' },
   { id: 'tokens', title: 'Design tokens', zh: '設計代幣', group: 'start', desc: '' },
-  { id: 'react', title: 'React', zh: 'React 與 Next.js', group: 'start', desc: '', isNew: true },
+  { id: 'react', title: 'React', zh: 'React 與 Next.js', group: 'start', desc: '' },
   {
     id: 'paw',
     title: 'Paw',
@@ -405,7 +405,6 @@ export default defineNuxtConfig({
     title: 'Typography',
     zh: '文字排版',
     group: 'basic',
-    isNew: true,
     desc: '三個文字元件：MlTitle 是 h1～h6 標題（可加獅金漸層或 HUD 金條）；MlText 處理語氣色、粗體、刪除線、螢光筆、行內程式碼、等寬數字、一行或多行截斷，還能附一顆複製按鈕；MlLink 是安全的連結，外部連結自動另開新視窗、加上 rel="noopener noreferrer"、箭頭圖示與給螢幕閱讀器的說明，javascript: 之類的網址會被擋掉。',
     usage: `import { MlTitle, MlText, MlLink } from '@malilion/ui'`,
     examples: [
@@ -677,7 +676,6 @@ export default defineNuxtConfig({
     title: 'RichTextEditor',
     zh: '富文字編輯器',
     group: 'form',
-    isNew: true,
     desc: '以 Tiptap 為核心的富文字編輯器，外面套上碼力獅的鋼鐵工具列：標題、粗體、斜體、底線、刪除線、行內程式碼、清單、引言、程式碼區塊、分隔線、連結與復原。v-model 是 HTML（空白時是空字串，required 規則直接能用），可以放進 MlForm 驗證。工具列是 role="toolbar"，用方向鍵移動、按鈕有 aria-pressed；⌘K / Ctrl+K 開連結列，javascript: 之類的網址一律拒絕。注音、拼音選字時不會誤觸。Tiptap 是選用的 peer dependency，從 @malilion/ui/editor 匯入，沒用到的專案不會多裝任何東西。',
     usage: `npm i @tiptap/core @tiptap/pm @tiptap/starter-kit @tiptap/extensions
 
@@ -913,7 +911,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'TaiwanAddress',
     zh: '台灣地址',
     group: 'form',
-    isNew: true,
     desc: '完整的台灣地址欄位：縣市與鄉鎮市區（沿用 MlTaiwanRegion）、3+3 郵遞區號，以及路、段、巷、弄、號、樓、之。郵遞區號前 3 碼會依行政區自動帶入，換行政區時保留你填的後 3 碼，前 3 碼對不上會提示。下方即時組出完整地址，也能同時顯示中華郵政格式的英文地址。把整串地址貼到「路／街」欄位會自動拆解填好。parseTwAddress() 和 formatTwAddress() 也可以單獨使用。3+3 碼對應到路段，資料量很大，所以後 3 碼由使用者填寫，不會自動查詢。',
     usage: `import { MlTaiwanAddress, formatTwAddress, parseTwAddress, type MlTaiwanAddressValue } from '@malilion/ui'`,
     examples: [
@@ -1166,7 +1163,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'InputMask',
     zh: '格式化輸入',
     group: 'form',
-    isNew: true,
     desc: '邊打邊套格式的輸入框：手機、市話、身分證、信用卡、載具條碼、3+3 郵遞區號都有現成的 preset，也可以自己寫 mask。分隔符號只在後面有字時才出現，Backspace 碰到分隔符號會一起刪掉前一碼，游標不會亂跳；用注音等輸入法時會等選字結束再整理格式。v-model 預設只拿到輸入的字元，加上 :unmask="false" 則拿到含分隔符號的文字。',
     usage: `import { MlInputMask, type MlMaskPreset } from '@malilion/ui'`,
     examples: [
@@ -1199,7 +1195,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'AmountInput',
     zh: '金額輸入',
     group: 'form',
-    isNew: true,
     desc: '打字時自動補千分位的金額欄位，v-model 是數字（空白時是 null）。可以限制小數位數、允許負數；min / max 在離開欄位時才套用，不會打到一半被改掉。加上 capital 會在下方即時顯示中文大寫金額（壹萬貳仟元整），適合匯款、報帳等金融表單。',
     usage: `import { MlAmountInput, amountInChinese } from '@malilion/ui'`,
     examples: [{ file: 'amount-input/basic', title: '基本用法', desc: '第一個欄位顯示中文大寫；離開欄位時會補齊小數位數並套用上下限。', block: true }],
@@ -1229,7 +1224,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'NumberKeyboard',
     zh: '數字鍵盤',
     group: 'mobile',
-    isNew: true,
     desc: '手機上輸入金額、驗證碼或密碼用的金屬數字鍵盤，不會叫出系統鍵盤。default 主題是 3 × 4 配置；custom 主題右側有刪除鍵和大的「完成」鍵，可以放兩個額外按鍵（例如 00 和小數點）。長按刪除鍵會連續刪除；random 每次打開都重新排列數字，防止旁人偷看。加上 fixed 就固定在畫面底部，用 v-model:show 開關，點外面或按 Esc 會收起。',
     usage: `import { MlNumberKeyboard } from '@malilion/ui'`,
     examples: [
@@ -1266,7 +1260,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'Zhuyin',
     zh: '注音',
     group: 'basic',
-    isNew: true,
     desc: '在國字旁邊標注音，預設是課本那種直式：符號由上往下排在字的右邊，聲調標在最後一個符號旁，輕聲的「˙」放在最上面；position="top" 則改成標在字的上方。讀音可以直接寫注音，也可以寫拼音（自動轉換）。不想每次都寫讀音，可以用 registerZhuyin 註冊字典；詞會優先於單字，所以「銀行」和「行走」的「行」都能讀對。標點、英文和查不到的字會原樣顯示。',
     usage: `import { MlZhuyin, registerZhuyin, pinyinToZhuyin, zhuyinToPinyin } from '@malilion/ui'`,
     examples: [
@@ -1297,7 +1290,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'IndexBar',
     zh: '索引列',
     group: 'mobile',
-    isNew: true,
     desc: '通訊錄那種有側邊索引的清單。zhuyin 模式用 ㄅㄆㄇ 分組：中文名字直接交給瀏覽器內建的注音排序判斷，不需要額外字典，曾、沈、單這些破音字姓氏也會照姓氏的讀音歸類；英文名字接在後面依 A–Z 分組。alphabet 模式則是 A–Z，中文依拼音歸類。可以點索引跳過去，也可以按住索引上下拖曳；捲動時目前的組別會跟著亮起來，組標題會黏在上方。',
     usage: `import { MlIndexBar, type MlIndexBarItem } from '@malilion/ui'`,
     examples: [
@@ -1333,7 +1325,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'FilterBar',
     zh: '篩選列',
     group: 'form',
-    isNew: true,
     desc: '後台列表上方的篩選區：用 fields 宣告欄位（關鍵字、單選、多選、日期、日期區間、數字區間），元件就會排好對應的控制項，再加上搜尋與重設按鈕。欄位太多時用 collapse 只顯示前幾個，其餘收進「更多篩選」。已套用的條件會變成可以單獨移除的標籤。搭配 matchFilters() 就能直接在瀏覽器端篩選資料；immediate 模式則是一改就觸發搜尋。',
     usage: `import { MlFilterBar, matchFilters, type MlFilterField, type MlFilterValue } from '@malilion/ui'`,
     examples: [
@@ -1369,7 +1360,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'QueryBuilder',
     zh: '條件產生器',
     group: 'form',
-    isNew: true,
     desc: '可巢狀的「且／或」條件編輯器，適合進階搜尋、報表篩選、自動化規則。每種欄位型別（文字、數字、單選、日期、是非）有對應的運算子；選了「介於」會出現兩個輸入框，「是其中之一」則變成多選。v-model 是一棵可以直接存起來的 JSON 樹。evaluateQuery() 用來在瀏覽器端判斷資料是否符合，queryToText() 把條件寫成一句話；還沒填完的條件不會影響結果。',
     usage: `import { MlQueryBuilder, evaluateQuery, queryToText, type MlQueryField, type MlQueryGroup } from '@malilion/ui'`,
     examples: [
@@ -2297,7 +2287,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'AvatarGroup',
     zh: '頭像群組',
     group: 'data',
-    isNew: true,
     desc: '一排疊在一起的頭像。超過 max 的人收進「+N」，滑過會列出被藏起來的名字；只載入一部分成員時用 total 告訴它真正的人數。加上 expandable，「+N」就變成可以展開全部的按鈕。不給 items 時，預設插槽裡的 MlAvatar 會照原樣疊放。',
     usage: `import { MlAvatarGroup, type MlAvatarGroupItem } from '@malilion/ui'`,
     examples: [
@@ -2431,7 +2420,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'Barcode',
     zh: '條碼',
     group: 'data',
-    isNew: true,
     desc: '純前端產生的一維條碼，不需要任何套件。Code 128 用於一般英數字（遇到連續數字會自動切換到 C 字集，條碼比較短）；Code 39 就是財政部電子發票「手機條碼載具」與自然人憑證用的格式；EAN-13 是商品條碼（台灣是 471 開頭），只給 12 碼會自動補上檢查碼，給 13 碼則會驗證。',
     usage: `import { MlBarcode, encodeBarcode, isTwMobileBarcode } from '@malilion/ui'`,
     examples: [
@@ -3316,7 +3304,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'VideoPlayer',
     zh: '影片播放器',
     group: 'data',
-    isNew: true,
     desc: '鋼鐵風控制列的影片播放器，底層還是原生 <video>，所以格式支援、串流與字幕都交給瀏覽器。有進度條（含已緩衝範圍）、音量、播放速度選單、字幕選單、子母畫面（瀏覽器支援時才出現）和全螢幕；播放中滑鼠不動會自動隱藏控制列。鍵盤操作與 YouTube 相同：空白鍵或 K 播放、← → 前後 5 秒、J / L 前後 10 秒、↑ ↓ 音量、M 靜音、F 全螢幕、C 字幕、0–9 跳到 0–90%、Shift + < > 調速度。',
     usage: `import { MlVideoPlayer, type MlMediaTrack } from '@malilion/ui'`,
     examples: [
@@ -3349,7 +3336,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'AudioPlayer',
     zh: '音訊播放器',
     group: 'data',
-    isNew: true,
     desc: '音樂、Podcast 用的播放列：封面（沒有封面時是會轉的金屬唱片）、標題與作者、進度條、倒退／快轉、播放速度和靜音。播放時標題旁的等化器會跳動。鍵盤快捷鍵和 VideoPlayer 相同。',
     usage: `import { MlAudioPlayer } from '@malilion/ui'`,
     examples: [{ file: 'audio-player/basic', title: '基本用法', desc: '第二個設定了封面、快轉 15 秒和自訂速度。', block: true }],
@@ -3666,7 +3652,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'WaterfallChart',
     zh: '瀑布圖',
     group: 'chart',
-    isNew: true,
     desc: '把一連串增減疊成階梯，看出期初到期末之間是誰拉高、誰拉低。total: true 的柱子從零畫到目前的累計（期初、小計、期末）；給它 value 則會以該金額重新起算。上漲預設紅色、下跌綠色（台股習慣），up-color="green" 可以反過來。柱子之間有虛線連到下一根，滑鼠或左右鍵可以逐項看增減與累計。',
     usage: `import { MlWaterfallChart, type MlWaterfallDatum } from '@malilion/ui'`,
     examples: [{ file: 'waterfall-chart/basic', title: '損益瀑布', desc: '第二張改成綠漲紅跌、不顯示數值。', block: true }],
@@ -3690,7 +3675,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'BoxPlot',
     zh: '箱形圖',
     group: 'chart',
-    isNew: true,
     desc: '比較幾組數據的分布：箱子是第一到第三四分位數，中間的線是中位數，鬚延伸到 1.5 倍四分位距內最遠的樣本，超出的點是離群值，菱形是平均。可以直接給原始樣本（values），也可以給算好的統計（stats）。',
     usage: `import { MlBoxPlot, boxStats, type MlBoxDatum } from '@malilion/ui'`,
     examples: [{ file: 'box-plot/basic', title: '服務回應時間', desc: '前三組給原始樣本，「圖片」直接給統計值。', block: true }],
@@ -3715,7 +3699,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'BulletChart',
     zh: '子彈圖',
     group: 'chart',
-    isNew: true,
     desc: 'KPI 儀表板用的子彈圖：一條橫桿是實際值，直線是目標，背景的深淺色帶是「差／普通／良好」的區間。比儀表盤省空間，很多指標可以整齊地疊在一起；螢幕閱讀器會念出實際值、目標和落在哪個區間。',
     usage: `import { MlBulletChart, type MlBulletDatum } from '@malilion/ui'`,
     examples: [{ file: 'bullet-chart/basic', title: '月度 KPI', block: true }],
@@ -3842,7 +3825,6 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
     title: 'Scheduler',
     zh: '行程表',
     group: 'data',
-    isNew: true,
     desc: '月／週／日視圖的行程表。重疊的行程會自動並排，跨過午夜的行程會切成兩段，全天行程排在上方可以跨好幾天。月視圖是六週的月曆：全天與跨日行程畫成橫條、跨週時在下一列接續，一般行程顯示成「09:30 晨會」；每天最多 month-max-events 列，其餘收進「還有 n 項」，點開列出當天全部行程；點日期跳到那天的日視圖。加上 editable 之後可以拖曳行程換時間或換日、拉底邊調整長度，在空白處拖曳可以新增行程（月視圖新增的是全天行程）；鍵盤也能操作：方向鍵上下移動一格、左右換日，Shift + 上下調整結束時間；月視圖用方向鍵在日期間移動、PageUp／PageDown 換月、Enter 開啟日視圖，行程左右換日、上下換週。元件不會自己改資料，change 和 create 事件把新的時間交給你。紅線標示現在時間。',
     usage: `import { MlScheduler, type MlSchedulerEvent, type SchedulerRange } from '@malilion/ui'`,
     examples: [
@@ -5393,6 +5375,7 @@ import type { MlTerminalLine } from '@malilion/ui'`,
     title: 'TimeRangePicker',
     zh: '時間區間',
     group: 'form',
+    isNew: true,
     desc: '一次選開始與結束時間，例如營業時間 09:00 – 18:00。兩組捲輪並排（窄螢幕上下排），欄位右側顯示共幾小時幾分。v-model 是 ["HH:mm", "HH:mm"]；Tab 在開始、結束兩組捲輪間移動，Esc 關閉並回到欄位。',
     usage: `import { MlTimeRangePicker, type MlTimeRange } from '@malilion/ui'`,
     examples: [
