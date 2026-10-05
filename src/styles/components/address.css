@@ -1,0 +1,109 @@
+/* TaiwanAddress — 縣市區 + 3+3 postal code + 路段巷弄號樓 */
+
+.ml-address {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.ml-address > legend {
+  float: left;
+  width: 100%;
+  margin-bottom: 4px;
+  padding: 0;
+}
+
+.ml-address__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px 12px;
+  min-width: 0;
+}
+
+.ml-address__region {
+  flex: 3 1 320px;
+  min-width: 0;
+}
+
+.ml-address__zip {
+  flex: 1 1 140px;
+  max-width: 200px;
+}
+
+.ml-address__road {
+  flex: 3 1 220px;
+  min-width: 0;
+}
+
+.ml-address__short {
+  flex: 0 1 92px;
+  min-width: 76px;
+}
+
+.ml-address__number {
+  flex: 0 1 120px;
+  min-width: 96px;
+}
+
+.ml-address .ml-field,
+.ml-address .ml-input {
+  min-width: 0;
+}
+
+/* Let flex size the inputs; their intrinsic width would push the 段 / 號 units out */
+.ml-address .ml-input__control {
+  width: 0;
+}
+
+.ml-address__short .ml-input__affix,
+.ml-address__number .ml-input__affix {
+  color: var(--ml-text-muted);
+  font-size: 0.8125rem;
+}
+
+.ml-address__preview {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 4px 10px;
+  margin: 0;
+  padding: 8px 12px;
+  background: var(--ml-surface-inset);
+  box-shadow: inset 2px 0 0 var(--ml-accent);
+}
+
+.ml-address__preview-label {
+  color: var(--ml-text-dim);
+  font-family: var(--ml-font-display);
+  font-size: 0.6875rem;
+  letter-spacing: var(--ml-tracking-hud);
+  line-height: 1.9;
+}
+
+.ml-address__line {
+  min-width: 0;
+  color: var(--ml-text);
+  font-size: 0.875rem;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+
+.ml-address__line--en {
+  color: var(--ml-text-muted);
+  font-size: 0.8125rem;
+  letter-spacing: 0;
+}
+
+.ml-address__note {
+  margin: 0;
+  color: var(--ml-success-text);
+  font-size: 0.75rem;
+}
+
+.ml-address--error .ml-address__road .ml-input,
+.ml-address--error .ml-address__number .ml-input {
+  --_line: var(--ml-danger);
+}

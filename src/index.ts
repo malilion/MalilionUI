@@ -156,6 +156,7 @@ import MlTable from './components/MlTable.vue'
 import MlTabs from './components/MlTabs.vue'
 import MlTag from './components/MlTag.vue'
 import MlTagInput from './components/MlTagInput.vue'
+import MlTaiwanAddress from './components/MlTaiwanAddress.vue'
 import MlTaiwanRegion from './components/MlTaiwanRegion.vue'
 import MlTaiwanMap from './components/MlTaiwanMap.vue'
 import MlTerminal from './components/MlTerminal.vue'
@@ -341,6 +342,7 @@ const components = {
   MlTabs,
   MlTag,
   MlTagInput,
+  MlTaiwanAddress,
   MlTaiwanRegion,
   MlTaiwanMap,
   MlTerminal,
@@ -549,6 +551,7 @@ export {
   MlTabs,
   MlTag,
   MlTagInput,
+  MlTaiwanAddress,
   MlTaiwanRegion,
   MlTaiwanMap,
   MlTerminal,
@@ -704,6 +707,8 @@ export { matchFilters, filterChips, filterText, isEmptyFilter, clearFilter, eval
 export type { MlFilterField, MlFilterFieldType, MlFilterValue, FilterChip, MlQueryField, MlQueryFieldType, MlQueryOperator, MlQueryRule, MlQueryGroup, MlQueryNode } from './components/filter'
 export { waterfallLayout, boxStats, boxLayout, bulletRows, quantile } from './components/charts-stat'
 export type { MlWaterfallDatum, WaterfallBar, MlBoxDatum, MlBoxStats, MlBulletDatum, BulletRow } from './components/charts-stat'
+export { formatTwAddress, parseTwAddress, formatStreet, twZipStatus, chineseNumeral, isTwAddressComplete, emptyTaiwanAddress } from './components/address'
+export type { MlTaiwanAddressValue, ParsedTaiwanAddress, TwZipStatus } from './components/address'
 export type { MlNumberKeyboardTheme, NumberKeyboardKey } from './components/number-keyboard'
 export {
   getTwBanks,
@@ -975,6 +980,7 @@ declare module 'vue' {
     MlTabs: typeof MlTabs
     MlTag: typeof MlTag
     MlTagInput: typeof MlTagInput
+    MlTaiwanAddress: typeof MlTaiwanAddress
     MlTaiwanRegion: typeof MlTaiwanRegion
     MlTaiwanMap: typeof MlTaiwanMap
     MlTerminal: typeof MlTerminal
