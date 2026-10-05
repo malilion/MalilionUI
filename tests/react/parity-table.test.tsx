@@ -60,7 +60,7 @@ describe('Table markup parity', () => {
   }
 })
 
-/* Interactive states (editing, invalid, pending) can't be server-rendered: drive both live and compare. */
+/* Interactive states (editing, invalid, after a commit) can't be server-rendered: drive both live and compare. */
 const key = (el: Element, k: string) => el.dispatchEvent(new KeyboardEvent('keydown', { key: k, bubbles: true, cancelable: true }))
 const setValue = (el: Element, text: string) => {
   Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, 'value')!.set!.call(el, text)
@@ -109,13 +109,13 @@ describe('Table live parity', () => {
     expect(r).toBe(v)
   })
 
-  it('pending value after a commit', async () => {
+  it('after a commit the parent ignored', async () => {
     const [v, r] = await bothLive([
       (host) => key(cell(host, 0, 1), 'Enter'),
       (host) => setValue(editor(host), '9'),
       (host) => key(editor(host), 'Enter'),
     ])
-    expect(v).toContain('ml-table__cell--pending')
+    expect(v).not.toContain('ml-table__editor')
     expect(r).toBe(v)
   })
 })

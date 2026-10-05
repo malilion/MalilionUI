@@ -4,7 +4,19 @@ export * from './basic'
 export * from './form'
 export * from './charts'
 export * from './select'
-export * from './pickers'
+// Listed by name: pickers.tsx also exports the shared picker shell (@internal,
+// used by time-range.tsx), which isn't part of the public API.
+export { Calendar, ColorPicker, DatePicker, DateRangePicker, DateTimePicker, TimePicker, Upload } from './pickers'
+export type {
+  CalendarProps,
+  ColorPickerProps,
+  DatePickerProps,
+  DateRangePickerProps,
+  DateTimePickerProps,
+  FocusHandle,
+  TimePickerProps,
+  UploadProps,
+} from './pickers'
 export * from './popups'
 export * from './table'
 export * from './data'

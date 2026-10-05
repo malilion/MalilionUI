@@ -157,15 +157,14 @@ describe('MlTable — inline editing', () => {
     await input.trigger('keydown', { key: 'Enter' })
     expect(wrapper.emitted('cell-edit')?.[0]).toEqual([{ row: editRows[0], key: 'name', value: 'Mufasa', oldValue: 'Simba', rowIndex: 0 }])
     expect(editRows[0].name).toBe('Simba')
-    // Shown as pending until the parent hands over new rows.
-    const pendingCell = cellAt(wrapper, 0, 0)
-    expect(pendingCell.classes()).toContain('ml-table__cell--pending')
-    expect(pendingCell.attributes('aria-busy')).toBe('true')
-    expect(pendingCell.text()).toContain('Mufasa')
+    // The cell shows rows[] as given: a parent that ignores the edit keeps the old value…
+    const after = cellAt(wrapper, 0, 0)
+    expect(after.text()).toBe('Simba')
+    expect(after.attributes('aria-busy')).toBeUndefined()
     await nextTick()
-    expect(document.activeElement).toBe(pendingCell.element)
+    expect(document.activeElement).toBe(after.element)
+    // …and one that applies it shows the new value.
     await wrapper.setProps({ rows: [{ ...editRows[0], name: 'Mufasa' }, editRows[1]] })
-    expect(wrapper.find('.ml-table__cell--pending').exists()).toBe(false)
     expect(cellAt(wrapper, 0, 0).text()).toBe('Mufasa')
   })
 
@@ -208,7 +207,8 @@ describe('MlTable — inline editing', () => {
     await select.setValue('cub')
     await select.trigger('blur')
     expect(wrapper.emitted('cell-edit')?.[1][0]).toMatchObject({ key: 'role', value: 'cub', oldValue: 'king' })
-    expect(cellAt(wrapper, 0, 2).text()).toContain('幼獅')
+    // rows weren't updated, so the cell still shows the old option's label.
+    expect(cellAt(wrapper, 0, 2).text()).toBe('國王')
     expect(cellAt(wrapper, 1, 2).text()).toBe('幼獅')
   })
 })

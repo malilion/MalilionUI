@@ -294,9 +294,6 @@ export function Table<Row extends Record<string, any>>({
   const [draft, setDraft] = useState('')
   const [editError, setEditError] = useState<string>()
   const editErrorId = `ml-table-${useId()}-edit-error`
-  // Committed values shown (dimmed) until the parent hands over new rows.
-  const [pending, setPending] = useState<{ rows: Row[]; cells: Record<string, { value: unknown }> }>({ rows, cells: {} })
-  const pendingCells = pending.rows === rows ? pending.cells : {}
   const editingRef = useRef(editing)
   editingRef.current = editing
   /** What to focus once the next render lands: the open editor, or a cell. */
@@ -316,22 +313,12 @@ export function Table<Row extends Record<string, any>>({
   })
 
   const isEditing = (item: FlatRow<Row>, column: MlTableColumn<Row>) => editing?.row === item.key && editing.col === column.key
-  const pendingOf = (item: FlatRow<Row>, column: MlTableColumn<Row>) => {
-    const entry = pendingCells[cellId(item.key, column.key)]
-    // A parent that mutates the row in place already shows the new value.
-    return entry && !Object.is(entry.value, item.row[column.key]) ? entry : undefined
-  }
 
   const startEdit = (item: FlatRow<Row>, column: MlTableColumn<Row>) => {
     if (!editorOf(column) || isEditing(item, column)) return
     setEditing({ row: item.key, col: column.key })
     setDraft(editString(item.row[column.key]))
     setEditError(undefined)
-    const id = cellId(item.key, column.key)
-    if (pendingCells[id]) {
-      const { [id]: _, ...rest } = pendingCells
-      setPending({ rows, cells: rest })
-    }
     focusNext.current = { editor: true }
   }
 
@@ -354,8 +341,8 @@ export function Table<Row extends Record<string, any>>({
     }
     setEditing(null)
     setEditError(undefined)
+    // The cell keeps showing rows[] as given: the parent applies (or rejects) the edit.
     if (result.kind === 'ok') {
-      setPending((p) => ({ rows, cells: { ...(p.rows === rows ? p.cells : {}), [cellId(target.row, column.key)]: { value: result.value } } }))
       onCellEdit?.({ row, key: column.key, value: result.value, oldValue, rowIndex: index })
     }
     return true
@@ -575,8 +562,7 @@ export function Table<Row extends Record<string, any>>({
                     {columns.map((column, c) => {
                       const editor = editorOf(column)
                       const active = isEditing(item, column)
-                      const waiting = pendingOf(item, column)
-                      const custom = active || waiting ? undefined : renderCell?.({ column, row: item.row, value: item.row[column.key], index, level: item.level })
+                      const custom = active ? undefined : renderCell?.({ column, row: item.row, value: item.row[column.key], index, level: item.level })
                       return (
                         <td
                           key={column.key}
@@ -585,13 +571,11 @@ export function Table<Row extends Record<string, any>>({
                           tabIndex={editor && !active ? 0 : undefined}
                           data-ml-cell={editor ? cellId(item.key, column.key) : undefined}
                           aria-keyshortcuts={editor && !active ? 'Enter F2' : undefined}
-                          aria-busy={waiting ? true : undefined}
                           className={cx(`ml-table__cell--${column.align ?? 'left'}`, {
                             'ml-table__cell--mono': column.mono,
                             'ml-table__cell--ellipsis': column.ellipsis,
                             'ml-table__cell--editable': editor,
                             'ml-table__cell--editing': active,
-                            'ml-table__cell--pending': waiting,
                             ...fixedClass(column),
                           })}
                           onDoubleClick={() => startEdit(item, column)}
@@ -663,11 +647,6 @@ export function Table<Row extends Record<string, any>>({
                                   {editError}
                                 </p>
                               )}
-                            </>
-                          ) : waiting ? (
-                            <>
-                              {cellText(column, waiting.value, item.row)}
-                              <span className="ml-visually-hidden">{loc.table.saving}</span>
                             </>
                           ) : (
                             (custom ?? display(column, item.row))

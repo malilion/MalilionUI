@@ -1981,7 +1981,7 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
       {
         file: 'table/editable',
         title: '就地編輯',
-        desc: '欄位加上 editable（文字、number、select）就能雙擊或按 Enter / F2 編輯：Enter 或離開欄位送出、Esc 取消、Tab 跳到同列下一個可編輯欄。validate 回傳訊息會擋下送出並顯示錯誤。表格不會改 rows，只發出 cell-edit，由你決定怎麼存；新的 rows 回來之前，該格會顯示「儲存中」。',
+        desc: '欄位加上 editable（文字、number、select）就能雙擊或按 Enter / F2 編輯：Enter 或離開欄位送出、Esc 取消、Tab 跳到同列下一個可編輯欄。validate 回傳訊息會擋下送出並顯示錯誤。表格不會改 rows，只發出 cell-edit，由你決定怎麼存：更新 rows 就會顯示新值，不更新（例如驗證失敗或儲存被拒）就維持原值。',
         block: true,
       },
       {

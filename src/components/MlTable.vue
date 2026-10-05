@@ -186,16 +186,8 @@ const editing = ref<{ row: Key; col: string } | null>(null)
 const draft = ref('')
 const editError = ref<string>()
 const editErrorId = `ml-table-${useId()}-edit-error`
-/** Committed values shown (dimmed) until the parent hands over new rows. */
-const pending = ref<Record<string, { value: unknown }>>({})
-watch(() => props.rows, () => (pending.value = {}))
 
 const isEditing = (item: FlatRow, column: MlTableColumn<Row>) => editing.value?.row === item.key && editing.value.col === column.key
-const pendingOf = (item: FlatRow, column: MlTableColumn<Row>) => {
-  const entry = pending.value[cellId(item.key, column.key)]
-  // A parent that mutates the row in place already shows the new value.
-  return entry && !Object.is(entry.value, item.row[column.key]) ? entry : undefined
-}
 
 function focusCell(key: Key, column: string) {
   nextTick(() => {
@@ -210,8 +202,6 @@ function startEdit(item: FlatRow, column: MlTableColumn<Row>) {
   editing.value = { row: item.key, col: column.key }
   draft.value = editString(item.row[column.key])
   editError.value = undefined
-  const { [cellId(item.key, column.key)]: _, ...rest } = pending.value
-  pending.value = rest
   nextTick(() => {
     const control = scroller.value?.querySelector<HTMLInputElement | HTMLSelectElement>('.ml-table__editor .ml-input__control')
     control?.focus()
@@ -238,8 +228,8 @@ function commitEdit(): boolean {
   }
   editing.value = null
   editError.value = undefined
+  // The cell keeps showing rows[] as given: the parent applies (or rejects) the edit.
   if (result.kind === 'ok') {
-    pending.value = { ...pending.value, [cellId(target.row, column.key)]: { value: result.value } }
     emit('cell-edit', { row, key: column.key, value: result.value, oldValue, rowIndex: index })
   }
   return true
@@ -574,7 +564,6 @@ const isFirst = (c: number) => c === 0
                 :tabindex="editorOf(column) && !isEditing(item, column) ? 0 : undefined"
                 :data-ml-cell="editorOf(column) ? cellId(item.key, column.key) : undefined"
                 :aria-keyshortcuts="editorOf(column) && !isEditing(item, column) ? 'Enter F2' : undefined"
-                :aria-busy="pendingOf(item, column) ? true : undefined"
                 :class="[
                   `ml-table__cell--${column.align ?? 'left'}`,
                   {
@@ -582,7 +571,6 @@ const isFirst = (c: number) => c === 0
                     'ml-table__cell--ellipsis': column.ellipsis,
                     'ml-table__cell--editable': editorOf(column),
                     'ml-table__cell--editing': isEditing(item, column),
-                    'ml-table__cell--pending': pendingOf(item, column),
                     'ml-table__fixed': column.fixed,
                     'ml-table__fixed--last-left': column.key === lastLeft,
                     'ml-table__fixed--first-right': column.key === firstRight,
@@ -635,9 +623,6 @@ const isFirst = (c: number) => c === 0
                   <p v-if="editError" :id="editErrorId" class="ml-field__error ml-table__edit-error" role="alert">
                     <MlIcon name="warning" />{{ editError }}
                   </p>
-                </template>
-                <template v-else-if="pendingOf(item, column)">
-                  {{ cellText(column, pendingOf(item, column)!.value, item.row) }}<span class="ml-visually-hidden">{{ loc.table.saving }}</span>
                 </template>
                 <slot v-else :name="`cell-${column.key}`" :row="item.row" :value="item.row[column.key]" :index="index" :level="item.level">
                   {{ display(column, item.row) }}
