@@ -33,7 +33,9 @@
  "bottom-sheet/basic": {},
  "bottom-sheet/peek": {},
  "bottom-sheet/snap": {},
+ "box-plot/basic": {},
  "breadcrumb/basic": {},
+ "bullet-chart/basic": {},
  "button/sizes": {},
  "button/stamp": {},
  "button/states": {},
@@ -111,6 +113,7 @@
  "ellipsis/basic": {},
  "ellipsis/middle": {},
  "empty/basic": {},
+ "filter-bar/basic": {},
  "float-button/basic": {},
  "funnel-chart/basic": {},
  "funnel-chart/horizontal": {},
@@ -207,6 +210,8 @@
   "castSetters": true
  },
  "puzzle/wide": {},
+ "query-builder/basic": {},
+ "query-builder/empty": {},
  "radar-chart/basic": {},
  "radar/basic": {},
  "radar/range": {},
@@ -283,6 +288,7 @@
  "tabs/plate": {},
  "tag-input/basic": {},
  "tag/basic": {},
+ "taiwan-address/basic": {},
  "taiwan-map/basic": {
   "castSetters": true
  },
@@ -328,6 +334,7 @@
  "typography/title": {},
  "video-player/basic": {},
  "video-player/events": {},
+ "waterfall-chart/basic": {},
  "watermark/basic": {},
  "zhuyin/basic": {},
  "zhuyin/more": {}
