@@ -202,7 +202,21 @@ export interface MlSegmentedOption {
   disabled?: boolean
 }
 
-export type MlAutocompleteItem = string | { value: string; label?: string; hint?: string }
+export interface MlToggleGroupOption {
+  value: string | number
+  label?: string
+  icon?: IconName
+  disabled?: boolean
+  /** Native tooltip; also the accessible name of an icon-only item. */
+  title?: string
+}
+
+/** Single mode: the pressed value or null. Multiple mode: the pressed values. */
+export type MlToggleGroupValue = string | number | null | (string | number)[]
+
+export type MlHighlightTone = 'gold' | 'tech' | 'success' | 'danger'
+
+export type MlAutocompleteItem =string | { value: string; label?: string; hint?: string }
 
 export type MlTimelineTone = 'gold' | 'tech' | 'success' | 'danger' | 'steel'
 
