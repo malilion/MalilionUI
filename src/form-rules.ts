@@ -36,8 +36,22 @@ export function isEmptyValue(value: unknown) {
   )
 }
 
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+const MAX_EMAIL_LEN = 254
 const URL_RE = /^https?:\/\/[^\s/$.?#].[^\s]*$/i
+
+/** `local@domain` with a `.` in the domain — no nested `+` quantifiers (CodeQL js/polynomial-redos). */
+function isEmail(value: string): boolean {
+  if (value.length > MAX_EMAIL_LEN) return false
+  const at = value.indexOf('@')
+  if (at < 1 || at !== value.lastIndexOf('@') || at === value.length - 1) return false
+  for (let i = 0; i < value.length; i++) {
+    const c = value.charCodeAt(i)
+    if (c <= 32 || c === 127) return false // whitespace / control
+  }
+  const domain = value.slice(at + 1)
+  const dot = domain.indexOf('.')
+  return dot > 0 && dot < domain.length - 1
+}
 
 function sizeOf(value: unknown): { size: number; unit: 'chars' | 'items' | 'value' } | null {
   if (typeof value === 'string') return { size: [...value].length, unit: 'chars' }
@@ -67,7 +81,7 @@ export async function validateValue(
 
     if (rule.type && !empty) {
       const ok =
-        rule.type === 'email' ? EMAIL.test(String(value)) :
+        rule.type === 'email' ? isEmail(String(value)) :
         rule.type === 'url' ? URL_RE.test(String(value)) :
         rule.type === 'number' ? typeof value === 'number' ? !Number.isNaN(value) : value !== '' && !Number.isNaN(Number(value)) :
         Number.isInteger(typeof value === 'number' ? value : Number(value))

@@ -244,10 +244,49 @@ export function diffFile(oldText: string, newText: string, options: DiffOptions 
 /* ── Unified patches ───────────────────────────────────── */
 
 function cleanName(raw: string): string | null {
-  let name = raw.replace(/\t.*$/, '').trim()
+  // Truncate at the first tab (timestamps in `diff -u`); avoid `/\t.*$/` ReDoS.
+  const tab = raw.indexOf('\t')
+  let name = (tab === -1 ? raw : raw.slice(0, tab)).trim()
   if (name.startsWith('"') && name.endsWith('"')) name = name.slice(1, -1)
   if (name === '/dev/null') return null
-  return name.replace(/^[ab]\//, '')
+  return name.startsWith('a/') || name.startsWith('b/') ? name.slice(2) : name
+}
+/** Parse `diff --git a/… b/…` (optional quotes) linearly — avoids `/(.+?)/` ReDoS. */
+function parseDiffGitNames(row: string): [string, string] | null {
+  const prefix = 'diff --git '
+  if (!row.startsWith(prefix)) return null
+  const rest = row.slice(prefix.length)
+  let i = 0
+  const read = (): string | null => {
+    if (i >= rest.length) return null
+    if (rest[i] === '"') {
+      const end = rest.indexOf('"', i + 1)
+      if (end === -1) return null
+      const token = rest.slice(i + 1, end)
+      i = end + 1
+      return token.startsWith('a/') || token.startsWith('b/') ? token.slice(2) : token
+    }
+    // Unquoted path: first token ends at space; second runs to end.
+    if (rest.startsWith('a/', i) || rest.startsWith('b/', i)) {
+      const start = i + 2
+      const sp = rest.indexOf(' ', start)
+      if (sp === -1) {
+        const token = rest.slice(start)
+        i = rest.length
+        return token
+      }
+      const token = rest.slice(start, sp)
+      i = sp
+      return token
+    }
+    return null
+  }
+  const oldName = read()
+  if (oldName === null) return null
+  if (rest[i] === ' ') i++
+  const newName = read()
+  if (newName === null) return null
+  return [oldName, newName]
 }
 
 /** Within each run of removed + added lines, whitespace-only edits become context. */
@@ -337,10 +376,10 @@ export function parsePatch(patch: string, options: Pick<DiffOptions, 'ignoreWhit
     }
     if (row.startsWith('diff --git ')) {
       const f = start()
-      const m = /^diff --git "?a\/(.+?)"? "?b\/(.+?)"?$/.exec(row)
-      if (m) {
-        f.oldName = m[1]
-        f.newName = m[2]
+      const names = parseDiffGitNames(row)
+      if (names) {
+        f.oldName = names[0]
+        f.newName = names[1]
       }
       continue
     }
