@@ -120,12 +120,23 @@ function deLeet(s: string) {
   return [...s].map((c) => LEET[c] ?? c).join('')
 }
 
+/** Drop trailing non-a-z without `/[^a-z]+$/u` (polynomial ReDoS on long non-letter runs). */
+function stripTrailingNonLetters(s: string): string {
+  let end = s.length
+  while (end > 0) {
+    const c = s.charCodeAt(end - 1)
+    if (c >= 97 && c <= 122) break // a-z
+    end--
+  }
+  return s.slice(0, end)
+}
+
 /** True when the password is (a light disguise of) a well-known password. */
 export function isCommonPassword(password: string): boolean {
   const lower = password.toLowerCase()
   if (COMMON.has(lower)) return true
   // "Password1!", "p@ssw0rd2024" — strip trailing digits / symbols, undo leetspeak.
-  const base = lower.replace(/[^a-z]+$/u, '')
+  const base = stripTrailingNonLetters(lower)
   if (base.length >= 4 && (COMMON.has(base) || COMMON.has(deLeet(base)))) return true
   return COMMON.has(deLeet(lower))
 }
