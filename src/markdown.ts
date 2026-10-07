@@ -478,10 +478,12 @@ const EMAIL_AUTOLINK = /^<([a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-
 // `（見 https://x.y）` ends before the `）`.
 const CJK_STOPS = '。，、；：！？「」『』【】《》〈〉…‥'
 const URL_CHAR = `[^\\s<${CJK_STOPS}（）]`
+// www. host lookahead also forbids `.` so a lone `www.` fails cheaply (no String#replace).
+const WWW_HOST_CHAR = `[^\\s<.${CJK_STOPS}（）]`
 // The lookaheads reject `http:///` or a lone `www.` before the run is scanned:
 // a rejected match must not cost the length of the rest of the line.
 const BARE_URL = new RegExp(
-  `^(?:https?:\\/\\/(?=[^\\s</${CJK_STOPS}（）])|www\\.(?=${URL_CHAR.replace('<', '<.')}+\\.))(?:${URL_CHAR}|（${URL_CHAR}*）)*`,
+  `^(?:https?:\\/\\/(?=[^\\s</${CJK_STOPS}（）])|www\\.(?=${WWW_HOST_CHAR}+\\.))(?:${URL_CHAR}|（${URL_CHAR}*）)*`,
   'i',
 )
 const BR_TAG = /^<br\s*\/?>/i

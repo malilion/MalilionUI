@@ -44,7 +44,7 @@ function renderApi(page, framework) {
       for (const p of api.props) {
         const r = reactProps?.[p.name]
         const flag = react && reactProps && !r ? ' (Vue only)' : ''
-        const type = (react && r?.type ? r.type : p.type).replace(/\|/g, '\\|')
+        const type = (react && r?.type ? r.type : p.type).replace(/\\/g, '\\\\').replace(/\|/g, '\\|')
         out.push(`| ${p.name}${flag} | \`${type}\` | ${p.default ? `\`${p.default}\`` : ''} | ${p.desc} |`)
       }
       if (react && reactProps) {
