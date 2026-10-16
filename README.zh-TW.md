@@ -14,7 +14,7 @@
   <a href="https://github.com/malilion/MalilionUI/stargazers"><img src="https://img.shields.io/github/stars/malilion/MalilionUI?style=flat-square&color=f0ad2f" alt="GitHub stars"></a>
   <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/v/@malilion/ui?style=flat-square&color=cd7631" alt="npm version"></a>
   <a href="https://www.npmjs.com/package/@malilion/ui"><img src="https://img.shields.io/npm/dm/@malilion/ui?style=flat-square&color=14cfb2" alt="npm downloads"></a>
-  <a href="https://github.com/malilion/MalilionUI/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-ff8fa8?style=flat-square" alt="license: MIT"></a>
+  <a href="https://github.com/malilion/MalilionUI/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-ff8fa8?style=flat-square" alt="license: Apache-2.0"></a>
   <a href="https://github.com/malilion/MalilionUI/actions/workflows/docs.yml"><img src="https://img.shields.io/github/actions/workflow/status/malilion/MalilionUI/docs.yml?style=flat-square&label=docs" alt="docs build"></a>
   <br/>
   <img src="https://img.shields.io/badge/Vue_3-42B883?style=flat-square&logo=vuedotjs&logoColor=white" alt="Vue 3">
@@ -548,6 +548,6 @@ git push --follow-tags
 
 ## 授權
 
-MIT License，詳見 [LICENSE](https://github.com/malilion/MalilionUI/blob/main/LICENSE)。
+Apache License 2.0，詳見 [LICENSE](https://github.com/malilion/MalilionUI/blob/main/LICENSE)。
 
 獅徽與腳印是碼力獅的原創圖像，可隨元件庫一起自由使用。
