@@ -20,7 +20,7 @@
     "ai-agent"
   ],
   "type": "module",
-  "license": "MIT",
+  "license": "Apache-2.0",
   "author": "Malilion",
   "homepage": "https://malilion.github.io/MalilionUI/",
   "repository": {
