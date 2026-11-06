@@ -5,9 +5,20 @@ import { renderToString } from 'vue/server-renderer'
 import { renderToStaticMarkup } from 'react-dom/server'
 import type { ReactElement } from 'react'
 
+/** Remove HTML comments completely (loop until stable — CodeQL incomplete-sanitization). */
+export function stripHtmlComments(html: string): string {
+  let out = String(html)
+  let prev
+  do {
+    prev = out
+    out = out.replace(/<!--[\s\S]*?-->/g, '')
+  } while (out !== prev)
+  return out
+}
+
 export function signature(html: string): string {
   const root = document.createElement('div')
-  root.innerHTML = html.replace(/<!--[\s\S]*?-->/g, '')
+  root.innerHTML = stripHtmlComments(html)
   const walk = (el: Element, depth: number): string[] => {
     const cls = [...el.classList].sort().join('.')
     const role = el.getAttribute('role')

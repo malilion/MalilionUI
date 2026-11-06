@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import * as V from '../../src'
 import { LuckyWheel } from '../../src/react/wheel'
 import type { MlWheelPrize } from '../../src/components/wheel'
-import { react, vue } from './parity-utils'
+import { react, stripHtmlComments, vue } from './parity-utils'
 
 const prizes: MlWheelPrize[] = [
   { label: '大獎', icon: 'heart', weight: 1 },
@@ -34,7 +34,7 @@ describe('React ↔ Vue markup parity: LuckyWheel', () => {
     const { renderToStaticMarkup } = await import('react-dom/server')
     const strip = (html: string) => {
       const root = document.createElement('div')
-      root.innerHTML = html.replace(/<!--[\s\S]*?-->/g, '')
+      root.innerHTML = stripHtmlComments(html)
       // Ids differ per framework; swap the instance prefix for a placeholder.
       const uid = root.querySelector('[aria-live]')!.id.replace(/-live$/, '')
       const out: string[] = []

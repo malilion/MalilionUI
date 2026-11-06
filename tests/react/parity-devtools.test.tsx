@@ -7,7 +7,7 @@ import * as V from '../../src'
 import { CopyButton, JsonViewer } from '../../src/react/devtools'
 import { ConfigProvider } from '../../src/react/locale'
 import { en } from '../../src/locale-data'
-import { react, vue } from './parity-utils'
+import { react, stripHtmlComments, vue } from './parity-utils'
 
 const api = {
   total: 3,
@@ -59,7 +59,7 @@ describe('React ↔ Vue markup parity: devtools', () => {
   it('matches attributes that carry meaning (aria, tabindex, href, datetime), in English too', async () => {
     const strip = (html: string) => {
       const root = document.createElement('div')
-      root.innerHTML = html.replace(/<!--[\s\S]*?-->/g, '')
+      root.innerHTML = stripHtmlComments(html)
       const out: string[] = []
       for (const el of root.querySelectorAll('*')) {
         for (const name of ['role', 'aria-label', 'aria-level', 'aria-setsize', 'aria-posinset', 'aria-expanded', 'aria-hidden', 'aria-live', 'title', 'disabled', 'tabindex', 'type', 'href', 'target', 'rel', 'datetime', 'placeholder', 'd']) {

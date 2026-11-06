@@ -5,7 +5,15 @@ import { MlRichTextEditor } from '@malilion/ui/editor'
 
 const model = reactive({ title: '', body: '' })
 // The value is HTML, so count the text, not the tags.
-const text = (html: string) => html.replace(/<[^>]*>/g, '').trim()
+const text = (html: string) => {
+  let out = String(html)
+  let prev
+  do {
+    prev = out
+    out = out.replace(/<[^>]*>/g, '')
+  } while (out !== prev)
+  return out.trim()
+}
 const rules: MlFormRules = {
   title: { required: true },
   body: [{ required: true, message: '請填寫內容' }, { validator: (v) => text(String(v)).length >= 10 || '內容至少 10 個字' }],
