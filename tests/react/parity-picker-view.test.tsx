@@ -5,7 +5,7 @@ import { renderToString } from 'vue/server-renderer'
 import { renderToStaticMarkup } from 'react-dom/server'
 import * as V from '../../src'
 import { PickerView, datePickerColumns, timePickerColumns, type MlPickerOption } from '../../src/react/picker-view'
-import { react, vue } from './parity-utils'
+import { react, stripHtmlComments, vue } from './parity-utils'
 
 const fruit: MlPickerOption[] = ['Apple', 'Banana', 'Cherry', 'Durian', 'Elderberry', 'Fig', 'Grape', 'Honeydew'].map((label, i) => ({ label, value: label, disabled: i === 3 || undefined }))
 const sizes: MlPickerOption[] = ['S', 'M', 'L'].map((label) => ({ label, value: label }))
@@ -40,7 +40,7 @@ describe('React ↔ Vue markup parity: PickerView', () => {
   it('matches attributes that carry meaning (aria, tabindex, hidden rows)', async () => {
     const strip = (html: string) => {
       const root = document.createElement('div')
-      root.innerHTML = html.replace(/<!--[\s\S]*?-->/g, '')
+      root.innerHTML = stripHtmlComments(html)
       const out: string[] = []
       for (const el of root.querySelectorAll('*')) {
         for (const name of ['role', 'tabindex', 'aria-label', 'aria-live', 'aria-hidden', 'aria-disabled', 'aria-valuemin', 'aria-valuemax', 'aria-valuenow', 'aria-valuetext', 'disabled', 'type']) {

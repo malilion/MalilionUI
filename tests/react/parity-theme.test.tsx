@@ -7,7 +7,7 @@ import * as V from '../../src'
 import { ThemeToggle } from '../../src/react/theme'
 import { ConfigProvider } from '../../src/react/locale'
 import { en } from '../../src/locale-data'
-import { react, vue } from './parity-utils'
+import { react, stripHtmlComments, vue } from './parity-utils'
 
 const cases: [string, () => Promise<string>, () => string][] = [
   ['ThemeToggle switch', () => vue(V.MlThemeToggle), () => react(<ThemeToggle />)],
@@ -30,7 +30,7 @@ describe('React ↔ Vue markup parity: ThemeToggle', () => {
   it('matches attributes that carry meaning (aria, disabled, tabindex, paths), in English too', async () => {
     const strip = (html: string) => {
       const root = document.createElement('div')
-      root.innerHTML = html.replace(/<!--[\s\S]*?-->/g, '')
+      root.innerHTML = stripHtmlComments(html)
       const out: string[] = []
       for (const el of root.querySelectorAll('*')) {
         for (const name of ['role', 'aria-label', 'aria-checked', 'aria-hidden', 'aria-disabled', 'title', 'disabled', 'tabindex', 'type', 'd', 'viewBox']) {
