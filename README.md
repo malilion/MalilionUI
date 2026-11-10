@@ -551,3 +551,8 @@ Malilion UI targets the last two major versions of Chrome, Edge, Firefox and Saf
 Apache License 2.0. See [LICENSE](https://github.com/malilion/MalilionUI/blob/main/LICENSE).
 
 The lion crest and paw prints are original artwork by Malilion, free to use along with the library.
+
+---
+
+<!-- malilion-ecosystem-footer -->
+<p align="center"><sub>🦁 Part of the <a href="https://github.com/malilion">MaliLion</a> ecosystem · <a href="https://malilion.com">malilion.com</a> · <a href="https://github.com/malilion?tab=repositories">More projects</a></sub></p>
