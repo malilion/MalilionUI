@@ -53,6 +53,13 @@ Malilion UI is the component library of **Malilion (碼力獅)**, the "code lion
 - On-demand loading ships only the components and styles you use; a Nuxt module too, and every component passes SSR and hydration tests
 - Zero runtime dependencies — only Vue (or React) as a peer dependency
 
+## What's New in 0.16
+
+- **Tailwind CSS v4 theme**: `@import '@malilion/ui/tailwind.css'` turns the design tokens into utilities — `bg-ml-surface`, `text-ml-text-muted`, `border-ml-line`, `bg-ml-metal-gold`, `font-ml-display`, `rounded-ml`, `shadow-ml-1`, plus an `ml-light:` variant. Semantic colours follow `data-ml-theme`; no component changed. See [Tailwind CSS](#tailwind-css)
+- **MCP server for AI agents**: `npx -y -p @malilion/ui malilion-ui-mcp` lets coding agents look up real props, examples, tokens and setup steps instead of guessing. See [For AI Agents (MCP)](#for-ai-agents-mcp)
+- **Security**: regular expressions that could backtrack badly on crafted input are replaced with linear parsing (email rule, password strength, diff file names), and bare-URL host matching in `MlMarkdown` is tightened
+- **License**: now Apache-2.0 (0.15 and earlier were MIT)
+
 ## What's New in 0.15
 
 - **Back-office kit**: `MlProTable` wires `MlFilterBar`, `MlTable`, `MlPagination` and a create / edit dialog into one CRUD page — local `data` or a remote `request({ page, pageSize, filters, sort })` (stale responses ignored), `onCreate` / `onUpdate` / `onDelete` hooks with loading and error states, batch delete with confirmation; `MlSchemaForm` builds a form from a field list (15 field types, `twRules`, conditional `visible` / `disabled`, nested paths, grid columns); `MlWizard` is a step-by-step form that validates only the current step on 下一步 and submits on the last one — each step can be a SchemaForm schema
