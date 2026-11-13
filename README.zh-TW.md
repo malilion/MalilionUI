@@ -53,6 +53,13 @@ Malilion UI 是**碼力獅**專屬的元件庫。每個元件都是一塊機械�
 - 按需載入：只打包用到的元件與樣式；另有 Nuxt 模組，全部元件都通過 SSR 與水合測試
 - 執行期零依賴，只需要 Vue（或 React）作為 peer dependency
 
+## 0.16 版新功能
+
+- **Tailwind CSS v4 主題**：`@import '@malilion/ui/tailwind.css'` 就能把設計代幣當 utility 用，例如 `bg-ml-surface`、`text-ml-text-muted`、`border-ml-line`、`bg-ml-metal-gold`、`font-ml-display`、`rounded-ml`、`shadow-ml-1`，另有 `ml-light:` variant。語意色會跟著 `data-ml-theme` 切換，元件本身沒有任何更動。詳見 [Tailwind CSS](#tailwind-css)
+- **給 AI Agent 用的 MCP 伺服器**：`npx -y -p @malilion/ui malilion-ui-mcp`，讓程式助理查到真實的屬性、範例、代幣與安裝步驟，不必用猜的。詳見[給 AI Agent 用(MCP)](#給-ai-agent-用mcp)
+- **安全性**：遇到惡意輸入可能嚴重回溯的正規表示式改為線性解析（email 規則、密碼強度、diff 檔名），`MlMarkdown` 裸網址的主機名稱比對也更嚴謹
+- **授權**：改為 Apache-2.0（0.15 及更早版本為 MIT）
+
 ## 0.15 版新功能
 
 - **後台組合元件**：`MlProTable` 把 `MlFilterBar`、`MlTable`、`MlPagination` 與新增／編輯對話框串成一個 CRUD 頁——本地 `data` 或遠端 `request({ page, pageSize, filters, sort })`（較晚回來的舊回應會被忽略），`onCreate` / `onUpdate` / `onDelete` 有載入與錯誤狀態，選取後可批次刪除並先確認；`MlSchemaForm` 用欄位清單產生表單（15 種欄位型別、`twRules`、依條件 `visible` / `disabled`、巢狀路徑、格線欄數）；`MlWizard` 分步表單，按「下一步」只驗證當前這一步，最後一步才送出，每一步可直接放一份 SchemaForm 設定
