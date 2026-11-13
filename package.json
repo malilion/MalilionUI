@@ -64,6 +64,7 @@
       "import": "./dist/resolver.js"
     },
     "./style.css": "./dist/style.css",
+    "./tailwind.css": "./src/styles/tailwind.css",
     "./css/*": "./src/styles/*",
     "./package.json": "./package.json",
     "./assets/*": "./src/assets/*",

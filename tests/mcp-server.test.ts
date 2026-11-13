@@ -43,5 +43,6 @@ describe('malilion-ui-mcp', () => {
     expect(call('get_example', { component: 'button', example: 'variants' }).content[0].text).toContain('<MlButton')
     expect(call('get_tokens', { filter: 'metal-gold', theme: 'root' }).content[0].text).toContain('--ml-metal-gold:')
     expect(call('get_setup', { framework: 'react' }).content[0].text).toContain('@malilion/ui/react')
+    expect(call('get_setup', { framework: 'tailwind' }).content[0].text).toContain("@import '@malilion/ui/tailwind.css'")
   })
 })

@@ -112,6 +112,22 @@ import '@malilion/ui/on-demand/MlButton'
 import '@malilion/ui/on-demand/MlCard'
 
 (Nuxt module does this automatically.)`,
+  tailwind: `Tailwind CSS v4: the --ml-* tokens as utilities. Token --ml-<name> is the utility <property>-ml-<name>.
+
+/* app.css */
+@import 'tailwindcss';
+@import '@malilion/ui/style.css' layer(components);   /* layered, so utilities on a component win */
+@import '@malilion/ui/tailwind.css';
+
+<div class="bg-ml-surface border border-ml-line rounded-ml shadow-ml-1 text-ml-text-muted">
+<h2 class="font-ml-display text-ml-xl tracking-ml-hud text-ml-accent-text">
+<MlButton class="mt-4">Deploy</MlButton>
+
+Colours: semantic (bg-ml-bg, bg-ml-surface, text-ml-text, border-ml-line, text-ml-danger-text, ring-ml-focus) follow data-ml-theme;
+raw palette (bg-ml-gold-400, text-ml-cyan-300). Gradients: bg-ml-metal-gold, bg-ml-plate-fill, bg-ml-brushed.
+Also font-ml-display|body|mono|paw, text-ml-xs…3xl, rounded-ml, shadow-ml-1|2, inset-shadow-ml, ease-ml|ml-spring.
+ml-light: variant targets the light theme (dark is the default). Other tokens: arbitrary values, e.g. duration-(--ml-dur).
+Use get_tokens to list the token names.`,
 }
 
 const tools = [
@@ -224,7 +240,7 @@ const tools = [
   },
   {
     name: 'get_setup',
-    description: 'How to install and wire up Malilion UI for a framework: vue, react (Next.js), nuxt, css (any framework / plain HTML), or on-demand (per-component styles).',
+    description: 'How to install and wire up Malilion UI for a framework: vue, react (Next.js), nuxt, css (any framework / plain HTML), on-demand (per-component styles), or tailwind (tokens as Tailwind v4 utilities).',
     inputSchema: { type: 'object', properties: { framework: { type: 'string', enum: Object.keys(setupGuides) } }, required: ['framework'] },
     run({ framework }) {
       const g = setupGuides[framework]
