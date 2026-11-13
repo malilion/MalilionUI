@@ -367,7 +367,7 @@ claude mcp add malilion-ui -- npx -y -p @malilion/ui malilion-ui-mcp
 { "mcpServers": { "malilion-ui": { "command": "npx", "args": ["-y", "-p", "@malilion/ui", "malilion-ui-mcp"] } } }
 ```
 
-工具: `list_components`, `search_components` (English or 中文), `get_component` (props / events / slots, `framework: "react"` for React names and types), `get_example`, `get_tokens`, `get_setup` (vue / react / nuxt / css / on-demand). 本 repo 內的 `.mcp.json` 已經註冊好。
+工具: `list_components`, `search_components` (English or 中文), `get_component` (props / events / slots, `framework: "react"` for React names and types), `get_example`, `get_tokens`, `get_setup` (vue / react / nuxt / css / on-demand / tailwind). 本 repo 內的 `.mcp.json` 已經註冊好。
 
 ## 按需載入
 
@@ -462,6 +462,33 @@ export function DeployButton() {
 ```ts
 import '@malilion/ui/css/tokens.css'
 ```
+
+## Tailwind CSS
+
+用 Tailwind v4？引入主題檔，設計代幣就變成 utility：代幣 `--ml-<name>` 對應 `<屬性>-ml-<name>`。
+
+```css
+/* app.css */
+@import 'tailwindcss';
+@import '@malilion/ui/style.css' layer(components);
+@import '@malilion/ui/tailwind.css';
+```
+
+```html
+<section class="bg-ml-surface border border-ml-line rounded-ml p-6 shadow-ml-1">
+  <h2 class="font-ml-display text-ml-xl tracking-ml-hud text-ml-accent-text">獅群狀態</h2>
+  <p class="text-ml-text-muted ml-light:text-ml-steel-600">系統全數運轉中。</p>
+  <MlButton class="mt-4">部署</MlButton>
+</section>
+```
+
+- **顏色**：語意色（`bg-ml-bg`、`bg-ml-surface`、`text-ml-text-muted`、`border-ml-line`、`text-ml-danger-text`、`ring-ml-focus`…）與原始色票（`bg-ml-gold-400`、`text-ml-cyan-300`…）。語意色會自動跟著 `data-ml-theme` 切換，也支援透明度（`bg-ml-accent/50`）
+- **金屬與紋理**：`bg-ml-metal-gold`、`bg-ml-metal-steel`、`bg-ml-plate-fill`、`bg-ml-brushed`、`bg-ml-scanlines`…
+- **字體、形狀、動態**：`font-ml-display` / `body` / `mono` / `paw`、`text-ml-xs` … `text-ml-3xl`、`tracking-ml-hud`、`rounded-ml`、`shadow-ml-1` / `shadow-ml-2`、`inset-shadow-ml`、`ease-ml` / `ease-ml-spring`
+- **`ml-light:` variant**：只在亮色主題生效。預設是暗色，所以暗色樣式直接寫
+- 其他代幣用任意值即可：`duration-(--ml-dur)`、`z-(--ml-z-modal)`、`filter-(--ml-glow-gold)`
+
+`style.css` 的 import 請保留 `layer(components)`：這樣寫在元件上的 utility（`<MlButton class="mt-4">`）才蓋得過元件自己的樣式。也因此樣式表要透過 Tailwind 的 CSS import 引入，而不是在 JS 裡 `import`。獨立版 Tailwind CLI 不會改寫字型路徑，使用時請另外把 `@malilion/ui/fonts/*` 複製到輸出檔旁邊。
 
 ## 主題
 

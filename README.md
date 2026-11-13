@@ -367,7 +367,7 @@ Other clients (Cursor, VS Code, Claude Desktop…) take the same command in thei
 { "mcpServers": { "malilion-ui": { "command": "npx", "args": ["-y", "-p", "@malilion/ui", "malilion-ui-mcp"] } } }
 ```
 
-Tools: `list_components`, `search_components` (English or 中文), `get_component` (props / events / slots, `framework: "react"` for React names and types), `get_example`, `get_tokens`, `get_setup` (vue / react / nuxt / css / on-demand). Inside this repo, `.mcp.json` already registers it.
+Tools: `list_components`, `search_components` (English or 中文), `get_component` (props / events / slots, `framework: "react"` for React names and types), `get_example`, `get_tokens`, `get_setup` (vue / react / nuxt / css / on-demand / tailwind). Inside this repo, `.mcp.json` already registers it.
 
 ## On-demand Loading
 
@@ -462,6 +462,33 @@ Only want the design tokens (colours, metal gradients, fonts, easing)?
 ```ts
 import '@malilion/ui/css/tokens.css'
 ```
+
+## Tailwind CSS
+
+Using Tailwind v4? Import the theme file and the design tokens become utilities — the token `--ml-<name>` is the utility `<property>-ml-<name>`:
+
+```css
+/* app.css */
+@import 'tailwindcss';
+@import '@malilion/ui/style.css' layer(components);
+@import '@malilion/ui/tailwind.css';
+```
+
+```html
+<section class="bg-ml-surface border border-ml-line rounded-ml p-6 shadow-ml-1">
+  <h2 class="font-ml-display text-ml-xl tracking-ml-hud text-ml-accent-text">Pride status</h2>
+  <p class="text-ml-text-muted ml-light:text-ml-steel-600">All systems roaring.</p>
+  <MlButton class="mt-4">Deploy</MlButton>
+</section>
+```
+
+- **Colours**: semantic (`bg-ml-bg`, `bg-ml-surface`, `text-ml-text-muted`, `border-ml-line`, `text-ml-danger-text`, `ring-ml-focus`…) and the raw palette (`bg-ml-gold-400`, `text-ml-cyan-300`…). Semantic colours follow `data-ml-theme` on their own, opacity modifiers work (`bg-ml-accent/50`)
+- **Metals and textures**: `bg-ml-metal-gold`, `bg-ml-metal-steel`, `bg-ml-plate-fill`, `bg-ml-brushed`, `bg-ml-scanlines`…
+- **Type, shape, motion**: `font-ml-display` / `body` / `mono` / `paw`, `text-ml-xs` … `text-ml-3xl`, `tracking-ml-hud`, `rounded-ml`, `shadow-ml-1` / `shadow-ml-2`, `inset-shadow-ml`, `ease-ml` / `ease-ml-spring`
+- **`ml-light:` variant** for the light theme only. Dark is the default, so write the dark style bare
+- Anything else is one arbitrary value away: `duration-(--ml-dur)`, `z-(--ml-z-modal)`, `filter-(--ml-glow-gold)`
+
+Keep `layer(components)` on the `style.css` import: it lets a utility on a component (`<MlButton class="mt-4">`) win over the component's own style. That needs the stylesheet to go through Tailwind's CSS import rather than a JS `import`. With the standalone Tailwind CLI, which does not rewrite font URLs, also copy `@malilion/ui/fonts/*` next to your output.
 
 ## Themes
 

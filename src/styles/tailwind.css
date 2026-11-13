@@ -1,0 +1,157 @@
+/*
+ * MalilionUI theme for Tailwind CSS v4 — the --ml-* design tokens as utilities.
+ *
+ *   @import 'tailwindcss';
+ *   @import '@malilion/ui/style.css' layer(components);
+ *   @import '@malilion/ui/tailwind.css';
+ *
+ * Naming: the token --ml-<name> becomes the utility <property>-ml-<name>, e.g.
+ * bg-ml-surface, text-ml-text-muted, border-ml-line, bg-ml-metal-gold, font-ml-display.
+ *
+ * This file only maps names; the values stay in tokens.css (part of style.css).
+ * `inline` makes each utility read the --ml-* variable where it is used, so
+ * semantic colours follow data-ml-theme, including on a nested section.
+ */
+@theme inline {
+  /* ── Semantic colours (switch with the theme) ─────────────── */
+  --color-ml-bg: var(--ml-bg);
+  --color-ml-bg-elevated: var(--ml-bg-elevated);
+  --color-ml-surface: var(--ml-surface);
+  --color-ml-surface-2: var(--ml-surface-2);
+  --color-ml-surface-3: var(--ml-surface-3);
+  --color-ml-surface-inset: var(--ml-surface-inset);
+  --color-ml-backdrop: var(--ml-backdrop);
+
+  --color-ml-line: var(--ml-line);
+  --color-ml-line-strong: var(--ml-line-strong);
+  --color-ml-line-steel: var(--ml-line-steel);
+  --color-ml-line-steel-strong: var(--ml-line-steel-strong);
+
+  --color-ml-text: var(--ml-text);
+  --color-ml-text-muted: var(--ml-text-muted);
+  --color-ml-text-dim: var(--ml-text-dim);
+  --color-ml-text-on-metal: var(--ml-text-on-metal);
+
+  --color-ml-accent: var(--ml-accent);
+  --color-ml-accent-strong: var(--ml-accent-strong);
+  --color-ml-accent-text: var(--ml-accent-text);
+  --color-ml-accent-soft: var(--ml-accent-soft);
+  --color-ml-tech: var(--ml-tech);
+  --color-ml-tech-text: var(--ml-tech-text);
+  --color-ml-tech-soft: var(--ml-tech-soft);
+  --color-ml-success: var(--ml-success);
+  --color-ml-success-text: var(--ml-success-text);
+  --color-ml-success-soft: var(--ml-success-soft);
+  --color-ml-warning: var(--ml-warning);
+  --color-ml-warning-text: var(--ml-warning-text);
+  --color-ml-warning-soft: var(--ml-warning-soft);
+  --color-ml-danger: var(--ml-danger);
+  --color-ml-danger-text: var(--ml-danger-text);
+  --color-ml-danger-soft: var(--ml-danger-soft);
+  --color-ml-info: var(--ml-info);
+  --color-ml-info-text: var(--ml-info-text);
+  --color-ml-info-soft: var(--ml-info-soft);
+  --color-ml-focus: var(--ml-focus);
+
+  /* ── Raw palette (same in both themes) ────────────────────── */
+  --color-ml-gold-50: var(--ml-gold-50);
+  --color-ml-gold-100: var(--ml-gold-100);
+  --color-ml-gold-200: var(--ml-gold-200);
+  --color-ml-gold-300: var(--ml-gold-300);
+  --color-ml-gold-400: var(--ml-gold-400);
+  --color-ml-gold-500: var(--ml-gold-500);
+  --color-ml-gold-600: var(--ml-gold-600);
+  --color-ml-gold-700: var(--ml-gold-700);
+  --color-ml-gold-800: var(--ml-gold-800);
+  --color-ml-gold-900: var(--ml-gold-900);
+
+  --color-ml-bronze-300: var(--ml-bronze-300);
+  --color-ml-bronze-400: var(--ml-bronze-400);
+  --color-ml-bronze-500: var(--ml-bronze-500);
+  --color-ml-bronze-600: var(--ml-bronze-600);
+
+  --color-ml-steel-50: var(--ml-steel-50);
+  --color-ml-steel-100: var(--ml-steel-100);
+  --color-ml-steel-200: var(--ml-steel-200);
+  --color-ml-steel-300: var(--ml-steel-300);
+  --color-ml-steel-400: var(--ml-steel-400);
+  --color-ml-steel-500: var(--ml-steel-500);
+  --color-ml-steel-600: var(--ml-steel-600);
+  --color-ml-steel-700: var(--ml-steel-700);
+  --color-ml-steel-800: var(--ml-steel-800);
+  --color-ml-steel-900: var(--ml-steel-900);
+  --color-ml-steel-950: var(--ml-steel-950);
+
+  --color-ml-cyan-200: var(--ml-cyan-200);
+  --color-ml-cyan-300: var(--ml-cyan-300);
+  --color-ml-cyan-400: var(--ml-cyan-400);
+  --color-ml-cyan-500: var(--ml-cyan-500);
+  --color-ml-cyan-600: var(--ml-cyan-600);
+  --color-ml-cyan-700: var(--ml-cyan-700);
+
+  --color-ml-bean-200: var(--ml-bean-200);
+  --color-ml-bean-300: var(--ml-bean-300);
+  --color-ml-bean-400: var(--ml-bean-400);
+  --color-ml-bean-500: var(--ml-bean-500);
+  --color-ml-bean-600: var(--ml-bean-600);
+
+  --color-ml-red-300: var(--ml-red-300);
+  --color-ml-red-400: var(--ml-red-400);
+  --color-ml-red-500: var(--ml-red-500);
+  --color-ml-red-600: var(--ml-red-600);
+
+  --color-ml-green-300: var(--ml-green-300);
+  --color-ml-green-400: var(--ml-green-400);
+  --color-ml-green-500: var(--ml-green-500);
+  --color-ml-green-600: var(--ml-green-600);
+
+  /* ── Metals and textures: bg-ml-metal-gold, bg-ml-brushed… ── */
+  --background-image-ml-metal-gold: var(--ml-metal-gold);
+  --background-image-ml-metal-gold-soft: var(--ml-metal-gold-soft);
+  --background-image-ml-metal-steel: var(--ml-metal-steel);
+  --background-image-ml-metal-bronze: var(--ml-metal-bronze);
+  --background-image-ml-metal-red: var(--ml-metal-red);
+  --background-image-ml-metal-cyan: var(--ml-metal-cyan);
+  --background-image-ml-metal-green: var(--ml-metal-green);
+  --background-image-ml-metal-gunmetal: var(--ml-metal-gunmetal);
+  --background-image-ml-metal-bean: var(--ml-metal-bean);
+  --background-image-ml-plate-fill: var(--ml-plate-fill);
+  --background-image-ml-plate-border: var(--ml-plate-border);
+  --background-image-ml-brushed: var(--ml-brushed);
+  --background-image-ml-scanlines: var(--ml-scanlines);
+
+  /* ── Type ─────────────────────────────────────────────────── */
+  --font-ml-display: var(--ml-font-display);
+  --font-ml-body: var(--ml-font-body);
+  --font-ml-paw: var(--ml-font-paw);
+  --font-ml-mono: var(--ml-font-mono);
+
+  --text-ml-xs: var(--ml-text-xs);
+  --text-ml-sm: var(--ml-text-sm);
+  --text-ml-md: var(--ml-text-md);
+  --text-ml-lg: var(--ml-text-lg);
+  --text-ml-xl: var(--ml-text-xl);
+  --text-ml-2xl: var(--ml-text-2xl);
+  --text-ml-3xl: var(--ml-text-3xl);
+  --tracking-ml-hud: var(--ml-tracking-hud);
+
+  /* ── Shape and depth ──────────────────────────────────────── */
+  --radius-ml-sm: var(--ml-radius-sm);
+  --radius-ml: var(--ml-radius);
+  --radius-ml-full: var(--ml-radius-full);
+
+  --shadow-ml-1: var(--ml-shadow-1);
+  --shadow-ml-2: var(--ml-shadow-2);
+  --inset-shadow-ml: var(--ml-inset-shadow);
+
+  /* ── Motion ───────────────────────────────────────────────── */
+  --ease-ml: var(--ml-ease);
+  --ease-ml-spring: var(--ml-ease-spring);
+  --ease-ml-in: var(--ml-ease-in);
+}
+
+/*
+ * ml-light: — styles for the Daylight Titanium theme only. Dark is the default,
+ * so write the dark style bare and the exception as `ml-light:…`.
+ */
+@custom-variant ml-light (&:where([data-ml-theme='light'], [data-ml-theme='light'] *));
